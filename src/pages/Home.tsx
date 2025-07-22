@@ -109,6 +109,9 @@ export default function Home() {
                     cy="50%"
                     outerRadius={110}
                     innerRadius={60}
+                    isAnimationActive={true}
+                    animationDuration={700}
+                    key={pieType}
                   >
                     {pieData.map((entry) => (
                       <Cell key={entry.name} fill={entry.color} />
@@ -133,11 +136,12 @@ export default function Home() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            {/* Checkboxes right - now in a row */}
-            <div className="dashboard-pie-checkboxes">
+            {/* Radio buttons for pie type selection */}
+            <div className="dashboard-pie-checkboxes dashboard-pie-checkboxes-vertical" style={{ alignItems: 'flex-start' }}>
               <label className="dashboard-pie-checkbox-label">
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="pieType"
                   checked={pieType === 'unit'}
                   onChange={() => setPieType('unit')}
                   style={{ accentColor: '#4f46e5' }}
@@ -146,7 +150,8 @@ export default function Home() {
               </label>
               <label className="dashboard-pie-checkbox-label">
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="pieType"
                   checked={pieType === 'market'}
                   onChange={() => setPieType('market')}
                   style={{ accentColor: '#d946ef' }}

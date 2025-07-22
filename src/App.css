@@ -1,3 +1,11 @@
+@keyframes magicalPop {
+  0% { opacity: 0; transform: scale(0.92) translateY(-50%); box-shadow: 0 0 0 0 #a5b4fc00; }
+  80% { opacity: 1; transform: scale(1.04) translateY(-50%); box-shadow: 0 8px 32px 0 #a5b4fc55, 0 0 0 2px #a5b4fc; }
+  100% { opacity: 1; transform: scale(1) translateY(-50%); box-shadow: 0 8px 32px 0 #a5b4fc55, 0 0 0 2px #a5b4fc; }
+}
+.dashboard-pie-chart, .dashboard-pie-chart * {
+  cursor: pointer !important;
+}
 .dashboard-price-currency {
   font-size: 18px;
   font-weight: 700;
@@ -132,6 +140,10 @@
   min-width: 220px;
   min-height: 220px;
   cursor: pointer;
+}
+.dashboard-pie-chart:hover {
+  cursor: pointer;
+  filter: brightness(1.04) drop-shadow(0 0 8px #a5b4fc33);
 }
 .dashboard-pie-tooltip {
   background: #fff;

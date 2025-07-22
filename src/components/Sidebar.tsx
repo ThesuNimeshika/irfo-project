@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 
-const sidebarWidth = 72; // px, matches navbar logo area
+const sidebarWidth = 120; // px, increased for better visibility
 
 const navItems = [
   { label: 'Setup', icon: '⚙️', link: '/setup' },
@@ -25,18 +25,21 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
   return (
     <nav style={{
       width: sidebarWidth,
+      minWidth: sidebarWidth,
+      maxWidth: sidebarWidth,
       background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
       height: '100vh',
       position: 'fixed',
       top: 0,
-      right: 0,
+      left: 0,
       zIndex: 1200,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      paddingTop: 80,
-      boxShadow: '-2px 0 12px 0 rgba(165,180,252,0.10)',
+      paddingTop: 72,
+      boxShadow: '2px 0 12px 0 rgba(165,180,252,0.10)',
       transition: 'box-shadow 0.3s',
+      overflowY: 'auto',
     }}>
       {navItems.map((item) => (
         <div key={item.label} style={{ width: '100%' }}>
@@ -51,30 +54,31 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
               border: 'none',
               color: '#4f46e5',
               fontWeight: 600,
-              fontSize: 18,
-              padding: '18px 0 12px 0',
+            fontSize: 14,
+            padding: '14px 0 8px 0',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               cursor: 'pointer',
               transition: 'background 0.2s',
               position: 'relative',
+              lineHeight: 1.1,
             }}
           >
-            <span style={{ fontSize: 28, marginBottom: 2 }}>{item.icon}</span>
-            <span style={{ fontSize: 13 }}>{item.label}</span>
+            <span style={{ fontSize: 24, marginBottom: 2 }}>{item.icon}</span>
+            <span style={{ fontSize: 12, wordBreak: 'break-word', textAlign: 'center' }}>{item.label}</span>
             {item.children && (
-              <span style={{ fontSize: 12, color: '#a5b4fc', marginTop: 2 }}>{reportOpen ? '▲' : '▼'}</span>
+              <span style={{ fontSize: 11, color: '#a5b4fc', marginTop: 2 }}>{reportOpen ? '▲' : '▼'}</span>
             )}
           </button>
           {/* Nested menu for Report */}
           {item.children && reportOpen && (
             <div style={{
               background: 'rgba(255,255,255,0.95)',
-              borderRadius: 10,
+              borderRadius: 8,
               boxShadow: '0 2px 8px 0 rgba(165,180,252,0.10)',
-              margin: '0 8px 8px 8px',
-              padding: '6px 0',
+              margin: '0 4px 8px 4px',
+              padding: '4px 0',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'stretch',
@@ -88,13 +92,14 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                     background: 'none',
                     border: 'none',
                     color: '#4f46e5',
-                    fontSize: 14,
-                    padding: '8px 12px',
-                    textAlign: 'left',
+                    fontSize: 12,
+                    padding: '6px 8px',
+                    textAlign: 'center',
                     cursor: 'pointer',
-                    borderRadius: 6,
+                    borderRadius: 4,
                     margin: '2px 0',
                     transition: 'background 0.2s',
+                    wordBreak: 'break-word',
                   }}
                 >
                   {child.label}

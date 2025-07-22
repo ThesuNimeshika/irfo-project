@@ -1,48 +1,87 @@
+
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { useEffect, useState, useRef } from 'react';
 import '../App.css';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
-export default function Home() {
+type PieEntry = { name: string; value: number; color: string; units: number };
+
+const defaultPieData: PieEntry[] = [
+  { name: 'A', value: 0, color: '#4f46e5', units: 0 }, // deep indigo
+  { name: 'B', value: 0, color: '#d946ef', units: 0 }, // vibrant magenta
+  { name: 'C', value: 0, color: '#f59e42', units: 0 }  // orange
+];
+
+function Home() {
+  // Floating label and active slice
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   // Date state
   const todayStr = new Date().toISOString().slice(0, 10);
   const [selectedDate, setSelectedDate] = useState(todayStr);
   // Pie chart state
   const [pieType, setPieType] = useState<'unit' | 'market'>('unit');
-  const [pieData, setPieData] = useState(getMockData(todayStr, 'unit').pie);
+  const [pieData, setPieData] = useState<PieEntry[]>(defaultPieData);
   // Creation and Redeem price state (animated)
-  const [creationPrice, setCreationPrice] = useState(getMockData(todayStr, 'unit').creationPrice);
-  const [redeemPrice, setRedeemPrice] = useState(getMockData(todayStr, 'unit').redeemPrice);
-  const creationAnimRef = useRef(creationPrice);
-  const redeemAnimRef = useRef(redeemPrice);
-  const [creationDisplay, setCreationDisplay] = useState(creationPrice);
-  const [redeemDisplay, setRedeemDisplay] = useState(redeemPrice);
+  const creationAnimRef = useRef(0);
+  const redeemAnimRef = useRef(0);
+  const [creationDisplay, setCreationDisplay] = useState(0);
+  const [redeemDisplay, setRedeemDisplay] = useState(0);
+
+  // Simulate backend fetch (replace with real API call)
+  async function fetchPieData(_date: string, type: 'unit' | 'market') {
+    // TODO: Replace with real backend fetch
+    // Simulate different data for demo
+    if (type === 'unit') {
+      return {
+        pie: [
+          { name: 'A', value: 40, color: '#4f46e5', units: 100 },
+          { name: 'B', value: 30, color: '#d946ef', units: 80 },
+          { name: 'C', value: 20, color: '#f59e42', units: 60 }
+        ],
+        creationPrice: 123.45,
+        redeemPrice: 98.76
+      };
+    } else {
+      return {
+        pie: [
+          { name: 'A', value: 60, color: '#4f46e5', units: 50 },
+          { name: 'B', value: 25, color: '#d946ef', units: 30 },
+          { name: 'C', value: 15, color: '#f59e42', units: 20 }
+        ],
+        creationPrice: 150.12,
+        redeemPrice: 110.34
+      };
+    }
+  }
 
   // Animate price changes on backend load
   useEffect(() => {
-    const d = getMockData(selectedDate, pieType);
-    setPieData(d.pie);
-    // Animate creation price
-    const animate = (from: number, to: number, setter: (v: number) => void) => {
-      const duration = 600;
-      const steps = 30;
-      let current = 0;
-      const diff = to - from;
-      const step = () => {
-        current++;
-        setter(Number((from + (diff * (current / steps))).toFixed(2)));
-        if (current < steps) setTimeout(step, duration / steps);
+    let mounted = true;
+    fetchPieData(selectedDate, pieType).then(d => {
+      if (!mounted) return;
+      setPieData(d.pie);
+      // Animate creation price
+      const animate = (from: number, to: number, setter: (v: number) => void) => {
+        const duration = 600;
+        const steps = 30;
+        let current = 0;
+        const diff = to - from;
+        const step = () => {
+          current++;
+          setter(Number((from + (diff * (current / steps))).toFixed(2)));
+          if (current < steps) setTimeout(step, duration / steps);
+        };
+        step();
       };
-      step();
-    };
-    animate(creationAnimRef.current, d.creationPrice, setCreationDisplay);
-    animate(redeemAnimRef.current, d.redeemPrice, setRedeemDisplay);
-    creationAnimRef.current = d.creationPrice;
-    redeemAnimRef.current = d.redeemPrice;
-    setCreationPrice(d.creationPrice);
-    setRedeemPrice(d.redeemPrice);
+      animate(creationAnimRef.current, d.creationPrice, setCreationDisplay);
+      animate(redeemAnimRef.current, d.redeemPrice, setRedeemDisplay);
+      creationAnimRef.current = d.creationPrice;
+      redeemAnimRef.current = d.redeemPrice;
+    });
+    return () => { mounted = false; };
   }, [selectedDate, pieType]);
+
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 900 : false);
 
   // Update isMobile on resize
@@ -75,14 +114,14 @@ export default function Home() {
               <span className="dashboard-price-icon dashboard-price-icon-creation">💰</span>
               <div>
                 <div className="dashboard-price-label">Creation Price</div>
-                <div className="dashboard-price-value">{creationDisplay}</div>
+                <div className="dashboard-price-value">${creationDisplay.toFixed(2)}</div>
               </div>
             </div>
             <div className="dashboard-price-row">
               <span className="dashboard-price-icon dashboard-price-icon-redeem">🔄</span>
               <div>
                 <div className="dashboard-price-label">Redeem Price</div>
-                <div className="dashboard-price-value">{redeemDisplay}</div>
+                <div className="dashboard-price-value">${redeemDisplay.toFixed(2)}</div>
               </div>
             </div>
           </div>
@@ -112,25 +151,38 @@ export default function Home() {
                     isAnimationActive={true}
                     animationDuration={700}
                     key={pieType}
+                    onMouseLeave={() => { setActiveIndex(null); }}
                   >
-                    {pieData.map((entry) => (
-                      <Cell key={entry.name} fill={entry.color} />
+                    {pieData.map((entry, idx) => (
+                      <Cell
+                        key={entry.name}
+                        fill={entry.color}
+                        stroke={activeIndex === idx ? '#222' : undefined}
+                        strokeWidth={activeIndex === idx ? 2 : 1}
+                        className={activeIndex === idx ? 'pie-slice-pop' : ''}
+                        style={{ transition: 'filter 0.25s, transform 0.25s', cursor: 'pointer' }}
+                        onMouseEnter={() => {
+                          setActiveIndex(idx);
+                        }}
+                      />
                     ))}
                   </Pie>
+                  {/* Hide default tooltip, use magical popup instead */}
                   <Tooltip
                     content={({ active, payload }) => {
-                      if (!active || !payload || !payload.length) return null;
-                      const d = payload[0].payload;
-                      const total = pieData.reduce((sum, v) => sum + v.value, 0);
-                      const percent = ((d.value / total) * 100).toFixed(1);
-                      return (
-                        <div className="dashboard-pie-tooltip">
-                          <div><b>{d.name}</b></div>
-                          <div>Value: {d.value}</div>
-                          <div>Units: {d.units}</div>
-                          <div>Percent: {percent}%</div>
-                        </div>
-                      );
+                      if (active && payload && payload.length) {
+                        const entry = payload[0].payload;
+                        const total = pieData.reduce((sum, v) => sum + v.value, 0);
+                        const percent = total ? ((entry.value / total) * 100).toFixed(1) : 0;
+                        return (
+                          <div className="dashboard-pie-tooltip">
+                            <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{entry.name}</div>
+                            <div>Units: <b>{entry.units}</b></div>
+                            <div>Percent: <b>{percent}%</b></div>
+                          </div>
+                        );
+                      }
+                      return null;
                     }}
                   />
                 </PieChart>
@@ -179,20 +231,8 @@ export default function Home() {
       </div>
     </>
   );
-// Mock backend data loader with date
-function getMockData(dateStr: string, type: 'unit' | 'market') {
-  // Use date string and type to simulate different data
-  // In real app, fetch from backend with date/type
-  const seed = dateStr.split('-').reduce((a: number, b: string) => a + parseInt(b), 0) + (type === 'unit' ? 1 : 2);
-  return {
-    creationPrice: 100 + (seed % 10),
-    redeemPrice: 95 + (seed % 7),
-    pie: [
-      { name: 'Fund A', value: 400 + (seed % 30), color: '#4f46e5', units: 40 + (seed % 5) },
-      { name: 'Fund B', value: 300 + (seed % 20), color: '#d946ef', units: 30 + (seed % 7) },
-      { name: 'Fund C', value: 300 + (seed % 10), color: '#f59e42', units: 30 + (seed % 3) },
-    ],
-  };
 }
-}
+
+export default Home;
+
 

@@ -3,11 +3,13 @@ import Sidebar from '../components/Sidebar';
 import { useEffect, useState } from 'react';
 
 
+
 export default function Home() {
   // Simulate backend value updates with animation
   const [creationPrice, setCreationPrice] = useState(100.00);
   const [redeemPrice, setRedeemPrice] = useState(95.00);
-
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 900 : false);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 900);
 
   // Animate value changes every 3s
   useEffect(() => {
@@ -18,7 +20,20 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-
+  // Update isMobile and open/close sidebar on resize
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 900;
+      setIsMobile(mobile);
+      if (mobile) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const creationIcon = (
     <span style={{
@@ -56,13 +71,51 @@ export default function Home() {
       <div className="navbar-fixed-wrapper">
         <Navbar />
       </div>
-      {/* Mobile menu button removed as requested */}
-      {/* Sidebar drawer removed for mobile view as requested */}
+      {/* Mobile menu icon (hamburger) - visible only in mobile, after navbar */}
+      {isMobile && (
+        <>
+          <button
+            className="mobile-menu-icon"
+            aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar menu"}
+            onClick={() => setSidebarOpen(o => !o)}
+            style={{zIndex: 3500}}
+          >
+            {sidebarOpen ? (
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="7" y1="7" x2="21" y2="21" stroke="#4f46e5" strokeWidth="2.5" strokeLinecap="round" />
+                <line x1="21" y1="7" x2="7" y2="21" stroke="#4f46e5" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect y="7" width="32" height="3.5" rx="1.75" fill="#4f46e5" />
+                <rect y="14" width="32" height="3.5" rx="1.75" fill="#4f46e5" />
+                <rect y="21" width="32" height="3.5" rx="1.75" fill="#4f46e5" />
+              </svg>
+            )}
+          </button>
+          {sidebarOpen && (
+            <>
+              <div className="mobile-sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>
+              <div className="mobile-sidebar-drawer">
+                <button className="sidebar-close-icon" aria-label="Close sidebar" onClick={() => setSidebarOpen(false)}>
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="7" y1="7" x2="21" y2="21" stroke="#4f46e5" strokeWidth="2.5" strokeLinecap="round" />
+                    <line x1="21" y1="7" x2="7" y2="21" stroke="#4f46e5" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
+                </button>
+                <Sidebar />
+              </div>
+            </>
+          )}
+        </>
+      )}
       <div className="home-main-layout">
         {/* Sidebar left-aligned, fixed width (120px) on desktop */}
-        <div className="home-sidebar-container">
-          <Sidebar />
-        </div>
+        {!isMobile && (
+          <div className="home-sidebar-container">
+            <Sidebar />
+          </div>
+        )}
         {/* Main content */}
         <div className="home-main-content">
           <div className="home-cards-container">
@@ -111,29 +164,71 @@ export default function Home() {
           background: transparent;
           display: block;
         }
+        /* Sidebar Drawer Overlay (mobile) */
+        .mobile-sidebar-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0,0,0,0.18);
+          z-index: 3999;
+        }
+        .mobile-sidebar-drawer {
+          position: fixed;
+          top: 0;
+          right: 0;
+          width: 80vw;
+          max-width: 320px;
+          height: 100vh;
+          background: #fff;
+          box-shadow: -2px 0 16px 0 rgba(79,70,229,0.10);
+          z-index: 4000;
+          display: flex;
+          flex-direction: column;
+          animation: slideInSidebar 0.25s cubic-bezier(.4,0,.2,1);
+          overflow-y: auto;
+        }
+        .sidebar-close-icon {
+          background: none;
+          border: none;
+          cursor: pointer;
+          z-index: 4002;
+          padding: 4px;
+        }
+        @keyframes slideInSidebar {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: none; opacity: 1; }
+        }
+        /* Mobile menu icon (hamburger) */
+        .mobile-menu-icon {
+          position: fixed;
+          top: 18px;
+          right: 18px;
+          z-index: 3500;
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 4px;
+          display: none;
+        }
         /* Ensure Navbar is always above sidebar and sidebar drawer */
         .navbar-fixed-wrapper {
           position: fixed;
           top: 0;
           left: 0;
           width: 100vw;
-          z-index: 2000;
+          z-index: 1000;
           background: transparent;
         }
         .navbar-fixed-wrapper > * {
-          z-index: 2001;
+          z-index: 1001;
         }
         .home-main-layout {
           padding-top: 64px;
         }
         .home-sidebar-container {
           z-index: 1;
-        }
-        .home-sidebar-drawer {
-          z-index: 1001;
-        }
-        .home-sidebar-drawer {
-          z-index: 2;
         }
         .home-main-content {
           flex: 1;
@@ -203,30 +298,7 @@ export default function Home() {
         .home-card-value.redeem {
           color: #d946ef;
         }
-        .home-mobile-menu-btn {
-          display: none;
-        }
-        .home-sidebar-drawer {
-          display: none !important;
-        }
-        .home-sidebar-drawer.open {
-          right: 0;
-        }
-        .home-sidebar-drawer-header {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          height: 56px;
-          padding: 0 12px;
-          border-bottom: 1px solid #eee;
-        }
-        .home-sidebar-drawer-close {
-          background: none;
-          border: none;
-          padding: 0;
-          margin-right: 8px;
-          cursor: pointer;
-        }
+        /* Sidebar mobile styles removed as requested */
         @media (max-width: 1100px) {
           .home-cards-container {
             gap: 16px;
@@ -236,10 +308,13 @@ export default function Home() {
         @media (max-width: 900px) {
           .home-main-layout {
             flex-direction: column;
-            padding-top: 48px; /* less gap between navbar and cards */
+            padding-top: 40px;
           }
           .home-sidebar-container {
             display: none !important;
+          }
+          .mobile-menu-icon {
+            display: block;
           }
           .home-main-content {
             width: 100vw;
@@ -260,16 +335,6 @@ export default function Home() {
             min-width: 0;
             font-size: 18px;
             padding: 1.2rem 0.7rem;
-          }
-          .home-mobile-menu-btn {
-            display: block;
-            position: fixed;
-            top: 8px;
-            right: 8px;
-            z-index: 2002;
-          }
-          .home-sidebar-drawer {
-            display: flex;
           }
         }
         @media (max-width: 600px) {

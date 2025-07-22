@@ -68,7 +68,32 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
             <span style={{ fontSize: 24, marginBottom: 2 }}>{item.icon}</span>
             <span style={{ fontSize: 12, wordBreak: 'break-word', textAlign: 'center' }}>{item.label}</span>
             {item.children && (
-              <span style={{ fontSize: 11, color: '#a5b4fc', marginTop: 2 }}>{reportOpen ? '▲' : '▼'}</span>
+              <span
+                style={{ fontSize: 14, color: '#111', marginTop: 2, fontWeight: 700, cursor: 'pointer', position: 'relative' }}
+                onMouseEnter={e => {
+                  const tooltip = document.createElement('div');
+                  tooltip.textContent = 'Click for view more';
+                  tooltip.style.position = 'absolute';
+                  tooltip.style.bottom = '-28px';
+                  tooltip.style.left = '50%';
+                  tooltip.style.transform = 'translateX(-50%)';
+                  tooltip.style.background = '#111';
+                  tooltip.style.color = '#fff';
+                  tooltip.style.padding = '2px 8px';
+                  tooltip.style.borderRadius = '4px';
+                  tooltip.style.fontSize = '11px';
+                  tooltip.style.whiteSpace = 'nowrap';
+                  tooltip.style.zIndex = '9999';
+                  tooltip.className = 'sidebar-tooltip';
+                  e.currentTarget.appendChild(tooltip);
+                }}
+                onMouseLeave={e => {
+                  const tooltip = e.currentTarget.querySelector('.sidebar-tooltip');
+                  if (tooltip) e.currentTarget.removeChild(tooltip);
+                }}
+              >
+                {reportOpen ? '▲' : '▼'}
+              </span>
             )}
           </button>
           {/* Nested menu for Report */}

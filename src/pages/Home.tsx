@@ -1,5 +1,5 @@
 
-import Navbar from '../components/Navbar';
+import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { useEffect, useState, useRef } from 'react';
 import '../App.css';
@@ -118,7 +118,7 @@ function Home() {
       <div className="navbar-fixed-wrapper">
         <Navbar />
       </div>
-      <div className="home-main-layout" style={{ marginTop: 16, paddingTop: 0, display: 'flex', flexDirection: 'row', minHeight: 'calc(100vh - 72px)' }}>
+      <div className="home-main-layout" style={{ marginTop: 0, paddingTop: 0, display: 'flex', flexDirection: 'row', height: 'calc(100vh - 72px - 48px)', minHeight: 'unset', overflow: 'hidden' }}>
         {/* Sidebar left-aligned, fixed width (120px) on desktop only */}
         {!isMobile && (
           <div className="home-sidebar-container">
@@ -126,9 +126,9 @@ function Home() {
           </div>
         )}
         {/* Main content area: stack cards vertically */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0', height: '100%', overflow: 'hidden' }}>
           {/* Unified magical layout card */}
-          <div className="home-card magical-bg animated-bg dashboard-main-card">
+          <div className="home-card magical-bg animated-bg dashboard-main-card" style={{ flex: 1, minHeight: 0, marginBottom: 0 }}>
             {/* Creation/Redeem section */}
             <div className="dashboard-price-section">
               <div className="dashboard-price-row">
@@ -249,13 +249,13 @@ function Home() {
             </div>
           </div>
           {/* DataTable Card */}
-          <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-2xl shadow-lg border border-gray-200 p-6 relative overflow-hidden">
+          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ flex: 1, minHeight: 0, marginTop: 0, marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'stretch' }}>
             {/* Animated background elements */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl animate-pulse"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 rounded-full blur-2xl animate-pulse delay-1000"></div>
             </div>
-            <div className="relative z-10">
+            <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">Fund Data</h2>
                 <div className="flex items-center space-x-2">
@@ -264,30 +264,29 @@ function Home() {
                   </span>
                 </div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden">
+              <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <DataTable />
               </div>
-              <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
-                <span>Showing 2 of 2 results</span>
-                <div className="flex items-center space-x-2">
-                  <button
-                    className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
-                    disabled
-                  >
-                    Previous
-                  </button>
-                  <button
-                    className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
-                    disabled
-                  >
-                    Next
-                  </button>
-                </div>
+              <span>Showing 2 of 2 results</span>
+              <div className="flex items-center space-x-2">
+                <button
+                  className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                  disabled
+                >
+                  Previous
+                </button>
+                <button
+                  className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                  disabled
+                >
+                  Next
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

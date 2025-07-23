@@ -113,3 +113,45 @@ export default function Navbar() {
     </>
   );
 }
+
+// Footer styles (similar to navbar, but fixed bottom)
+const footerStyle: React.CSSProperties = {
+  width: '100%',
+  position: 'fixed',
+  bottom: 0,
+  left: 0,
+  zIndex: 900,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  padding: '0 1.5rem',
+  background: 'linear-gradient(90deg, #fff 0px, rgba(255,255,255,0.85) 32px, rgba(255,255,255,0.0) 64px, #e0e7ff 80px, #a5b4fc 40%, #f0abfc 70%, #a5b4fc 100%)',
+  boxShadow: '0 -2px 8px 0 rgba(0,0,0,0.07)',
+  minHeight: '48px',
+  height: '48px',
+  boxSizing: 'border-box',
+  gap: 0,
+  overflow: 'hidden',
+  fontSize: 15,
+};
+
+export function Footer() {
+  // Placeholder values, replace with backend data as needed
+  const companyName = "Company Name";
+  const userName = "User Name";
+  const database = "Database";
+  const currentDate = new Date().toLocaleDateString();
+  const ipAddress = "0.0.0.0";
+  const lastClicked = "--:--:--";
+
+  return (
+    <footer style={footerStyle} data-footer>
+      <span style={{ fontWeight: 700, color: '#4f46e5', marginRight: 24 }}>{companyName}:</span>
+      <span style={{ marginRight: 18 }}><b>User name:</b> {userName}</span>
+      <span style={{ marginRight: 18 }}><b>Database:</b> {database}</span>
+      <span style={{ marginRight: 18 }}><b>Date:</b> {currentDate}</span>
+      <span style={{ marginRight: 18 }}><b>IP Address:</b> {ipAddress}</span>
+      <span><b>Last Clicked time:</b> {lastClicked}</span>
+    </footer>
+  );
+}

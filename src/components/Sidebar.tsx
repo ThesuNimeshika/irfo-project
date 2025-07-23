@@ -32,7 +32,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
       position: 'fixed',
       top: 0,
       left: 0,
-      zIndex: 1200,
+      zIndex: 2000,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',

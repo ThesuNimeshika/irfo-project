@@ -55,32 +55,52 @@ function Home() {
     }
   }
 
-  // Animate price changes on backend load
-  useEffect(() => {
-    let mounted = true;
-    fetchPieData(selectedDate, pieType).then(d => {
-      if (!mounted) return;
-      setPieData(d.pie);
-      // Animate creation price
-      const animate = (from: number, to: number, setter: (v: number) => void) => {
-        const duration = 600;
-        const steps = 30;
-        let current = 0;
-        const diff = to - from;
-        const step = () => {
-          current++;
-          setter(Number((from + (diff * (current / steps))).toFixed(2)));
-          if (current < steps) setTimeout(step, duration / steps);
-        };
-        step();
+  // Fetch only pie chart data (for radio change)
+  async function fetchPieOnly(_date: string, type: 'unit' | 'market') {
+    const d = await fetchPieData(_date, type);
+    setPieData(d.pie);
+  }
+
+  // Fetch all (for date change)
+  async function fetchAll(_date: string, type: 'unit' | 'market') {
+    const d = await fetchPieData(_date, type);
+    setPieData(d.pie);
+    // Animate creation price
+    const animate = (from: number, to: number, setter: (v: number) => void) => {
+      const duration = 600;
+      const steps = 30;
+      let current = 0;
+      const diff = to - from;
+      const step = () => {
+        current++;
+        setter(Number((from + (diff * (current / steps))).toFixed(2)));
+        if (current < steps) setTimeout(step, duration / steps);
       };
-      animate(creationAnimRef.current, d.creationPrice, setCreationDisplay);
-      animate(redeemAnimRef.current, d.redeemPrice, setRedeemDisplay);
-      creationAnimRef.current = d.creationPrice;
-      redeemAnimRef.current = d.redeemPrice;
-    });
-    return () => { mounted = false; };
-  }, [selectedDate, pieType]);
+      step();
+    };
+    animate(creationAnimRef.current, d.creationPrice, setCreationDisplay);
+    animate(redeemAnimRef.current, d.redeemPrice, setRedeemDisplay);
+    creationAnimRef.current = d.creationPrice;
+    redeemAnimRef.current = d.redeemPrice;
+  }
+
+  // On mount, fetch all for today
+  useEffect(() => {
+    fetchAll(selectedDate, pieType);
+    // eslint-disable-next-line
+  }, []);
+
+  // On date change, fetch all (pie + prices)
+  useEffect(() => {
+    fetchAll(selectedDate, pieType);
+    // eslint-disable-next-line
+  }, [selectedDate]);
+
+  // On pieType (radio) change, fetch only pie chart
+  useEffect(() => {
+    fetchPieOnly(selectedDate, pieType);
+    // eslint-disable-next-line
+  }, [pieType]);
 
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 900 : false);
 
@@ -98,7 +118,7 @@ function Home() {
       <div className="navbar-fixed-wrapper">
         <Navbar />
       </div>
-      <div className="home-main-layout" style={{ marginTop: 64, paddingTop: 0, display: 'flex', flexDirection: 'row', minHeight: 'calc(100vh - 72px)' }}>
+      <div className="home-main-layout" style={{ marginTop: 16, paddingTop: 0, display: 'flex', flexDirection: 'row', minHeight: 'calc(100vh - 72px)' }}>
         {/* Sidebar left-aligned, fixed width (120px) on desktop only */}
         {!isMobile && (
           <div className="home-sidebar-container">
@@ -106,7 +126,7 @@ function Home() {
           </div>
         )}
         {/* Main content area: stack cards vertically */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px', padding: '0 24px', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0' }}>
           {/* Unified magical layout card */}
           <div className="home-card magical-bg animated-bg dashboard-main-card">
             {/* Creation/Redeem section */}

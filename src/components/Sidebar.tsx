@@ -1,7 +1,7 @@
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-const sidebarWidth = 120; // px, increased for better visibility
+const sidebarWidth = 180; // px, increased for better visibility
 
 const navItems = [
   { label: 'Setup', icon: '⚙️', link: '/setup' },
@@ -22,6 +22,23 @@ const navItems = [
 
 function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
   const [reportOpen, setReportOpen] = useState(false);
+  const reportBtnRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (
+        reportOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        reportBtnRef.current &&
+        !reportBtnRef.current.contains(e.target as Node)
+      ) {
+        setReportOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [reportOpen]);
   return (
     <nav style={{
       width: sidebarWidth,
@@ -42,98 +59,140 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
       overflowY: 'auto',
     }}>
       {navItems.map((item) => (
-        <div key={item.label} style={{ width: '100%' }}>
-          <button
-            onClick={() => {
-              if (item.children) setReportOpen(v => !v);
-              else if (onNavigate) onNavigate(item.link);
-            }}
-            style={{
-              width: '100%',
-              background: 'none',
-              border: 'none',
-              color: '#4f46e5',
-              fontWeight: 600,
-            fontSize: 14,
-            padding: '14px 0 8px 0',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-              position: 'relative',
-              lineHeight: 1.1,
-            }}
-          >
-            <span style={{ fontSize: 24, marginBottom: 2 }}>{item.icon}</span>
-            <span style={{ fontSize: 12, wordBreak: 'break-word', textAlign: 'center' }}>{item.label}</span>
-            {item.children && (
-              <span
-                style={{ fontSize: 14, color: '#111', marginTop: 2, fontWeight: 700, cursor: 'pointer', position: 'relative' }}
-                onMouseEnter={e => {
-                  const tooltip = document.createElement('div');
-                  tooltip.textContent = 'Click for view more';
-                  tooltip.style.position = 'absolute';
-                  tooltip.style.bottom = '-28px';
-                  tooltip.style.left = '50%';
-                  tooltip.style.transform = 'translateX(-50%)';
-                  tooltip.style.background = '#111';
-                  tooltip.style.color = '#fff';
-                  tooltip.style.padding = '2px 8px';
-                  tooltip.style.borderRadius = '4px';
-                  tooltip.style.fontSize = '11px';
-                  tooltip.style.whiteSpace = 'nowrap';
-                  tooltip.style.zIndex = '9999';
-                  tooltip.className = 'sidebar-tooltip';
-                  e.currentTarget.appendChild(tooltip);
-                }}
-                onMouseLeave={e => {
-                  const tooltip = e.currentTarget.querySelector('.sidebar-tooltip');
-                  if (tooltip) e.currentTarget.removeChild(tooltip);
+        <div key={item.label} style={{ width: '100%', position: 'relative', display: 'flex', justifyContent: 'center' }}>
+          {item.label === 'Report' ? (
+            <div className="btn-group dropup" style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <button
+                type="button"
+                className={`btn btn-secondary dropdown-toggle${reportOpen ? ' show' : ''}`}
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded={reportOpen}
+                ref={reportBtnRef}
+                onClick={() => setReportOpen(v => !v)}
+                style={{
+                  width: '90%',
+                  margin: '8px 0',
+                  background: '#6c757d',
+                  color: '#fff',
+                  border: '1px solid #6c757d',
+                  borderRadius: 4,
+                  fontWeight: 600,
+                  fontSize: 15,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  padding: '8px 16px',
+                  boxShadow: reportOpen ? '0 0 0 0.2rem rgba(0,123,255,.25)' : undefined,
+                  transition: 'box-shadow 0.2s',
                 }}
               >
-                {reportOpen ? '▲' : '▼'}
-              </span>
-            )}
-          </button>
-          {/* Nested menu for Report */}
-          {item.children && reportOpen && (
-            <div style={{
-              background: 'rgba(255,255,255,0.95)',
-              borderRadius: 8,
-              boxShadow: '0 2px 8px 0 rgba(165,180,252,0.10)',
-              margin: '0 4px 8px 4px',
-              padding: '4px 0',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-              animation: 'fadeInCard 0.4s',
-            }}>
-              {item.children.map(child => (
-                <button
-                  key={child.label}
-                  onClick={() => onNavigate && onNavigate(child.link)}
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ fontSize: 20, marginRight: 8 }}>{item.icon}</span>
+                  Report
+                </span>
+                <span style={{ marginLeft: 8, fontSize: 14 }}>{reportOpen ? '▲' : '▼'}</span>
+              </button>
+              {reportOpen && (
+                <div
+                  className="dropdown-menu show"
+                  ref={dropdownRef}
                   style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#4f46e5',
-                    fontSize: 12,
-                    padding: '6px 8px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
+                    position: 'absolute',
+                    bottom: '100%',
+                    left: '50%',
+                    top: 'auto',
+                    transform: 'translateX(-50%)',
+                    minWidth: 180,
+                    background: '#fff',
+                    border: '1px solid #dee2e6',
                     borderRadius: 4,
-                    margin: '2px 0',
-                    transition: 'background 0.2s',
-                    wordBreak: 'break-word',
+                    boxShadow: '0 8px 32px 0 rgba(80,80,120,0.25), 0 1.5px 8px 0 rgba(80,80,120,0.10)',
+                    zIndex: 9999,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '4px 0',
+                    marginBottom: 8,
                   }}
                 >
-                  {child.label}
-                </button>
-              ))}
+                  {item.children && item.children.map(child => (
+                    <button
+                      key={child.label}
+                      className="dropdown-item"
+                      onClick={() => {
+                        setReportOpen(false);
+                        if (onNavigate && child.link) onNavigate(child.link);
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#212529',
+                        fontSize: 15,
+                        padding: '8px 20px',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        borderRadius: 0,
+                        margin: 0,
+                        transition: 'background 0.2s',
+                        width: '100%',
+                        textDecoration: 'none',
+                      }}
+                      onMouseOver={e => (e.currentTarget.style.background = '#f8f9fa')}
+                      onMouseOut={e => (e.currentTarget.style.background = 'none')}
+                    >
+                      {child.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
+          ) : (
+            <button
+              onClick={() => {
+                if (onNavigate && item.link) onNavigate(item.link);
+              }}
+              style={{
+                width: '100%',
+                background: 'none',
+                border: 'none',
+                color: '#4f46e5',
+                fontWeight: 600,
+                fontSize: 14,
+                padding: '14px 0 8px 0',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+                position: 'relative',
+                lineHeight: 1.1,
+              }}
+            >
+              <span style={{ fontSize: 24, marginBottom: 2 }}>{item.icon}</span>
+              <span style={{ fontSize: 12, wordBreak: 'break-word', textAlign: 'center' }}>{item.label}</span>
+            </button>
           )}
         </div>
       ))}
+      {/* Add Bootstrap-like dropright styles */}
+      <style>{`
+        .btn.btn-secondary.dropdown-toggle {
+          user-select: none;
+        }
+        .btn.btn-secondary.dropdown-toggle:after {
+          display: none;
+        }
+        .dropdown-menu {
+          font-size: 1rem;
+        }
+        .dropdown-item:active {
+          background: #e9ecef !important;
+        }
+        .dropdown-menu.show {
+          display: flex;
+        }
+      `}</style>
     </nav>
   );
 }

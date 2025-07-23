@@ -249,25 +249,27 @@ function Home() {
             </div>
           </div>
           {/* DataTable Card */}
-          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ flex: 1, minHeight: 0, marginTop: 0, marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'stretch' }}>
+          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ flex: 1, minHeight: 0, marginTop: 4, marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'stretch', height: '100%', borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 4 }}>
             {/* Animated background elements */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl animate-pulse"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 rounded-full blur-2xl animate-pulse delay-1000"></div>
             </div>
-            <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Fund Data</h2>
+            <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 0, marginTop: 0 }}>
+              <div className="flex items-center justify-between" style={{ marginBottom: 0 }}>
+                <h2 className="font-semibold text-gray-900" style={{ fontSize: 17, padding: '2px 0 2px 0', margin: 0 }}>Fund Data</h2>
                 <div className="flex items-center space-x-2">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800">
                     2 Records
                   </span>
                 </div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <DataTable />
+              <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, height: '100%' }}>
+                <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+                  <DataTable />
+                </div>
               </div>
-              <span>Showing 2 of 2 results</span>
+              <span style={{ fontSize: 12, marginTop: 4 }}>Showing 2 of 2 results</span>
               <div className="flex items-center space-x-2">
                 <button
                   className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"

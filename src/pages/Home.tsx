@@ -135,14 +135,14 @@ function Home() {
                 <span className="dashboard-price-icon dashboard-price-icon-creation">💰</span>
                 <div>
                   <div className="dashboard-price-label">Creation Price</div>
-                  <div className="dashboard-price-value">${creationDisplay.toFixed(2)}</div>
+                  <div className="dashboard-price-value">LKR {creationDisplay.toFixed(2)}</div>
                 </div>
               </div>
               <div className="dashboard-price-row">
                 <span className="dashboard-price-icon dashboard-price-icon-redeem">🔄</span>
                 <div>
                   <div className="dashboard-price-label">Redeem Price</div>
-                  <div className="dashboard-price-value">${redeemDisplay.toFixed(2)}</div>
+                  <div className="dashboard-price-value">LKR {redeemDisplay.toFixed(2)}</div>
                 </div>
               </div>
             </div>

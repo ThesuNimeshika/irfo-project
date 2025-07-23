@@ -23,6 +23,7 @@ const navItems = [
 function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
   const [reportOpen, setReportOpen] = useState(false);
   const [activeLabel, setActiveLabel] = useState('');
+  const [reportHovered, setReportHovered] = useState(false);
   const reportBtnRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -74,6 +75,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                   setReportOpen(v => !v);
                   setActiveLabel('Report');
                 }}
+                onMouseEnter={() => setReportHovered(true)}
+                onMouseLeave={() => setReportHovered(false)}
                 style={{
                   width: '90%',
                   margin: '8px 0',
@@ -98,6 +101,25 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                 </span>
                 <span style={{ marginLeft: 8, fontSize: 14 }}>{reportOpen ? '▲' : '▼'}</span>
               </button>
+              {reportHovered && !reportOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: '-32px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: '#222',
+                  color: '#fff',
+                  padding: '4px 12px',
+                  borderRadius: 6,
+                  fontSize: 13,
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 2px 8px 0 rgba(80,80,120,0.10)',
+                  zIndex: 3000,
+                  pointerEvents: 'none',
+                }}>
+                  Click to view more
+                </div>
+              )}
               {reportOpen && (
                 <div
                   className="dropdown-menu show"

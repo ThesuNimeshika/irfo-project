@@ -35,7 +35,7 @@
   flex-direction: row;
   align-items: stretch;
   justify-content: space-between;
-  gap: 0;
+  gap: 0 !important;
   padding: 2rem 1.2rem;
   box-sizing: border-box;
   min-height: 520px;
@@ -58,8 +58,9 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  border-right: 1px solid #eee;
-  padding-right: 18px;
+  border-right: none;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
 }
 .dashboard-price-row {
   display: flex;
@@ -104,7 +105,7 @@
   flex-direction: row;
   align-items: stretch;
   justify-content: center;
-  gap: 0;
+  gap: 0 !important;
 }
 .dashboard-pie-legend {
   flex: 1;
@@ -198,8 +199,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-left: 18px;
-  border-left: 1px solid #eee;
+  padding-left: 0 !important;
+  border-left: none !important;
 }
 .dashboard-date-label {
   font-size: 15px;

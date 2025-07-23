@@ -251,7 +251,10 @@
     opacity: 1;
   }
 }
-
+/* Add to App.css or relevant CSS file */
+.dashboard-table-section {
+  padding: 14px 0;
+}
 .magical-bg > * {
   position: relative;
   z-index: 1;

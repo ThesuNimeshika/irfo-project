@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import { useEffect, useState, useRef } from 'react';
 import '../App.css';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-
+import DataTable from "../components/DataTable"
 type PieEntry = { name: string; value: number; color: string; units: number };
 
 const defaultPieData: PieEntry[] = [
@@ -98,136 +98,175 @@ function Home() {
       <div className="navbar-fixed-wrapper">
         <Navbar />
       </div>
-      {/* Mobile menu icon and sidebar removed for mobile view */}
-      <div className="home-main-layout" style={{ marginTop: 0, paddingTop: 0 }}>
+      <div className="home-main-layout" style={{ marginTop: 64, paddingTop: 0, display: 'flex', flexDirection: 'row', minHeight: 'calc(100vh - 72px)' }}>
         {/* Sidebar left-aligned, fixed width (120px) on desktop only */}
         {!isMobile && (
           <div className="home-sidebar-container">
             <Sidebar />
           </div>
         )}
-        {/* Unified magical layout card */}
-        <div className="home-card magical-bg animated-bg dashboard-main-card">
-          {/* Creation/Redeem section */}
-          <div className="dashboard-price-section">
-            <div className="dashboard-price-row">
-              <span className="dashboard-price-icon dashboard-price-icon-creation">💰</span>
-              <div>
-                <div className="dashboard-price-label">Creation Price</div>
-                <div className="dashboard-price-value">${creationDisplay.toFixed(2)}</div>
-              </div>
-            </div>
-            <div className="dashboard-price-row">
-              <span className="dashboard-price-icon dashboard-price-icon-redeem">🔄</span>
-              <div>
-                <div className="dashboard-price-label">Redeem Price</div>
-                <div className="dashboard-price-value">${redeemDisplay.toFixed(2)}</div>
-              </div>
-            </div>
-          </div>
-          {/* Pie chart section */}
-          <div className="dashboard-pie-section">
-            {/* Legend left */}
-            <div className="dashboard-pie-legend">
-              {pieData.map((entry) => (
-                <div key={entry.name} className="dashboard-pie-legend-row">
-                  <span className="dashboard-pie-legend-color" style={{ background: entry.color }}></span>
-                  <span className="dashboard-pie-legend-label">{entry.name}</span>
+        {/* Main content area: stack cards vertically */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px', padding: '0 24px', maxWidth: '1200px', margin: '0 auto' }}>
+          {/* Unified magical layout card */}
+          <div className="home-card magical-bg animated-bg dashboard-main-card">
+            {/* Creation/Redeem section */}
+            <div className="dashboard-price-section">
+              <div className="dashboard-price-row">
+                <span className="dashboard-price-icon dashboard-price-icon-creation">💰</span>
+                <div>
+                  <div className="dashboard-price-label">Creation Price</div>
+                  <div className="dashboard-price-value">${creationDisplay.toFixed(2)}</div>
                 </div>
-              ))}
+              </div>
+              <div className="dashboard-price-row">
+                <span className="dashboard-price-icon dashboard-price-icon-redeem">🔄</span>
+                <div>
+                  <div className="dashboard-price-label">Redeem Price</div>
+                  <div className="dashboard-price-value">${redeemDisplay.toFixed(2)}</div>
+                </div>
+              </div>
             </div>
-            {/* Pie chart center */}
-            <div className="dashboard-pie-chart">
-              <ResponsiveContainer width="100%" height={260}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={110}
-                    innerRadius={60}
-                    isAnimationActive={true}
-                    animationDuration={700}
-                    key={pieType}
-                    onMouseLeave={() => { setActiveIndex(null); }}
-                  >
-                    {pieData.map((entry, idx) => (
-                      <Cell
-                        key={entry.name}
-                        fill={entry.color}
-                        stroke={activeIndex === idx ? '#222' : undefined}
-                        strokeWidth={activeIndex === idx ? 2 : 1}
-                        className={activeIndex === idx ? 'pie-slice-pop' : ''}
-                        style={{ transition: 'filter 0.25s, transform 0.25s', cursor: 'pointer' }}
-                        onMouseEnter={() => {
-                          setActiveIndex(idx);
-                        }}
-                      />
-                    ))}
-                  </Pie>
-                  {/* Hide default tooltip, use magical popup instead */}
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const entry = payload[0].payload;
-                        const total = pieData.reduce((sum, v) => sum + v.value, 0);
-                        const percent = total ? ((entry.value / total) * 100).toFixed(1) : 0;
-                        return (
-                          <div className="dashboard-pie-tooltip">
-                            <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{entry.name}</div>
-                            <div>Units: <b>{entry.units}</b></div>
-                            <div>Percent: <b>{percent}%</b></div>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
+            {/* Pie chart section */}
+            <div className="dashboard-pie-section">
+              {/* Legend left */}
+              <div className="dashboard-pie-legend">
+                {pieData.map((entry) => (
+                  <div key={entry.name} className="dashboard-pie-legend-row">
+                    <span className="dashboard-pie-legend-color" style={{ background: entry.color }}></span>
+                    <span className="dashboard-pie-legend-label">{entry.name}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Pie chart center */}
+              <div className="dashboard-pie-chart">
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={110}
+                      innerRadius={60}
+                      isAnimationActive={true}
+                      animationDuration={700}
+                      key={pieType}
+                      onMouseLeave={() => { setActiveIndex(null); }}
+                    >
+                      {pieData.map((entry, idx) => (
+                        <Cell
+                          key={entry.name}
+                          fill={entry.color}
+                          stroke={activeIndex === idx ? '#222' : undefined}
+                          strokeWidth={activeIndex === idx ? 2 : 1}
+                          className={activeIndex === idx ? 'pie-slice-pop' : ''}
+                          style={{ transition: 'filter 0.25s, transform 0.25s', cursor: 'pointer' }}
+                          onMouseEnter={() => {
+                            setActiveIndex(idx);
+                          }}
+                        />
+                      ))}
+                    </Pie>
+                    {/* Hide default tooltip, use magical popup instead */}
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const entry = payload[0].payload;
+                          const total = pieData.reduce((sum, v) => sum + v.value, 0);
+                          const percent = total ? ((entry.value / total) * 100).toFixed(1) : 0;
+                          return (
+                            <div className="dashboard-pie-tooltip">
+                              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{entry.name}</div>
+                              <div>Units: <b>{entry.units}</b></div>
+                              <div>Percent: <b>{percent}%</b></div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              {/* Radio buttons for pie type selection */}
+              <div className="dashboard-pie-checkboxes dashboard-pie-checkboxes-vertical" style={{ alignItems: 'flex-start' }}>
+                <label className="dashboard-pie-checkbox-label">
+                  <input
+                    type="radio"
+                    name="pieType"
+                    checked={pieType === 'unit'}
+                    onChange={() => setPieType('unit')}
+                    style={{ accentColor: '#4f46e5' }}
                   />
-                </PieChart>
-              </ResponsiveContainer>
+                  Unit wise
+                </label>
+                <label className="dashboard-pie-checkbox-label">
+                  <input
+                    type="radio"
+                    name="pieType"
+                    checked={pieType === 'market'}
+                    onChange={() => setPieType('market')}
+                    style={{ accentColor: '#d946ef' }}
+                  />
+                  Market price wise
+                </label>
+              </div>
             </div>
-            {/* Radio buttons for pie type selection */}
-            <div className="dashboard-pie-checkboxes dashboard-pie-checkboxes-vertical" style={{ alignItems: 'flex-start' }}>
-              <label className="dashboard-pie-checkbox-label">
-                <input
-                  type="radio"
-                  name="pieType"
-                  checked={pieType === 'unit'}
-                  onChange={() => setPieType('unit')}
-                  style={{ accentColor: '#4f46e5' }}
-                />
-                Unit wise
-              </label>
-              <label className="dashboard-pie-checkbox-label">
-                <input
-                  type="radio"
-                  name="pieType"
-                  checked={pieType === 'market'}
-                  onChange={() => setPieType('market')}
-                  style={{ accentColor: '#d946ef' }}
-                />
-                Market price wise
-              </label>
+            {/* Date section */}
+            <div className="dashboard-date-section">
+              <div className="dashboard-date-label">Adjust Date</div>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={e => setSelectedDate(e.target.value)}
+                className="dashboard-date-input"
+                max={todayStr}
+              />
+              <div className="dashboard-date-value">
+                {new Date(selectedDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+              </div>
             </div>
           </div>
-          {/* Date section */}
-          <div className="dashboard-date-section">
-            <div className="dashboard-date-label">Adjust Date</div>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={e => setSelectedDate(e.target.value)}
-              className="dashboard-date-input"
-              max={todayStr}
-            />
-            <div className="dashboard-date-value">
-              {new Date(selectedDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+          {/* DataTable Card */}
+          <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-2xl shadow-lg border border-gray-200 p-6 relative overflow-hidden">
+            {/* Animated background elements */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 rounded-full blur-2xl animate-pulse delay-1000"></div>
+            </div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">Fund Data</h2>
+                <div className="flex items-center space-x-2">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    2 Records
+                  </span>
+                </div>
+              </div>
+              <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden">
+                <DataTable />
+              </div>
+              <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
+                <span>Showing 2 of 2 results</span>
+                <div className="flex items-center space-x-2">
+                  <button
+                    className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                    disabled
+                  >
+                    Previous
+                  </button>
+                  <button
+                    className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                    disabled
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        {/* Animations and Responsive Styles moved to App.css */}
       </div>
     </>
   );

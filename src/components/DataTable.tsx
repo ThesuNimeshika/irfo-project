@@ -107,14 +107,8 @@ export default function DataTable() {
     columnHelper.accessor("confirm", {
       header: "Confirm",
       cell: (info) => (
-        <span
-          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-            info.getValue() === "Yes"
-              ? "bg-green-100 text-green-800"
-              : "bg-gray-100 text-gray-800"
-          }`}
-        >
-          {info.getValue()}
+        <span className="text-purple-700 font-bold">
+          {info.getValue() === "Yes" ? 1 : 0}
         </span>
       ),
     }),

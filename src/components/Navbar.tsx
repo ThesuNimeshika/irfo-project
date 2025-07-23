@@ -1,4 +1,6 @@
 import logo from '../assets/img/logo.jpg';
+import React from 'react'; // Added missing import for React
+import { ImExit } from 'react-icons/im';
 
 const navbarStyle: React.CSSProperties = {
   width: '100%',
@@ -62,6 +64,21 @@ if (typeof window !== 'undefined') {
 }
 
 export default function Navbar() {
+  // Simulate user info
+  const userName = 'User Name';
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
+  const [hovered, setHovered] = React.useState(false);
+  const iconRef = React.useRef<HTMLDivElement>(null);
+  // Close dropdown on outside click
+  React.useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (dropdownOpen && iconRef.current && !iconRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [dropdownOpen]);
   return (
     <>
       <style>{`
@@ -109,6 +126,96 @@ export default function Navbar() {
         <span style={titleStyle}>
           Investor Registration and Service Solution for Fund Operation
         </span>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginLeft: 16, paddingRight: 24 }} ref={iconRef}>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              marginLeft: 16,
+              display: 'flex',
+              alignItems: 'center',
+              outline: 'none',
+              position: 'relative',
+            }}
+            aria-label="User menu"
+            onClick={() => setDropdownOpen(v => !v)}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+          >
+            {/* User Icon SVG */}
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ borderRadius: '50%', background: '#e0e7ff', padding: 5 }}>
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-2.5 3.5-4 8-4s8 1.5 8 4" />
+            </svg>
+          </button>
+          {/* Tooltip */}
+          {hovered && (
+            <div style={{
+              position: 'absolute',
+              top: 44,
+              right: 0,
+              background: '#fff',
+              color: '#222',
+              border: '1px solid #eee',
+              borderRadius: 6,
+              padding: '4px 12px',
+              fontSize: 14,
+              boxShadow: '0 2px 8px 0 rgba(80,80,120,0.10)',
+              whiteSpace: 'nowrap',
+              zIndex: 3001,
+            }}>
+              {userName}
+            </div>
+          )}
+          {/* Dropdown */}
+          {dropdownOpen && (
+            <div style={{
+              position: 'fixed',
+              top: 72,
+              right: 32,
+              background: '#fff',
+              border: '1px solid #eee',
+              borderRadius: 8,
+              boxShadow: '0 4px 16px 0 rgba(80,80,120,0.13)',
+              minWidth: 120,
+              zIndex: 3002,
+              padding: '10px 0',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'stretch',
+              marginTop: 4,
+            }}>
+              <button
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#d946ef',
+                  fontWeight: 700,
+                  fontSize: 15,
+                  padding: '8px 18px',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  borderRadius: 6,
+                  transition: 'background 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => {
+                  setDropdownOpen(false);
+                  // Add logout logic here
+                  alert('Logged out!');
+                }}
+                onMouseOver={e => (e.currentTarget.style.background = '#f9e6ff')}
+                onMouseOut={e => (e.currentTarget.style.background = 'none')}
+              >
+                <span>Logout</span>
+                <ImExit style={{ color: '#ef4444', marginLeft: 8, fontSize: 18, verticalAlign: 'middle' }} />
+              </button>
+            </div>
+          )}
+        </div>
       </nav>
     </>
   );
@@ -127,8 +234,8 @@ const footerStyle: React.CSSProperties = {
   padding: '0 1.5rem',
   background: 'linear-gradient(90deg, #fff 0px, rgba(255,255,255,0.85) 32px, rgba(255,255,255,0.0) 64px, #e0e7ff 80px, #a5b4fc 40%, #f0abfc 70%, #a5b4fc 100%)',
   boxShadow: '0 -2px 8px 0 rgba(0,0,0,0.07)',
-  minHeight: '48px',
-  height: '48px',
+  minHeight: '60px',
+  height: '59px',
   boxSizing: 'border-box',
   gap: 0,
   overflow: 'hidden',

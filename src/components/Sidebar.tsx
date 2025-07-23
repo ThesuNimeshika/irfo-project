@@ -22,6 +22,7 @@ const navItems = [
 
 function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
   const [reportOpen, setReportOpen] = useState(false);
+  const [activeLabel, setActiveLabel] = useState('');
   const reportBtnRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -64,28 +65,31 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
             <div className="btn-group dropup" style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center' }}>
               <button
                 type="button"
-                className={`btn btn-secondary dropdown-toggle${reportOpen ? ' show' : ''}`}
+                className={`sidebar-report-btn${reportOpen ? ' active' : ''}`}
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded={reportOpen}
                 ref={reportBtnRef}
-                onClick={() => setReportOpen(v => !v)}
+                onClick={() => {
+                  setReportOpen(v => !v);
+                  setActiveLabel('Report');
+                }}
                 style={{
                   width: '90%',
                   margin: '8px 0',
-                  background: '#6c757d',
-                  color: '#fff',
-                  border: '1px solid #6c757d',
-                  borderRadius: 4,
-                  fontWeight: 600,
+                  background: reportOpen || activeLabel === 'Report' ? '#e0e7ff' : 'none',
+                  color: '#4f46e5',
+                  border: reportOpen || activeLabel === 'Report' ? '2px solid #4f46e5' : '1px solid transparent',
+                  borderRadius: 6,
+                  fontWeight: 700,
                   fontSize: 15,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   cursor: 'pointer',
                   padding: '8px 16px',
-                  boxShadow: reportOpen ? '0 0 0 0.2rem rgba(0,123,255,.25)' : undefined,
-                  transition: 'box-shadow 0.2s',
+                  boxShadow: reportOpen || activeLabel === 'Report' ? '0 2px 12px 0 rgba(79,70,229,0.10)' : undefined,
+                  transition: 'box-shadow 0.2s, background 0.2s, border 0.2s',
                 }}
               >
                 <span style={{ display: 'flex', alignItems: 'center' }}>
@@ -122,6 +126,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                       className="dropdown-item"
                       onClick={() => {
                         setReportOpen(false);
+                        setActiveLabel('Report');
                         if (onNavigate && child.link) onNavigate(child.link);
                       }}
                       style={{
@@ -150,21 +155,24 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           ) : (
             <button
               onClick={() => {
+                setActiveLabel(item.label);
                 if (onNavigate && item.link) onNavigate(item.link);
               }}
+              className={`sidebar-btn${activeLabel === item.label ? ' active' : ''}`}
               style={{
                 width: '100%',
-                background: 'none',
-                border: 'none',
+                background: activeLabel === item.label ? '#e0e7ff' : 'none',
+                border: activeLabel === item.label ? '2px solid #4f46e5' : '1px solid transparent',
                 color: '#4f46e5',
-                fontWeight: 600,
+                fontWeight: 700,
                 fontSize: 14,
                 padding: '14px 0 8px 0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 cursor: 'pointer',
-                transition: 'background 0.2s',
+                borderRadius: 6,
+                transition: 'background 0.2s, border 0.2s',
                 position: 'relative',
                 lineHeight: 1.1,
               }}
@@ -191,6 +199,26 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
         }
         .dropdown-menu.show {
           display: flex;
+        }
+        .sidebar-report-btn {
+          background: none;
+          color: #4f46e5;
+          border: 1px solid transparent;
+          border-radius: 6px;
+          font-weight: 700;
+          font-size: 15px;
+          transition: box-shadow 0.2s, background 0.2s, border 0.2s;
+        }
+        .sidebar-report-btn.active {
+          background: #e0e7ff !important;
+          color: #4f46e5 !important;
+          border: 2px solid #4f46e5 !important;
+          box-shadow: 0 2px 12px 0 rgba(79,70,229,0.10);
+        }
+        .sidebar-btn.active {
+          background: #e0e7ff !important;
+          color: #4f46e5 !important;
+          border: 2px solid #4f46e5 !important;
         }
       `}</style>
     </nav>

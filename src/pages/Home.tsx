@@ -27,6 +27,7 @@ function Home() {
   const redeemAnimRef = useRef(0);
   const [creationDisplay, setCreationDisplay] = useState(0);
   const [redeemDisplay, setRedeemDisplay] = useState(0);
+  const [tableTotalCount, setTableTotalCount] = useState(0);
 
   // Simulate backend fetch (replace with real API call)
   async function fetchPieData(_date: string, type: 'unit' | 'market') {
@@ -229,7 +230,7 @@ function Home() {
                     onChange={() => setPieType('market')}
                     style={{ accentColor: '#d946ef' }}
                   />
-                  Market price wise
+                  Fund Size
                 </label>
               </div>
             </div>
@@ -259,14 +260,14 @@ function Home() {
               <div className="flex items-center justify-between" style={{ marginBottom: 0 }}>
                 <h2 className="font-semibold text-gray-900" style={{ fontSize: 17, padding: '2px 0 2px 0', margin: 0 }}>Fund Data</h2>
                 <div className="flex items-center space-x-2">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800">
-                    2 Records
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800" style={{ fontSize: 12 }}>
+                    {tableTotalCount} Records
                   </span>
                 </div>
               </div>
               <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, height: '100%' }}>
                 <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-                  <DataTable />
+                  <DataTable onTotalCountChange={setTableTotalCount} />
                 </div>
               </div>
               <span style={{ fontSize: 12, marginTop: 4 }}>Showing 2 of 2 results</span>

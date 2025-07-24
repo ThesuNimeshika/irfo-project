@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import {
   useReactTable,
   getCoreRowModel,
@@ -80,7 +80,7 @@ const sampleData: FundData[] = [
   },
 ]
 
-export default function DataTable() {
+export default function DataTable({ onTotalCountChange, onVisibleCountChange }: { onTotalCountChange?: (count: number) => void, onVisibleCountChange?: (count: number) => void } = {}) {
   const [pageSize, setPageSize] = useState(3);
   const [search, setSearch] = useState("");
   const columns = useMemo(() => [
@@ -116,32 +116,10 @@ export default function DataTable() {
         <span className="font-medium text-blue-600">LKR {info.getValue().toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
       ),
     }),
-    columnHelper.accessor("status", {
-      header: "Status",
-      cell: (info) => (
-        <span
-          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-            info.getValue() === "Active"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }`}
-        >
-          {info.getValue()}
-        </span>
-      ),
-    }),
     columnHelper.accessor("pending", {
       header: "Pending",
       cell: (info) => (
-        <span className="text-orange-600 font-medium">
-          {info.getValue()}
-        </span>
-      ),
-    }),
-    columnHelper.accessor("approved", {
-      header: "Approved",
-      cell: (info) => (
-        <span className="text-blue-600 font-medium">
+        <span style={{ color: '#eab308', fontWeight: 600 }}>
           {info.getValue()}
         </span>
       ),
@@ -149,8 +127,16 @@ export default function DataTable() {
     columnHelper.accessor("confirm", {
       header: "Confirm",
       cell: (info) => (
-        <span className="text-purple-700 font-bold">
+        <span style={{ color: '#2563eb', fontWeight: 700 }}>
           {info.getValue() === "Yes" ? 1 : 0}
+        </span>
+      ),
+    }),
+    columnHelper.accessor("approved", {
+      header: "Approved",
+      cell: (info) => (
+        <span style={{ color: '#22c55e', fontWeight: 600 }}>
+          {info.getValue()}
         </span>
       ),
     }),
@@ -170,6 +156,11 @@ export default function DataTable() {
   const paginatedData = useMemo(() => {
     return filteredData.slice(0, pageSize);
   }, [filteredData, pageSize]);
+
+  useEffect(() => {
+    if (onTotalCountChange) onTotalCountChange(filteredData.length);
+    if (onVisibleCountChange) onVisibleCountChange(paginatedData.length);
+  }, [filteredData.length, paginatedData.length, onTotalCountChange, onVisibleCountChange]);
 
   const table = useReactTable({
     data: paginatedData,

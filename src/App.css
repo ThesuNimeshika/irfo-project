@@ -1,3 +1,28 @@
+/* Minimal CSS Reset for cross-browser consistency */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* Set box-sizing globally */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 @keyframes magicalPop {
   0% { opacity: 0; transform: scale(0.92) translateY(-50%); box-shadow: 0 0 0 0 #a5b4fc00; }
   80% { opacity: 1; transform: scale(1.04) translateY(-50%); box-shadow: 0 8px 32px 0 #a5b4fc55, 0 0 0 2px #a5b4fc; }
@@ -425,8 +450,9 @@ html, body, #root {
 }
 @media (max-width: 900px) {
   .home-main-layout {
-    flex-direction: column;
-    padding-top: 40px;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: unset !important;
   }
   .home-sidebar-container {
     display: none !important;
@@ -541,4 +567,81 @@ html, body, #root {
 
 .read-the-docs {
   color: #888;
+}
+
+/* Responsive styles for Home page */
+@media (max-width: 900px) {
+  .home-main-layout {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: unset !important;
+  }
+  .home-sidebar-container {
+    display: none !important;
+  }
+  .dashboard-main-card,
+  .dashboard-table-section {
+    margin: 0 8px !important;
+    border-radius: 12px !important;
+  }
+  .dashboard-pie-section {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .dashboard-pie-legend,
+  .dashboard-pie-checkboxes {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    margin-bottom: 8px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-main-card,
+  .dashboard-table-section {
+    padding: 8px !important;
+    font-size: 14px !important;
+  }
+  .dashboard-price-label,
+  .dashboard-price-value {
+    font-size: 13px !important;
+  }
+  .dashboard-date-section {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* DataTable header: capitalize first letter of each word */
+thead th {
+  text-transform: capitalize !important;
+  padding: 8px 12px !important;
+  text-align: left !important;
+}
+/* DataTable body: restore default text-transform, improve alignment */
+tbody td {
+  text-transform: none !important;
+  padding: 8px 12px !important;
+  text-align: left !important;
+}
+/* Remove card width restriction, only limit table width */
+.dashboard-table-section {
+  /* Restore original card width and margins */
+}
+/* DataTable: reduce row height and restrict table width */
+table.min-w-full {
+  width: 96%;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+thead th, tbody td {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  font-size: 14px !important;
+}
+/* Reduce font size for table if needed */
+.dashboard-table-section table {
+  font-size: 14px !important;
 }

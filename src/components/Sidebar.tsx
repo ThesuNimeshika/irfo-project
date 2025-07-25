@@ -1,10 +1,12 @@
 
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const sidebarWidth = 180; // px, increased for better visibility
 
 const navItems = [
-  { label: 'Setup', icon: '⚙️', link: '/setup' },
+  { label: 'Dashboard', icon: '🏠', link: '/' },
+  { label: 'Setup', icon: '⚙️', link: '/Setup' },
   { label: 'Registration', icon: '📝', link: '/registration' },
   { label: 'Unit Operations', icon: '🔢', link: '/unit-operations' },
   { label: 'Approval', icon: '✅', link: '/approval' },
@@ -248,13 +250,14 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
 }
 
 export default function Sidebar() {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   // Responsive: show sidebar on desktop, show button on mobile/tablet
   return (
     <>
       {/* Desktop sidebar */}
       <div className="sidebar-desktop">
-        <SidebarNav />
+        <SidebarNav onNavigate={(link) => navigate(link)} />
       </div>
       {/* Mobile/Tablet floating button and drawer */}
       <button
@@ -315,7 +318,7 @@ export default function Sidebar() {
           >
             ×
           </button>
-          <SidebarNav onNavigate={() => setOpen(false)} />
+          <SidebarNav onNavigate={(link) => { navigate(link); setOpen(false); }} />
         </div>
       )}
       <style>{`

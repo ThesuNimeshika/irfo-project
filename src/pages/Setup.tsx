@@ -33,7 +33,7 @@ const moduleData = [
   { title: 'Join Sale Agent', icon: '🤝' },
   { title: 'Complience MSG Setup', icon: '💬' },
   { title: 'Product type', icon: '📦' },
-  { title: 'Titles', icon: '🔔' },
+  { title: 'Title', icon: '🔔' },
 ];
 
 const modules = moduleData.map(m => ({
@@ -57,46 +57,18 @@ function Setup() {
         {/* Main content area */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0', height: '100%', overflow: 'auto', padding: 8 }}>
           <div className="setup-main-card magical-bg animated-bg" style={{ borderRadius: 16, background: 'rgba(255,255,255,0.85)', boxShadow: '0 2px 16px #0001', padding: 24, minHeight: 0, marginBottom: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <div className="setup-modules-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12, width: '100%', maxWidth: 1200, marginLeft: 32, marginRight: 0 }}>
+            <div className="setup-modules-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, width: '100%', maxWidth: 1200, marginLeft: 32, marginRight: 0 }}>
               {modules.map((mod, idx) => (
                 <div
                   key={idx}
                   className="setup-module-card"
-                  style={{
-                    background: '#f8fafc',
-                    borderRadius: 16,
-                    boxShadow: '0 4px 24px 0 rgba(79,70,229,0.13), 0 1.5px 8px 0 rgba(216,70,239,0.10)',
-                    margin: '8px',
-                    position: 'relative',
-                    overflow: 'visible',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: 90,
-                    fontSize: 13,
-                    cursor: 'pointer',
-                    transition: 'box-shadow 0.2s, transform 0.2s',
-                    outline: 'none',
-                  }}
+                  style={{ background: '#f8fafc', borderRadius: 10, boxShadow: '0 1px 4px #0001', padding: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 70, fontSize: 13, cursor: 'pointer', transition: 'box-shadow 0.2s', outline: 'none' }}
                   tabIndex={0}
                   onClick={() => setModalIdx(idx)}
                   onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModalIdx(idx); }}
                 >
-                  {/* Blurred colored margin effect */}
-                  <div style={{
-                    position: 'absolute',
-                    inset: 0,
-                    zIndex: 0,
-                    borderRadius: 16,
-                    boxShadow: '0 0 24px 8px #a5b4fc44, 0 0 32px 12px #f0abfc33',
-                    filter: 'blur(8px)',
-                    pointerEvents: 'none',
-                  }} />
-                  <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                    <div style={{ fontSize: 28, marginBottom: 6 }}>{mod.icon}</div>
-                    <div style={{ fontWeight: 500, fontSize: 15, textAlign: 'center' }}>{mod.title}</div>
-                  </div>
+                  <div style={{ fontSize: 24, marginBottom: 4 }}>{mod.icon}</div>
+                  <div style={{ fontWeight: 500, fontSize: 14, textAlign: 'center' }}>{mod.title}</div>
                 </div>
               ))}
             </div>

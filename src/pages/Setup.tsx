@@ -2,6 +2,7 @@ import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 const moduleData = [
   { title: 'Bank', icon: '🏦' },
@@ -36,6 +37,145 @@ const moduleData = [
   { title: 'Title', icon: '🔔' },
 ];
 
+// Sample data for different table views
+const tableData = {
+  Bank: [
+    { code: '0', description: 'Bank Muscat', address: 'CJW5+9HF, Sohar, Oman' },
+    { code: '1', description: 'Zurcher kantonalbank', address: 'Switzerland' },
+    { code: '31', description: 'Federal credit union in New York', address: '2 United Nations Plaza, New York, NY 10017' },
+    { code: '111', description: 'HSBC Indonesia', address: 'Jakarta, Indonesia' },
+    { code: '4806', description: 'HSBC - De Voeux Branch', address: 'Des Voeux Road Central, Hong Kong' },
+    { code: '40111', description: 'HSBC - Hong Kong', address: "Queen's Road Central, Hong Kong" },
+    { code: '83268', description: 'National Australia Bank', address: 'Melbourne, Australia' },
+    { code: '210000', description: 'Chase Bank - Park Avenue South', address: 'New York' },
+    { code: '301830', description: 'Lloyds Bank Plc - Haywards Heath', address: '99-101 South Road - Post / ZIP Code : Rh16 4nd' }
+  ],
+  'Transaction Type': [
+    { code: 'T001', description: 'Purchase', type: 'Buy' },
+    { code: 'T002', description: 'Sale', type: 'Sell' },
+    { code: 'T003', description: 'Dividend', type: 'Income' },
+    { code: 'T004', description: 'Transfer', type: 'Move' }
+  ],
+  'System Calendar': [
+    { date: '2024-01-01', description: 'New Year', type: 'Holiday' },
+    { date: '2024-01-15', description: 'Working Day', type: 'Business' },
+    { date: '2024-02-14', description: 'Valentine Day', type: 'Special' }
+  ],
+  Trustees: [
+    { code: 'TR001', name: 'John Smith', company: 'Trust Corp Ltd', contact: '+1-555-0123' },
+    { code: 'TR002', name: 'Sarah Johnson', company: 'Fiduciary Services', contact: '+1-555-0456' }
+  ],
+  Custodian: [
+    { code: 'CU001', name: 'Global Custody Bank', address: '123 Wall Street, NY', swift: 'GCBNYUS' },
+    { code: 'CU002', name: 'Euro Custody Ltd', address: '456 Fleet Street, London', swift: 'ECLGB2L' }
+  ],
+  'Postal Area': [
+    { code: 'PA001', area: 'Downtown', city: 'New York', zip: '10001' },
+    { code: 'PA002', area: 'Midtown', city: 'New York', zip: '10016' },
+    { code: 'PA003', area: 'Uptown', city: 'New York', zip: '10025' }
+  ],
+  'Dividend Type': [
+    { code: 'DIV001', type: 'Cash Dividend', frequency: 'Quarterly' },
+    { code: 'DIV002', type: 'Stock Dividend', frequency: 'Annually' },
+    { code: 'DIV003', type: 'Special Dividend', frequency: 'One-time' }
+  ],
+  Funds: [
+    { code: 'F001', name: 'Growth Fund', type: 'Equity', nav: '15.67' },
+    { code: 'F002', name: 'Income Fund', type: 'Bond', nav: '12.34' },
+    { code: 'F003', name: 'Balanced Fund', type: 'Mixed', nav: '18.92' }
+  ],
+  Company: [
+    { code: 'C001', name: 'ABC Corporation', sector: 'Technology', employees: '5000' },
+    { code: 'C002', name: 'XYZ Industries', sector: 'Manufacturing', employees: '3000' }
+  ],
+  'Promotional Activity': [
+    { code: 'PA001', activity: 'Summer Sale', period: 'Jun-Aug 2024', discount: '20%' },
+    { code: 'PA002', activity: 'Holiday Special', period: 'Dec 2024', discount: '15%' }
+  ],
+  'Other charges': [
+    { code: 'OC001', description: 'Processing Fee', amount: '25.00', type: 'Fixed' },
+    { code: 'OC002', description: 'Maintenance Fee', amount: '50.00', type: 'Annual' }
+  ],
+  'Unit Fee Codes': [
+    { code: 'UFC001', description: 'Entry Fee', rate: '2.5%', type: 'Percentage' },
+    { code: 'UFC002', description: 'Exit Fee', rate: '1.5%', type: 'Percentage' }
+  ],
+  'Agency Type': [
+    { code: 'AT001', type: 'Primary Agent', commission: '3.0%' },
+    { code: 'AT002', type: 'Sub Agent', commission: '1.5%' }
+  ],
+  Agency: [
+    { code: 'AG001', name: 'Main Street Agency', location: 'Downtown', status: 'Active' },
+    { code: 'AG002', name: 'Central Agency', location: 'Midtown', status: 'Active' }
+  ],
+  'Sub Agency': [
+    { code: 'SA001', name: 'Downtown Branch', parent: 'Main Street Agency', manager: 'John Doe' },
+    { code: 'SA002', name: 'Uptown Branch', parent: 'Central Agency', manager: 'Jane Smith' }
+  ],
+  Agents: [
+    { code: 'AGT001', name: 'John Smith', phone: '+1-555-0123', email: 'john@agency.com' },
+    { code: 'AGT002', name: 'Sarah Johnson', phone: '+1-555-0456', email: 'sarah@agency.com' }
+  ],
+  Territory: [
+    { code: 'T001', name: 'North Region', manager: 'Mike Wilson', area: 'Northern States' },
+    { code: 'T002', name: 'South Region', manager: 'Lisa Brown', area: 'Southern States' }
+  ],
+  'Commision Type': [
+    { code: 'CT001', type: 'Flat Rate', rate: '50.00', description: 'Fixed commission per transaction' },
+    { code: 'CT002', type: 'Percentage', rate: '2.5%', description: 'Percentage of transaction value' }
+  ],
+  'Commission Level': [
+    { code: 'CL001', level: 'Bronze', rate: '1.0%', minAmount: '1000' },
+    { code: 'CL002', level: 'Silver', rate: '1.5%', minAmount: '5000' },
+    { code: 'CL003', level: 'Gold', rate: '2.0%', minAmount: '10000' }
+  ],
+  'Agent commission Definitions': [
+    { code: 'ACD001', agent: 'John Smith', type: 'Flat Rate', amount: '25.00' },
+    { code: 'ACD002', agent: 'Sarah Johnson', type: 'Percentage', rate: '2.0%' }
+  ],
+  'Assign Agents to Commission Definition': [
+    { agent: 'John Smith', definition: 'ACD001', effectiveDate: '2024-01-01', status: 'Active' },
+    { agent: 'Sarah Johnson', definition: 'ACD002', effectiveDate: '2024-01-01', status: 'Active' }
+  ],
+  'Institution Category': [
+    { code: 'IC001', category: 'Bank', description: 'Financial Institutions' },
+    { code: 'IC002', category: 'Insurance', description: 'Insurance Companies' }
+  ],
+  'Documents Setup': [
+    { code: 'DS001', document: 'Application Form', required: 'Yes', format: 'PDF' },
+    { code: 'DS002', document: 'ID Proof', required: 'Yes', format: 'Image' }
+  ],
+  Institution: [
+    { code: 'INS001', name: 'First National Bank', type: 'Bank', status: 'Active' },
+    { code: 'INS002', name: 'Metro Insurance', type: 'Insurance', status: 'Active' }
+  ],
+  'Blocking Category': [
+    { code: 'BC001', category: 'Fraud', description: 'Suspicious activity detected' },
+    { code: 'BC002', category: 'Compliance', description: 'Regulatory requirement' }
+  ],
+  'Customer Zone': [
+    { code: 'CZ001', zone: 'Premium', criteria: 'High Value', benefits: 'VIP Services' },
+    { code: 'CZ002', zone: 'Standard', criteria: 'Regular', benefits: 'Standard Services' }
+  ],
+  'Join Sale Agent': [
+    { agent: 'John Smith', partner: 'Sarah Johnson', startDate: '2024-01-01', status: 'Active' },
+    { agent: 'Mike Wilson', partner: 'Lisa Brown', startDate: '2024-02-01', status: 'Active' }
+  ],
+  'Complience MSG Setup': [
+    { code: 'CMS001', message: 'Risk Warning', type: 'Mandatory', frequency: 'Every Transaction' },
+    { code: 'CMS002', message: 'Terms & Conditions', type: 'Required', frequency: 'First Time' }
+  ],
+  'Product type': [
+    { code: 'PT001', type: 'Equity Fund', risk: 'High', return: '8-12%' },
+    { code: 'PT002', type: 'Bond Fund', risk: 'Low', return: '4-6%' }
+  ],
+  Title: [
+    { code: 'T001', title: 'Mr.', gender: 'Male', formal: 'Yes' },
+    { code: 'T002', title: 'Ms.', gender: 'Female', formal: 'Yes' },
+    { code: 'T003', title: 'Dr.', gender: 'Any', formal: 'Yes' }
+  ]
+};
+
 const modules = moduleData.map(m => ({
   title: m.title,
   icon: m.icon,
@@ -45,6 +185,14 @@ const modules = moduleData.map(m => ({
 function Setup() {
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [formData, setFormData] = useState({
+    code: '',
+    description: '',
+    address: '',
+    district: '',
+    swiftCode: '',
+    branchNo: ''
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -56,6 +204,39 @@ function Setup() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    // Handle save logic here
+    console.log('Saving:', formData);
+    alert('Data saved successfully!');
+  };
+
+  const handleDelete = () => {
+    // Handle delete logic here
+    console.log('Deleting record');
+    alert('Record deleted successfully!');
+  };
+
+  const handlePrint = () => {
+    // Handle print logic here
+    console.log('Printing data');
+    window.print();
+  };
+
+  const getTableColumns = (title: string) => {
+    const data = tableData[title as keyof typeof tableData] || [];
+    if (data.length === 0) return [];
+    
+    return Object.keys(data[0]);
+  };
+
+  const getTableData = (title: string) => {
+    return tableData[title as keyof typeof tableData] || [];
+  };
 
   return (
     <>
@@ -156,53 +337,384 @@ function Setup() {
                 </div>
               ))}
             </div>
-            {/* Modal Popup */}
-            {modalIdx !== null && (
+            
+            {/* Comprehensive Modal */}
+            {modalIdx !== null && createPortal(
               <div style={{
                 position: 'fixed',
                 top: 0, left: 0, right: 0, bottom: 0,
-                background: 'rgba(0,0,0,0.25)',
-                zIndex: 9999,
+                background: 'rgba(0,0,0,0.5)',
+                zIndex: 99999999,
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 justifyContent: 'center',
                 padding: isMobile ? 16 : 32,
+                paddingTop: '20px',
+                isolation: 'isolate'
               }}
                 onClick={() => setModalIdx(null)}
               >
                 <div
                   style={{
-                    background: '#fff',
-                    borderRadius: 12,
+                    background: '#f5f5f5',
+                    borderRadius: '0 0 8px 8px',
                     boxShadow: '0 4px 32px #0003',
-                    padding: isMobile ? 20 : 32,
-                    minWidth: isMobile ? 280 : 320,
-                    maxWidth: '90vw',
-                    minHeight: 120,
+                    width: isMobile ? '95vw' : '80vw',
+                    height: isMobile ? '90vh' : '90vh',
                     position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    marginTop: '0px',
+                    zIndex: 99999999
                   }}
                   onClick={e => e.stopPropagation()}
                 >
-                  <button
-                    onClick={() => setModalIdx(null)}
-                    style={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 12,
-                      background: 'none',
-                      border: 'none',
-                      fontSize: 22,
-                      color: '#888',
-                      cursor: 'pointer',
-                    }}
-                    aria-label="Close"
-                  >
-                    ×
-                  </button>
-                  <div style={{ fontWeight: 600, fontSize: isMobile ? 18 : 20, marginBottom: 12 }}>{modules[modalIdx].icon} {modules[modalIdx].title}</div>
-                  <div style={{ fontSize: isMobile ? 14 : 15 }}>{modules[modalIdx].description}</div>
+                  {/* Header */}
+                  <div style={{
+                    background: 'linear-gradient(90deg, #4f46e5 0%, #d946ef 100%)',
+                    color: 'white',
+                    padding: '8px 16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
+                    minHeight: '40px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '18px' }}>{modules[modalIdx].icon}</span>
+                      <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{modules[modalIdx].title} Details</span>
+                    </div>
+                    <button
+                      onClick={() => setModalIdx(null)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        fontSize: '18px',
+                        color: 'white',
+                        cursor: 'pointer',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', overflow: 'hidden' }}>
+                    {/* Input Fields Section */}
+                    <div style={{ 
+                      background: 'white', 
+                      padding: '20px', 
+                      borderRadius: '8px', 
+                      marginBottom: '20px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    }}>
+                      <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', 
+                        gap: '16px' 
+                      }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Code
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.code}
+                            onChange={(e) => handleInputChange('code', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px'
+                            }}
+                            placeholder="Enter code"
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Description
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.description}
+                            onChange={(e) => handleInputChange('description', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px'
+                            }}
+                            placeholder="Enter description"
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Address
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.address}
+                            onChange={(e) => handleInputChange('address', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px'
+                            }}
+                            placeholder="Enter address"
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
+                            District
+                          </label>
+                          <select
+                            value={formData.district}
+                            onChange={(e) => handleInputChange('district', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px'
+                            }}
+                          >
+                            <option value="">Select district</option>
+                            <option value="north">North District</option>
+                            <option value="south">South District</option>
+                            <option value="east">East District</option>
+                            <option value="west">West District</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Swift Code
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.swiftCode}
+                            onChange={(e) => handleInputChange('swiftCode', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px',
+                              color: '#666'
+                            }}
+                            placeholder="Enter swift code"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Branch No
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.branchNo}
+                            onChange={(e) => handleInputChange('branchNo', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px',
+                              color: '#666'
+                            }}
+                            placeholder="Enter branch number"
+                            disabled
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '12px', 
+                      marginBottom: '20px',
+                      justifyContent: 'center'
+                    }}>
+                      <button
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '' })}
+                        style={{
+                          padding: '8px 16px',
+                          background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px'
+                        }}
+                      >
+                        New
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        style={{
+                          padding: '8px 16px',
+                          background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px'
+                        }}
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={handleDelete}
+                        style={{
+                          padding: '8px 16px',
+                          background: 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px'
+                        }}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        onClick={handlePrint}
+                        style={{
+                          padding: '8px 16px',
+                          background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px'
+                        }}
+                      >
+                        Print
+                      </button>
+                      <button
+                        onClick={() => setModalIdx(null)}
+                        style={{
+                          padding: '8px 16px',
+                          background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px'
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+
+                    {/* Data Table */}
+                    <div style={{ 
+                      flex: 1, 
+                      background: 'white', 
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}>
+                      <div style={{ 
+                        padding: '16px', 
+                        borderBottom: '1px solid #e5e7eb',
+                        background: '#f9fafb',
+                        flexShrink: 0
+                      }}>
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>
+                          {modules[modalIdx].title} Data ({getTableData(modules[modalIdx].title).length} Records)
+                        </h3>
+                      </div>
+                      <div style={{ 
+                        flex: 1,
+                        overflow: 'auto',
+                        minHeight: 0
+                      }}>
+                        <table style={{ 
+                          width: '100%', 
+                          borderCollapse: 'collapse',
+                          fontSize: '14px'
+                        }}>
+                          <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                            <tr style={{ background: '#f3f4f6' }}>
+                              {getTableColumns(modules[modalIdx].title).map((column, idx) => (
+                                <th key={idx} style={{ 
+                                  padding: '12px 8px', 
+                                  textAlign: 'left', 
+                                  borderBottom: '2px solid #d1d5db',
+                                  fontWeight: 'bold',
+                                  textTransform: 'uppercase',
+                                  fontSize: '12px',
+                                  background: '#f3f4f6'
+                                }}>
+                                  {column.replace(/([A-Z])/g, ' $1').trim()}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {getTableData(modules[modalIdx].title).map((row, rowIdx) => (
+                              <tr key={rowIdx} style={{ 
+                                borderBottom: '1px solid #e5e7eb',
+                                cursor: 'pointer',
+                                transition: 'background-color 0.2s'
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                              onDoubleClick={() => {
+                                // Handle double click to select row
+                                console.log('Selected row:', row);
+                                alert(`Selected: ${JSON.stringify(row)}`);
+                              }}
+                              >
+                                {Object.values(row).map((cell, cellIdx) => (
+                                  <td key={cellIdx} style={{ 
+                                    padding: '12px 8px',
+                                    fontSize: '13px'
+                                  }}>
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div style={{
+                    padding: '12px 20px',
+                    background: '#f3f4f6',
+                    borderTop: '1px solid #e5e7eb',
+                    fontSize: '12px',
+                    color: '#6b7280',
+                    textAlign: 'center'
+                  }}>
+                    Double click to get the selected value
+                  </div>
                 </div>
-              </div>
+              </div>,
+              document.body
             )}
           </div>
         </div>

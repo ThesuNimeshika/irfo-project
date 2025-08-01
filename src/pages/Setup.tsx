@@ -1,8 +1,17 @@
 import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  createColumnHelper,
+  getSortedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+} from "@tanstack/react-table";
 
 const moduleData = [
   { title: 'Bank', icon: '🏦' },
@@ -181,6 +190,228 @@ const modules = moduleData.map(m => ({
   icon: m.icon,
   description: `Setup for ${m.title}`
 }));
+
+// Custom DataTable Component
+function CustomDataTable({ data, columns, title }: { data: any[], columns: string[], title: string }) {
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [rowSelection, setRowSelection] = useState({});
+
+  const columnHelper = createColumnHelper<any>();
+
+  const tableColumns = useMemo(() => 
+    columns.map((column) =>
+      columnHelper.accessor(column, {
+        header: column === 'code' ? 'Code' : 
+                column === 'description' ? 'Description' : 
+                column === 'address' ? 'Address' : 
+                column === 'district' ? 'District' : 
+                column === 'swiftCode' ? 'Swift Code' : 
+                column === 'branchNo' ? 'Branch No' : 
+                column.replace(/([A-Z])/g, ' $1').trim(),
+        cell: (info) => (
+          <span className="text-gray-900">{info.getValue()}</span>
+        ),
+      })
+    ), [columns]
+  );
+
+  const table = useReactTable({
+    data,
+    columns: tableColumns,
+    state: {
+      sorting,
+      globalFilter,
+      rowSelection,
+    },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  return (
+    <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 0, marginTop: 0 }}>
+      <div className="flex items-center justify-between" style={{ marginBottom: 0 }}>
+        <div className="flex items-center space-x-2">
+          {/* Search */}
+          <input
+            type="text"
+            placeholder="Search..."
+            value={globalFilter ?? ''}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            style={{
+              width: '200px',
+              padding: '6px 12px',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
+              fontSize: '12px',
+              background: 'white',
+              marginRight: '8px'
+            }}
+          />
+          {/* Shortlist Dropdown */}
+          <select
+            value={table.getState().pagination.pageSize}
+            onChange={e => {
+              table.setPageSize(Number(e.target.value))
+            }}
+            style={{
+              padding: '6px 12px',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
+              fontSize: '12px',
+              background: 'white',
+              marginRight: '8px'
+            }}
+          >
+            {[3, 5, 10, 15].map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800" style={{ fontSize: 12 }}>
+            {data.length} Records
+          </span>
+        </div>
+      </div>
+      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, height: '100%' }}>
+        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+          
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <tr key={headerGroup.id} style={{ background: '#f3f4f6', borderBottom: '2px solid #d1d5db' }}>
+                    {headerGroup.headers.map(header => (
+                      <th
+                        key={header.id}
+                        style={{
+                          padding: '12px 8px',
+                          textAlign: 'left',
+                          fontWeight: 'bold',
+                          textTransform: 'uppercase',
+                          fontSize: '12px',
+                          background: '#f3f4f6',
+                          cursor: 'pointer',
+                          borderBottom: '2px solid #d1d5db'
+                        }}
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {{
+                          asc: ' 🔼',
+                          desc: ' 🔽',
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.map(row => (
+                  <tr
+                    key={row.id}
+                    className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => {
+                      console.log('Selected row:', row.original);
+                      alert(`Selected: ${JSON.stringify(row.original)}`);
+                    }}
+                  >
+                    {row.getVisibleCells().map(cell => (
+                      <td key={cell.id} className="px-3 py-4 text-sm text-gray-900">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 8 }}>
+        <span style={{ fontSize: 12, marginBottom: 8, color: '#6b7280' }}>Showing {table.getRowModel().rows.length} of {data.length} results</span>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            style={{
+              padding: '6px 12px',
+              fontSize: '11px',
+              fontWeight: 'medium',
+              color: table.getCanPreviousPage() ? 'white' : '#9ca3af',
+              background: table.getCanPreviousPage() ? '#3b82f6' : '#f3f4f6',
+              borderRadius: '6px',
+              border: `1px solid ${table.getCanPreviousPage() ? '#3b82f6' : '#e5e7eb'}`,
+              cursor: table.getCanPreviousPage() ? 'pointer' : 'not-allowed',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={e => {
+              if (table.getCanPreviousPage()) {
+                e.currentTarget.style.backgroundColor = '#2563eb';
+                e.currentTarget.style.borderColor = '#2563eb';
+              }
+            }}
+            onMouseLeave={e => {
+              if (table.getCanPreviousPage()) {
+                e.currentTarget.style.backgroundColor = '#3b82f6';
+                e.currentTarget.style.borderColor = '#3b82f6';
+              }
+            }}
+          >
+            <span style={{ fontSize: '12px' }}>‹</span>
+            Previous
+          </button>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            style={{
+              padding: '6px 12px',
+              fontSize: '11px',
+              fontWeight: 'medium',
+              color: table.getCanNextPage() ? 'white' : '#9ca3af',
+              background: table.getCanNextPage() ? '#3b82f6' : '#f3f4f6',
+              borderRadius: '6px',
+              border: `1px solid ${table.getCanNextPage() ? '#3b82f6' : '#e5e7eb'}`,
+              cursor: table.getCanNextPage() ? 'pointer' : 'not-allowed',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={e => {
+              if (table.getCanNextPage()) {
+                e.currentTarget.style.backgroundColor = '#2563eb';
+                e.currentTarget.style.borderColor = '#2563eb';
+              }
+            }}
+            onMouseLeave={e => {
+              if (table.getCanNextPage()) {
+                e.currentTarget.style.backgroundColor = '#3b82f6';
+                e.currentTarget.style.borderColor = '#3b82f6';
+              }
+            }}
+          >
+            Next
+            <span style={{ fontSize: '12px' }}>›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Setup() {
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -378,31 +609,31 @@ function Setup() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    borderTopLeftRadius: 8,
-                    borderTopRightRadius: 8,
+                    borderTopLeftRadius: 0,
+                    borderTopRightRadius: 0,
                     minHeight: '40px'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '18px' }}>{modules[modalIdx].icon}</span>
                       <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{modules[modalIdx].title} Details</span>
                     </div>
-                    <button
-                      onClick={() => setModalIdx(null)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
+                  <button
+                    onClick={() => setModalIdx(null)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
                         fontSize: '18px',
                         color: 'white',
-                        cursor: 'pointer',
+                      cursor: 'pointer',
                         padding: '2px 6px',
                         borderRadius: '4px',
                         transition: 'background-color 0.2s'
-                      }}
+                    }}
                       onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
                       onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-                    >
-                      ×
-                    </button>
+                  >
+                    ×
+                  </button>
                   </div>
 
                   {/* Content */}
@@ -556,9 +787,13 @@ function Setup() {
                           borderRadius: '4px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
-                          fontSize: '14px'
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
                         }}
                       >
+                        <span style={{ fontSize: '16px' }}>+</span>
                         New
                       </button>
                       <button
@@ -571,9 +806,13 @@ function Setup() {
                           borderRadius: '4px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
-                          fontSize: '14px'
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
                         }}
                       >
+                        <span style={{ fontSize: '16px' }}>💾</span>
                         Save
                       </button>
                       <button
@@ -586,9 +825,13 @@ function Setup() {
                           borderRadius: '4px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
-                          fontSize: '14px'
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
                         }}
                       >
+                        <span style={{ fontSize: '16px' }}>🗑️</span>
                         Delete
                       </button>
                       <button
@@ -601,13 +844,17 @@ function Setup() {
                           borderRadius: '4px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
-                          fontSize: '14px'
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
                         }}
                       >
+                        <span style={{ fontSize: '16px' }}>🖨️</span>
                         Print
                       </button>
                       <button
-                        onClick={() => setModalIdx(null)}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '' })}
                         style={{
                           padding: '8px 16px',
                           background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',
@@ -616,10 +863,14 @@ function Setup() {
                           borderRadius: '4px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
-                          fontSize: '14px'
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
                         }}
                       >
-                        Close
+                        <span style={{ fontSize: '16px' }}>🗑️</span>
+                        Clear
                       </button>
                     </div>
 
@@ -631,72 +882,20 @@ function Setup() {
                       overflow: 'hidden',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                       display: 'flex',
-                      flexDirection: 'column'
+                      flexDirection: 'column',
+                      height: '400px'
                     }}>
-                      <div style={{ 
-                        padding: '16px', 
-                        borderBottom: '1px solid #e5e7eb',
-                        background: '#f9fafb',
-                        flexShrink: 0
-                      }}>
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>
-                          {modules[modalIdx].title} Data ({getTableData(modules[modalIdx].title).length} Records)
-                        </h3>
-                      </div>
                       <div style={{ 
                         flex: 1,
                         overflow: 'auto',
-                        minHeight: 0
+                        minHeight: 0,
+                        padding: '16px'
                       }}>
-                        <table style={{ 
-                          width: '100%', 
-                          borderCollapse: 'collapse',
-                          fontSize: '14px'
-                        }}>
-                          <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
-                            <tr style={{ background: '#f3f4f6' }}>
-                              {getTableColumns(modules[modalIdx].title).map((column, idx) => (
-                                <th key={idx} style={{ 
-                                  padding: '12px 8px', 
-                                  textAlign: 'left', 
-                                  borderBottom: '2px solid #d1d5db',
-                                  fontWeight: 'bold',
-                                  textTransform: 'uppercase',
-                                  fontSize: '12px',
-                                  background: '#f3f4f6'
-                                }}>
-                                  {column.replace(/([A-Z])/g, ' $1').trim()}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {getTableData(modules[modalIdx].title).map((row, rowIdx) => (
-                              <tr key={rowIdx} style={{ 
-                                borderBottom: '1px solid #e5e7eb',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.2s'
-                              }}
-                              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-                              onDoubleClick={() => {
-                                // Handle double click to select row
-                                console.log('Selected row:', row);
-                                alert(`Selected: ${JSON.stringify(row)}`);
-                              }}
-                              >
-                                {Object.values(row).map((cell, cellIdx) => (
-                                  <td key={cellIdx} style={{ 
-                                    padding: '12px 8px',
-                                    fontSize: '13px'
-                                  }}>
-                                    {cell}
-                                  </td>
-                                ))}
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                        <CustomDataTable 
+                          data={getTableData(modules[modalIdx].title)}
+                          columns={getTableColumns(modules[modalIdx].title)}
+                          title={modules[modalIdx].title}
+                        />
                       </div>
                     </div>
                   </div>

@@ -63,7 +63,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [reportOpen]);
 
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
   const fontSize = isMobile ? 13 : 15;
   const iconSize = isMobile ? 18 : 20;
 
@@ -277,13 +277,11 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       setIsMobile(width <= 480);
-      setIsTablet(width > 480 && width <= 768);
     };
 
     handleResize();

@@ -12,6 +12,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
+import type { SortingState, RowSelectionState } from "@tanstack/react-table";
 
 const moduleData = [
   { title: 'Bank', icon: '🏦' },
@@ -192,12 +193,12 @@ const modules = moduleData.map(m => ({
 }));
 
 // Custom DataTable Component
-function CustomDataTable({ data, columns, title }: { data: any[], columns: string[], title: string }) {
-  const [sorting, setSorting] = useState([]);
+function CustomDataTable({ data, columns }: { data: Record<string, string | undefined>[], columns: string[] }) {
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const columnHelper = createColumnHelper<any>();
+  const columnHelper = createColumnHelper<Record<string, string | undefined>>();
 
   const tableColumns = useMemo(() => 
     columns.map((column) =>
@@ -279,15 +280,14 @@ function CustomDataTable({ data, columns, title }: { data: any[], columns: strin
           </span>
         </div>
       </div>
-      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, height: '100%' }}>
-        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-          
-          {/* Table */}
-          <div className="overflow-x-auto">
+      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, height: '400px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* Fixed Header */}
+          <div style={{ background: '#f3f4f6', borderBottom: '2px solid #d1d5db', flexShrink: 0 }}>
             <table className="w-full border-collapse">
               <thead>
                 {table.getHeaderGroups().map(headerGroup => (
-                  <tr key={headerGroup.id} style={{ background: '#f3f4f6', borderBottom: '2px solid #d1d5db' }}>
+                  <tr key={headerGroup.id}>
                     {headerGroup.headers.map(header => (
                       <th
                         key={header.id}
@@ -316,6 +316,12 @@ function CustomDataTable({ data, columns, title }: { data: any[], columns: strin
                   </tr>
                 ))}
               </thead>
+            </table>
+          </div>
+          
+          {/* Scrollable Body */}
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', background: 'white', minHeight: 0 }}>
+            <table className="w-full border-collapse">
               <tbody>
                 {table.getRowModel().rows.map(row => (
                   <tr
@@ -894,7 +900,6 @@ function Setup() {
                         <CustomDataTable 
                           data={getTableData(modules[modalIdx].title)}
                           columns={getTableColumns(modules[modalIdx].title)}
-                          title={modules[modalIdx].title}
                         />
                       </div>
                     </div>

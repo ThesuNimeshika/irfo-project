@@ -33,7 +33,7 @@ const moduleData = [
   { title: 'Join Sale Agent', icon: '🤝' },
   { title: 'Complience MSG Setup', icon: '💬' },
   { title: 'Product type', icon: '📦' },
-  { title: 'AT', icon: '🔔' },
+  { title: 'Title', icon: '🔔' },
 ];
 
 const modules = moduleData.map(m => ({
@@ -67,9 +67,11 @@ function Setup() {
         paddingTop: 0, 
         display: 'flex', 
         flexDirection: 'row', 
-        height: 'calc(100vh - 72px - 48px)', 
+        height: '100vh', 
         minHeight: 'unset', 
-        overflow: 'hidden' 
+        overflow: 'hidden',
+        marginBottom: 0,
+        background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)'
       }}>
         {/* Sidebar left-aligned, fixed width on desktop only */}
         <div className="home-sidebar-container">
@@ -81,32 +83,41 @@ function Setup() {
           display: 'flex', 
           flexDirection: 'column', 
           gap: 0, 
-          height: '100%', 
+          height: '100vh', 
           overflow: 'auto', 
-          padding: isMobile ? 4 : 8 
+          padding: 0,
+          marginBottom: 0,
+          paddingTop: '50px'
         }}>
           <div className="setup-main-card magical-bg animated-bg" style={{ 
             borderRadius: 16, 
-            background: 'rgba(255,255,255,0.85)', 
-            boxShadow: '0 2px 16px #0001', 
+            background: 'linear-gradient(120deg, rgba(255,255,255,0.99) 85%, rgba(79,70,229,0.06) 100%), linear-gradient(100deg, rgba(217,70,239,0.04) 0%, rgba(245,158,66,0.04) 100%)', 
+            boxShadow: '0 6px 32px 0 rgba(80, 80, 120, 0.13)', 
             padding: 24, 
             minHeight: 0, 
             marginBottom: 0, 
             flex: 1, 
             display: 'flex', 
-            flexDirection: 'column' 
+            flexDirection: 'column',
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            height: '100vh',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1.5px solid rgba(80,80,120,0.13)',
+            backdropFilter: 'blur(2px)'
           }}>
             <div className="setup-modules-grid" style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(6, 1fr)',
               gridTemplateRows: 'repeat(5, 1fr)',
-              gap: '16px', 
-              width: '100%', 
-              height: '100%',
+              gap: '14px', 
+              width: '88%', 
+              height: '70%',
               alignContent: 'center',
               justifyContent: 'center',
-              padding: '20px',
-              marginLeft: '40px'
+              padding: '18px',
+              margin: '0 auto'
             }}>
               {modules.map((mod, idx) => (
                 <div
@@ -116,7 +127,7 @@ function Setup() {
                     background: '#f8fafc', 
                     borderRadius: 8, 
                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)', 
-                    padding: '12px', 
+                    padding: '8px', 
                     display: 'flex', 
                     flexDirection: 'column', 
                     alignItems: 'center', 
@@ -126,18 +137,19 @@ function Setup() {
                     cursor: 'pointer', 
                     transition: 'box-shadow 0.2s, transform 0.2s', 
                     outline: 'none',
-                    border: '1px solid #e5e7eb'
+                    border: '1px solid #e5e7eb',
+                    margin: '3px'
                   }}
                   tabIndex={0}
                   onClick={() => setModalIdx(idx)}
                   onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModalIdx(idx); }}
                 >
-                  <div style={{ fontSize: '20px', marginBottom: '6px' }}>{mod.icon}</div>
+                  <div style={{ fontSize: '20px', marginBottom: '4px' }}>{mod.icon}</div>
                   <div style={{ 
                     fontWeight: 600, 
                     fontSize: '11px', 
                     textAlign: 'center',
-                    lineHeight: 1.2,
+                    lineHeight: 1.1,
                     wordBreak: 'break-word',
                     color: '#333'
                   }}>{mod.title}</div>

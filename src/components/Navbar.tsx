@@ -227,19 +227,19 @@ const footerStyle: React.CSSProperties = {
   position: 'fixed',
   bottom: 0,
   left: 0,
-  zIndex: 900,
+  zIndex: 800,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: '0 1.5rem',
   background: 'linear-gradient(90deg, #fff 0px, rgba(255,255,255,0.85) 32px, rgba(255,255,255,0.0) 64px, #e0e7ff 80px, #a5b4fc 40%, #f0abfc 70%, #a5b4fc 100%)',
   boxShadow: '0 -2px 8px 0 rgba(0,0,0,0.07)',
-  minHeight: '60px',
-  height: '59px',
+  minHeight: '40px',
+  height: '40px',
   boxSizing: 'border-box',
   gap: 0,
   overflow: 'hidden',
-  fontSize: 15,
+  fontSize: 13,
 };
 
 export function Footer() {

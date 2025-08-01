@@ -2,7 +2,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const sidebarWidth = 180; // px, increased for better visibility
+const getSidebarWidth = () => {
+  if (typeof window !== 'undefined') {
+    if (window.innerWidth <= 480) return 140; // Mobile
+    if (window.innerWidth <= 768) return 160; // Tablet
+    if (window.innerWidth <= 1024) return 170; // Small desktop
+    return 180; // Large desktop
+  }
+  return 180;
+};
 
 const navItems = [
   { label: 'Dashboard', icon: '🏠', link: '/' },
@@ -28,6 +36,17 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
   const [reportHovered, setReportHovered] = useState(false);
   const reportBtnRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [sidebarWidth, setSidebarWidth] = useState(getSidebarWidth());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSidebarWidth(getSidebarWidth());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (
@@ -43,6 +62,11 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [reportOpen]);
+
+  const isMobile = window.innerWidth <= 768;
+  const fontSize = isMobile ? 13 : 15;
+  const iconSize = isMobile ? 18 : 20;
+
   return (
     <nav style={{
       width: sidebarWidth,
@@ -59,7 +83,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
       alignItems: 'center',
       paddingTop: 72,
       boxShadow: '2px 0 12px 0 rgba(165,180,252,0.10)',
-      transition: 'box-shadow 0.3s',
+      transition: 'all 0.3s ease',
       overflowY: 'auto',
     }}>
       {navItems.map((item) => (
@@ -87,18 +111,18 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                   border: reportOpen || activeLabel === 'Report' ? '2px solid #4f46e5' : '1px solid transparent',
                   borderRadius: 6,
                   fontWeight: 700,
-                  fontSize: 15,
+                  fontSize: fontSize,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   cursor: 'pointer',
-                  padding: '8px 16px',
+                  padding: isMobile ? '6px 12px' : '8px 16px',
                   boxShadow: reportOpen || activeLabel === 'Report' ? '0 2px 12px 0 rgba(79,70,229,0.10)' : undefined,
                   transition: 'box-shadow 0.2s, background 0.2s, border 0.2s',
                 }}
               >
                 <span style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ fontSize: 20, marginRight: 8 }}>{item.icon}</span>
+                  <span style={{ fontSize: iconSize, marginRight: 8 }}>{item.icon}</span>
                   Report
                 </span>
                 <span style={{ marginLeft: 8, fontSize: 14 }}>{reportOpen ? '▲' : '▼'}</span>
@@ -157,7 +181,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                         background: 'none',
                         border: 'none',
                         color: '#212529',
-                        fontSize: 15,
+                        fontSize: fontSize,
                         padding: '8px 20px',
                         textAlign: 'left',
                         cursor: 'pointer',
@@ -189,8 +213,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                 border: activeLabel === item.label ? '2px solid #4f46e5' : '1px solid transparent',
                 color: '#4f46e5',
                 fontWeight: 700,
-                fontSize: 14,
-                padding: '14px 0 8px 0',
+                fontSize: fontSize,
+                padding: isMobile ? '10px 0 6px 0' : '14px 0 8px 0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -201,8 +225,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                 lineHeight: 1.1,
               }}
             >
-              <span style={{ fontSize: 24, marginBottom: 2 }}>{item.icon}</span>
-              <span style={{ fontSize: 12, wordBreak: 'break-word', textAlign: 'center' }}>{item.label}</span>
+              <span style={{ fontSize: iconSize, marginBottom: 2 }}>{item.icon}</span>
+              <span style={{ fontSize: isMobile ? 10 : 12, wordBreak: 'break-word', textAlign: 'center' }}>{item.label}</span>
             </button>
           )}
         </div>
@@ -252,6 +276,21 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
 export default function Sidebar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 480);
+      setIsTablet(width > 480 && width <= 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Responsive: show sidebar on desktop, show button on mobile/tablet
   return (
     <>
@@ -292,7 +331,7 @@ export default function Sidebar() {
             position: 'fixed',
             top: 0,
             right: 0,
-            width: 240,
+            width: isMobile ? 200 : 240,
             height: '100vh',
             background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
             zIndex: 1400,
@@ -322,11 +361,11 @@ export default function Sidebar() {
         </div>
       )}
       <style>{`
-        @media (max-width: 900px) {
+        @media (max-width: 768px) {
           .sidebar-desktop { display: none !important; }
           .sidebar-fab { display: flex !important; }
         }
-        @media (min-width: 901px) {
+        @media (min-width: 769px) {
           .sidebar-desktop { display: block !important; }
           .sidebar-fab { display: none !important; }
         }

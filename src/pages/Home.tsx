@@ -7,10 +7,31 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import DataTable from "../components/DataTable"
 type PieEntry = { name: string; value: number; color: string; units: number };
 
+// Define 10 colors for the 10 parts - matching system colors
+const pieColors = [
+  '#4f46e5', // deep indigo (primary)
+  '#d946ef', // vibrant magenta (secondary)
+  '#f0abfc', // pink (from gradient)
+  '#e0e7ff', // light indigo (from gradient)
+  '#8b5cf6', // violet
+  '#06b6d4', // cyan
+  '#10b981', // emerald
+  '#f59e42', // orange
+  '#DAC17C', // Sandcastle
+  '#FFDE21'  // yellow
+];
+
 const defaultPieData: PieEntry[] = [
-  { name: 'A', value: 0, color: '#4f46e5', units: 0 }, // deep indigo
-  { name: 'B', value: 0, color: '#d946ef', units: 0 }, // vibrant magenta
-  { name: 'C', value: 0, color: '#f59e42', units: 0 }  // orange
+  { name: 'Part A', value: 0, color: pieColors[0], units: 0 },
+  { name: 'Part B', value: 0, color: pieColors[1], units: 0 },
+  { name: 'Part C', value: 0, color: pieColors[2], units: 0 },
+  { name: 'Part D', value: 0, color: pieColors[3], units: 0 },
+  { name: 'Part E', value: 0, color: pieColors[4], units: 0 },
+  { name: 'Part F', value: 0, color: pieColors[5], units: 0 },
+  { name: 'Part G', value: 0, color: pieColors[6], units: 0 },
+  { name: 'Part H', value: 0, color: pieColors[7], units: 0 },
+  { name: 'Part I', value: 0, color: pieColors[8], units: 0 },
+  { name: 'Part J', value: 0, color: pieColors[9], units: 0 }
 ];
 
 function Home() {
@@ -32,13 +53,20 @@ function Home() {
   // Simulate backend fetch (replace with real API call)
   async function fetchPieData(_date: string, type: 'unit' | 'market') {
     // TODO: Replace with real backend fetch
-    // Simulate different data for demo
+    // Simulate different data for demo with 10 parts
     if (type === 'unit') {
       return {
         pie: [
-          { name: 'A', value: 40, color: '#4f46e5', units: 100 },
-          { name: 'B', value: 30, color: '#d946ef', units: 80 },
-          { name: 'C', value: 20, color: '#f59e42', units: 60 }
+          { name: 'Part A', value: 15, color: pieColors[0], units: 150 },
+          { name: 'Part B', value: 12, color: pieColors[1], units: 120 },
+          { name: 'Part C', value: 10, color: pieColors[2], units: 100 },
+          { name: 'Part D', value: 8, color: pieColors[3], units: 80 },
+          { name: 'Part E', value: 7, color: pieColors[4], units: 70 },
+          { name: 'Part F', value: 6, color: pieColors[5], units: 60 },
+          { name: 'Part G', value: 5, color: pieColors[6], units: 50 },
+          { name: 'Part H', value: 4, color: pieColors[7], units: 40 },
+          { name: 'Part I', value: 3, color: pieColors[8], units: 30 },
+          { name: 'Part J', value: 2, color: pieColors[9], units: 20 }
         ],
         creationPrice: 123.45,
         redeemPrice: 98.76
@@ -46,9 +74,16 @@ function Home() {
     } else {
       return {
         pie: [
-          { name: 'A', value: 60, color: '#4f46e5', units: 50 },
-          { name: 'B', value: 25, color: '#d946ef', units: 30 },
-          { name: 'C', value: 15, color: '#f59e42', units: 20 }
+          { name: 'Part A', value: 20, color: pieColors[0], units: 200 },
+          { name: 'Part B', value: 18, color: pieColors[1], units: 180 },
+          { name: 'Part C', value: 15, color: pieColors[2], units: 150 },
+          { name: 'Part D', value: 12, color: pieColors[3], units: 120 },
+          { name: 'Part E', value: 10, color: pieColors[4], units: 100 },
+          { name: 'Part F', value: 8, color: pieColors[5], units: 80 },
+          { name: 'Part G', value: 6, color: pieColors[6], units: 60 },
+          { name: 'Part H', value: 4, color: pieColors[7], units: 40 },
+          { name: 'Part I', value: 3, color: pieColors[8], units: 30 },
+          { name: 'Part J', value: 2, color: pieColors[9], units: 20 }
         ],
         creationPrice: 150.12,
         redeemPrice: 110.34
@@ -119,7 +154,17 @@ function Home() {
       <div className="navbar-fixed-wrapper">
         <Navbar />
       </div>
-      <div className="home-main-layout" style={{ marginTop: 0, paddingTop: 0, display: 'flex', flexDirection: 'row', height: 'calc(100vh - 72px - 48px)', minHeight: 'unset', overflow: 'hidden' }}>
+      <div className="home-main-layout" style={{ 
+        marginTop: 0, 
+        paddingTop: 0, 
+        display: 'flex', 
+        flexDirection: 'row', 
+        height: '100vh', 
+        minHeight: 'unset', 
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
+        marginBottom: 0
+      }}>
         {/* Sidebar left-aligned, fixed width (120px) on desktop only */}
         {!isMobile && (
           <div className="home-sidebar-container">
@@ -127,9 +172,27 @@ function Home() {
           </div>
         )}
         {/* Main content area: stack cards vertically */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0', height: '100%', overflow: 'hidden' }}>
+        <div style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '0', 
+          height: '100vh', 
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
+          marginBottom: 0,
+          paddingTop: '50px'
+        }}>
           {/* Unified magical layout card */}
-          <div className="home-card magical-bg animated-bg dashboard-main-card" style={{ flex: 1, minHeight: 0, marginBottom: 0 }}>
+          <div className="home-card magical-bg animated-bg dashboard-main-card" style={{ 
+            flex: 0.8, 
+            minHeight: 0, 
+            marginBottom: 0,
+            background: 'transparent',
+            boxShadow: 'none',
+            border: 'none',
+            height: '70vh'
+          }}>
             {/* Creation/Redeem section */}
             <div className="dashboard-price-section">
               <div className="dashboard-price-row">
@@ -148,19 +211,29 @@ function Home() {
               </div>
             </div>
             {/* Pie chart section */}
-            <div className="dashboard-pie-section">
-              {/* Legend left */}
-              <div className="dashboard-pie-legend">
-                {pieData.map((entry) => (
-                  <div key={entry.name} className="dashboard-pie-legend-row">
-                    <span className="dashboard-pie-legend-color" style={{ background: entry.color }}></span>
-                    <span className="dashboard-pie-legend-label">{entry.name}</span>
-                  </div>
-                ))}
-              </div>
-              {/* Pie chart center */}
-              <div className="dashboard-pie-chart">
-                <ResponsiveContainer width="100%" height={260}>
+            <div className="dashboard-pie-section" style={{ paddingTop: '35px', paddingBottom: '20px', position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                            {/* Legend left */}
+                <div className="dashboard-pie-legend" style={{ 
+                  maxHeight: '158px', 
+                  overflowY: 'auto',
+                  paddingRight: '18px',
+                  paddingTop: '0px',
+                  width: '200px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}>
+                 {pieData.map((entry) => (
+                   <div key={entry.name} className="dashboard-pie-legend-row" style={{ textAlign: 'center', marginBottom: '8px' }}>
+                     <span className="dashboard-pie-legend-color" style={{ background: entry.color }}></span>
+                     <span className="dashboard-pie-legend-label">{entry.name}</span>
+                   </div>
+                 ))}
+               </div>
+                             {/* Pie chart center */}
+               <div className="dashboard-pie-chart">
+                 <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
                     <Pie
                       data={pieData}
@@ -250,7 +323,19 @@ function Home() {
             </div>
           </div>
           {/* DataTable Card */}
-          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ flex: 1, minHeight: 0, marginTop: 4, marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'stretch', height: '100%', borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingTop: 4 }}>
+          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ 
+            flex: 1.2, 
+            minHeight: 0, 
+            marginTop: 4, 
+            marginBottom: 0, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            justifyContent: 'stretch', 
+            height: '30vh', 
+            borderBottomLeftRadius: 0, 
+            borderBottomRightRadius: 0, 
+            paddingTop: 4 
+          }}>
             {/* Animated background elements */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl animate-pulse"></div>
@@ -258,7 +343,7 @@ function Home() {
             </div>
             <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 0, marginTop: 0 }}>
               <div className="flex items-center justify-between" style={{ marginBottom: 0 }}>
-                <h2 className="font-semibold text-gray-900" style={{ fontSize: 17, padding: '2px 0 2px 0', margin: 0 }}>Fund Data</h2>
+                <h2 className="font-semibold text-gray-900" style={{ fontSize: 14, padding: '2px 0 2px 0', margin: 0 }}>Fund Data</h2>
                 <div className="flex items-center space-x-2">
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800" style={{ fontSize: 12 }}>
                     {tableTotalCount} Records

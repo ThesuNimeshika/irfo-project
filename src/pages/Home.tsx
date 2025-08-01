@@ -1,11 +1,11 @@
-
 import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { useEffect, useState, useRef } from 'react';
 import '../App.css';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import DataTable from "../components/DataTable"
-type PieEntry = { name: string; value: number; color: string; units: number };
+
+type PieEntry = { name: string; value: number; color: string };
 
 // Define 10 colors for the 10 parts - matching system colors
 const pieColors = [
@@ -22,16 +22,16 @@ const pieColors = [
 ];
 
 const defaultPieData: PieEntry[] = [
-  { name: 'Part A', value: 0, color: pieColors[0], units: 0 },
-  { name: 'Part B', value: 0, color: pieColors[1], units: 0 },
-  { name: 'Part C', value: 0, color: pieColors[2], units: 0 },
-  { name: 'Part D', value: 0, color: pieColors[3], units: 0 },
-  { name: 'Part E', value: 0, color: pieColors[4], units: 0 },
-  { name: 'Part F', value: 0, color: pieColors[5], units: 0 },
-  { name: 'Part G', value: 0, color: pieColors[6], units: 0 },
-  { name: 'Part H', value: 0, color: pieColors[7], units: 0 },
-  { name: 'Part I', value: 0, color: pieColors[8], units: 0 },
-  { name: 'Part J', value: 0, color: pieColors[9], units: 0 }
+  { name: 'Part A', value: 15, color: pieColors[0] },
+  { name: 'Part B', value: 12, color: pieColors[1] },
+  { name: 'Part C', value: 10, color: pieColors[2] },
+  { name: 'Part D', value: 8, color: pieColors[3] },
+  { name: 'Part E', value: 7, color: pieColors[4] },
+  { name: 'Part F', value: 6, color: pieColors[5] },
+  { name: 'Part G', value: 5, color: pieColors[6] },
+  { name: 'Part H', value: 4, color: pieColors[7] },
+  { name: 'Part I', value: 3, color: pieColors[8] },
+  { name: 'Part J', value: 2, color: pieColors[9] }
 ];
 
 function Home() {
@@ -50,23 +50,44 @@ function Home() {
   const [redeemDisplay, setRedeemDisplay] = useState(0);
   const [tableTotalCount, setTableTotalCount] = useState(0);
 
+  // Fetch fund names and update pie chart labels
+  async function fetchFundNames() {
+    try {
+      const response = await fetch('http://localhost:5095/api/dashboard/funds/names');
+      if (!response.ok) throw new Error('Failed to fetch fund names');
+      const fundNames: string[] = await response.json();
+      
+      
+      setPieData(prevData => {
+        return prevData.map((item, index) => ({
+          ...item,
+          name: fundNames[index] || item.name 
+        }));
+      });
+    } catch (err) {
+      console.error('Error loading fund names:', err);
+      
+    }
+  }
+
   // Simulate backend fetch (replace with real API call)
   async function fetchPieData(_date: string, type: 'unit' | 'market') {
-    // TODO: Replace with real backend fetch
-    // Simulate different data for demo with 10 parts
+    // Use current pie data names to maintain labels
+    const currentNames = pieData.map(item => item.name);
+    
     if (type === 'unit') {
       return {
         pie: [
-          { name: 'Part A', value: 15, color: pieColors[0], units: 150 },
-          { name: 'Part B', value: 12, color: pieColors[1], units: 120 },
-          { name: 'Part C', value: 10, color: pieColors[2], units: 100 },
-          { name: 'Part D', value: 8, color: pieColors[3], units: 80 },
-          { name: 'Part E', value: 7, color: pieColors[4], units: 70 },
-          { name: 'Part F', value: 6, color: pieColors[5], units: 60 },
-          { name: 'Part G', value: 5, color: pieColors[6], units: 50 },
-          { name: 'Part H', value: 4, color: pieColors[7], units: 40 },
-          { name: 'Part I', value: 3, color: pieColors[8], units: 30 },
-          { name: 'Part J', value: 2, color: pieColors[9], units: 20 }
+          { name: currentNames[0], value: 15, color: pieColors[0] },
+          { name: currentNames[1], value: 12, color: pieColors[1] },
+          { name: currentNames[2], value: 10, color: pieColors[2] },
+          { name: currentNames[3], value: 8, color: pieColors[3] },
+          { name: currentNames[4], value: 7, color: pieColors[4] },
+          { name: currentNames[5], value: 6, color: pieColors[5] },
+          { name: currentNames[6], value: 5, color: pieColors[6] },
+          { name: currentNames[7], value: 4, color: pieColors[7] },
+          { name: currentNames[8], value: 3, color: pieColors[8] },
+          { name: currentNames[9], value: 2, color: pieColors[9] }
         ],
         creationPrice: 123.45,
         redeemPrice: 98.76
@@ -74,16 +95,16 @@ function Home() {
     } else {
       return {
         pie: [
-          { name: 'Part A', value: 20, color: pieColors[0], units: 200 },
-          { name: 'Part B', value: 18, color: pieColors[1], units: 180 },
-          { name: 'Part C', value: 15, color: pieColors[2], units: 150 },
-          { name: 'Part D', value: 12, color: pieColors[3], units: 120 },
-          { name: 'Part E', value: 10, color: pieColors[4], units: 100 },
-          { name: 'Part F', value: 8, color: pieColors[5], units: 80 },
-          { name: 'Part G', value: 6, color: pieColors[6], units: 60 },
-          { name: 'Part H', value: 4, color: pieColors[7], units: 40 },
-          { name: 'Part I', value: 3, color: pieColors[8], units: 30 },
-          { name: 'Part J', value: 2, color: pieColors[9], units: 20 }
+          { name: currentNames[0], value: 20, color: pieColors[0] },
+          { name: currentNames[1], value: 18, color: pieColors[1] },
+          { name: currentNames[2], value: 15, color: pieColors[2] },
+          { name: currentNames[3], value: 12, color: pieColors[3] },
+          { name: currentNames[4], value: 10, color: pieColors[4] },
+          { name: currentNames[5], value: 8, color: pieColors[5] },
+          { name: currentNames[6], value: 6, color: pieColors[6] },
+          { name: currentNames[7], value: 4, color: pieColors[7] },
+          { name: currentNames[8], value: 3, color: pieColors[8] },
+          { name: currentNames[9], value: 2, color: pieColors[9] }
         ],
         creationPrice: 150.12,
         redeemPrice: 110.34
@@ -120,22 +141,20 @@ function Home() {
     redeemAnimRef.current = d.redeemPrice;
   }
 
-  // On mount, fetch all for today
+  // On mount, fetch all for today and fund names
   useEffect(() => {
     fetchAll(selectedDate, pieType);
-    // eslint-disable-next-line
+    fetchFundNames();
   }, []);
 
   // On date change, fetch all (pie + prices)
   useEffect(() => {
     fetchAll(selectedDate, pieType);
-    // eslint-disable-next-line
   }, [selectedDate]);
 
   // On pieType (radio) change, fetch only pie chart
   useEffect(() => {
     fetchPieOnly(selectedDate, pieType);
-    // eslint-disable-next-line
   }, [pieType]);
 
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 900 : false);
@@ -211,29 +230,24 @@ function Home() {
               </div>
             </div>
             {/* Pie chart section */}
-            <div className="dashboard-pie-section" style={{ paddingTop: '35px', paddingBottom: '20px', position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                            {/* Legend left */}
-                <div className="dashboard-pie-legend" style={{ 
-                  maxHeight: '158px', 
-                  overflowY: 'auto',
-                  paddingRight: '18px',
-                  paddingTop: '0px',
-                  width: '200px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start'
-                }}>
-                 {pieData.map((entry) => (
-                   <div key={entry.name} className="dashboard-pie-legend-row" style={{ textAlign: 'center', marginBottom: '8px' }}>
-                     <span className="dashboard-pie-legend-color" style={{ background: entry.color }}></span>
-                     <span className="dashboard-pie-legend-label">{entry.name}</span>
-                   </div>
-                 ))}
-               </div>
-                             {/* Pie chart center */}
-               <div className="dashboard-pie-chart">
-                 <ResponsiveContainer width="100%" height={220}>
+            <div className="dashboard-pie-section" style={{ paddingTop: '18px' }}>
+              {/* Legend left */}
+              <div className="dashboard-pie-legend" style={{ 
+                maxHeight: '350px', 
+                overflowY: 'auto',
+                paddingRight: '18px',
+                paddingTop: '240px'
+              }}>
+                {pieData.map((entry) => (
+                  <div key={entry.name} className="dashboard-pie-legend-row">
+                    <span className="dashboard-pie-legend-color" style={{ background: entry.color }}></span>
+                    <span className="dashboard-pie-legend-label">{entry.name}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Pie chart center */}
+              <div className="dashboard-pie-chart">
+                <ResponsiveContainer width="100%" height={260}>
                   <PieChart>
                     <Pie
                       data={pieData}
@@ -250,7 +264,7 @@ function Home() {
                     >
                       {pieData.map((entry, idx) => (
                         <Cell
-                          key={entry.name}
+                          key={`cell-${idx}`}
                           fill={entry.color}
                           stroke={activeIndex === idx ? '#222' : undefined}
                           strokeWidth={activeIndex === idx ? 2 : 1}
@@ -262,7 +276,6 @@ function Home() {
                         />
                       ))}
                     </Pie>
-                    {/* Hide default tooltip, use magical popup instead */}
                     <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
@@ -272,8 +285,8 @@ function Home() {
                           return (
                             <div className="dashboard-pie-tooltip">
                               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{entry.name}</div>
-                              <div>Units: <b>{entry.units}</b></div>
                               <div>Percent: <b>{percent}%</b></div>
+                              <div>Value: <b>LKR {entry.value.toLocaleString()}</b></div>
                             </div>
                           );
                         }
@@ -346,7 +359,7 @@ function Home() {
                 <h2 className="font-semibold text-gray-900" style={{ fontSize: 14, padding: '2px 0 2px 0', margin: 0 }}>Fund Data</h2>
                 <div className="flex items-center space-x-2">
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800" style={{ fontSize: 12 }}>
-                    {tableTotalCount} Records
+                    {tableTotalCount.toLocaleString()} Records
                   </span>
                 </div>
               </div>
@@ -355,17 +368,17 @@ function Home() {
                   <DataTable onTotalCountChange={setTableTotalCount} />
                 </div>
               </div>
-              <span style={{ fontSize: 12, marginTop: 4 }}>Showing 2 of 2 results</span>
+              <span style={{ fontSize: 12, marginTop: 4 }}>Showing {Math.min(2, tableTotalCount)} of {tableTotalCount} results</span>
               <div className="flex items-center space-x-2">
                 <button
                   className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
-                  disabled
+                  disabled={tableTotalCount <= 2}
                 >
                   Previous
                 </button>
                 <button
                   className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
-                  disabled
+                  disabled={tableTotalCount <= 2}
                 >
                   Next
                 </button>
@@ -380,5 +393,3 @@ function Home() {
 }
 
 export default Home;
-
-

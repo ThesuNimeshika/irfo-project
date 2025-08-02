@@ -73,11 +73,13 @@ const tableData = {
   ],
   Trustees: [
     { trusteeCode: 'TR001', active: 'Yes', trusteeName: 'John Smith', address: '123 Main Street', town: 'Downtown', city: 'New York', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'john@trustcorp.com' },
-    { trusteeCode: 'TR002', active: 'Yes', trusteeName: 'Sarah Johnson', address: '456 Oak Avenue', town: 'Midtown', city: 'Los Angeles', telephoneNumber: '+1-555-0456', faxNo: '+1-555-0457', email: 'sarah@fiduciary.com' }
+    { trusteeCode: 'TR002', active: 'Yes', trusteeName: 'Sarah Johnson', address: '456 Oak Avenue', town: 'Midtown', city: 'Los Angeles', telephoneNumber: '+1-555-0456', faxNo: '+1-555-0457', email: 'sarah@fiduciary.com' },
+    { trusteeCode: 'TR003', active: 'No', trusteeName: 'Michael Brown', address: '789 Pine Street', town: 'Uptown', city: 'Chicago', telephoneNumber: '+1-555-0789', faxNo: '+1-555-0790', email: 'michael@trustee.com' }
   ],
   Custodian: [
     { custodianCode: 'CU001', active: 'Yes', custodianName: 'Global Custody Bank', address1: '123 Wall Street', address2: 'Suite 100', address3: 'Floor 5', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'global@custody.com' },
-    { custodianCode: 'CU002', active: 'Yes', custodianName: 'Euro Custody Ltd', address1: '456 Fleet Street', address2: 'Building A', address3: 'Level 3', telephoneNumber: '+44-20-7123-4567', faxNo: '+44-20-7123-4568', email: 'euro@custody.co.uk' }
+    { custodianCode: 'CU002', active: 'Yes', custodianName: 'Euro Custody Ltd', address1: '456 Fleet Street', address2: 'Building A', address3: 'Level 3', telephoneNumber: '+44-20-7123-4567', faxNo: '+44-20-7123-4568', email: 'euro@custody.co.uk' },
+    { custodianCode: 'CU003', active: 'Yes', custodianName: 'Asia Pacific Custody', address1: '789 Finance Street', address2: 'Tower B', address3: 'Level 10', telephoneNumber: '+65-6123-4567', faxNo: '+65-6123-4568', email: 'asia@custody.sg' }
   ],
   'Postal Area': [
     { code: 'PA001', area: 'Downtown', city: 'New York', zip: '10001' },
@@ -291,83 +293,87 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           </span>
         </div>
       </div>
-      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, minHeight: '200px' }}>
+      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, minHeight: '250px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          {/* Fixed Header */}
-          <div style={{ background: '#f3f4f6', borderBottom: '2px solid #d1d5db', flexShrink: 0 }}>
-            <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
-              <thead>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <th
-                        key={header.id}
-                        style={{
-                          padding: '12px 8px',
-                          textAlign: 'left',
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase',
-                          fontSize: '12px',
-                          background: '#f3f4f6',
-                          cursor: 'pointer',
-                          borderBottom: '2px solid #d1d5db',
-                          width: `${100 / columns.length}%`,
-                          wordWrap: 'break-word',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          height: '40px',
-                        }}
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: ' 🔼',
-                          desc: ' 🔽',
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-            </table>
+                      {/* Fixed Header */}
+            <div style={{ background: '#f3f4f6', borderBottom: '2px solid #d1d5db', flexShrink: 0 }}>
+              <div style={{ minWidth: '100%' }}>
+                <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+                <thead>
+                  {table.getHeaderGroups().map(headerGroup => (
+                    <tr key={headerGroup.id}>
+                      {headerGroup.headers.map(header => (
+                        <th
+                          key={header.id}
+                          style={{
+                            padding: '12px 8px',
+                            textAlign: 'left',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            fontSize: '12px',
+                            background: '#f3f4f6',
+                            cursor: 'pointer',
+                            borderBottom: '2px solid #d1d5db',
+                            width: `${100 / columns.length}%`,
+                            wordWrap: 'break-word',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            height: '40px',
+                          }}
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          {{
+                            asc: ' 🔼',
+                            desc: ' 🔽',
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+              </table>
+            </div>
           </div>
           
-          {/* Scrollable Body */}
-          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', background: 'white', minHeight: '120px' }}>
-            <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
-              <tbody>
-                {table.getRowModel().rows.map(row => (
-                  <tr
-                    key={row.id}
-                    className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
-                    onClick={() => {
-                      console.log('Selected row:', row.original);
-                      alert(`Selected: ${JSON.stringify(row.original)}`);
-                    }}
-                  >
-                    {row.getVisibleCells().map(cell => (
-                      <td 
-                        key={cell.id} 
-                        className="px-3 py-4 text-sm text-gray-900"
-                        style={{
-                          width: `${100 / columns.length}%`,
-                          wordWrap: 'break-word',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          padding: '12px 8px',
-                          height: '40px'
-                        }}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      {/* Scrollable Body */}
+            <div style={{ flex: 1, overflowY: 'auto', background: 'white', minHeight: '150px', maxHeight: '250px' }}>
+              <div style={{ minWidth: '100%' }}>
+                <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+                <tbody>
+                  {table.getRowModel().rows.map(row => (
+                    <tr
+                      key={row.id}
+                      className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                      onClick={() => {
+                        console.log('Selected row:', row.original);
+                        alert(`Selected: ${JSON.stringify(row.original)}`);
+                      }}
+                    >
+                      {row.getVisibleCells().map(cell => (
+                        <td 
+                          key={cell.id} 
+                          className="px-3 py-4 text-sm text-gray-900"
+                          style={{
+                            width: `${100 / columns.length}%`,
+                            wordWrap: 'break-word',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            padding: '12px 8px',
+                            height: '40px'
+                          }}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -1399,8 +1405,8 @@ function Setup() {
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                       display: 'flex',
                       flexDirection: 'column',
-                      minHeight: '250px',
-                      maxHeight: '350px'
+                      minHeight: '300px',
+                      maxHeight: '400px'
                     }}>
                       <div style={{ 
                         padding: '16px',

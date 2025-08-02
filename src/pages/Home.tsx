@@ -197,9 +197,9 @@ function Home() {
                                       <div className="dashboard-pie-section" style={{ paddingTop: '35px', paddingBottom: '20px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingLeft: '100px' }}>
                 {/* Legend right - only show if fund names are short */}
                 {pieData.some(entry => entry.name.length <= 15) && (
-                                     <div className="dashboard-pie-legend" style={{ 
+              <div className="dashboard-pie-legend" style={{ 
                      maxHeight: '190px', 
-                     overflowY: 'auto',
+                overflowY: 'auto',
                      paddingLeft: '18px',
                      paddingTop: '0px',
                      width: '250px',
@@ -208,16 +208,16 @@ function Home() {
                      alignItems: 'flex-start',
                      justifyContent: 'flex-start',
                      textAlign: 'left'
-                   }}>
-                    {pieData.map((entry) => (
+              }}>
+                {pieData.map((entry) => (
                       <div key={entry.name} className="dashboard-pie-legend-row" style={{ textAlign: 'left', marginBottom: '8px', width: '100%', display: 'flex', alignItems: 'center' }}>
                         <span className="dashboard-pie-legend-color" style={{ background: entry.color, display: 'inline-block', width: '12px', height: '12px', borderRadius: '2px', flexShrink: 0, marginRight: '8px' }}></span>
                                                  <span className="dashboard-pie-legend-label" style={{ fontSize: '14px', wordBreak: 'break-word', maxWidth: '200px' }}>{entry.name}</span>
-                      </div>
-                    ))}
                   </div>
+                ))}
+              </div>
                 )}
-                {/* Pie chart center */}
+              {/* Pie chart center */}
                                  <div className="dashboard-pie-chart" style={{ marginRight: pieData.some(entry => entry.name.length <= 15) ? '20px' : 'auto' }}>
                  <ResponsiveContainer width="80%" height={220}>
                   <PieChart>
@@ -271,7 +271,7 @@ function Home() {
                     />
                   </PieChart>
                 </ResponsiveContainer>
-                             </div>
+              </div>
                                                                                                {/* Toggle switch for pie type selection */}
                                   <div style={{ 
                      display: 'flex', 
@@ -401,15 +401,15 @@ function Home() {
                         filter: pieType === 'market' ? 'drop-shadow(0 1px 2px rgba(34, 197, 94, 0.3))' : 'none',
                         transform: pieType === 'market' ? 'scale(1.05)' : 'scale(1)'
                       }}>
-                        Fund Size
+                  Fund Size
                       </span>
                     </div>
                   </div>
-                               </div>
-             </div>
+              </div>
+            </div>
                            {/* Spacing between cards */}
               <div style={{ height: '60px' }}></div>
-                          {/* Date section */}
+            {/* Date section */}
                              <div style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -454,11 +454,11 @@ function Home() {
                   position: 'relative',
                   zIndex: 2
                 }}>
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={e => setSelectedDate(e.target.value)}
-                    max={todayStr}
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={e => setSelectedDate(e.target.value)}
+                max={todayStr}
                     style={{
                       padding: '12px 16px',
                       fontSize: '14px',
@@ -503,7 +503,7 @@ function Home() {
                      month: 'long', 
                      day: 'numeric' 
                    })}
-                </div>
+              </div>
                
                {/* Decorative elements */}
                <div style={{
@@ -526,7 +526,7 @@ function Home() {
                  borderRadius: '50%',
                  opacity: 0.4
                }} />
-             </div>
+            </div>
           </div>
           {/* DataTable Card */}
           <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ 

@@ -61,10 +61,10 @@ const tableData = {
     { code: '301830', description: 'Lloyds Bank Plc - Haywards Heath', address: '99-101 South Road - Post / ZIP Code : Rh16 4nd' }
   ],
   'Transaction Type': [
-    { code: 'T001', description: 'Purchase', type: 'Buy' },
-    { code: 'T002', description: 'Sale', type: 'Sell' },
-    { code: 'T003', description: 'Dividend', type: 'Income' },
-    { code: 'T004', description: 'Transfer', type: 'Move' }
+    { transactionCode: 'T001', transactionType: 'Purchase', transactionName: 'Buy Transaction', lastTransactionNumber: '1001' },
+    { transactionCode: 'T002', transactionType: 'Sale', transactionName: 'Sell Transaction', lastTransactionNumber: '1002' },
+    { transactionCode: 'T003', transactionType: 'Dividend', transactionName: 'Dividend Payment', lastTransactionNumber: '1003' },
+    { transactionCode: 'T004', transactionType: 'Transfer', transactionName: 'Transfer Transaction', lastTransactionNumber: '1004' }
   ],
   'System Calendar': [
     { date: '2024-01-01', description: 'New Year', type: 'Holiday' },
@@ -72,12 +72,12 @@ const tableData = {
     { date: '2024-02-14', description: 'Valentine Day', type: 'Special' }
   ],
   Trustees: [
-    { code: 'TR001', name: 'John Smith', company: 'Trust Corp Ltd', contact: '+1-555-0123' },
-    { code: 'TR002', name: 'Sarah Johnson', company: 'Fiduciary Services', contact: '+1-555-0456' }
+    { trusteeCode: 'TR001', active: 'Yes', trusteeName: 'John Smith', address: '123 Main Street', town: 'Downtown', city: 'New York', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'john@trustcorp.com' },
+    { trusteeCode: 'TR002', active: 'Yes', trusteeName: 'Sarah Johnson', address: '456 Oak Avenue', town: 'Midtown', city: 'Los Angeles', telephoneNumber: '+1-555-0456', faxNo: '+1-555-0457', email: 'sarah@fiduciary.com' }
   ],
   Custodian: [
-    { code: 'CU001', name: 'Global Custody Bank', address: '123 Wall Street, NY', swift: 'GCBNYUS' },
-    { code: 'CU002', name: 'Euro Custody Ltd', address: '456 Fleet Street, London', swift: 'ECLGB2L' }
+    { custodianCode: 'CU001', active: 'Yes', custodianName: 'Global Custody Bank', address1: '123 Wall Street', address2: 'Suite 100', address3: 'Floor 5', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'global@custody.com' },
+    { custodianCode: 'CU002', active: 'Yes', custodianName: 'Euro Custody Ltd', address1: '456 Fleet Street', address2: 'Building A', address3: 'Level 3', telephoneNumber: '+44-20-7123-4567', faxNo: '+44-20-7123-4568', email: 'euro@custody.co.uk' }
   ],
   'Postal Area': [
     { code: 'PA001', area: 'Downtown', city: 'New York', zip: '10001' },
@@ -197,6 +197,10 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 3,
+  });
 
   const columnHelper = createColumnHelper<Record<string, string | undefined>>();
 
@@ -224,10 +228,12 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
       sorting,
       globalFilter,
       rowSelection,
+      pagination,
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -256,9 +262,14 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           />
           {/* Shortlist Dropdown */}
           <select
-            value={table.getState().pagination.pageSize}
+            value={pagination.pageSize}
             onChange={e => {
-              table.setPageSize(Number(e.target.value))
+              const newPageSize = Number(e.target.value);
+              setPagination(prev => ({
+                ...prev,
+                pageSize: newPageSize,
+                pageIndex: 0, // Reset to first page when changing page size
+              }));
             }}
             style={{
               padding: '6px 12px',
@@ -280,11 +291,11 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           </span>
         </div>
       </div>
-      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, height: '400px' }}>
+      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, minHeight: '200px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Fixed Header */}
           <div style={{ background: '#f3f4f6', borderBottom: '2px solid #d1d5db', flexShrink: 0 }}>
-            <table className="w-full border-collapse">
+            <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
               <thead>
                 {table.getHeaderGroups().map(headerGroup => (
                   <tr key={headerGroup.id}>
@@ -299,7 +310,12 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                           fontSize: '12px',
                           background: '#f3f4f6',
                           cursor: 'pointer',
-                          borderBottom: '2px solid #d1d5db'
+                          borderBottom: '2px solid #d1d5db',
+                          width: `${100 / columns.length}%`,
+                          wordWrap: 'break-word',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          height: '40px',
                         }}
                         onClick={header.column.getToggleSortingHandler()}
                       >
@@ -320,8 +336,8 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           </div>
           
           {/* Scrollable Body */}
-          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', background: 'white', minHeight: 0 }}>
-            <table className="w-full border-collapse">
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', background: 'white', minHeight: '120px' }}>
+            <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
               <tbody>
                 {table.getRowModel().rows.map(row => (
                   <tr
@@ -333,7 +349,18 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                     }}
                   >
                     {row.getVisibleCells().map(cell => (
-                      <td key={cell.id} className="px-3 py-4 text-sm text-gray-900">
+                      <td 
+                        key={cell.id} 
+                        className="px-3 py-4 text-sm text-gray-900"
+                        style={{
+                          width: `${100 / columns.length}%`,
+                          wordWrap: 'break-word',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          padding: '12px 8px',
+                          height: '40px'
+                        }}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
@@ -348,7 +375,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
         <span style={{ fontSize: 12, marginBottom: 8, color: '#6b7280' }}>Showing {table.getRowModel().rows.length} of {data.length} results</span>
         <div className="flex items-center space-x-2">
           <button
-            onClick={() => table.previousPage()}
+            onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
             disabled={!table.getCanPreviousPage()}
             style={{
               padding: '6px 12px',
@@ -381,7 +408,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
             Previous
           </button>
           <button
-            onClick={() => table.nextPage()}
+            onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
             disabled={!table.getCanNextPage()}
             style={{
               padding: '6px 12px',
@@ -428,7 +455,29 @@ function Setup() {
     address: '',
     district: '',
     swiftCode: '',
-    branchNo: ''
+    branchNo: '',
+    transactionCode: '',
+    transactionType: '',
+    transactionName: '',
+    lastTransactionNumber: '',
+    trusteeCode: '',
+    active: false,
+    trusteeName: '',
+    trusteeAddress: '',
+    town: '',
+    city: '',
+    telephoneNumber: '',
+    faxNo: '',
+    email: '',
+    custodianCode: '',
+    custodianActive: false,
+    custodianName: '',
+    custodianAddress1: '',
+    custodianAddress2: '',
+    custodianAddress3: '',
+    custodianTelephoneNumber: '',
+    custodianFaxNo: '',
+    custodianEmail: ''
   });
 
   useEffect(() => {
@@ -562,7 +611,7 @@ function Setup() {
                   onClick={() => setModalIdx(idx)}
                   onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModalIdx(idx); }}
                 >
-                  <div style={{ fontSize: '20px', marginBottom: '4px' }}>{mod.icon}</div>
+                  <div style={{ fontSize: '20px', marginBottom: '2px' }}>{mod.icon}</div>
                   <div style={{ 
                     fontWeight: 600, 
                     fontSize: '11px', 
@@ -597,7 +646,7 @@ function Setup() {
                     borderRadius: '0 0 8px 8px',
                     boxShadow: '0 4px 32px #0003',
                     width: isMobile ? '95vw' : '80vw',
-                    height: isMobile ? '90vh' : '90vh',
+                    maxHeight: isMobile ? '98vh' : '98vh',
                     position: 'relative',
                     display: 'flex',
                     flexDirection: 'column',
@@ -643,7 +692,7 @@ function Setup() {
                   </div>
 
                   {/* Content */}
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', overflow: 'hidden' }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', overflow: 'auto', maxHeight: 'calc(98vh - 120px)' }}>
                     {/* Input Fields Section */}
                     <div style={{ 
                       background: 'white', 
@@ -655,124 +704,536 @@ function Setup() {
                       <div style={{ 
                         display: 'grid', 
                         gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', 
-                        gap: '16px' 
+                        gap: '8px' 
                       }}>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
-                            Code
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.code}
-                            onChange={(e) => handleInputChange('code', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px'
-                            }}
-                            placeholder="Enter code"
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
-                            Description
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.description}
-                            onChange={(e) => handleInputChange('description', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px'
-                            }}
-                            placeholder="Enter description"
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
-                            Address
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.address}
-                            onChange={(e) => handleInputChange('address', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px'
-                            }}
-                            placeholder="Enter address"
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
-                            District
-                          </label>
-                          <select
-                            value={formData.district}
-                            onChange={(e) => handleInputChange('district', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px'
-                            }}
-                          >
-                            <option value="">Select district</option>
-                            <option value="north">North District</option>
-                            <option value="south">South District</option>
-                            <option value="east">East District</option>
-                            <option value="west">West District</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
-                            Swift Code
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.swiftCode}
-                            onChange={(e) => handleInputChange('swiftCode', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px',
-                              color: '#666'
-                            }}
-                            placeholder="Enter swift code"
-                            disabled
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold', fontSize: '14px' }}>
-                            Branch No
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.branchNo}
-                            onChange={(e) => handleInputChange('branchNo', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px',
-                              color: '#666'
-                            }}
-                            placeholder="Enter branch number"
-                            disabled
-                          />
-                        </div>
+                        {modules[modalIdx].title === 'Transaction Type' ? (
+                          <>
+                                                         <div>
+                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                 Transaction Code
+                               </label>
+                               <input
+                                 type="text"
+                                 value={formData.transactionCode}
+                                 onChange={(e) => handleInputChange('transactionCode', e.target.value)}
+                                 style={{
+                                   width: '100%',
+                                   padding: '8px 12px',
+                                   border: '1px solid #ddd',
+                                   borderRadius: '4px',
+                                   fontSize: '14px'
+                                 }}
+                                 placeholder="Enter transaction code"
+                               />
+                             </div>
+                             <div>
+                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                 Transaction Type
+                               </label>
+                               <select
+                                 value={formData.transactionType}
+                                 onChange={(e) => handleInputChange('transactionType', e.target.value)}
+                                 style={{
+                                   width: '100%',
+                                   padding: '8px 12px',
+                                   border: '1px solid #ddd',
+                                   borderRadius: '4px',
+                                   fontSize: '14px'
+                                 }}
+                               >
+                                 <option value="">Select transaction type</option>
+                                 <option value="Purchase">Purchase</option>
+                                 <option value="Sale">Sale</option>
+                                 <option value="Dividend">Dividend</option>
+                                 <option value="Transfer">Transfer</option>
+                               </select>
+                             </div>
+                             <div>
+                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                 Transaction Name
+                               </label>
+                               <input
+                                 type="text"
+                                 value={formData.transactionName}
+                                 onChange={(e) => handleInputChange('transactionName', e.target.value)}
+                                 style={{
+                                   width: '100%',
+                                   padding: '8px 12px',
+                                   border: '1px solid #ddd',
+                                   borderRadius: '4px',
+                                   fontSize: '14px'
+                                 }}
+                                 placeholder="Enter transaction name"
+                               />
+                             </div>
+                             <div>
+                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                 Last Transaction Number
+                               </label>
+                               <input
+                                 type="text"
+                                 value={formData.lastTransactionNumber}
+                                 onChange={(e) => handleInputChange('lastTransactionNumber', e.target.value)}
+                                 style={{
+                                   width: '100%',
+                                   padding: '8px 12px',
+                                   border: '1px solid #ddd',
+                                   borderRadius: '4px',
+                                   fontSize: '14px'
+                                 }}
+                                 placeholder="Enter last transaction number"
+                               />
+                             </div>
+                          </>
+                        ) : modules[modalIdx].title === 'Trustees' ? (
+                          <>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Trustee Code
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.trusteeCode}
+                                onChange={(e) => handleInputChange('trusteeCode', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter trustee code"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Active
+                              </label>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={formData.active}
+                                  onChange={(e) => handleInputChange('active', e.target.checked.toString())}
+                                  style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    cursor: 'pointer'
+                                  }}
+                                />
+                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
+                              </div>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Trustee Name
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.trusteeName}
+                                onChange={(e) => handleInputChange('trusteeName', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter trustee name"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Address
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.trusteeAddress}
+                                onChange={(e) => handleInputChange('trusteeAddress', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter address House no, Street Name"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Town
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.town}
+                                onChange={(e) => handleInputChange('town', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter your town"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                City
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.city}
+                                onChange={(e) => handleInputChange('city', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter your City, District"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Telephone Number
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.telephoneNumber}
+                                onChange={(e) => handleInputChange('telephoneNumber', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter telephone number"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Fax No
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.faxNo}
+                                onChange={(e) => handleInputChange('faxNo', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter fax number"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                E-mail
+                              </label>
+                              <input
+                                type="email"
+                                value={formData.email}
+                                onChange={(e) => handleInputChange('email', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter e-mail"
+                              />
+                            </div>
+                          </>
+                        ) : modules[modalIdx].title === 'Custodian' ? (
+                          <>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Custodian Code
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.custodianCode}
+                                onChange={(e) => handleInputChange('custodianCode', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter custodian code"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Active
+                              </label>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={formData.custodianActive}
+                                  onChange={(e) => handleInputChange('custodianActive', e.target.checked.toString())}
+                                  style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    cursor: 'pointer'
+                                  }}
+                                />
+                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
+                              </div>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Custodian Name
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.custodianName}
+                                onChange={(e) => handleInputChange('custodianName', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter custodian name"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Address 1
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.custodianAddress1}
+                                onChange={(e) => handleInputChange('custodianAddress1', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter address 1"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Address 2
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.custodianAddress2}
+                                onChange={(e) => handleInputChange('custodianAddress2', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter address 2"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Address 3
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.custodianAddress3}
+                                onChange={(e) => handleInputChange('custodianAddress3', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter address 3"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Telephone Number
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.custodianTelephoneNumber}
+                                onChange={(e) => handleInputChange('custodianTelephoneNumber', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter telephone number"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Fax No
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.custodianFaxNo}
+                                onChange={(e) => handleInputChange('custodianFaxNo', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter fax number"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                E-mail
+                              </label>
+                              <input
+                                type="email"
+                                value={formData.custodianEmail}
+                                onChange={(e) => handleInputChange('custodianEmail', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter e-mail"
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Bank Code
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.code}
+                                onChange={(e) => handleInputChange('code', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter bank code"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Description
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.description}
+                                onChange={(e) => handleInputChange('description', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter description"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Address
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.address}
+                                onChange={(e) => handleInputChange('address', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter address"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                District
+                              </label>
+                              <select
+                                value={formData.district}
+                                onChange={(e) => handleInputChange('district', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                              >
+                                <option value="">Select district</option>
+                                <option value="north">North District</option>
+                                <option value="south">South District</option>
+                                <option value="east">East District</option>
+                                <option value="west">West District</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Swift Code
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.swiftCode}
+                                onChange={(e) => handleInputChange('swiftCode', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px',
+                                  color: '#666',
+                                  backgroundColor: '#f5f5f5'
+                                }}
+                                placeholder="Read only field"
+                                readOnly
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Branch No
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.branchNo}
+                                onChange={(e) => handleInputChange('branchNo', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter branch number"
+                              />
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -784,19 +1245,29 @@ function Setup() {
                       justifyContent: 'center'
                     }}>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '' })}
                         style={{
                           padding: '8px 16px',
-                          background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+                          background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '4px',
+                          borderRadius: '8px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
                           fontSize: '14px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px'
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}>+</span>
@@ -806,16 +1277,26 @@ function Setup() {
                         onClick={handleSave}
                         style={{
                           padding: '8px 16px',
-                          background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)',
+                          background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '4px',
+                          borderRadius: '8px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
                           fontSize: '14px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px'
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}>💾</span>
@@ -828,13 +1309,23 @@ function Setup() {
                           background: 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '4px',
+                          borderRadius: '8px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
                           fontSize: '14px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px'
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}>🗑️</span>
@@ -847,32 +1338,52 @@ function Setup() {
                           background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '4px',
+                          borderRadius: '8px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
                           fontSize: '14px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px'
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}>🖨️</span>
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '' })}
                         style={{
                           padding: '8px 16px',
                           background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '4px',
+                          borderRadius: '8px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
                           fontSize: '14px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px'
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(107, 114, 128, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(107, 114, 128, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}>🗑️</span>
@@ -882,20 +1393,18 @@ function Setup() {
 
                     {/* Data Table */}
                     <div style={{ 
-                      flex: 1, 
                       background: 'white', 
                       borderRadius: '8px',
                       overflow: 'hidden',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                       display: 'flex',
                       flexDirection: 'column',
-                      height: '400px'
+                      minHeight: '250px',
+                      maxHeight: '350px'
                     }}>
                       <div style={{ 
-                        flex: 1,
-                        overflow: 'auto',
-                        minHeight: 0,
-                        padding: '16px'
+                        padding: '16px',
+                        height: '100%'
                       }}>
                         <CustomDataTable 
                           data={getTableData(modules[modalIdx].title)}

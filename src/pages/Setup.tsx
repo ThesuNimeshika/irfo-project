@@ -377,77 +377,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           </div>
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 8 }}>
-        <span style={{ fontSize: 12, marginBottom: 8, color: '#6b7280' }}>Showing {table.getRowModel().rows.length} of {data.length} results</span>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
-            disabled={!table.getCanPreviousPage()}
-            style={{
-              padding: '6px 12px',
-              fontSize: '11px',
-              fontWeight: 'medium',
-              color: table.getCanPreviousPage() ? 'white' : '#9ca3af',
-              background: table.getCanPreviousPage() ? '#3b82f6' : '#f3f4f6',
-              borderRadius: '6px',
-              border: `1px solid ${table.getCanPreviousPage() ? '#3b82f6' : '#e5e7eb'}`,
-              cursor: table.getCanPreviousPage() ? 'pointer' : 'not-allowed',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => {
-              if (table.getCanPreviousPage()) {
-                e.currentTarget.style.backgroundColor = '#2563eb';
-                e.currentTarget.style.borderColor = '#2563eb';
-              }
-            }}
-            onMouseLeave={e => {
-              if (table.getCanPreviousPage()) {
-                e.currentTarget.style.backgroundColor = '#3b82f6';
-                e.currentTarget.style.borderColor = '#3b82f6';
-              }
-            }}
-          >
-            <span style={{ fontSize: '12px' }}>‹</span>
-            Previous
-          </button>
-          <button
-            onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
-            disabled={!table.getCanNextPage()}
-            style={{
-              padding: '6px 12px',
-              fontSize: '11px',
-              fontWeight: 'medium',
-              color: table.getCanNextPage() ? 'white' : '#9ca3af',
-              background: table.getCanNextPage() ? '#3b82f6' : '#f3f4f6',
-              borderRadius: '6px',
-              border: `1px solid ${table.getCanNextPage() ? '#3b82f6' : '#e5e7eb'}`,
-              cursor: table.getCanNextPage() ? 'pointer' : 'not-allowed',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => {
-              if (table.getCanNextPage()) {
-                e.currentTarget.style.backgroundColor = '#2563eb';
-                e.currentTarget.style.borderColor = '#2563eb';
-              }
-            }}
-            onMouseLeave={e => {
-              if (table.getCanNextPage()) {
-                e.currentTarget.style.backgroundColor = '#3b82f6';
-                e.currentTarget.style.borderColor = '#3b82f6';
-              }
-            }}
-          >
-            Next
-            <span style={{ fontSize: '12px' }}>›</span>
-          </button>
-        </div>
-      </div>
+
     </div>
   );
 }

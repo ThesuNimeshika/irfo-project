@@ -82,14 +82,14 @@ const tableData = {
     { custodianCode: 'CU003', active: 'Yes', custodianName: 'Asia Pacific Custody', address1: '789 Finance Street', address2: 'Tower B', address3: 'Level 10', telephoneNumber: '+65-6123-4567', faxNo: '+65-6123-4568', email: 'asia@custody.sg' }
   ],
   'Postal Area': [
-    { code: 'PA001', area: 'Downtown', city: 'New York', zip: '10001' },
-    { code: 'PA002', area: 'Midtown', city: 'New York', zip: '10016' },
-    { code: 'PA003', area: 'Uptown', city: 'New York', zip: '10025' }
+    { postalCode: 'PA001', active: 'Yes', description: 'Downtown Area' },
+    { postalCode: 'PA002', active: 'Yes', description: 'Midtown Area' },
+    { postalCode: 'PA003', active: 'No', description: 'Uptown Area' }
   ],
   'Dividend Type': [
-    { code: 'DIV001', type: 'Cash Dividend', frequency: 'Quarterly' },
-    { code: 'DIV002', type: 'Stock Dividend', frequency: 'Annually' },
-    { code: 'DIV003', type: 'Special Dividend', frequency: 'One-time' }
+    { dividendType: 'DIV001', active: 'Yes', description: 'Cash Dividend' },
+    { dividendType: 'DIV002', active: 'Yes', description: 'Stock Dividend' },
+    { dividendType: 'DIV003', active: 'No', description: 'Special Dividend' }
   ],
   Funds: [
     { code: 'F001', name: 'Growth Fund', type: 'Equity', nav: '15.67' },
@@ -413,7 +413,13 @@ function Setup() {
     custodianAddress3: '',
     custodianTelephoneNumber: '',
     custodianFaxNo: '',
-    custodianEmail: ''
+    custodianEmail: '',
+    postalCode: '',
+    postalActive: false,
+    postalDescription: '',
+    dividendType: '',
+    dividendActive: false,
+    dividendDescription: ''
   });
 
   useEffect(() => {
@@ -1051,6 +1057,120 @@ function Setup() {
                               />
                             </div>
                           </>
+                        ) : modules[modalIdx].title === 'Postal Area' ? (
+                          <>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Postal Code
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.postalCode}
+                                onChange={(e) => handleInputChange('postalCode', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter postal code"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Active
+                              </label>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={formData.postalActive}
+                                  onChange={(e) => handleInputChange('postalActive', e.target.checked.toString())}
+                                  style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    cursor: 'pointer'
+                                  }}
+                                />
+                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
+                              </div>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Description
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.postalDescription}
+                                onChange={(e) => handleInputChange('postalDescription', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter description"
+                              />
+                            </div>
+                          </>
+                        ) : modules[modalIdx].title === 'Dividend Type' ? (
+                          <>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Dividend Type
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.dividendType}
+                                onChange={(e) => handleInputChange('dividendType', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter dividend type"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Active
+                              </label>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={formData.dividendActive}
+                                  onChange={(e) => handleInputChange('dividendActive', e.target.checked.toString())}
+                                  style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    cursor: 'pointer'
+                                  }}
+                                />
+                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
+                              </div>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Description
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.dividendDescription}
+                                onChange={(e) => handleInputChange('dividendDescription', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter description"
+                              />
+                            </div>
+                          </>
                         ) : (
                           <>
                             <div>
@@ -1181,7 +1301,7 @@ function Setup() {
                       justifyContent: 'center'
                     }}>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '' })}
                         style={{
                           padding: '8px 16px',
                           background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)',
@@ -1297,7 +1417,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '' })}
                         style={{
                           padding: '8px 16px',
                           background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',

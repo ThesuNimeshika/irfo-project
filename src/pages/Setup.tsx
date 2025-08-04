@@ -13,6 +13,26 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import type { SortingState, RowSelectionState } from "@tanstack/react-table";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import SystemCalendar from '../components/SystemCalendar';
+
+// Add custom styles for date picker
+const datePickerStyles = `
+  .date-picker-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+`;
+
+// Inject styles
+const styleSheet = document.createElement('style');
+styleSheet.type = 'text/css';
+styleSheet.innerText = datePickerStyles;
+document.head.appendChild(styleSheet);
 
 const moduleData = [
   { title: 'Bank', icon: '🏦' },
@@ -92,9 +112,9 @@ const tableData = {
     { dividendType: 'DIV003', active: 'No', description: 'Special Dividend' }
   ],
   Funds: [
-    { code: 'F001', name: 'Growth Fund', type: 'Equity', nav: '15.67' },
-    { code: 'F002', name: 'Income Fund', type: 'Bond', nav: '12.34' },
-    { code: 'F003', name: 'Balanced Fund', type: 'Mixed', nav: '18.92' }
+    { fund: 'F001', name: 'Growth Fund', manager: 'John Smith', trustee: 'Trust Corp', custodian: 'Global Custody', minValue: '10000', minUnits: '1000', suspenseAccount: 'SUS001', launchDate: '01/01/2024', fundType: 'Open Ended', ipoStartDate: '01/01/2024', ipoEndDate: '31/01/2024', certificateType: 'Digital', portfolioCode: 'PF001' },
+    { fund: 'F002', name: 'Income Fund', manager: 'Sarah Johnson', trustee: 'Fiduciary Ltd', custodian: 'Euro Custody', minValue: '5000', minUnits: '500', suspenseAccount: 'SUS002', launchDate: '15/02/2024', fundType: 'Close Ended', ipoStartDate: '15/02/2024', ipoEndDate: '15/03/2024', certificateType: 'Physical', portfolioCode: 'PF002' },
+    { fund: 'F003', name: 'Balanced Fund', manager: 'Michael Brown', trustee: 'Trustee Corp', custodian: 'Asia Custody', minValue: '7500', minUnits: '750', suspenseAccount: 'SUS003', launchDate: '01/03/2024', fundType: 'Open Ended', ipoStartDate: '01/03/2024', ipoEndDate: '31/03/2024', certificateType: 'Digital', portfolioCode: 'PF003' }
   ],
   Company: [
     { code: 'C001', name: 'ABC Corporation', sector: 'Technology', employees: '5000' },
@@ -385,6 +405,8 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
 function Setup() {
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [suspenseModalOpen, setSuspenseModalOpen] = useState(false);
+  const [systemCalendarOpen, setSystemCalendarOpen] = useState(false);
   const [formData, setFormData] = useState({
     code: '',
     description: '',
@@ -419,7 +441,22 @@ function Setup() {
     postalDescription: '',
     dividendType: '',
     dividendActive: false,
-    dividendDescription: ''
+    dividendDescription: '',
+    fund: '',
+    fundName: '',
+    manager: '',
+    trustee: '',
+    custodian: '',
+    minValue: '',
+    minUnits: '',
+    suspenseAccount: '',
+    launchDate: null as Date | null,
+    fundType: '',
+    ipoStartDate: null as Date | null,
+    ipoEndDate: null as Date | null,
+    certificateType: '',
+    portfolioCode: '',
+    maturityDate: null as Date | null
   });
 
   useEffect(() => {
@@ -435,6 +472,10 @@ function Setup() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleDateChange = (field: string, date: Date | null) => {
+    setFormData(prev => ({ ...prev, [field]: date }));
   };
 
   const handleSave = () => {
@@ -550,8 +591,22 @@ function Setup() {
                     margin: '3px'
                   }}
                   tabIndex={0}
-                  onClick={() => setModalIdx(idx)}
-                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModalIdx(idx); }}
+                  onClick={() => {
+                    if (mod.title === 'System Calendar') {
+                      setSystemCalendarOpen(true);
+                    } else {
+                      setModalIdx(idx);
+                    }
+                  }}
+                  onKeyDown={e => { 
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      if (mod.title === 'System Calendar') {
+                        setSystemCalendarOpen(true);
+                      } else {
+                        setModalIdx(idx);
+                      }
+                    }
+                  }}
                 >
                   <div style={{ fontSize: '20px', marginBottom: '2px' }}>{mod.icon}</div>
                   <div style={{ 
@@ -631,7 +686,7 @@ function Setup() {
                   >
                     ×
                   </button>
-                  </div>
+                </div>
 
                   {/* Content */}
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', overflow: 'auto', maxHeight: 'calc(98vh - 120px)' }}>
@@ -667,7 +722,7 @@ function Setup() {
                                  }}
                                  placeholder="Enter transaction code"
                                />
-                             </div>
+              </div>
                              <div>
                                <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
                                  Transaction Type
@@ -1171,6 +1226,354 @@ function Setup() {
                               />
                             </div>
                           </>
+                        ) : modules[modalIdx].title === 'Funds' ? (
+                          <>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Fund
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.fund}
+                                onChange={(e) => handleInputChange('fund', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter Fund"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Name
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.fundName}
+                                onChange={(e) => handleInputChange('fundName', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter Name"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Manager
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.manager}
+                                onChange={(e) => handleInputChange('manager', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter Manager"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Trustee
+                              </label>
+                              <select
+                                value={formData.trustee}
+                                onChange={(e) => handleInputChange('trustee', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                              >
+                                <option value="">Select Trustee</option>
+                                <option value="Trust Corp">Trust Corp</option>
+                                <option value="Fiduciary Ltd">Fiduciary Ltd</option>
+                                <option value="Trustee Corp">Trustee Corp</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Custodian
+                              </label>
+                              <select
+                                value={formData.custodian}
+                                onChange={(e) => handleInputChange('custodian', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                              >
+                                <option value="">Select Custodian</option>
+                                <option value="Global Custody">Global Custody</option>
+                                <option value="Euro Custody">Euro Custody</option>
+                                <option value="Asia Custody">Asia Custody</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Min Value of Investment
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.minValue}
+                                onChange={(e) => handleInputChange('minValue', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter Min Value"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Min No of Units
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.minUnits}
+                                onChange={(e) => handleInputChange('minUnits', e.target.value)}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
+                                }}
+                                placeholder="Enter Units"
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Fund Suspense Account
+                              </label>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setSuspenseModalOpen(true)}
+                                  style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '4px',
+                                    border: '1px solid #ddd',
+                                    backgroundColor: '#f8f9fa',
+                                    color: '#333',
+                                    fontSize: '14px',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#e9ecef';
+                                    e.currentTarget.style.borderColor = '#adb5bd';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#f8f9fa';
+                                    e.currentTarget.style.borderColor = '#ddd';
+                                  }}
+                                >
+                                  A
+                                </button>
+                                <input
+                                  type="text"
+                                  value={formData.suspenseAccount}
+                                  onChange={(e) => handleInputChange('suspenseAccount', e.target.value)}
+                                  style={{
+                                    flex: 1,
+                                    padding: '8px 12px',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '4px',
+                                    fontSize: '14px'
+                                  }}
+                                  placeholder="Enter Suspense Account"
+                                />
+                              </div>
+                            </div>
+                                                           <div>
+                                 <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                   Launch Date
+                                 </label>
+                                 <DatePicker
+                                   selected={formData.launchDate}
+                                   onChange={(date) => handleDateChange('launchDate', date)}
+                                   dateFormat="dd/MM/yyyy"
+                                   placeholderText="dd/mm/yyyy"
+                                   className="date-picker-input"
+                                 />
+                               </div>
+                            <div>
+                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                Fund Type
+                              </label>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
+                                  <input
+                                    type="radio"
+                                    name="fundType"
+                                    value="Open Ended"
+                                    checked={formData.fundType === 'Open Ended'}
+                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      cursor: 'pointer'
+                                    }}
+                                  />
+                                  Open Ended
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
+                                  <input
+                                    type="radio"
+                                    name="fundType"
+                                    value="Close Ended"
+                                    checked={formData.fundType === 'Close Ended'}
+                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      cursor: 'pointer'
+                                    }}
+                                  />
+                                  Close Ended
+                                </label>
+                              </div>
+                            </div>
+                                                           <div>
+                                 <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                   IPO Starting Date
+                                 </label>
+                                 <DatePicker
+                                   selected={formData.ipoStartDate}
+                                   onChange={(date) => handleDateChange('ipoStartDate', date)}
+                                   dateFormat="dd/MM/yyyy"
+                                   placeholderText="dd/mm/yyyy"
+                                   className="date-picker-input"
+                                 />
+                               </div>
+                                                           <div>
+                                 <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                   IPO Ending Date
+                                 </label>
+                                 <DatePicker
+                                   selected={formData.ipoEndDate}
+                                   onChange={(date) => handleDateChange('ipoEndDate', date)}
+                                   dateFormat="dd/MM/yyyy"
+                                   placeholderText="dd/mm/yyyy"
+                                   className="date-picker-input"
+                                 />
+                               </div>
+                            {formData.fundType === 'Close Ended' ? (
+                              <>
+                                <div>
+                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                    Maturity Date
+                                  </label>
+                                  <DatePicker
+                                    selected={formData.maturityDate}
+                                    onChange={(date) => handleDateChange('maturityDate', date)}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="dd/mm/yyyy"
+                                    className="date-picker-input"
+                                  />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                    Certificate Type
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={formData.certificateType}
+                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
+                                    style={{
+                                      width: '100%',
+                                      padding: '8px 12px',
+                                      border: '1px solid #ddd',
+                                      borderRadius: '4px',
+                                      fontSize: '14px'
+                                    }}
+                                    placeholder="Enter Certificate Type"
+                                  />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                    Portfolio Code
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={formData.portfolioCode}
+                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
+                                    style={{
+                                      width: '100%',
+                                      padding: '8px 12px',
+                                      border: '1px solid #ddd',
+                                      borderRadius: '4px',
+                                      fontSize: '14px'
+                                    }}
+                                    placeholder="Enter PF Code"
+                                  />
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div>
+                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                    Certificate Type
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={formData.certificateType}
+                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
+                                    style={{
+                                      width: '100%',
+                                      padding: '8px 12px',
+                                      border: '1px solid #ddd',
+                                      borderRadius: '4px',
+                                      fontSize: '14px'
+                                    }}
+                                    placeholder="Enter Certificate Type"
+                                  />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                    Portfolio Code
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={formData.portfolioCode}
+                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
+                                    style={{
+                                      width: '100%',
+                                      padding: '8px 12px',
+                                      border: '1px solid #ddd',
+                                      borderRadius: '4px',
+                                      fontSize: '14px'
+                                    }}
+                                    placeholder="Enter PF Code"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </>
                         ) : (
                           <>
                             <div>
@@ -1190,7 +1593,7 @@ function Setup() {
                                 }}
                                 placeholder="Enter bank code"
                               />
-                            </div>
+          </div>
                             <div>
                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
                                 Description
@@ -1301,7 +1704,7 @@ function Setup() {
                       justifyContent: 'center'
                     }}>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
                         style={{
                           padding: '8px 16px',
                           background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)',
@@ -1417,7 +1820,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
                         style={{
                           padding: '8px 16px',
                           background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',
@@ -1485,6 +1888,346 @@ function Setup() {
               </div>,
               document.body
             )}
+
+            {/* Suspense Account Modal */}
+            {suspenseModalOpen && createPortal(
+              <div style={{
+                position: 'fixed',
+                top: 0, left: 0, right: 0, bottom: 0,
+                background: 'rgba(0,0,0,0.5)',
+                zIndex: 999999999,
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+                padding: isMobile ? 16 : 32,
+                paddingTop: '20px',
+                isolation: 'isolate'
+              }}
+                onClick={() => setSuspenseModalOpen(false)}
+              >
+                <div
+                  style={{
+                    background: '#f5f5f5',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 32px #0003',
+                    width: isMobile ? '90vw' : '60vw',
+                    maxHeight: isMobile ? '90vh' : '80vh',
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    marginTop: '0px',
+                    zIndex: 999999999
+                  }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  {/* Header */}
+                  <div style={{
+                    background: 'linear-gradient(90deg, #059669 0%, #10b981 100%)',
+                    color: 'white',
+                    padding: '12px 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderRadius: '8px 8px 0 0',
+                    minHeight: '50px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '20px' }}>🏦</span>
+                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>Suspense Account Management</span>
+                    </div>
+                    <button
+                      onClick={() => setSuspenseModalOpen(false)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        fontSize: '20px',
+                        color: 'white',
+                        cursor: 'pointer',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', overflow: 'auto' }}>
+                    {/* Input Fields Section */}
+                    <div style={{ 
+                      background: 'white', 
+                      padding: '20px', 
+                      borderRadius: '8px', 
+                      marginBottom: '20px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    }}>
+                      <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', 
+                        gap: '16px' 
+                      }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Account Code
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px'
+                            }}
+                            placeholder="Enter account code"
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Account Name
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px'
+                            }}
+                            placeholder="Enter account name"
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Account Type
+                          </label>
+                          <select
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid #ddd',
+                              borderRadius: '4px',
+                              fontSize: '14px'
+                            }}
+                          >
+                            <option value="">Select account type</option>
+                            <option value="asset">Asset</option>
+                            <option value="liability">Liability</option>
+                            <option value="equity">Equity</option>
+                            <option value="revenue">Revenue</option>
+                            <option value="expense">Expense</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                            Status
+                          </label>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <input
+                              type="checkbox"
+                              style={{
+                                width: '16px',
+                                height: '16px',
+                                cursor: 'pointer'
+                              }}
+                            />
+                            <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div style={{
+                      display: 'flex',
+                      gap: '12px',
+                      justifyContent: 'center',
+                      padding: '16px 0'
+                    }}>
+                      <button
+                        style={{
+                          padding: '10px 20px',
+                          background: 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
+                        }}
+                      >
+                        <span style={{ fontSize: '16px' }}>➕</span>
+                        New
+                      </button>
+                      <button
+                        style={{
+                          padding: '10px 20px',
+                          background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
+                        }}
+                      >
+                        <span style={{ fontSize: '16px' }}>💾</span>
+                        Save
+                      </button>
+                      <button
+                        style={{
+                          padding: '10px 20px',
+                          background: 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
+                        }}
+                      >
+                        <span style={{ fontSize: '16px' }}>🗑️</span>
+                        Delete
+                      </button>
+                      <button
+                        style={{
+                          padding: '10px 20px',
+                          background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.3)';
+                        }}
+                      >
+                        <span style={{ fontSize: '16px' }}>🖨️</span>
+                        Print
+                      </button>
+                      <button
+                        onClick={() => setSuspenseModalOpen(false)}
+                        style={{
+                          padding: '10px 20px',
+                          background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(107, 114, 128, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(107, 114, 128, 0.3)';
+                        }}
+                      >
+                        <span style={{ fontSize: '16px' }}>❌</span>
+                        Close
+                      </button>
+                    </div>
+
+                    {/* Data Table */}
+                    <div style={{ 
+                      background: 'white', 
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      minHeight: '250px',
+                      maxHeight: '350px'
+                    }}>
+                      <div style={{ 
+                        padding: '16px',
+                        height: '100%'
+                      }}>
+                        <CustomDataTable 
+                          data={[
+                            { accountCode: 'SUS001', accountName: 'Suspense Account 1', accountType: 'Asset', status: 'Active' },
+                            { accountCode: 'SUS002', accountName: 'Suspense Account 2', accountType: 'Liability', status: 'Active' },
+                            { accountCode: 'SUS003', accountName: 'Suspense Account 3', accountType: 'Asset', status: 'Inactive' }
+                          ]}
+                          columns={['accountCode', 'accountName', 'accountType', 'status']}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>,
+              document.body
+            )}
+
+            {/* System Calendar Modal */}
+            <SystemCalendar
+              isOpen={systemCalendarOpen}
+              onClose={() => setSystemCalendarOpen(false)}
+            />
           </div>
         </div>
       </div>

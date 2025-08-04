@@ -212,6 +212,15 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
   if (!isOpen) return null;
 
   return createPortal(
+    <>
+      <style>
+        {`
+          .date-modal-input::placeholder {
+            color: #000000 !important;
+            opacity: 0.8;
+          }
+        `}
+      </style>
     <div style={{
       position: 'fixed',
       top: 0,
@@ -228,16 +237,16 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
     }}
     onClick={onClose}
     >
-      <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        borderRadius: '20px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-        width: '90vw',
-        maxWidth: '500px',
-        maxHeight: '90vh',
-        overflow: 'hidden',
-        position: 'relative'
-      }}
+             <div style={{
+         background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+         borderRadius: '20px',
+         boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+         width: '90vw',
+         maxWidth: '500px',
+         maxHeight: '90vh',
+         overflow: 'hidden',
+         position: 'relative'
+       }}
       onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -253,42 +262,42 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <span style={{ fontSize: '24px' }}>📅</span>
             <div>
-              <h2 style={{ 
-                color: 'white', 
-                margin: 0, 
-                fontSize: '20px', 
-                fontWeight: 'bold' 
-              }}>
-                System Calendar
-              </h2>
-              <p style={{ 
-                color: 'rgba(255,255,255,0.8)', 
-                margin: 0, 
-                fontSize: '14px' 
-              }}>
-                Manage holidays and weekends
-              </p>
+                             <h2 style={{ 
+                 color: '#1565c0', 
+                 margin: 0, 
+                 fontSize: '20px', 
+                 fontWeight: 'bold' 
+               }}>
+                 System Calendar
+               </h2>
+               <p style={{ 
+                 color: '#1976d2', 
+                 margin: 0, 
+                 fontSize: '14px' 
+               }}>
+                 Manage holidays and weekends
+               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              borderRadius: '50%',
-              width: '40px',
-              height: '40px',
-              color: 'white',
-              fontSize: '20px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-          >
+                     <button
+             onClick={onClose}
+             style={{
+               background: 'rgba(21,101,192,0.2)',
+               border: 'none',
+               borderRadius: '50%',
+               width: '40px',
+               height: '40px',
+               color: '#1565c0',
+               fontSize: '20px',
+               cursor: 'pointer',
+               display: 'flex',
+               alignItems: 'center',
+               justifyContent: 'center',
+               transition: 'all 0.2s ease'
+             }}
+             onMouseEnter={e => e.currentTarget.style.background = 'rgba(21,101,192,0.3)'}
+             onMouseLeave={e => e.currentTarget.style.background = 'rgba(21,101,192,0.2)'}
+           >
             ×
           </button>
         </div>
@@ -301,48 +310,48 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           justifyContent: 'space-between',
           background: 'rgba(255,255,255,0.05)'
         }}>
-          <button
-            onClick={() => navigateMonth('prev')}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '8px 16px',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '16px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-          >
-            ‹
-          </button>
-          <h3 style={{ 
-            color: 'white', 
-            margin: 0, 
-            fontSize: '18px', 
-            fontWeight: 'bold' 
-          }}>
-            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-          </h3>
-          <button
-            onClick={() => navigateMonth('next')}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '8px 16px',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '16px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-          >
-            ›
-          </button>
+                     <button
+             onClick={() => navigateMonth('prev')}
+             style={{
+               background: 'rgba(255,255,255,0.2)',
+               border: 'none',
+               borderRadius: '8px',
+               padding: '8px 16px',
+               color: '#000000',
+               cursor: 'pointer',
+               fontSize: '16px',
+               transition: 'all 0.2s ease'
+             }}
+             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+             onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+           >
+             ‹
+           </button>
+                     <h3 style={{ 
+             color: '#1565c0', 
+             margin: 0, 
+             fontSize: '18px', 
+             fontWeight: 'bold' 
+           }}>
+             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+           </h3>
+                     <button
+             onClick={() => navigateMonth('next')}
+             style={{
+               background: 'rgba(255,255,255,0.2)',
+               border: 'none',
+               borderRadius: '8px',
+               padding: '8px 16px',
+               color: '#000000',
+               cursor: 'pointer',
+               fontSize: '16px',
+               transition: 'all 0.2s ease'
+             }}
+             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+             onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+           >
+             ›
+           </button>
         </div>
 
         {/* Calendar Grid */}
@@ -354,17 +363,17 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
             gap: '8px',
             marginBottom: '10px'
           }}>
-            {dayNames.map(day => (
-              <div key={day} style={{
-                textAlign: 'center',
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                padding: '8px'
-              }}>
-                {day}
-              </div>
-            ))}
+                         {dayNames.map(day => (
+               <div key={day} style={{
+                 textAlign: 'center',
+                 color: '#1976d2',
+                 fontSize: '14px',
+                 fontWeight: 'bold',
+                 padding: '8px'
+               }}>
+                 {day}
+               </div>
+             ))}
           </div>
 
           {/* Calendar Dates */}
@@ -387,23 +396,23 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                   fontWeight: 'bold',
                   transition: 'all 0.2s ease',
                   position: 'relative',
-                  background: dateObj.isSelected 
-                    ? 'rgba(255,255,255,0.9)' 
-                    : dateObj.isToday 
-                    ? 'rgba(255,255,255,0.3)' 
-                    : dateObj.isHoliday 
-                    ? 'rgba(255,107,107,0.8)' 
-                    : dateObj.isWeekend 
-                    ? 'rgba(255,193,7,0.3)' 
-                    : dateObj.isCurrentMonth 
-                    ? 'rgba(255,255,255,0.1)' 
-                    : 'rgba(255,255,255,0.05)',
-                  color: dateObj.isSelected 
-                    ? '#333' 
-                    : dateObj.isCurrentMonth 
-                    ? 'white' 
-                    : 'rgba(255,255,255,0.5)',
-                  border: dateObj.isToday ? '2px solid rgba(255,255,255,0.8)' : 'none'
+                                     background: dateObj.isSelected 
+                     ? '#1565c0' 
+                     : dateObj.isToday 
+                     ? '#42a5f5' 
+                     : dateObj.isHoliday 
+                     ? '#ef5350' 
+                     : dateObj.isWeekend 
+                     ? '#ffb74d' 
+                     : dateObj.isCurrentMonth 
+                     ? '#e3f2fd' 
+                     : '#f5f5f5',
+                   color: dateObj.isSelected 
+                     ? 'white' 
+                     : dateObj.isCurrentMonth 
+                     ? '#1565c0' 
+                     : '#9e9e9e',
+                   border: dateObj.isToday ? '2px solid #42a5f5' : 'none'
                 }}
                 onClick={() => handleDateClick(dateObj.date)}
                 onContextMenu={(e) => {
@@ -417,28 +426,28 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                 title={`${dateObj.date.toDateString()}\nRight-click: Toggle holiday\nDouble-click: Toggle weekend`}
               >
                 {dateObj.date.getDate()}
-                {dateObj.isHoliday && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '2px',
-                    right: '2px',
-                    fontSize: '8px',
-                    color: 'white'
-                  }}>
-                    🎉
-                  </span>
-                )}
-                {dateObj.isWeekend && !dateObj.isHoliday && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '2px',
-                    right: '2px',
-                    fontSize: '8px',
-                    color: 'white'
-                  }}>
-                    🌅
-                  </span>
-                )}
+                                 {dateObj.isHoliday && (
+                   <span style={{
+                     position: 'absolute',
+                     top: '2px',
+                     right: '2px',
+                     fontSize: '8px',
+                     color: '#1565c0'
+                   }}>
+                     🎉
+                   </span>
+                 )}
+                 {dateObj.isWeekend && !dateObj.isHoliday && (
+                   <span style={{
+                     position: 'absolute',
+                     top: '2px',
+                     right: '2px',
+                     fontSize: '8px',
+                     color: '#1565c0'
+                   }}>
+                     🌅
+                   </span>
+                 )}
               </div>
             ))}
           </div>
@@ -456,14 +465,14 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
             alignItems: 'center',
             marginBottom: '15px'
           }}>
-            <h4 style={{ 
-              color: 'white', 
-              margin: 0, 
-              fontSize: '16px', 
-              fontWeight: 'bold' 
-            }}>
-              Holiday & Weekend Management
-            </h4>
+                         <h4 style={{ 
+               color: '#1565c0', 
+               margin: 0, 
+               fontSize: '16px', 
+               fontWeight: 'bold' 
+             }}>
+               Holiday & Weekend Management
+             </h4>
             <button
               onClick={() => setShowAddForm(!showAddForm)}
               style={{
@@ -600,14 +609,14 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
              background: 'rgba(255,255,255,0.05)',
              borderRadius: '6px'
            }}>
-             <h5 style={{ 
-               color: 'white', 
-               margin: '0 0 10px 0', 
-               fontSize: '14px', 
-               fontWeight: 'bold' 
-             }}>
-               {new Date().getFullYear()} Holidays
-             </h5>
+                            <h5 style={{ 
+                 color: '#1565c0', 
+                 margin: '0 0 10px 0', 
+                 fontSize: '14px', 
+                 fontWeight: 'bold' 
+               }}>
+                 {new Date().getFullYear()} Holidays
+               </h5>
              <div style={{
                maxHeight: '100px',
                overflowY: 'auto'
@@ -672,14 +681,14 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
              borderRadius: '6px',
              padding: '10px'
            }}>
-             <h5 style={{ 
-               color: 'white', 
-               margin: '0 0 10px 0', 
-               fontSize: '14px', 
-               fontWeight: 'bold' 
-             }}>
-               All Entries
-             </h5>
+                            <h5 style={{ 
+                 color: '#1565c0', 
+                 margin: '0 0 10px 0', 
+                 fontSize: '14px', 
+                 fontWeight: 'bold' 
+               }}>
+                 All Entries
+               </h5>
              {holidayWeekendList.length === 0 ? (
                <div style={{ 
                  color: 'rgba(255,255,255,0.6)', 
@@ -754,8 +763,8 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           borderTop: '1px solid rgba(255,255,255,0.2)',
           display: 'flex',
           justifyContent: 'space-around',
-          fontSize: '12px',
-          color: 'rgba(255,255,255,0.8)'
+                     fontSize: '12px',
+           color: '#1976d2'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <div style={{
@@ -829,37 +838,37 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                  </div>
        </div>
 
-       {/* Date Selection Modal */}
-       {showDateModal && selectedDateForModal && createPortal(
-         <div style={{
-           position: 'fixed',
-           top: 0,
-           left: 0,
-           right: 0,
-           bottom: 0,
-           background: 'rgba(0,0,0,0.7)',
-           zIndex: 9999999999,
-           display: 'flex',
-           alignItems: 'center',
-           justifyContent: 'center',
-           padding: '20px',
-           isolation: 'isolate'
-         }}
-         onClick={() => {
-           setShowDateModal(false);
-           setSelectedDateForModal(null);
-           setDateModalDescription('');
-         }}
-         >
-           <div style={{
-             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-             borderRadius: '16px',
-             boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-             width: '90vw',
-             maxWidth: '400px',
-             padding: '24px',
-             position: 'relative'
-           }}
+               {/* Date Selection Modal */}
+        {showDateModal && selectedDateForModal && createPortal(
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.7)',
+            zIndex: 9999999999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            isolation: 'isolate'
+          }}
+          onClick={() => {
+            setShowDateModal(false);
+            setSelectedDateForModal(null);
+            setDateModalDescription('');
+          }}
+          >
+                       <div style={{
+              background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+              borderRadius: '16px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+              width: '90vw',
+              maxWidth: '400px',
+              padding: '24px',
+              position: 'relative'
+            }}
            onClick={e => e.stopPropagation()}
            >
              <div style={{
@@ -868,14 +877,14 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                justifyContent: 'space-between',
                marginBottom: '20px'
              }}>
-               <h3 style={{ 
-                 color: 'white', 
-                 margin: 0, 
-                 fontSize: '18px', 
-                 fontWeight: 'bold' 
-               }}>
-                 Add Date: {selectedDateForModal.toDateString()}
-               </h3>
+                               <h3 style={{ 
+                  color: '#1565c0', 
+                  margin: 0, 
+                  fontSize: '18px', 
+                  fontWeight: 'bold' 
+                }}>
+                  Add Date: {selectedDateForModal.toDateString()}
+                </h3>
                <button
                  onClick={() => {
                    setShowDateModal(false);
@@ -904,36 +913,37 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
              </div>
 
              <div style={{ marginBottom: '20px' }}>
-               <label style={{ 
-                 color: 'rgba(255,255,255,0.9)', 
-                 fontSize: '14px', 
-                 marginBottom: '8px',
-                 display: 'block',
-                 fontWeight: 'bold'
-               }}>
-                 Description
-               </label>
-               <input
-                 type="text"
-                 value={dateModalDescription}
-                 onChange={(e) => setDateModalDescription(e.target.value)}
-                 placeholder="Enter description (e.g., New Year Day, Company Holiday)"
-                 style={{
-                   width: '100%',
-                   padding: '12px 16px',
-                   border: '1px solid rgba(255,255,255,0.3)',
-                   borderRadius: '8px',
-                   background: 'rgba(255,255,255,0.1)',
-                   color: 'white',
-                   fontSize: '14px',
-                   boxSizing: 'border-box'
-                 }}
-                 onKeyPress={(e) => {
-                   if (e.key === 'Enter' && dateModalDescription.trim()) {
-                     handleAddFromModal('holiday');
-                   }
-                 }}
-               />
+                               <label style={{ 
+                  color: '#000000', 
+                  fontSize: '14px', 
+                  marginBottom: '8px',
+                  display: 'block',
+                  fontWeight: 'bold'
+                }}>
+                  Description
+                </label>
+                                               <input
+                  type="text"
+                  value={dateModalDescription}
+                  onChange={(e) => setDateModalDescription(e.target.value)}
+                  placeholder="Enter description (e.g., New Year Day, Company Holiday)"
+                  className="date-modal-input"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    borderRadius: '8px',
+                    background: 'rgba(255,255,255,0.1)',
+                    color: 'white',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && dateModalDescription.trim()) {
+                      handleAddFromModal('holiday');
+                    }
+                  }}
+                />
              </div>
 
              <div style={{
@@ -971,8 +981,8 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                    }
                  }}
                >
-                 <span style={{ fontSize: '16px' }}>🎉</span>
-                 Add as Holiday
+                                   <span style={{ fontSize: '16px' }}>🎉</span>
+                  <span style={{ color: '#000000' }}>Add as Holiday</span>
                </button>
                <button
                  onClick={() => handleAddFromModal('weekend')}
@@ -1004,17 +1014,18 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                    }
                  }}
                >
-                 <span style={{ fontSize: '16px' }}>🌅</span>
-                 Mark as Weekend
+                                   <span style={{ fontSize: '16px' }}>🌅</span>
+                  <span style={{ color: '#000000' }}>Mark as Weekend</span>
                </button>
              </div>
            </div>
-         </div>,
-         document.body
-       )}
-     </div>,
-     document.body
-   );
- };
+                   </div>,
+          document.body
+        )}
+      </div>
+    </>,
+    document.body
+  );
+};
 
 export default SystemCalendar; 

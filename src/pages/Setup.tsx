@@ -1,6 +1,7 @@
 import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';
+import '../Setup.css';
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -263,24 +264,16 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
   });
 
   return (
-    <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 0, marginTop: 0 }}>
-      <div className="flex items-center justify-between" style={{ marginBottom: 0 }}>
-        <div className="flex items-center space-x-2">
+    <div className="setup-custom-table">
+      <div className="setup-table-header">
+        <div className="setup-table-controls">
           {/* Search */}
           <input
             type="text"
             placeholder="Search..."
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            style={{
-              width: '200px',
-              padding: '6px 12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              fontSize: '12px',
-              background: 'white',
-              marginRight: '8px'
-            }}
+            className="setup-table-search"
           />
           {/* Shortlist Dropdown */}
           <select
@@ -293,14 +286,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                 pageIndex: 0, // Reset to first page when changing page size
               }));
             }}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              fontSize: '12px',
-              background: 'white',
-              marginRight: '8px'
-            }}
+            className="setup-table-shortlist"
           >
             {[3, 5, 10, 15].map(pageSize => (
               <option key={pageSize} value={pageSize}>
@@ -308,38 +294,24 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
               </option>
             ))}
           </select>
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800" style={{ fontSize: 12 }}>
+          <span className="setup-table-records">
             {data.length} Records
           </span>
         </div>
       </div>
-      <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, minHeight: '250px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div className="setup-table-wrapper">
+        <div className="setup-table-inner">
                       {/* Fixed Header */}
-            <div style={{ background: '#f3f4f6', borderBottom: '2px solid #d1d5db', flexShrink: 0 }}>
-              <div style={{ minWidth: '100%' }}>
-                <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+            <div className="setup-table-fixed-header">
+              <div className="setup-table-header-wrapper">
+                <table className="setup-table-header-table">
                 <thead>
                   {table.getHeaderGroups().map(headerGroup => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map(header => (
                         <th
                           key={header.id}
-                          style={{
-                            padding: '12px 8px',
-                            textAlign: 'left',
-                            fontWeight: 'bold',
-                            textTransform: 'uppercase',
-                            fontSize: '12px',
-                            background: '#f3f4f6',
-                            cursor: 'pointer',
-                            borderBottom: '2px solid #d1d5db',
-                            width: `${100 / columns.length}%`,
-                            wordWrap: 'break-word',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            height: '40px',
-                          }}
+                          className="setup-table-header-th"
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           {flexRender(
@@ -360,14 +332,14 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           </div>
           
                       {/* Scrollable Body */}
-            <div style={{ flex: 1, overflowY: 'auto', background: 'white', minHeight: '150px', maxHeight: '250px' }}>
-              <div style={{ minWidth: '100%' }}>
-                <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+            <div className="setup-table-scrollable-body">
+              <div className="setup-table-body-wrapper">
+                <table className="setup-table-body-table">
                 <tbody>
                   {table.getRowModel().rows.map(row => (
                     <tr
                       key={row.id}
-                      className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                      className="setup-table-body-tr"
                       onClick={() => {
                         console.log('Selected row:', row.original);
                         alert(`Selected: ${JSON.stringify(row.original)}`);
@@ -376,15 +348,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                       {row.getVisibleCells().map(cell => (
                         <td 
                           key={cell.id} 
-                          className="px-3 py-4 text-sm text-gray-900"
-                          style={{
-                            width: `${100 / columns.length}%`,
-                            wordWrap: 'break-word',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            padding: '12px 8px',
-                            height: '40px'
-                          }}
+                          className="setup-table-body-td"
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
@@ -512,84 +476,19 @@ function Setup() {
       <div className="navbar-fixed-wrapper">
         <Navbar />
       </div>
-      <div className="home-main-layout" style={{ 
-        marginTop: 0, 
-        paddingTop: 0, 
-        display: 'flex', 
-        flexDirection: 'row', 
-        height: '100vh', 
-        minHeight: 'unset', 
-        overflow: 'hidden',
-        marginBottom: 0,
-        background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)'
-      }}>
+      <div className="setup-main-layout">
         {/* Sidebar left-aligned, fixed width on desktop only */}
         <div className="home-sidebar-container">
           <Sidebar />
         </div>
         {/* Main content area */}
-        <div style={{ 
-          flex: 1, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: 0, 
-          height: '100vh', 
-          overflow: 'auto', 
-          padding: 0,
-          marginBottom: 0,
-          paddingTop: '50px'
-        }}>
-          <div className="setup-main-card magical-bg animated-bg" style={{ 
-            borderRadius: 16, 
-            background: 'linear-gradient(120deg, rgba(255,255,255,0.99) 85%, rgba(79,70,229,0.06) 100%), linear-gradient(100deg, rgba(217,70,239,0.04) 0%, rgba(245,158,66,0.04) 100%)', 
-            boxShadow: '0 6px 32px 0 rgba(80, 80, 120, 0.13)', 
-            padding: 24, 
-            minHeight: 0, 
-            marginBottom: 0, 
-            flex: 1, 
-            display: 'flex', 
-            flexDirection: 'column',
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-            height: '100vh',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1.5px solid rgba(80,80,120,0.13)',
-            backdropFilter: 'blur(2px)'
-          }}>
-            <div className="setup-modules-grid" style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(6, 1fr)',
-              gridTemplateRows: 'repeat(5, 1fr)',
-              gap: '14px', 
-              width: '88%', 
-              height: '70%',
-              alignContent: 'center',
-              justifyContent: 'center',
-              padding: '18px',
-              margin: '0 auto'
-            }}>
+        <div className="setup-main-content">
+          <div className="setup-main-card magical-bg animated-bg">
+            <div className="setup-modules-grid">
               {modules.map((mod, idx) => (
                 <div
                   key={idx}
                   className="setup-module-card"
-                  style={{ 
-                    background: '#f8fafc', 
-                    borderRadius: 8, 
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)', 
-                    padding: '8px', 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    height: '100%',
-                    fontSize: '12px', 
-                    cursor: 'pointer', 
-                    transition: 'box-shadow 0.2s, transform 0.2s', 
-                    outline: 'none',
-                    border: '1px solid #e5e7eb',
-                    margin: '3px'
-                  }}
                   tabIndex={0}
                   onClick={() => {
                     if (mod.title === 'System Calendar') {
@@ -608,118 +507,50 @@ function Setup() {
                     }
                   }}
                 >
-                  <div style={{ fontSize: '20px', marginBottom: '2px' }}>{mod.icon}</div>
-                  <div style={{ 
-                    fontWeight: 600, 
-                    fontSize: '11px', 
-                    textAlign: 'center',
-                    lineHeight: 1.1,
-                    wordBreak: 'break-word',
-                    color: '#333'
-                  }}>{mod.title}</div>
+                  <div className="setup-module-icon">{mod.icon}</div>
+                  <div className="setup-module-title">{mod.title}</div>
                 </div>
               ))}
             </div>
             
             {/* Comprehensive Modal */}
             {modalIdx !== null && createPortal(
-              <div style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                background: 'rgba(0,0,0,0.5)',
-                zIndex: 99999999,
-                display: 'flex',
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-                padding: isMobile ? 16 : 32,
-                paddingTop: '20px',
-                isolation: 'isolate'
-              }}
+              <div className={`setup-modal-overlay ${isMobile ? 'mobile' : ''}`}
                 onClick={() => setModalIdx(null)}
               >
-                <div
-                  style={{
-                    background: '#f5f5f5',
-                    borderRadius: '0 0 8px 8px',
-                    boxShadow: '0 4px 32px #0003',
-                    width: isMobile ? '95vw' : '80vw',
-                    maxHeight: isMobile ? '98vh' : '98vh',
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'hidden',
-                    marginTop: '0px',
-                    zIndex: 99999999
-                  }}
+                <div className={`setup-modal-container ${isMobile ? 'mobile' : ''}`}
                   onClick={e => e.stopPropagation()}
                 >
                   {/* Header */}
-                  <div style={{
-                    background: 'linear-gradient(90deg, #4f46e5 0%, #d946ef 100%)',
-                    color: 'white',
-                    padding: '8px 16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderTopLeftRadius: 0,
-                    borderTopRightRadius: 0,
-                    minHeight: '40px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '18px' }}>{modules[modalIdx].icon}</span>
-                      <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{modules[modalIdx].title} Details</span>
+                  <div className="setup-modal-header">
+                    <div className="setup-modal-header-content">
+                      <span className="setup-modal-header-icon">{modules[modalIdx].icon}</span>
+                      <span className="setup-modal-header-title">{modules[modalIdx].title} Details</span>
                     </div>
                   <button
                     onClick={() => setModalIdx(null)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                        fontSize: '18px',
-                        color: 'white',
-                      cursor: 'pointer',
-                        padding: '2px 6px',
-                        borderRadius: '4px',
-                        transition: 'background-color 0.2s'
-                    }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                    className="setup-modal-close-btn"
                   >
                     ×
                   </button>
                 </div>
 
                   {/* Content */}
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', overflow: 'auto', maxHeight: 'calc(98vh - 120px)' }}>
+                  <div className="setup-modal-content">
                     {/* Input Fields Section */}
-                    <div style={{ 
-                      background: 'white', 
-                      padding: '20px', 
-                      borderRadius: '8px', 
-                      marginBottom: '20px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                    }}>
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', 
-                        gap: '8px' 
-                      }}>
+                    <div className="setup-input-section">
+                      <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
                         {modules[modalIdx].title === 'Transaction Type' ? (
-                          <>
-                                                         <div>
-                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                                                      <>
+                                                         <div className="setup-input-group">
+                               <label className="setup-input-label">
                                  Transaction Code
                                </label>
                                <input
                                  type="text"
                                  value={formData.transactionCode}
                                  onChange={(e) => handleInputChange('transactionCode', e.target.value)}
-                                 style={{
-                                   width: '100%',
-                                   padding: '8px 12px',
-                                   border: '1px solid #ddd',
-                                   borderRadius: '4px',
-                                   fontSize: '14px'
-                                 }}
+                                 className="setup-input-field"
                                  placeholder="Enter transaction code"
                                />
               </div>
@@ -1584,6 +1415,7 @@ function Setup() {
                                 type="text"
                                 value={formData.code}
                                 onChange={(e) => handleInputChange('code', e.target.value)}
+                                maxLength={7}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1697,174 +1529,47 @@ function Setup() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '12px', 
-                      marginBottom: '20px',
-                      justifyContent: 'center'
-                    }}>
+                    <div className="setup-action-buttons">
                       <button
                         onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
-                        style={{
-                          padding: '8px 16px',
-                          background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
-                        }}
+                        className="setup-btn setup-btn-new"
                       >
-                        <span style={{ fontSize: '16px' }}>+</span>
+                        <span className="setup-btn-icon">+</span>
                         New
                       </button>
                       <button
                         onClick={handleSave}
-                        style={{
-                          padding: '8px 16px',
-                          background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
-                        }}
+                        className="setup-btn setup-btn-save"
                       >
-                        <span style={{ fontSize: '16px' }}>💾</span>
+                        <span className="setup-btn-icon">💾</span>
                         Save
                       </button>
                       <button
                         onClick={handleDelete}
-                        style={{
-                          padding: '8px 16px',
-                          background: 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
-                        }}
+                        className="setup-btn setup-btn-delete"
                       >
-                        <span style={{ fontSize: '16px' }}>🗑️</span>
+                        <span className="setup-btn-icon">🗑️</span>
                         Delete
                       </button>
                       <button
                         onClick={handlePrint}
-                        style={{
-                          padding: '8px 16px',
-                          background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.3)';
-                        }}
+                        className="setup-btn setup-btn-print"
                       >
-                        <span style={{ fontSize: '16px' }}>🖨️</span>
+                        <span className="setup-btn-icon">🖨️</span>
                         Print
                       </button>
                       <button
                         onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
-                        style={{
-                          padding: '8px 16px',
-                          background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(107, 114, 128, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(107, 114, 128, 0.3)';
-                        }}
+                        className="setup-btn setup-btn-clear"
                       >
-                        <span style={{ fontSize: '16px' }}>🗑️</span>
+                        <span className="setup-btn-icon">🗑️</span>
                         Clear
                       </button>
                     </div>
 
                     {/* Data Table */}
-                    <div style={{ 
-                      background: 'white', 
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      minHeight: '300px',
-                      maxHeight: '400px'
-                    }}>
-                      <div style={{ 
-                        padding: '16px',
-                        height: '100%'
-                      }}>
+                    <div className="setup-data-table-container">
+                      <div className="setup-data-table-content">
                         <CustomDataTable 
                           data={getTableData(modules[modalIdx].title)}
                           columns={getTableColumns(modules[modalIdx].title)}
@@ -1874,14 +1579,7 @@ function Setup() {
                   </div>
 
                   {/* Footer */}
-                  <div style={{
-                    padding: '12px 20px',
-                    background: '#f3f4f6',
-                    borderTop: '1px solid #e5e7eb',
-                    fontSize: '12px',
-                    color: '#6b7280',
-                    textAlign: 'center'
-                  }}>
+                  <div className="setup-modal-footer">
                     Double click to get the selected value
                   </div>
                 </div>
@@ -1891,130 +1589,56 @@ function Setup() {
 
             {/* Suspense Account Modal */}
             {suspenseModalOpen && createPortal(
-              <div style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                background: 'rgba(0,0,0,0.5)',
-                zIndex: 999999999,
-                display: 'flex',
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-                padding: isMobile ? 16 : 32,
-                paddingTop: '20px',
-                isolation: 'isolate'
-              }}
+              <div className={`setup-suspense-modal-overlay ${isMobile ? 'mobile' : ''}`}
                 onClick={() => setSuspenseModalOpen(false)}
               >
-                <div
-                  style={{
-                    background: '#f5f5f5',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 32px #0003',
-                    width: isMobile ? '90vw' : '60vw',
-                    maxHeight: isMobile ? '90vh' : '80vh',
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'hidden',
-                    marginTop: '0px',
-                    zIndex: 999999999
-                  }}
+                <div className={`setup-suspense-modal-container ${isMobile ? 'mobile' : ''}`}
                   onClick={e => e.stopPropagation()}
                 >
                   {/* Header */}
-                  <div style={{
-                    background: 'linear-gradient(90deg, #059669 0%, #10b981 100%)',
-                    color: 'white',
-                    padding: '12px 20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderRadius: '8px 8px 0 0',
-                    minHeight: '50px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '20px' }}>🏦</span>
-                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>Suspense Account Management</span>
+                  <div className="setup-suspense-modal-header">
+                    <div className="setup-suspense-modal-header-content">
+                      <span className="setup-suspense-modal-header-icon">🏦</span>
+                      <span className="setup-suspense-modal-header-title">Suspense Account Management</span>
                     </div>
                     <button
                       onClick={() => setSuspenseModalOpen(false)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        fontSize: '20px',
-                        color: 'white',
-                        cursor: 'pointer',
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        transition: 'background-color 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                      className="setup-suspense-modal-close-btn"
                     >
                       ×
                     </button>
                   </div>
 
                   {/* Content */}
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', overflow: 'auto' }}>
+                  <div className="setup-suspense-modal-content">
                     {/* Input Fields Section */}
-                    <div style={{ 
-                      background: 'white', 
-                      padding: '20px', 
-                      borderRadius: '8px', 
-                      marginBottom: '20px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                    }}>
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', 
-                        gap: '16px' 
-                      }}>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                    <div className="setup-input-section">
+                      <div className={`setup-suspense-input-grid ${isMobile ? 'mobile' : ''}`}>
+                        <div className="setup-input-group">
+                          <label className="setup-input-label">
                             Account Code
                           </label>
                           <input
                             type="text"
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px'
-                            }}
+                            className="setup-input-field"
                             placeholder="Enter account code"
                           />
                         </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                        <div className="setup-input-group">
+                          <label className="setup-input-label">
                             Account Name
                           </label>
                           <input
                             type="text"
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px'
-                            }}
+                            className="setup-input-field"
                             placeholder="Enter account name"
                           />
                         </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                        <div className="setup-input-group">
+                          <label className="setup-input-label">
                             Account Type
                           </label>
-                          <select
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid #ddd',
-                              borderRadius: '4px',
-                              fontSize: '14px'
-                            }}
-                          >
+                          <select className="setup-select-field">
                             <option value="">Select account type</option>
                             <option value="asset">Asset</option>
                             <option value="liability">Liability</option>
@@ -2023,190 +1647,51 @@ function Setup() {
                             <option value="expense">Expense</option>
                           </select>
                         </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
+                        <div className="setup-input-group">
+                          <label className="setup-input-label">
                             Status
                           </label>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div className="setup-checkbox-group">
                             <input
                               type="checkbox"
-                              style={{
-                                width: '16px',
-                                height: '16px',
-                                cursor: 'pointer'
-                              }}
+                              className="setup-checkbox"
                             />
-                            <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
+                            <span className="setup-checkbox-label">Active</span>
                           </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div style={{
-                      display: 'flex',
-                      gap: '12px',
-                      justifyContent: 'center',
-                      padding: '16px 0'
-                    }}>
-                      <button
-                        style={{
-                          padding: '10px 20px',
-                          background: 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
-                        }}
-                      >
-                        <span style={{ fontSize: '16px' }}>➕</span>
+                    <div className="setup-suspense-action-buttons">
+                      <button className="setup-btn setup-btn-new">
+                        <span className="setup-btn-icon">➕</span>
                         New
                       </button>
-                      <button
-                        style={{
-                          padding: '10px 20px',
-                          background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
-                        }}
-                      >
-                        <span style={{ fontSize: '16px' }}>💾</span>
+                      <button className="setup-btn setup-btn-save">
+                        <span className="setup-btn-icon">💾</span>
                         Save
                       </button>
-                      <button
-                        style={{
-                          padding: '10px 20px',
-                          background: 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
-                        }}
-                      >
-                        <span style={{ fontSize: '16px' }}>🗑️</span>
+                      <button className="setup-btn setup-btn-delete">
+                        <span className="setup-btn-icon">🗑️</span>
                         Delete
                       </button>
-                      <button
-                        style={{
-                          padding: '10px 20px',
-                          background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.3)';
-                        }}
-                      >
-                        <span style={{ fontSize: '16px' }}>🖨️</span>
+                      <button className="setup-btn setup-btn-print">
+                        <span className="setup-btn-icon">🖨️</span>
                         Print
                       </button>
                       <button
                         onClick={() => setSuspenseModalOpen(false)}
-                        style={{
-                          padding: '10px 20px',
-                          background: 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          boxShadow: '0 2px 8px rgba(107, 114, 128, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(107, 114, 128, 0.3)';
-                        }}
+                        className="setup-btn setup-btn-close"
                       >
-                        <span style={{ fontSize: '16px' }}>❌</span>
+                        <span className="setup-btn-icon">❌</span>
                         Close
                       </button>
                     </div>
 
                     {/* Data Table */}
-                    <div style={{ 
-                      background: 'white', 
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      minHeight: '250px',
-                      maxHeight: '350px'
-                    }}>
-                      <div style={{ 
-                        padding: '16px',
-                        height: '100%'
-                      }}>
+                    <div className="setup-suspense-data-table-container">
+                      <div className="setup-suspense-data-table-content">
                         <CustomDataTable 
                           data={[
                             { accountCode: 'SUS001', accountName: 'Suspense Account 1', accountType: 'Asset', status: 'Active' },

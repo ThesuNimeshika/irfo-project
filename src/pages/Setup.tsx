@@ -371,6 +371,7 @@ function Setup() {
   const [isMobile, setIsMobile] = useState(false);
   const [suspenseModalOpen, setSuspenseModalOpen] = useState(false);
   const [systemCalendarOpen, setSystemCalendarOpen] = useState(false);
+  const [isFormEditable, setIsFormEditable] = useState(false); // New state for form editing mode
   const [formData, setFormData] = useState({
     code: '',
     description: '',
@@ -442,6 +443,16 @@ function Setup() {
     setFormData(prev => ({ ...prev, [field]: date }));
   };
 
+  const handleNewButtonClick = () => {
+    setIsFormEditable(true);
+    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null });
+  };
+
+  const handleModalOpen = (idx: number) => {
+    setModalIdx(idx);
+    setIsFormEditable(false); // Reset form editing mode when modal opens
+  };
+
   const handleSave = () => {
     // Handle save logic here
     console.log('Saving:', formData);
@@ -494,7 +505,7 @@ function Setup() {
                     if (mod.title === 'System Calendar') {
                       setSystemCalendarOpen(true);
                     } else {
-                      setModalIdx(idx);
+                      handleModalOpen(idx);
                     }
                   }}
                   onKeyDown={e => { 
@@ -502,7 +513,7 @@ function Setup() {
                       if (mod.title === 'System Calendar') {
                         setSystemCalendarOpen(true);
                       } else {
-                        setModalIdx(idx);
+                        handleModalOpen(idx);
                       }
                     }
                   }}
@@ -552,6 +563,7 @@ function Setup() {
                                  onChange={(e) => handleInputChange('transactionCode', e.target.value)}
                                  className="setup-input-field"
                                  placeholder="Enter transaction code"
+                                 disabled={!isFormEditable}
                                />
               </div>
                              <div>
@@ -561,6 +573,7 @@ function Setup() {
                                <select
                                  value={formData.transactionType}
                                  onChange={(e) => handleInputChange('transactionType', e.target.value)}
+                                 disabled={!isFormEditable}
                                  style={{
                                    width: '100%',
                                    padding: '8px 12px',
@@ -584,6 +597,7 @@ function Setup() {
                                  type="text"
                                  value={formData.transactionName}
                                  onChange={(e) => handleInputChange('transactionName', e.target.value)}
+                                 disabled={!isFormEditable}
                                  style={{
                                    width: '100%',
                                    padding: '8px 12px',
@@ -602,6 +616,7 @@ function Setup() {
                                  type="text"
                                  value={formData.lastTransactionNumber}
                                  onChange={(e) => handleInputChange('lastTransactionNumber', e.target.value)}
+                                 disabled={!isFormEditable}
                                  style={{
                                    width: '100%',
                                    padding: '8px 12px',
@@ -642,6 +657,7 @@ function Setup() {
                                   type="checkbox"
                                   checked={formData.active}
                                   onChange={(e) => handleInputChange('active', e.target.checked.toString())}
+                                  disabled={!isFormEditable}
                                   style={{
                                     width: '16px',
                                     height: '16px',
@@ -1067,6 +1083,7 @@ function Setup() {
                                 type="text"
                                 value={formData.fund}
                                 onChange={(e) => handleInputChange('fund', e.target.value)}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1120,6 +1137,7 @@ function Setup() {
                               <select
                                 value={formData.trustee}
                                 onChange={(e) => handleInputChange('trustee', e.target.value)}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1250,6 +1268,7 @@ function Setup() {
                                    dateFormat="dd/MM/yyyy"
                                    placeholderText="dd/mm/yyyy"
                                    className="date-picker-input"
+                                   disabled={!isFormEditable}
                                  />
                                </div>
                             <div>
@@ -1264,6 +1283,7 @@ function Setup() {
                                     value="Open Ended"
                                     checked={formData.fundType === 'Open Ended'}
                                     onChange={(e) => handleInputChange('fundType', e.target.value)}
+                                    disabled={!isFormEditable}
                                     style={{
                                       width: '16px',
                                       height: '16px',
@@ -1279,6 +1299,7 @@ function Setup() {
                                     value="Close Ended"
                                     checked={formData.fundType === 'Close Ended'}
                                     onChange={(e) => handleInputChange('fundType', e.target.value)}
+                                    disabled={!isFormEditable}
                                     style={{
                                       width: '16px',
                                       height: '16px',
@@ -1416,6 +1437,7 @@ function Setup() {
                                 value={formData.code}
                                 onChange={(e) => handleInputChange('code', e.target.value)}
                                 maxLength={7}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1434,6 +1456,7 @@ function Setup() {
                                 type="text"
                                 value={formData.description}
                                 onChange={(e) => handleInputChange('description', e.target.value)}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1452,6 +1475,7 @@ function Setup() {
                                 type="text"
                                 value={formData.address}
                                 onChange={(e) => handleInputChange('address', e.target.value)}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1469,6 +1493,7 @@ function Setup() {
                               <select
                                 value={formData.district}
                                 onChange={(e) => handleInputChange('district', e.target.value)}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1513,6 +1538,7 @@ function Setup() {
                                 type="text"
                                 value={formData.branchNo}
                                 onChange={(e) => handleInputChange('branchNo', e.target.value)}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1531,7 +1557,7 @@ function Setup() {
                     {/* Action Buttons */}
                     <div className="setup-action-buttons">
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
+                        onClick={handleNewButtonClick}
                         className="setup-btn setup-btn-new"
                       >
                         <span className="setup-btn-icon">+</span>
@@ -1540,6 +1566,7 @@ function Setup() {
                       <button
                         onClick={handleSave}
                         className="setup-btn setup-btn-save"
+                        disabled={!isFormEditable}
                       >
                         <span className="setup-btn-icon">💾</span>
                         Save
@@ -1547,6 +1574,7 @@ function Setup() {
                       <button
                         onClick={handleDelete}
                         className="setup-btn setup-btn-delete"
+                        disabled={!isFormEditable}
                       >
                         <span className="setup-btn-icon">🗑️</span>
                         Delete
@@ -1554,6 +1582,7 @@ function Setup() {
                       <button
                         onClick={handlePrint}
                         className="setup-btn setup-btn-print"
+                        disabled={!isFormEditable}
                       >
                         <span className="setup-btn-icon">🖨️</span>
                         Print
@@ -1561,6 +1590,7 @@ function Setup() {
                       <button
                         onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
                         className="setup-btn setup-btn-clear"
+                        disabled={!isFormEditable}
                       >
                         <span className="setup-btn-icon">🗑️</span>
                         Clear

@@ -549,7 +549,6 @@ function Home() {
             </div>
             <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 0, marginTop: 0 }}>
               <div className="flex items-center justify-between" style={{ marginBottom: 0 }}>
-                <h2 className="font-semibold text-gray-900" style={{ fontSize: 14, padding: '2px 0 2px 0', margin: 0 }}>Fund Data</h2>
                 <div className="flex items-center space-x-2">
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800" style={{ fontSize: 12 }}>
                     {tableTotalCount.toLocaleString()} Records

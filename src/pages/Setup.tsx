@@ -387,8 +387,6 @@ function Setup() {
     active: false,
     trusteeName: '',
     trusteeAddress: '',
-    town: '',
-    city: '',
     telephoneNumber: '',
     faxNo: '',
     email: '',
@@ -445,7 +443,7 @@ function Setup() {
 
   const handleNewButtonClick = () => {
     setIsFormEditable(true);
-    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null });
+    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null });
   };
 
   const handleModalOpen = (idx: number) => {
@@ -687,12 +685,13 @@ function Setup() {
                             </div>
                             <div>
                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Address
+                                Address (No/Street/Town/City)
                               </label>
                               <input
                                 type="text"
                                 value={formData.trusteeAddress}
                                 onChange={(e) => handleInputChange('trusteeAddress', e.target.value)}
+                                disabled={!isFormEditable}
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -700,43 +699,7 @@ function Setup() {
                                   borderRadius: '4px',
                                   fontSize: '14px'
                                 }}
-                                placeholder="Enter address House no, Street Name"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Town
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.town}
-                                onChange={(e) => handleInputChange('town', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter your town"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                City
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.city}
-                                onChange={(e) => handleInputChange('city', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter your City, District"
+                                placeholder="Enter address as: No, Street Name, Town, City"
                               />
                             </div>
                             <div>
@@ -1469,7 +1432,7 @@ function Setup() {
                             </div>
                             <div>
                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Address
+                                Address (No/Street/Town/City)
                               </label>
                               <input
                                 type="text"
@@ -1483,7 +1446,7 @@ function Setup() {
                                   borderRadius: '4px',
                                   fontSize: '14px'
                                 }}
-                                placeholder="Enter address"
+                                placeholder="Enter address as: No, Street Name, Town, City"
                               />
                             </div>
                             <div>
@@ -1588,7 +1551,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', town: '', city: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >

@@ -1002,6 +1002,274 @@ input[type="radio"]:disabled,
   margin-bottom: 10px;
 }
 
+/* Tabbed Table Section */
+.setup-tabbed-table-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  overflow: hidden;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  /* Ensure proper scrolling */
+  position: relative;
+}
+
+.setup-tab-navigation {
+  display: flex;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.setup-tab-button {
+  flex: 1;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 3px solid transparent;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.setup-tab-button:hover {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  color: #334155;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.setup-tab-button.active {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  border-bottom-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  transform: translateY(-2px);
+}
+
+.setup-tab-button.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: 0 0 2px 2px;
+}
+
+.setup-tab-content {
+  padding: 20px;
+  padding-bottom: 40px;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: scroll;
+  background: white;
+  border-radius: 0 0 8px 8px;
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #4f46e5 #f1f5f9;
+}
+
+.setup-tab-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.setup-tab-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.setup-tab-content::-webkit-scrollbar-thumb {
+  background: #4f46e5;
+  border-radius: 4px;
+  border: 1px solid #4338ca;
+}
+
+.setup-tab-content::-webkit-scrollbar-thumb:hover {
+  background: #4338ca;
+}
+
+/* Table Styles */
+.setup-table-container {
+  overflow-x: auto;
+}
+
+.setup-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.setup-data-table th {
+  background-color: #f9fafb;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.setup-data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.setup-data-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Partly Redemptions Tab */
+.setup-partly-redemptions-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-redemptions-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.setup-redemptions-inputs {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.setup-redemptions-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Fund Accounts Tab */
+.setup-fund-accounts-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-fund-accounts-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.setup-fund-accounts-inputs {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.setup-fund-accounts-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setup-fund-accounts-list {
+  background-color: #f9fafb;
+  border-radius: 6px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* GL Account Tab */
+.setup-gl-account-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-gl-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.setup-gl-account-inputs {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.setup-gl-account-inputs .setup-input-group {
+  flex: 1;
+}
+
+.setup-gl-account-inputs .setup-input-group:last-child .setup-input-field {
+  padding-right: 8px;
+}
+
+.setup-btn-add {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.setup-btn-add:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.setup-btn-remove {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.setup-btn-remove:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.setup-redemptions-list {
+  background-color: #f9fafb;
+  border-radius: 6px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.setup-list-placeholder {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 20px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .setup-modal-overlay {

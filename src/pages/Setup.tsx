@@ -17,6 +17,7 @@ import type { SortingState, RowSelectionState } from "@tanstack/react-table";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import SystemCalendar from '../components/SystemCalendar';
+import React from 'react'; // Added for React.useState
 
 // Add custom styles for date picker
 const datePickerStyles = `
@@ -1532,13 +1533,17 @@ function Setup() {
                       </button>
                     </div>
 
-                    {/* Data Table */}
+                    {/* Second Card - Tabbed Table Section */}
                     <div className="setup-data-table-container">
                       <div className="setup-data-table-content">
-                        <CustomDataTable 
-                          data={getTableData(modules[modalIdx].title)}
-                          columns={getTableColumns(modules[modalIdx].title)}
-                        />
+                        {modules[modalIdx].title === 'Funds' ? (
+                          <FundsDetailsTabs />
+                        ) : (
+                          <CustomDataTable 
+                            data={getTableData(modules[modalIdx].title)}
+                            columns={getTableColumns(modules[modalIdx].title)}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1748,6 +1753,125 @@ function Setup() {
       </div>
       <Footer />
     </>
+  );
+}
+
+function FundsDetailsTabs() {
+  const [activeTab, setActiveTab] = React.useState('funds');
+  // Define the columns and data for the Funds tab
+  const fundsColumns = [
+    'fundCode', 'fundName', 'fundManager', 'launch', 'minNo', 'minNA'
+  ];
+  const fundsData = [
+    { fundCode: 'F001', fundName: 'Growth Fund', fundManager: 'John Smith', launch: '2023-01-15', minNo: '100', minNA: '10000' },
+    { fundCode: 'F002', fundName: 'Income Fund', fundManager: 'Sarah Johnson', launch: '2023-03-20', minNo: '50', minNA: '5000' },
+    { fundCode: 'F003', fundName: 'Balanced Fund', fundManager: 'Mike Wilson', launch: '2023-06-10', minNo: '75', minNA: '7500' },
+  ];
+  return (
+    <div className="setup-tabbed-table-section">
+      <div className="setup-tab-navigation">
+        <button className={`setup-tab-button ${activeTab === 'funds' ? 'active' : ''}`} onClick={() => setActiveTab('funds')}>Funds</button>
+        <button className={`setup-tab-button ${activeTab === 'partly-redemptions' ? 'active' : ''}`} onClick={() => setActiveTab('partly-redemptions')}>Partly Redemptions</button>
+        <button className={`setup-tab-button ${activeTab === 'fund-accounts' ? 'active' : ''}`} onClick={() => setActiveTab('fund-accounts')}>Fund Accounts</button>
+        <button className={`setup-tab-button ${activeTab === 'gl-account' ? 'active' : ''}`} onClick={() => setActiveTab('gl-account')}>GL Account</button>
+      </div>
+      <div className="setup-tab-content">
+        {activeTab === 'funds' && (
+          <CustomDataTable data={fundsData} columns={fundsColumns} />
+        )}
+        {activeTab === 'partly-redemptions' && (
+          <div className="setup-partly-redemptions-tab">
+            <div className="setup-redemptions-form">
+              <div className="setup-redemptions-inputs">
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Starting Date</label>
+                  <input type="date" className="setup-input-field" placeholder="dd/mm/yyyy" />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Ending Date</label>
+                  <input type="date" className="setup-input-field" placeholder="dd/mm/yyyy" />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Redeem Percentage</label>
+                  <input type="number" className="setup-input-field" placeholder="%" />
+                </div>
+              </div>
+              <div className="setup-redemptions-buttons">
+                <button className="setup-btn-add">Add to List</button>
+                <button className="setup-btn-remove">Remove all from List</button>
+              </div>
+            </div>
+            <div className="setup-redemptions-list">
+              <div className="setup-list-placeholder">
+                <p>No redemptions added yet</p>
+              </div>
+            </div>
+          </div>
+        )}
+        {activeTab === 'fund-accounts' && (
+          <div className="setup-fund-accounts-tab">
+            <div className="setup-fund-accounts-form">
+              <div className="setup-fund-accounts-inputs">
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Account Type</label>
+                  <select className="setup-dropdown-select">
+                    <option value="">Select Account Type</option>
+                    <option value="savings">Savings</option>
+                    <option value="current">Current</option>
+                    <option value="fixed">Fixed Deposit</option>
+                    <option value="investment">Investment</option>
+                  </select>
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Bank Code</label>
+                  <select className="setup-dropdown-select">
+                    <option value="">Select Bank</option>
+                    <option value="BOC">BOC - Bank of Ceylon</option>
+                    <option value="PEOPLES">PEOPLES - Peoples Bank</option>
+                    <option value="HNB">HNB - Hatton National Bank</option>
+                    <option value="COMBANK">COMBANK - Commercial Bank</option>
+                    <option value="NDB">NDB - National Development Bank</option>
+                  </select>
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Acc No</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter Account Number" />
+                </div>
+              </div>
+              <div className="setup-fund-accounts-buttons">
+                <button className="setup-btn-add">Add to List</button>
+                <button className="setup-btn-remove">Remove from List</button>
+              </div>
+            </div>
+            <div className="setup-fund-accounts-list">
+              <div className="setup-list-placeholder">
+                No fund accounts added yet
+              </div>
+            </div>
+          </div>
+        )}
+        {activeTab === 'gl-account' && (
+          <div className="setup-gl-account-tab">
+            <div className="setup-gl-account-form">
+              <div className="setup-gl-account-inputs">
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Management Fee Account No (GL)</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Registrar Fee Account No (GL)</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Trustee Fee Account No (GL)</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

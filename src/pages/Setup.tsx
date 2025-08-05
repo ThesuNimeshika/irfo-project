@@ -1176,33 +1176,11 @@ function Setup() {
                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
                                 Fund Suspense Account
                               </label>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div className="setup-suspense-input-container">
                                 <button
                                   type="button"
                                   onClick={() => setSuspenseModalOpen(true)}
-                                  style={{
-                                    width: '32px',
-                                    height: '32px',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ddd',
-                                    backgroundColor: '#f8f9fa',
-                                    color: '#333',
-                                    fontSize: '14px',
-                                    fontWeight: 'bold',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    transition: 'all 0.2s ease'
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#e9ecef';
-                                    e.currentTarget.style.borderColor = '#adb5bd';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#f8f9fa';
-                                    e.currentTarget.style.borderColor = '#ddd';
-                                  }}
+                                  className="setup-suspense-account-button"
                                 >
                                   A
                                 </button>
@@ -1210,13 +1188,7 @@ function Setup() {
                                   type="text"
                                   value={formData.suspenseAccount}
                                   onChange={(e) => handleInputChange('suspenseAccount', e.target.value)}
-                                  style={{
-                                    flex: 1,
-                                    padding: '8px 12px',
-                                    border: '1px solid #ddd',
-                                    borderRadius: '4px',
-                                    fontSize: '14px'
-                                  }}
+                                  className="setup-suspense-input-field"
                                   placeholder="Enter Suspense Account"
                                 />
                               </div>
@@ -1591,8 +1563,8 @@ function Setup() {
                   {/* Header */}
                   <div className="setup-suspense-modal-header">
                     <div className="setup-suspense-modal-header-content">
-                      <span className="setup-suspense-modal-header-icon">🏦</span>
-                      <span className="setup-suspense-modal-header-title">Suspense Account Management</span>
+                      <span className="setup-suspense-modal-header-icon">🔍</span>
+                      <span className="setup-suspense-modal-header-title">Search Account</span>
                     </div>
                     <button
                       onClick={() => setSuspenseModalOpen(false)}
@@ -1604,96 +1576,161 @@ function Setup() {
 
                   {/* Content */}
                   <div className="setup-suspense-modal-content">
-                    {/* Input Fields Section */}
+                    {/* Search Form */}
                     <div className="setup-input-section">
-                      <div className={`setup-suspense-input-grid ${isMobile ? 'mobile' : ''}`}>
-                        <div className="setup-input-group">
-                          <label className="setup-input-label">
-                            Account Code
-                          </label>
+                      <div className="setup-search-form-container">
+                        {/* Full Width Name Input */}
+                        <div className="setup-input-group" style={{ gridColumn: '1 / -1' }}>
+                          <label className="setup-input-label">Name</label>
                           <input
                             type="text"
                             className="setup-input-field"
-                            placeholder="Enter account code"
+                            placeholder="Enter name"
                           />
                         </div>
-                        <div className="setup-input-group">
-                          <label className="setup-input-label">
-                            Account Name
-                          </label>
-                          <input
-                            type="text"
-                            className="setup-input-field"
-                            placeholder="Enter account name"
-                          />
-                        </div>
-                        <div className="setup-input-group">
-                          <label className="setup-input-label">
-                            Account Type
-                          </label>
-                          <select className="setup-select-field">
-                            <option value="">Select account type</option>
-                            <option value="asset">Asset</option>
-                            <option value="liability">Liability</option>
-                            <option value="equity">Equity</option>
-                            <option value="revenue">Revenue</option>
-                            <option value="expense">Expense</option>
-                          </select>
-                        </div>
-                        <div className="setup-input-group">
-                          <label className="setup-input-label">
-                            Status
-                          </label>
-                          <div className="setup-checkbox-group">
+
+                        {/* 3-Column Grid for 12 Inputs */}
+                        <div className="setup-search-three-columns">
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Title</label>
+                            <select className="setup-dropdown-select">
+                              <option value="">Select title</option>
+                              <option value="Mr">Mr</option>
+                              <option value="Mrs">Mrs</option>
+                              <option value="Ms">Ms</option>
+                              <option value="Dr">Dr</option>
+                              <option value="Prof">Prof</option>
+                            </select>
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Initials</label>
                             <input
-                              type="checkbox"
-                              className="setup-checkbox"
+                              type="text"
+                              className="setup-input-field"
+                              placeholder="Enter initials"
                             />
-                            <span className="setup-checkbox-label">Active</span>
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Surname</label>
+                            <input
+                              type="text"
+                              className="setup-input-field"
+                              placeholder="Enter surname"
+                            />
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">First Name</label>
+                            <input
+                              type="text"
+                              className="setup-input-field"
+                              placeholder="Enter first name"
+                            />
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Street</label>
+                            <select className="setup-dropdown-select">
+                              <option value="">Select street</option>
+                              <option value="Main Street">Main Street</option>
+                              <option value="Oak Avenue">Oak Avenue</option>
+                              <option value="Pine Road">Pine Road</option>
+                              <option value="Elm Street">Elm Street</option>
+                              <option value="Cedar Lane">Cedar Lane</option>
+                            </select>
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Town</label>
+                            <select className="setup-dropdown-select">
+                              <option value="">Select town</option>
+                              <option value="Downtown">Downtown</option>
+                              <option value="Midtown">Midtown</option>
+                              <option value="Uptown">Uptown</option>
+                              <option value="Westside">Westside</option>
+                              <option value="Eastside">Eastside</option>
+                            </select>
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">City</label>
+                            <select className="setup-dropdown-select">
+                              <option value="">Select city</option>
+                              <option value="New York">New York</option>
+                              <option value="Los Angeles">Los Angeles</option>
+                              <option value="Chicago">Chicago</option>
+                              <option value="Houston">Houston</option>
+                              <option value="Phoenix">Phoenix</option>
+                            </select>
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Holder ID</label>
+                            <input
+                              type="text"
+                              className="setup-input-field"
+                              placeholder="Enter holder ID"
+                            />
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">NIC</label>
+                            <input
+                              type="text"
+                              className="setup-input-field"
+                              placeholder="Enter NIC"
+                            />
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Passport</label>
+                            <input
+                              type="text"
+                              className="setup-input-field"
+                              placeholder="Enter passport"
+                            />
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Other No</label>
+                            <input
+                              type="text"
+                              className="setup-input-field"
+                              placeholder="Enter other number"
+                            />
+                          </div>
+                          <div className="setup-input-group">
+                            <label className="setup-input-label">Fund</label>
+                            <select className="setup-dropdown-select" defaultValue="11">
+                              <option value="11">11</option>
+                              <option value="12">12</option>
+                              <option value="13">13</option>
+                              <option value="14">14</option>
+                              <option value="15">15</option>
+                            </select>
                           </div>
                         </div>
+
+                        {/* Buttons Row */}
+                        <div className="setup-search-buttons-row">
+                          <button className="setup-btn-get">Get</button>
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              defaultChecked
+                              className="setup-checkbox-input"
+                            />
+                            <span className="setup-checkbox-label">ignore Case</span>
+                          </div>
+                          <button className="setup-btn-search">Search</button>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="setup-suspense-action-buttons">
-                      <button className="setup-btn setup-btn-new">
-                        <span className="setup-btn-icon">➕</span>
-                        New
-                      </button>
-                      <button className="setup-btn setup-btn-save">
-                        <span className="setup-btn-icon">💾</span>
-                        Save
-                      </button>
-                      <button className="setup-btn setup-btn-delete">
-                        <span className="setup-btn-icon">🗑️</span>
-                        Delete
-                      </button>
-                      <button className="setup-btn setup-btn-print">
-                        <span className="setup-btn-icon">🖨️</span>
-                        Print
-                      </button>
-                      <button
-                        onClick={() => setSuspenseModalOpen(false)}
-                        className="setup-btn setup-btn-close"
-                      >
-                        <span className="setup-btn-icon">❌</span>
-                        Close
-                      </button>
+                    {/* Results Area */}
+                    <div className="setup-results-area">
+                      {/* Loading Animation */}
+                      <div className="setup-loading-container">
+                        <div className="setup-loading-spinner"></div>
+                        <span className="setup-loading-text">Please Wait...........</span>
+                      </div>
                     </div>
 
-                    {/* Data Table */}
-                    <div className="setup-suspense-data-table-container">
-                      <div className="setup-suspense-data-table-content">
-                        <CustomDataTable 
-                          data={[
-                            { accountCode: 'SUS001', accountName: 'Suspense Account 1', accountType: 'Asset', status: 'Active' },
-                            { accountCode: 'SUS002', accountName: 'Suspense Account 2', accountType: 'Liability', status: 'Active' },
-                            { accountCode: 'SUS003', accountName: 'Suspense Account 3', accountType: 'Asset', status: 'Inactive' }
-                          ]}
-                          columns={['accountCode', 'accountName', 'accountType', 'status']}
-                        />
-                      </div>
+                    {/* Instructions */}
+                    <div className="setup-instructions">
+                      Double click or press [Get] button to get the selected value
                     </div>
                   </div>
                 </div>

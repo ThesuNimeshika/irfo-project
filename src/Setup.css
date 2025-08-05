@@ -1,40 +1,8 @@
 /* Setup.css - All styles extracted from Setup.tsx */
 
-/* Date Picker Styles */
-.date-picker-input {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-/* Disabled form elements */
-.setup-input-field:disabled,
-.setup-select-field:disabled,
-input[type="checkbox"]:disabled,
-input[type="radio"]:disabled,
-.setup-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #f5f5f5;
-  color: #999;
-}
-
-.setup-btn:disabled {
-  background: #e0e0e0 !important;
-  color: #999 !important;
-  border-color: #ccc !important;
-  cursor: not-allowed !important;
-}
-
-.setup-btn:disabled:hover {
-  background: #e0e0e0 !important;
-  color: #999 !important;
-  border-color: #ccc !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
+/* ========================================
+   MAIN LAYOUT STYLES
+   ======================================== */
 
 /* Main Layout */
 .setup-main-layout {
@@ -130,7 +98,11 @@ input[type="radio"]:disabled,
   color: #333;
 }
 
-/* Modal Styles */
+/* ========================================
+   COMMON MODAL STYLES
+   ======================================== */
+
+/* Modal Overlay */
 .setup-modal-overlay {
   position: fixed;
   top: 0;
@@ -151,6 +123,7 @@ input[type="radio"]:disabled,
   padding: 16px;
 }
 
+/* Modal Container */
 .setup-modal-container {
   background: #f5f5f5;
   border-radius: 0 0 8px 8px;
@@ -170,6 +143,7 @@ input[type="radio"]:disabled,
   max-height: 98vh;
 }
 
+/* Modal Header */
 .setup-modal-header {
   background: linear-gradient(90deg, #4f46e5 0%, #d946ef 100%);
   color: white;
@@ -212,6 +186,7 @@ input[type="radio"]:disabled,
   background-color: rgba(255,255,255,0.2);
 }
 
+/* Modal Content */
 .setup-modal-content {
   flex: 1;
   display: flex;
@@ -220,6 +195,20 @@ input[type="radio"]:disabled,
   overflow: auto;
   max-height: calc(98vh - 120px);
 }
+
+/* Modal Footer */
+.setup-modal-footer {
+  padding: 12px 20px;
+  background: #f3f4f6;
+  border-top: 1px solid #e5e7eb;
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* ========================================
+   COMMON INPUT STYLES
+   ======================================== */
 
 /* Input Fields Section */
 .setup-input-section {
@@ -251,6 +240,7 @@ input[type="radio"]:disabled,
 .setup-input-group {
   display: flex;
   flex-direction: column;
+  margin-bottom: 0;
 }
 
 .setup-input-label {
@@ -258,6 +248,10 @@ input[type="radio"]:disabled,
   margin-bottom: 2px;
   font-weight: bold;
   font-size: 14px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
 }
 
 .setup-input-field {
@@ -266,6 +260,7 @@ input[type="radio"]:disabled,
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  margin-bottom: 0;
 }
 
 .setup-input-field:focus {
@@ -287,76 +282,18 @@ input[type="radio"]:disabled,
   font-size: 14px;
 }
 
-.setup-checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.setup-checkbox {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.setup-checkbox-label {
-  font-size: 14px;
-  color: #666;
-}
-
-.setup-radio-group {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.setup-radio-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.setup-radio-input {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.setup-suspense-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: #f8f9fa;
-  color: #333;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.setup-suspense-button:hover {
-  background-color: #e9ecef;
-  border-color: #adb5bd;
-}
-
-.setup-suspense-input-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.setup-suspense-input {
-  flex: 1;
+/* Date Picker Styles */
+.date-picker-input {
+  width: 100%;
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
 }
+
+/* ========================================
+   COMMON BUTTON STYLES
+   ======================================== */
 
 /* Action Buttons */
 .setup-action-buttons {
@@ -443,6 +380,797 @@ input[type="radio"]:disabled,
 .setup-btn-icon {
   font-size: 16px;
 }
+
+/* ========================================
+   BANK MODAL STYLES
+   ======================================== */
+
+/* Bank Modal specific styles would go here */
+/* (Currently using common input styles) */
+
+/* ========================================
+   TRANSACTION TYPE MODAL STYLES
+   ======================================== */
+
+/* Transaction Type Modal specific styles would go here */
+/* (Currently using common input styles) */
+
+/* ========================================
+   TRUSTEES MODAL STYLES
+   ======================================== */
+
+/* Trustees Modal specific styles would go here */
+/* (Currently using common input styles) */
+
+/* ========================================
+   FUNDS MODAL STYLES
+   ======================================== */
+
+/* Funds Modal - Tabbed Table Section */
+.setup-tabbed-table-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  overflow: hidden;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  /* Ensure proper scrolling */
+  position: relative;
+}
+
+.setup-tab-navigation {
+  display: flex;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.setup-tab-button {
+  flex: 1;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 3px solid transparent;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.setup-tab-button:hover {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  color: #334155;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.setup-tab-button.active {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  border-bottom-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  transform: translateY(-2px);
+}
+
+.setup-tab-button.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: 0 0 2px 2px;
+}
+
+.setup-tab-content {
+  padding: 20px;
+  padding-bottom: 40px;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: scroll;
+  background: white;
+  border-radius: 0 0 8px 8px;
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #4f46e5 #f1f5f9;
+}
+
+.setup-tab-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.setup-tab-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.setup-tab-content::-webkit-scrollbar-thumb {
+  background: #4f46e5;
+  border-radius: 4px;
+  border: 1px solid #4338ca;
+}
+
+.setup-tab-content::-webkit-scrollbar-thumb:hover {
+  background: #4338ca;
+}
+
+/* Funds - Partly Redemptions Tab */
+.setup-partly-redemptions-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-redemptions-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.setup-redemptions-inputs {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.setup-redemptions-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setup-redemptions-list {
+  background-color: #f9fafb;
+  border-radius: 6px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Funds - Fund Accounts Tab */
+.setup-fund-accounts-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-fund-accounts-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.setup-fund-accounts-inputs {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.setup-fund-accounts-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setup-fund-accounts-list {
+  background-color: #f9fafb;
+  border-radius: 6px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Funds - GL Account Tab */
+.setup-gl-account-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-gl-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.setup-gl-account-inputs {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.setup-gl-account-inputs .setup-input-group {
+  flex: 1;
+}
+
+.setup-gl-account-inputs .setup-input-group:last-child .setup-input-field {
+  padding-right: 8px;
+}
+
+/* Funds - Add/Remove Buttons */
+.setup-btn-add {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.setup-btn-add:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.setup-btn-remove {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.setup-btn-remove:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.setup-list-placeholder {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* ========================================
+   COMPANY MODAL STYLES
+   ======================================== */
+
+/* Company Checkbox Styles */
+.setup-checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.setup-checkbox-input {
+  width: 18px;
+  height: 18px;
+  accent-color: #4f46e5;
+  cursor: pointer;
+}
+
+.setup-checkbox-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Company Modal Layout */
+.setup-company-modal-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  flex: 1;
+  max-width: 100%;
+}
+
+.setup-company-modal-content .setup-tab-navigation {
+  display: flex;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 2px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.setup-company-modal-content .setup-tab-button {
+  flex: 1;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 3px solid transparent;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.setup-company-modal-content .setup-tab-button:hover {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  color: #334155;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.setup-company-modal-content .setup-tab-button.active {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  border-bottom-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  transform: translateY(-2px);
+}
+
+.setup-company-modal-content .setup-tab-button.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: 0 0 2px 2px;
+}
+
+.setup-company-modal-content .setup-tab-content {
+  padding: 20px;
+  padding-bottom: 40px;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: scroll;
+  background: white;
+  border-radius: 0 0 8px 8px;
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #4f46e5 #f1f5f9;
+}
+
+.setup-company-modal-content .setup-tab-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.setup-company-modal-content .setup-tab-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.setup-company-modal-content .setup-tab-content::-webkit-scrollbar-thumb {
+  background: #4f46e5;
+  border-radius: 4px;
+  border: 1px solid #4338ca;
+}
+
+.setup-company-modal-content .setup-tab-content::-webkit-scrollbar-thumb:hover {
+  background: #4338ca;
+}
+
+/* Company Modal Tabs */
+.setup-company-tab,
+.setup-administrator-tab,
+.setup-email-sms-tab {
+  padding: 0;
+}
+
+.setup-company-form,
+.setup-administrator-form,
+.setup-email-sms-form {
+  width: 100%;
+}
+
+.setup-company-inputs,
+.setup-administrator-inputs,
+.setup-email-sms-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* ========================================
+   PROMOTIONAL ACTIVITY MODAL STYLES
+   ======================================== */
+
+/* Promotional Activity Modal specific styles would go here */
+/* (Currently using common input styles) */
+
+/* ========================================
+   FUND SUSPENSE ACCOUNT MODAL STYLES
+   ======================================== */
+
+/* Suspense Modal */
+.setup-suspense-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999999999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px;
+  padding-top: 20px;
+  isolation: isolate;
+}
+
+.setup-suspense-modal-overlay.mobile {
+  padding: 16px;
+}
+
+.setup-suspense-modal-container {
+  background: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 4px 32px #0003;
+  width: 60vw;
+  max-height: 80vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 0px;
+  z-index: 999999999;
+}
+
+.setup-suspense-modal-container.mobile {
+  width: 90vw;
+  max-height: 90vh;
+}
+
+.setup-suspense-modal-header {
+  background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 8px 8px 0 0;
+  min-height: 50px;
+}
+
+.setup-suspense-modal-header-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setup-suspense-modal-header-icon {
+  font-size: 20px;
+}
+
+.setup-suspense-modal-header-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.setup-suspense-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.setup-suspense-modal-close-btn:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+.setup-suspense-modal-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow: auto;
+}
+
+.setup-suspense-input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.setup-suspense-input-grid.mobile {
+  grid-template-columns: 1fr;
+}
+
+.setup-suspense-action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.setup-suspense-data-table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: 250px;
+  max-height: 350px;
+}
+
+.setup-suspense-data-table-content {
+  padding: 16px;
+  height: 100%;
+}
+
+/* Fund Suspense Account Button */
+.setup-suspense-account-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #4f46e5;
+  background-color: #4f46e5;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+}
+
+.setup-suspense-account-button:hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+}
+
+.setup-suspense-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setup-suspense-input-field {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* ========================================
+   SEARCH MODAL STYLES
+   ======================================== */
+
+/* Search Modal Layout */
+.setup-search-form-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.setup-search-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 200px;
+}
+
+.setup-search-column-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 200px;
+}
+
+.setup-search-column-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 200px;
+}
+
+/* 3-Column Grid Layout */
+.setup-search-three-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.setup-search-buttons-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+}
+
+.setup-dropdown-container {
+  position: relative;
+}
+
+.setup-dropdown-input {
+  padding-right: 30px;
+  cursor: pointer;
+}
+
+.setup-dropdown-arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none;
+}
+
+.setup-dropdown-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 32px;
+}
+
+.setup-checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setup-checkbox-input {
+  width: 16px;
+  height: 16px;
+}
+
+.setup-checkbox-label {
+  font-size: 14px;
+  color: #333;
+}
+
+.setup-button-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Search Modal Buttons */
+.setup-btn-get {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 4px;
+  transition: all 0.2s ease;
+}
+
+.setup-btn-get:hover {
+  background-color: #4338ca;
+  transform: translateY(-1px);
+}
+
+.setup-btn-search {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.setup-btn-search:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.setup-btn-cancel {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.setup-btn-cancel:hover {
+  background-color: #4b5563;
+  transform: translateY(-1px);
+}
+
+/* Results Area */
+.setup-results-area {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 300px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.setup-loading-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+}
+
+.setup-loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.setup-loading-text {
+  font-size: 14px;
+}
+
+.setup-instructions {
+  text-align: center;
+  color: #4f46e5;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* ========================================
+   DATA TABLE STYLES
+   ======================================== */
 
 /* Data Table */
 .setup-data-table-container {
@@ -606,499 +1334,6 @@ input[type="radio"]:disabled,
   color: #111827;
 }
 
-/* Suspense Modal */
-.setup-suspense-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 999999999;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 32px;
-  padding-top: 20px;
-  isolation: isolate;
-}
-
-.setup-suspense-modal-overlay.mobile {
-  padding: 16px;
-}
-
-.setup-suspense-modal-container {
-  background: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0 4px 32px #0003;
-  width: 60vw;
-  max-height: 80vh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin-top: 0px;
-  z-index: 999999999;
-}
-
-.setup-suspense-modal-container.mobile {
-  width: 90vw;
-  max-height: 90vh;
-}
-
-.setup-suspense-modal-header {
-  background: linear-gradient(90deg, #059669 0%, #10b981 100%);
-  color: white;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 8px 8px 0 0;
-  min-height: 50px;
-}
-
-.setup-suspense-modal-header-content {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.setup-suspense-modal-header-icon {
-  font-size: 20px;
-}
-
-.setup-suspense-modal-header-title {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.setup-suspense-modal-close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: white;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.setup-suspense-modal-close-btn:hover {
-  background-color: rgba(255,255,255,0.2);
-}
-
-.setup-suspense-modal-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  overflow: auto;
-}
-
-.setup-suspense-input-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.setup-suspense-input-grid.mobile {
-  grid-template-columns: 1fr;
-}
-
-.setup-suspense-action-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  padding: 16px 0;
-}
-
-.setup-suspense-data-table-container {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  min-height: 250px;
-  max-height: 350px;
-}
-
-.setup-suspense-data-table-content {
-  padding: 16px;
-  height: 100%;
-}
-
-/* Modal Footer */
-.setup-modal-footer {
-  padding: 12px 20px;
-  background: #f3f4f6;
-  border-top: 1px solid #e5e7eb;
-  font-size: 12px;
-  color: #6b7280;
-  text-align: center;
-}
-
-/* Loading Animation */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Fund Suspense Account Button */
-.setup-suspense-account-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  border: 1px solid #4f46e5;
-  background-color: #4f46e5;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
-}
-
-.setup-suspense-account-button:hover {
-  background-color: #4338ca;
-  border-color: #4338ca;
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
-}
-
-.setup-suspense-input-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.setup-suspense-input-field {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-/* Search Modal Layout */
-.setup-search-form-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.setup-search-column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 200px;
-}
-
-.setup-search-column-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 200px;
-}
-
-.setup-search-column-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 200px;
-}
-
-/* 3-Column Grid Layout */
-.setup-search-three-columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.setup-search-buttons-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 0;
-  border-top: 1px solid #e5e7eb;
-  margin-top: 8px;
-}
-
-.setup-input-group {
-  margin-bottom: 0;
-}
-
-.setup-input-label {
-  margin-bottom: 4px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.setup-input-field {
-  margin-bottom: 0;
-}
-
-.setup-dropdown-container {
-  position: relative;
-}
-
-.setup-dropdown-input {
-  padding-right: 30px;
-  cursor: pointer;
-}
-
-.setup-dropdown-arrow {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  pointer-events: none;
-}
-
-.setup-dropdown-select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: white;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 16px;
-  padding-right: 32px;
-}
-
-.setup-checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.setup-checkbox-input {
-  width: 16px;
-  height: 16px;
-}
-
-.setup-checkbox-label {
-  font-size: 14px;
-  color: #333;
-}
-
-.setup-button-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-/* Search Modal Buttons */
-.setup-btn-get {
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 13px;
-  margin-top: 4px;
-  transition: all 0.2s ease;
-}
-
-.setup-btn-get:hover {
-  background-color: #4338ca;
-  transform: translateY(-1px);
-}
-
-.setup-btn-search {
-  background-color: #10b981;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 13px;
-  transition: all 0.2s ease;
-}
-
-.setup-btn-search:hover {
-  background-color: #059669;
-  transform: translateY(-1px);
-}
-
-.setup-btn-cancel {
-  background-color: #6b7280;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 13px;
-  transition: all 0.2s ease;
-}
-
-.setup-btn-cancel:hover {
-  background-color: #4b5563;
-  transform: translateY(-1px);
-}
-
-/* Results Area */
-.setup-results-area {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-height: 300px;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.setup-loading-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: #666;
-}
-
-.setup-loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #e5e7eb;
-  border-top: 2px solid #4f46e5;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.setup-loading-text {
-  font-size: 14px;
-}
-
-.setup-instructions {
-  text-align: center;
-  color: #4f46e5;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-/* Tabbed Table Section */
-.setup-tabbed-table-section {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  margin-top: 20px;
-  overflow: hidden;
-  max-height: 600px;
-  display: flex;
-  flex-direction: column;
-  /* Ensure proper scrolling */
-  position: relative;
-}
-
-.setup-tab-navigation {
-  display: flex;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-bottom: 2px solid #e2e8f0;
-  border-radius: 8px 8px 0 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-}
-
-.setup-tab-button {
-  flex: 1;
-  padding: 16px 20px;
-  background: none;
-  border: none;
-  font-size: 14px;
-  font-weight: 700;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-bottom: 3px solid transparent;
-  position: relative;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.setup-tab-button:hover {
-  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-  color: #334155;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.setup-tab-button.active {
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-  color: white;
-  border-bottom-color: #4338ca;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-  transform: translateY(-2px);
-}
-
-.setup-tab-button.active::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-  border-radius: 0 0 2px 2px;
-}
-
-.setup-tab-content {
-  padding: 20px;
-  padding-bottom: 40px;
-  min-height: 300px;
-  max-height: 500px;
-  overflow-y: scroll;
-  background: white;
-  border-radius: 0 0 8px 8px;
-  /* Custom scrollbar styling */
-  scrollbar-width: thin;
-  scrollbar-color: #4f46e5 #f1f5f9;
-}
-
-.setup-tab-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.setup-tab-content::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-.setup-tab-content::-webkit-scrollbar-thumb {
-  background: #4f46e5;
-  border-radius: 4px;
-  border: 1px solid #4338ca;
-}
-
-.setup-tab-content::-webkit-scrollbar-thumb:hover {
-  background: #4338ca;
-}
-
 /* Table Styles */
 .setup-table-container {
   overflow-x: auto;
@@ -1129,148 +1364,47 @@ input[type="radio"]:disabled,
   background-color: #f9fafb;
 }
 
-/* Partly Redemptions Tab */
-.setup-partly-redemptions-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* ========================================
+   UTILITY STYLES
+   ======================================== */
+
+/* Disabled form elements */
+.setup-input-field:disabled,
+.setup-select-field:disabled,
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled,
+.setup-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  color: #999;
 }
 
-.setup-redemptions-form {
-  display: flex;
-  align-items: flex-end;
-  gap: 20px;
+.setup-btn:disabled {
+  background: #e0e0e0 !important;
+  color: #999 !important;
+  border-color: #ccc !important;
+  cursor: not-allowed !important;
 }
 
-.setup-redemptions-inputs {
-  display: flex;
-  gap: 16px;
-  flex: 1;
+.setup-btn:disabled:hover {
+  background: #e0e0e0 !important;
+  color: #999 !important;
+  border-color: #ccc !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
-.setup-redemptions-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* Loading Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* Fund Accounts Tab */
-.setup-fund-accounts-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
 
-.setup-fund-accounts-form {
-  display: flex;
-  align-items: flex-end;
-  gap: 20px;
-}
-
-.setup-fund-accounts-inputs {
-  display: flex;
-  gap: 16px;
-  flex: 1;
-}
-
-.setup-fund-accounts-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.setup-fund-accounts-list {
-  background-color: #f9fafb;
-  border-radius: 6px;
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* GL Account Tab */
-.setup-gl-account-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.setup-gl-account-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-}
-
-.setup-gl-account-inputs {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-}
-
-.setup-gl-account-inputs .setup-input-group {
-  flex: 1;
-}
-
-.setup-gl-account-inputs .setup-input-group:last-child .setup-input-field {
-  padding-right: 8px;
-}
-
-.setup-btn-add {
-  background-color: #10b981;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  transition: all 0.2s ease;
-}
-
-.setup-btn-add:hover {
-  background-color: #059669;
-  transform: translateY(-1px);
-}
-
-.setup-btn-remove {
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  transition: all 0.2s ease;
-}
-
-.setup-btn-remove:hover {
-  background-color: #dc2626;
-  transform: translateY(-1px);
-}
-
-.setup-redemptions-list {
-  background-color: #f9fafb;
-  border-radius: 6px;
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.setup-list-placeholder {
-  text-align: center;
-  color: #6b7280;
-  font-style: italic;
-  padding: 20px;
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .setup-modal-overlay {
     padding: 16px;

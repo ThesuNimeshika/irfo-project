@@ -1,8 +1,8 @@
-import Navbar, { Footer } from '../components/Navbar';
+import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';
 import '../Setup.css';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   useReactTable,
@@ -17,25 +17,83 @@ import type { SortingState, RowSelectionState } from "@tanstack/react-table";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import SystemCalendar from '../components/SystemCalendar';
-import React from 'react'; // Added for React.useState
+import React from 'react';
 
-// Add custom styles for date picker
-const datePickerStyles = `
-  .date-picker-input {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-`;
+// ========================================
+// TYPE DEFINITIONS
+// ========================================
 
-// Inject styles
-const styleSheet = document.createElement('style');
-styleSheet.type = 'text/css';
-styleSheet.innerText = datePickerStyles;
-document.head.appendChild(styleSheet);
+interface FormData {
+  code: string;
+  description: string;
+  address: string;
+  district: string;
+  swiftCode: string;
+  branchNo: string;
+  transactionCode: string;
+  transactionType: string;
+  transactionName: string;
+  lastTransactionNumber: string;
+  trusteeCode: string;
+  active: boolean;
+  trusteeName: string;
+  trusteeAddress: string;
+  telephoneNumber: string;
+  faxNo: string;
+  email: string;
+  custodianCode: string;
+  custodianActive: boolean;
+  custodianName: string;
+  custodianAddress1: string;
+  custodianAddress2: string;
+  custodianAddress3: string;
+  custodianTelephoneNumber: string;
+  custodianFaxNo: string;
+  custodianEmail: string;
+  postalCode: string;
+  postalActive: boolean;
+  postalDescription: string;
+  dividendType: string;
+  dividendActive: boolean;
+  dividendDescription: string;
+  fund: string;
+  fundName: string;
+  manager: string;
+  trustee: string;
+  custodian: string;
+  minValue: string;
+  minUnits: string;
+  suspenseAccount: string;
+  launchDate: Date | null;
+  fundType: string;
+  ipoStartDate: Date | null;
+  ipoEndDate: Date | null;
+  certificateType: string;
+  portfolioCode: string;
+  maturityDate: Date | null;
+  promotionCode: string;
+  promotionName: string;
+  promotionDescription: string;
+  companyCode: string;
+  companyName: string;
+  companyPostalCode: string;
+  companyStreet: string;
+  companyTown: string;
+  companyCity: string;
+  companyTelephone: string;
+  companyFax: string;
+  companyApplicationApproval: boolean;
+  companyAccountApproval: boolean;
+  companyEmail: string;
+  companyWebsite: string;
+}
 
+// ========================================
+// STATIC DATA AND CONFIGURATION
+// ========================================
+
+// TODO: Replace with API call to fetch modules from backend
+// API Endpoint: GET /api/setup/modules
 const moduleData = [
   { title: 'Bank', icon: '🏦' },
   { title: 'Transaction Type', icon: '🔄' },
@@ -47,7 +105,6 @@ const moduleData = [
   { title: 'Funds', icon: '💰' },
   { title: 'Company', icon: '🏢' },
   { title: 'Promotional Activity', icon: '🎉' },
-  { title: 'Other charges', icon: '💳' },
   { title: 'Unit Fee Codes', icon: '🧾' },
   { title: 'Agency Type', icon: '🏷️' },
   { title: 'Agency', icon: '🏬' },
@@ -69,7 +126,8 @@ const moduleData = [
   { title: 'Title', icon: '🔔' },
 ];
 
-// Sample data for different table views
+// TODO: Replace with API call to fetch table data from backend
+// API Endpoint: GET /api/setup/table-data/{module}
 const tableData = {
   Bank: [
     { code: '0', description: 'Bank Muscat', address: 'CJW5+9HF, Sohar, Oman' },
@@ -125,10 +183,6 @@ const tableData = {
   'Promotional Activity': [
     { code: 'PA001', activity: 'Summer Sale', period: 'Jun-Aug 2024', discount: '20%' },
     { code: 'PA002', activity: 'Holiday Special', period: 'Dec 2024', discount: '15%' }
-  ],
-  'Other charges': [
-    { code: 'OC001', description: 'Processing Fee', amount: '25.00', type: 'Fixed' },
-    { code: 'OC002', description: 'Maintenance Fee', amount: '50.00', type: 'Annual' }
   ],
   'Unit Fee Codes': [
     { code: 'UFC001', description: 'Entry Fee', rate: '2.5%', type: 'Percentage' },
@@ -216,7 +270,11 @@ const modules = moduleData.map(m => ({
   description: `Setup for ${m.title}`
 }));
 
-// Custom DataTable Component
+// ========================================
+// CUSTOM COMPONENTS
+// ========================================
+
+// Custom DataTable Component for displaying table data
 function CustomDataTable({ data, columns }: { data: Record<string, string | undefined>[], columns: string[] }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -228,8 +286,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
 
   const columnHelper = createColumnHelper<Record<string, string | undefined>>();
 
-  const tableColumns = useMemo(() => 
-    columns.map((column) =>
+  const tableColumns = columns.map((column) =>
       columnHelper.accessor(column, {
         header: column === 'code' ? 'Code' : 
                 column === 'description' ? 'Description' : 
@@ -242,7 +299,6 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           <span className="text-gray-900">{info.getValue()}</span>
         ),
       })
-    ), [columns]
   );
 
   const table = useReactTable({
@@ -362,18 +418,22 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           </div>
         </div>
       </div>
-
     </div>
   );
 }
 
+// ========================================
+// MAIN SETUP COMPONENT
+// ========================================
+
 function Setup() {
-  const [modalIdx, setModalIdx] = useState<number | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [suspenseModalOpen, setSuspenseModalOpen] = useState(false);
-  const [systemCalendarOpen, setSystemCalendarOpen] = useState(false);
-  const [isFormEditable, setIsFormEditable] = useState(false); // New state for form editing mode
-  const [formData, setFormData] = useState({
+  // ========================================
+  // STATE MANAGEMENT
+  // ========================================
+  
+  // TODO: Replace with API call to fetch initial form data
+  // API Endpoint: GET /api/setup/form-data/{module}
+  const [formData, setFormData] = useState<FormData>({
     code: '',
     description: '',
     address: '',
@@ -414,62 +474,111 @@ function Setup() {
     minValue: '',
     minUnits: '',
     suspenseAccount: '',
-    launchDate: null as Date | null,
+    launchDate: null,
     fundType: '',
-    ipoStartDate: null as Date | null,
-    ipoEndDate: null as Date | null,
+    ipoStartDate: null,
+    ipoEndDate: null,
     certificateType: '',
     portfolioCode: '',
-    maturityDate: null as Date | null
+    maturityDate: null,
+    promotionCode: '',
+    promotionName: '',
+    promotionDescription: '',
+    companyCode: '',
+    companyName: '',
+    companyPostalCode: '',
+    companyStreet: '',
+    companyTown: '',
+    companyCity: '',
+    companyFax: '',
+    companyApplicationApproval: false,
+    companyAccountApproval: false,
+    companyTelephone: '',
+    companyEmail: '',
+    companyWebsite: '',
   });
 
-  useEffect(() => {
+  // Modal state management
+  const [modalIdx, setModalIdx] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [suspenseModalOpen, setSuspenseModalOpen] = useState(false);
+  const [systemCalendarOpen, setSystemCalendarOpen] = useState(false);
+  const [isFormEditable, setIsFormEditable] = useState(false);
+
+  // ========================================
+  // EVENT HANDLERS
+  // ========================================
+
+  // Handle window resize for responsive design
     const handleResize = () => {
       const width = window.innerWidth;
       setIsMobile(width <= 768);
     };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  // Handle input field changes
+  // TODO: Add validation and API call for real-time validation
+  // API Endpoint: POST /api/setup/validate-field
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ 
+      ...prev, 
+      [field]: field.includes('Approval') ? value === 'true' : value 
+    }));
   };
 
+  // Handle date field changes
+  // TODO: Add date validation and API call for date-specific validation
+  // API Endpoint: POST /api/setup/validate-date
   const handleDateChange = (field: string, date: Date | null) => {
     setFormData(prev => ({ ...prev, [field]: date }));
   };
 
+  // Handle new button click - clear form
+  // TODO: Add API call to fetch default values for new record
+  // API Endpoint: GET /api/setup/default-values/{module}
   const handleNewButtonClick = () => {
     setIsFormEditable(true);
-    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null });
+    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '' });
   };
 
+  // Handle modal open
+  // TODO: Add API call to fetch existing data when opening modal
+  // API Endpoint: GET /api/setup/{module}/data/{id}
   const handleModalOpen = (idx: number) => {
     setModalIdx(idx);
-    setIsFormEditable(false); // Reset form editing mode when modal opens
+    setIsFormEditable(false);
   };
 
+  // Handle save button click
+  // TODO: Add API call to save form data
+  // API Endpoint: POST /api/setup/{module}/save
   const handleSave = () => {
-    // Handle save logic here
     console.log('Saving:', formData);
     alert('Data saved successfully!');
   };
 
+  // Handle delete button click
+  // TODO: Add API call to delete record
+  // API Endpoint: DELETE /api/setup/{module}/delete/{id}
   const handleDelete = () => {
-    // Handle delete logic here
     console.log('Deleting record');
     alert('Record deleted successfully!');
   };
 
+  // Handle print button click
+  // TODO: Add API call to generate print data
+  // API Endpoint: GET /api/setup/{module}/print/{id}
   const handlePrint = () => {
-    // Handle print logic here
     console.log('Printing data');
     window.print();
   };
 
+  // ========================================
+  // UTILITY FUNCTIONS
+  // ========================================
+
+  // Get table columns for specific module
+  // TODO: Replace with API call to fetch table columns from backend
+  // API Endpoint: GET /api/setup/table-columns/{module}
   const getTableColumns = (title: string) => {
     const data = tableData[title as keyof typeof tableData] || [];
     if (data.length === 0) return [];
@@ -477,9 +586,145 @@ function Setup() {
     return Object.keys(data[0]);
   };
 
+  // Get table data for specific module
+  // TODO: Replace with API call to fetch table data from backend
+  // API Endpoint: GET /api/setup/table-data/{module}
   const getTableData = (title: string) => {
     return tableData[title as keyof typeof tableData] || [];
   };
+
+  // ========================================
+  // MODAL CONTENT RENDERER
+  // ========================================
+
+  // TODO: Replace with API call to fetch modal content configuration
+  // API Endpoint: GET /api/setup/modal-config/{module}
+  const renderModalContent = () => {
+    if (modalIdx === null) return null;
+
+    const modalTitle = modules[modalIdx].title;
+
+    // Company modal has special tabbed layout
+    if (modalTitle === 'Company') {
+      return (
+        <div className="setup-company-modal-content">
+          <CompanyDetailsTabs 
+            formData={formData}
+            handleInputChange={handleInputChange}
+            isFormEditable={isFormEditable}
+            isMobile={isMobile}
+          />
+        </div>
+      );
+    }
+
+    // Other modals use input grid layout
+    return (
+      <div className="setup-input-section">
+        <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
+          {modalTitle === 'Bank' && (
+            <BankModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Transaction Type' && (
+            <TransactionTypeModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Trustees' && (
+            <TrusteesModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Custodian' && (
+            <CustodianModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+            />
+          )}
+          {modalTitle === 'Postal Area' && (
+            <PostalAreaModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+            />
+          )}
+          {modalTitle === 'Dividend Type' && (
+            <DividendTypeModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+            />
+          )}
+          {modalTitle === 'Funds' && (
+            <FundsModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              handleDateChange={handleDateChange}
+              isFormEditable={isFormEditable} 
+              setSuspenseModalOpen={setSuspenseModalOpen}
+            />
+          )}
+          {modalTitle === 'Promotional Activity' && (
+            <PromotionalActivityModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+            />
+          )}
+          {/* Default Bank modal for other modules */}
+          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Company'].includes(modalTitle) && (
+            <BankModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ========================================
+  // TABLE CONTENT RENDERER
+  // ========================================
+
+  // TODO: Replace with API call to fetch table data
+  // API Endpoint: GET /api/setup/table-data/{module}
+  const renderTableContent = () => {
+    if (modalIdx === null || modules[modalIdx].title === 'Company') return null;
+
+    const modalTitle = modules[modalIdx].title;
+
+    if (modalTitle === 'Funds') {
+      return <FundsDetailsTabs />;
+    }
+
+    return (
+      <CustomDataTable 
+        data={getTableData(modalTitle)}
+        columns={getTableColumns(modalTitle)}
+      />
+    );
+  };
+
+  // ========================================
+  // EFFECTS
+  // ========================================
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // ========================================
+  // RENDER
+  // ========================================
 
   return (
     <>
@@ -547,948 +792,7 @@ function Setup() {
 
                   {/* Content */}
                   <div className="setup-modal-content">
-                    {/* Input Fields Section */}
-                    <div className="setup-input-section">
-                      <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
-                        {modules[modalIdx].title === 'Transaction Type' ? (
-                                                      <>
-                                                         <div className="setup-input-group">
-                               <label className="setup-input-label">
-                                 Transaction Code
-                               </label>
-                               <input
-                                 type="text"
-                                 value={formData.transactionCode}
-                                 onChange={(e) => handleInputChange('transactionCode', e.target.value)}
-                                 className="setup-input-field"
-                                 placeholder="Enter transaction code"
-                                 disabled={!isFormEditable}
-                               />
-              </div>
-                             <div>
-                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                 Transaction Type
-                               </label>
-                               <select
-                                 value={formData.transactionType}
-                                 onChange={(e) => handleInputChange('transactionType', e.target.value)}
-                                 disabled={!isFormEditable}
-                                 style={{
-                                   width: '100%',
-                                   padding: '8px 12px',
-                                   border: '1px solid #ddd',
-                                   borderRadius: '4px',
-                                   fontSize: '14px'
-                                 }}
-                               >
-                                 <option value="">Select transaction type</option>
-                                 <option value="Purchase">Purchase</option>
-                                 <option value="Sale">Sale</option>
-                                 <option value="Dividend">Dividend</option>
-                                 <option value="Transfer">Transfer</option>
-                               </select>
-                             </div>
-                             <div>
-                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                 Transaction Name
-                               </label>
-                               <input
-                                 type="text"
-                                 value={formData.transactionName}
-                                 onChange={(e) => handleInputChange('transactionName', e.target.value)}
-                                 disabled={!isFormEditable}
-                                 style={{
-                                   width: '100%',
-                                   padding: '8px 12px',
-                                   border: '1px solid #ddd',
-                                   borderRadius: '4px',
-                                   fontSize: '14px'
-                                 }}
-                                 placeholder="Enter transaction name"
-                               />
-                             </div>
-                             <div>
-                               <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                 Last Transaction Number
-                               </label>
-                               <input
-                                 type="text"
-                                 value={formData.lastTransactionNumber}
-                                 onChange={(e) => handleInputChange('lastTransactionNumber', e.target.value)}
-                                 disabled={!isFormEditable}
-                                 style={{
-                                   width: '100%',
-                                   padding: '8px 12px',
-                                   border: '1px solid #ddd',
-                                   borderRadius: '4px',
-                                   fontSize: '14px'
-                                 }}
-                                 placeholder="Enter last transaction number"
-                               />
-                             </div>
-                          </>
-                        ) : modules[modalIdx].title === 'Trustees' ? (
-                          <>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Trustee Code
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.trusteeCode}
-                                onChange={(e) => handleInputChange('trusteeCode', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter trustee code"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Active
-                              </label>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <input
-                                  type="checkbox"
-                                  checked={formData.active}
-                                  onChange={(e) => handleInputChange('active', e.target.checked.toString())}
-                                  disabled={!isFormEditable}
-                                  style={{
-                                    width: '16px',
-                                    height: '16px',
-                                    cursor: 'pointer'
-                                  }}
-                                />
-                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
-                              </div>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Trustee Name
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.trusteeName}
-                                onChange={(e) => handleInputChange('trusteeName', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter trustee name"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Address (No/Street/Town/City)
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.trusteeAddress}
-                                onChange={(e) => handleInputChange('trusteeAddress', e.target.value)}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter address as: No, Street Name, Town, City"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Telephone Number
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.telephoneNumber}
-                                onChange={(e) => handleInputChange('telephoneNumber', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter telephone number"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Fax No
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.faxNo}
-                                onChange={(e) => handleInputChange('faxNo', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter fax number"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                E-mail
-                              </label>
-                              <input
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter e-mail"
-                              />
-                            </div>
-                          </>
-                        ) : modules[modalIdx].title === 'Custodian' ? (
-                          <>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Custodian Code
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.custodianCode}
-                                onChange={(e) => handleInputChange('custodianCode', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter custodian code"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Active
-                              </label>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <input
-                                  type="checkbox"
-                                  checked={formData.custodianActive}
-                                  onChange={(e) => handleInputChange('custodianActive', e.target.checked.toString())}
-                                  style={{
-                                    width: '16px',
-                                    height: '16px',
-                                    cursor: 'pointer'
-                                  }}
-                                />
-                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
-                              </div>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Custodian Name
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.custodianName}
-                                onChange={(e) => handleInputChange('custodianName', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter custodian name"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Address 1
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.custodianAddress1}
-                                onChange={(e) => handleInputChange('custodianAddress1', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter address 1"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Address 2
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.custodianAddress2}
-                                onChange={(e) => handleInputChange('custodianAddress2', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter address 2"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Address 3
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.custodianAddress3}
-                                onChange={(e) => handleInputChange('custodianAddress3', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter address 3"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Telephone Number
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.custodianTelephoneNumber}
-                                onChange={(e) => handleInputChange('custodianTelephoneNumber', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter telephone number"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Fax No
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.custodianFaxNo}
-                                onChange={(e) => handleInputChange('custodianFaxNo', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter fax number"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                E-mail
-                              </label>
-                              <input
-                                type="email"
-                                value={formData.custodianEmail}
-                                onChange={(e) => handleInputChange('custodianEmail', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter e-mail"
-                              />
-                            </div>
-                          </>
-                        ) : modules[modalIdx].title === 'Postal Area' ? (
-                          <>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Postal Code
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.postalCode}
-                                onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter postal code"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Active
-                              </label>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <input
-                                  type="checkbox"
-                                  checked={formData.postalActive}
-                                  onChange={(e) => handleInputChange('postalActive', e.target.checked.toString())}
-                                  style={{
-                                    width: '16px',
-                                    height: '16px',
-                                    cursor: 'pointer'
-                                  }}
-                                />
-                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
-                              </div>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Description
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.postalDescription}
-                                onChange={(e) => handleInputChange('postalDescription', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter description"
-                              />
-                            </div>
-                          </>
-                        ) : modules[modalIdx].title === 'Dividend Type' ? (
-                          <>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Dividend Type
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.dividendType}
-                                onChange={(e) => handleInputChange('dividendType', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter dividend type"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Active
-                              </label>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <input
-                                  type="checkbox"
-                                  checked={formData.dividendActive}
-                                  onChange={(e) => handleInputChange('dividendActive', e.target.checked.toString())}
-                                  style={{
-                                    width: '16px',
-                                    height: '16px',
-                                    cursor: 'pointer'
-                                  }}
-                                />
-                                <span style={{ fontSize: '14px', color: '#666' }}>Active</span>
-                              </div>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Description
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.dividendDescription}
-                                onChange={(e) => handleInputChange('dividendDescription', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter description"
-                              />
-                            </div>
-                          </>
-                        ) : modules[modalIdx].title === 'Funds' ? (
-                          <>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Fund
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.fund}
-                                onChange={(e) => handleInputChange('fund', e.target.value)}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter Fund"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Name
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.fundName}
-                                onChange={(e) => handleInputChange('fundName', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter Name"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Manager
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.manager}
-                                onChange={(e) => handleInputChange('manager', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter Manager"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Trustee
-                              </label>
-                              <select
-                                value={formData.trustee}
-                                onChange={(e) => handleInputChange('trustee', e.target.value)}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                              >
-                                <option value="">Select Trustee</option>
-                                <option value="Trust Corp">Trust Corp</option>
-                                <option value="Fiduciary Ltd">Fiduciary Ltd</option>
-                                <option value="Trustee Corp">Trustee Corp</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Custodian
-                              </label>
-                              <select
-                                value={formData.custodian}
-                                onChange={(e) => handleInputChange('custodian', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                              >
-                                <option value="">Select Custodian</option>
-                                <option value="Global Custody">Global Custody</option>
-                                <option value="Euro Custody">Euro Custody</option>
-                                <option value="Asia Custody">Asia Custody</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Min Value of Investment
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.minValue}
-                                onChange={(e) => handleInputChange('minValue', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter Min Value"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Min No of Units
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.minUnits}
-                                onChange={(e) => handleInputChange('minUnits', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter Units"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Fund Suspense Account
-                              </label>
-                              <div className="setup-suspense-input-container">
-                                <button
-                                  type="button"
-                                  onClick={() => setSuspenseModalOpen(true)}
-                                  className="setup-suspense-account-button"
-                                >
-                                  A
-                                </button>
-                                <input
-                                  type="text"
-                                  value={formData.suspenseAccount}
-                                  onChange={(e) => handleInputChange('suspenseAccount', e.target.value)}
-                                  className="setup-suspense-input-field"
-                                  placeholder="Enter Suspense Account"
-                                />
-                              </div>
-                            </div>
-                                                           <div>
-                                 <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                   Launch Date
-                                 </label>
-                                 <DatePicker
-                                   selected={formData.launchDate}
-                                   onChange={(date) => handleDateChange('launchDate', date)}
-                                   dateFormat="dd/MM/yyyy"
-                                   placeholderText="dd/mm/yyyy"
-                                   className="date-picker-input"
-                                   disabled={!isFormEditable}
-                                 />
-                               </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Fund Type
-                              </label>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
-                                  <input
-                                    type="radio"
-                                    name="fundType"
-                                    value="Open Ended"
-                                    checked={formData.fundType === 'Open Ended'}
-                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
-                                    disabled={!isFormEditable}
-                                    style={{
-                                      width: '16px',
-                                      height: '16px',
-                                      cursor: 'pointer'
-                                    }}
-                                  />
-                                  Open Ended
-                                </label>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
-                                  <input
-                                    type="radio"
-                                    name="fundType"
-                                    value="Close Ended"
-                                    checked={formData.fundType === 'Close Ended'}
-                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
-                                    disabled={!isFormEditable}
-                                    style={{
-                                      width: '16px',
-                                      height: '16px',
-                                      cursor: 'pointer'
-                                    }}
-                                  />
-                                  Close Ended
-                                </label>
-                              </div>
-                            </div>
-                                                           <div>
-                                 <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                   IPO Starting Date
-                                 </label>
-                                 <DatePicker
-                                   selected={formData.ipoStartDate}
-                                   onChange={(date) => handleDateChange('ipoStartDate', date)}
-                                   dateFormat="dd/MM/yyyy"
-                                   placeholderText="dd/mm/yyyy"
-                                   className="date-picker-input"
-                                 />
-                               </div>
-                                                           <div>
-                                 <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                   IPO Ending Date
-                                 </label>
-                                 <DatePicker
-                                   selected={formData.ipoEndDate}
-                                   onChange={(date) => handleDateChange('ipoEndDate', date)}
-                                   dateFormat="dd/MM/yyyy"
-                                   placeholderText="dd/mm/yyyy"
-                                   className="date-picker-input"
-                                 />
-                               </div>
-                            {formData.fundType === 'Close Ended' ? (
-                              <>
-                                <div>
-                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                    Maturity Date
-                                  </label>
-                                  <DatePicker
-                                    selected={formData.maturityDate}
-                                    onChange={(date) => handleDateChange('maturityDate', date)}
-                                    dateFormat="dd/MM/yyyy"
-                                    placeholderText="dd/mm/yyyy"
-                                    className="date-picker-input"
-                                  />
-                                </div>
-                                <div>
-                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                    Certificate Type
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={formData.certificateType}
-                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
-                                    style={{
-                                      width: '100%',
-                                      padding: '8px 12px',
-                                      border: '1px solid #ddd',
-                                      borderRadius: '4px',
-                                      fontSize: '14px'
-                                    }}
-                                    placeholder="Enter Certificate Type"
-                                  />
-                                </div>
-                                <div>
-                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                    Portfolio Code
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={formData.portfolioCode}
-                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
-                                    style={{
-                                      width: '100%',
-                                      padding: '8px 12px',
-                                      border: '1px solid #ddd',
-                                      borderRadius: '4px',
-                                      fontSize: '14px'
-                                    }}
-                                    placeholder="Enter PF Code"
-                                  />
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div>
-                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                    Certificate Type
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={formData.certificateType}
-                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
-                                    style={{
-                                      width: '100%',
-                                      padding: '8px 12px',
-                                      border: '1px solid #ddd',
-                                      borderRadius: '4px',
-                                      fontSize: '14px'
-                                    }}
-                                    placeholder="Enter Certificate Type"
-                                  />
-                                </div>
-                                <div>
-                                  <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                    Portfolio Code
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={formData.portfolioCode}
-                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
-                                    style={{
-                                      width: '100%',
-                                      padding: '8px 12px',
-                                      border: '1px solid #ddd',
-                                      borderRadius: '4px',
-                                      fontSize: '14px'
-                                    }}
-                                    placeholder="Enter PF Code"
-                                  />
-                                </div>
-                              </>
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Bank Code
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.code}
-                                onChange={(e) => handleInputChange('code', e.target.value)}
-                                maxLength={7}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter bank code"
-                              />
-          </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Description
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.description}
-                                onChange={(e) => handleInputChange('description', e.target.value)}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter description"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Address (No/Street/Town/City)
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.address}
-                                onChange={(e) => handleInputChange('address', e.target.value)}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter address as: No, Street Name, Town, City"
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                District
-                              </label>
-                              <select
-                                value={formData.district}
-                                onChange={(e) => handleInputChange('district', e.target.value)}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                              >
-                                <option value="">Select district</option>
-                                <option value="north">North District</option>
-                                <option value="south">South District</option>
-                                <option value="east">East District</option>
-                                <option value="west">West District</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Swift Code
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.swiftCode}
-                                onChange={(e) => handleInputChange('swiftCode', e.target.value)}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px',
-                                  color: '#666',
-                                  backgroundColor: '#f5f5f5'
-                                }}
-                                placeholder="Read only field"
-                                readOnly
-                              />
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', marginBottom: '2px', fontWeight: 'bold', fontSize: '14px' }}>
-                                Branch No
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.branchNo}
-                                onChange={(e) => handleInputChange('branchNo', e.target.value)}
-                                disabled={!isFormEditable}
-                                style={{
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  fontSize: '14px'
-                                }}
-                                placeholder="Enter branch number"
-                              />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
+                    {renderModalContent()}
 
                     {/* Action Buttons */}
                     <div className="setup-action-buttons">
@@ -1524,7 +828,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '' })}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >
@@ -1534,18 +838,13 @@ function Setup() {
                     </div>
 
                     {/* Second Card - Tabbed Table Section */}
-                    <div className="setup-data-table-container">
-                      <div className="setup-data-table-content">
-                        {modules[modalIdx].title === 'Funds' ? (
-                          <FundsDetailsTabs />
-                        ) : (
-                          <CustomDataTable 
-                            data={getTableData(modules[modalIdx].title)}
-                            columns={getTableColumns(modules[modalIdx].title)}
-                          />
-                        )}
+                    {modules[modalIdx].title !== 'Company' && (
+                      <div className="setup-data-table-container">
+                        <div className="setup-data-table-content">
+                          {renderTableContent()}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* Footer */}
@@ -1751,7 +1050,6 @@ function Setup() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }
@@ -1872,6 +1170,841 @@ function FundsDetailsTabs() {
         )}
       </div>
     </div>
+  );
+}
+
+function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMobile }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean, isMobile: boolean }) {
+  const [activeTab, setActiveTab] = React.useState('company');
+  
+  return (
+    <>
+      <div className="setup-tab-navigation">
+        <button className={`setup-tab-button ${activeTab === 'company' ? 'active' : ''}`} onClick={() => setActiveTab('company')}>Company</button>
+        <button className={`setup-tab-button ${activeTab === 'administrator' ? 'active' : ''}`} onClick={() => setActiveTab('administrator')}>Administrator</button>
+        <button className={`setup-tab-button ${activeTab === 'email-sms' ? 'active' : ''}`} onClick={() => setActiveTab('email-sms')}>Email and SMS</button>
+      </div>
+      <div className="setup-tab-content">
+        {activeTab === 'company' && (
+          <div className="setup-company-tab">
+            <div className="setup-company-form">
+              <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Code</label>
+                  <input
+                    type="text"
+                    value={formData.companyCode}
+                    onChange={(e) => handleInputChange('companyCode', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter code"
+                  />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Name</label>
+                  <input
+                    type="text"
+                    value={formData.companyName}
+                    onChange={(e) => handleInputChange('companyName', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter name"
+                  />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Postal Code</label>
+                  <input
+                    type="text"
+                    value={formData.companyPostalCode}
+                    onChange={(e) => handleInputChange('companyPostalCode', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter postal code"
+                  />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Street</label>
+                  <input
+                    type="text"
+                    value={formData.companyStreet}
+                    onChange={(e) => handleInputChange('companyStreet', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter street"
+                  />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Town</label>
+                  <input
+                    type="text"
+                    value={formData.companyTown}
+                    onChange={(e) => handleInputChange('companyTown', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter town"
+                  />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">City</label>
+                  <input
+                    type="text"
+                    value={formData.companyCity}
+                    onChange={(e) => handleInputChange('companyCity', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter city"
+                  />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Telephone</label>
+                  <input
+                    type="text"
+                    value={formData.companyTelephone}
+                    onChange={(e) => handleInputChange('companyTelephone', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter telephone"
+                  />
+                </div>
+                <div className="setup-input-group">
+                  <label className="setup-input-label">Fax</label>
+                  <input
+                    type="text"
+                    value={formData.companyFax}
+                    onChange={(e) => handleInputChange('companyFax', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter fax"
+                  />
+                </div>
+                <div className="setup-input-group" style={{ gridColumn: '3 / 4' }}>
+                  <div className="setup-checkbox-container">
+                    <input
+                      type="checkbox"
+                      id="applicationApproval"
+                      checked={formData.companyApplicationApproval}
+                      onChange={(e) => handleInputChange('companyApplicationApproval', e.target.checked.toString())}
+                      disabled={!isFormEditable}
+                      className="setup-checkbox-input"
+                    />
+                    <label htmlFor="applicationApproval" className="setup-checkbox-label">
+                      Application approval
+                    </label>
+                  </div>
+                  <div className="setup-checkbox-container">
+                    <input
+                      type="checkbox"
+                      id="accountApproval"
+                      checked={formData.companyAccountApproval}
+                      onChange={(e) => handleInputChange('companyAccountApproval', e.target.checked.toString())}
+                      disabled={!isFormEditable}
+                      className="setup-checkbox-input"
+                    />
+                    <label htmlFor="accountApproval" className="setup-checkbox-label">
+                      Account approval
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {activeTab === 'administrator' && (
+          <div className="setup-administrator-tab">
+            <div className="setup-administrator-form">
+              <div className="setup-administrator-inputs">
+                {/* Empty content for now */}
+              </div>
+            </div>
+          </div>
+        )}
+        {activeTab === 'email-sms' && (
+          <div className="setup-email-sms-tab">
+            <div className="setup-email-sms-form">
+              <div className="setup-email-sms-inputs">
+                {/* Empty content for now */}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// MODAL COMPONENTS
+// ========================================
+
+// ========================================
+// BANK MODAL COMPONENT
+// ========================================
+function BankModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      <div>
+        <label className="setup-input-label">Bank Code</label>
+        <input
+          type="text"
+          value={formData.code}
+          onChange={(e) => handleInputChange('code', e.target.value)}
+          maxLength={7}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter bank code"
+        />
+      </div>
+      <div>
+        <label className="setup-input-label">Description</label>
+        <input
+          type="text"
+          value={formData.description}
+          onChange={(e) => handleInputChange('description', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+        />
+      </div>
+      <div>
+        <label className="setup-input-label">Address (No/Street/Town/City)</label>
+        <input
+          type="text"
+          value={formData.address}
+          onChange={(e) => handleInputChange('address', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address as: No, Street Name, Town, City"
+        />
+      </div>
+      <div>
+        <label className="setup-input-label">District</label>
+        <select
+          value={formData.district}
+          onChange={(e) => handleInputChange('district', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select district</option>
+          <option value="north">North District</option>
+          <option value="south">South District</option>
+          <option value="east">East District</option>
+          <option value="west">West District</option>
+        </select>
+      </div>
+      <div>
+        <label className="setup-input-label">Swift Code</label>
+        <input
+          type="text"
+          value={formData.swiftCode}
+          onChange={(e) => handleInputChange('swiftCode', e.target.value)}
+          className="setup-input-field readonly"
+          placeholder="Read only field"
+          readOnly
+        />
+      </div>
+      <div>
+        <label className="setup-input-label">Branch No</label>
+        <input
+          type="text"
+          value={formData.branchNo}
+          onChange={(e) => handleInputChange('branchNo', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter branch number"
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// TRANSACTION TYPE MODAL COMPONENT
+// ========================================
+function TransactionTypeModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  return (
+                                                      <>
+                                                         <div className="setup-input-group">
+        <label className="setup-input-label">Transaction Code</label>
+                               <input
+                                 type="text"
+                                 value={formData.transactionCode}
+                                 onChange={(e) => handleInputChange('transactionCode', e.target.value)}
+                                 className="setup-input-field"
+                                 placeholder="Enter transaction code"
+                                 disabled={!isFormEditable}
+                               />
+              </div>
+                             <div>
+        <label className="setup-input-label">Transaction Type</label>
+                               <select
+                                 value={formData.transactionType}
+                                 onChange={(e) => handleInputChange('transactionType', e.target.value)}
+                                 disabled={!isFormEditable}
+          className="setup-select-field"
+                               >
+                                 <option value="">Select transaction type</option>
+                                 <option value="Purchase">Purchase</option>
+                                 <option value="Sale">Sale</option>
+                                 <option value="Dividend">Dividend</option>
+                                 <option value="Transfer">Transfer</option>
+                               </select>
+                             </div>
+                             <div>
+        <label className="setup-input-label">Transaction Name</label>
+                               <input
+                                 type="text"
+                                 value={formData.transactionName}
+                                 onChange={(e) => handleInputChange('transactionName', e.target.value)}
+                                 disabled={!isFormEditable}
+          className="setup-input-field"
+                                 placeholder="Enter transaction name"
+                               />
+                             </div>
+                             <div>
+        <label className="setup-input-label">Last Transaction Number</label>
+                               <input
+                                 type="text"
+                                 value={formData.lastTransactionNumber}
+                                 onChange={(e) => handleInputChange('lastTransactionNumber', e.target.value)}
+                                 disabled={!isFormEditable}
+          className="setup-input-field"
+                                 placeholder="Enter last transaction number"
+                               />
+                             </div>
+                          </>
+  );
+}
+
+// ========================================
+// TRUSTEES MODAL COMPONENT
+// ========================================
+function TrusteesModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  return (
+                          <>
+                            <div>
+        <label className="setup-input-label">Trustee Code</label>
+                              <input
+                                type="text"
+                                value={formData.trusteeCode}
+                                onChange={(e) => handleInputChange('trusteeCode', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter trustee code"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Active</label>
+        <div className="setup-checkbox-group">
+                                <input
+                                  type="checkbox"
+                                  checked={formData.active}
+                                  onChange={(e) => handleInputChange('active', e.target.checked.toString())}
+                                  disabled={!isFormEditable}
+            className="setup-checkbox"
+          />
+          <span className="setup-checkbox-label">Active</span>
+                              </div>
+                            </div>
+                            <div>
+        <label className="setup-input-label">Trustee Name</label>
+                              <input
+                                type="text"
+                                value={formData.trusteeName}
+                                onChange={(e) => handleInputChange('trusteeName', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter trustee name"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Address (No/Street/Town/City)</label>
+                              <input
+                                type="text"
+                                value={formData.trusteeAddress}
+                                onChange={(e) => handleInputChange('trusteeAddress', e.target.value)}
+                                disabled={!isFormEditable}
+          className="setup-input-field"
+                                placeholder="Enter address as: No, Street Name, Town, City"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Telephone Number</label>
+                              <input
+                                type="text"
+                                value={formData.telephoneNumber}
+                                onChange={(e) => handleInputChange('telephoneNumber', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter telephone number"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Fax No</label>
+                              <input
+                                type="text"
+                                value={formData.faxNo}
+                                onChange={(e) => handleInputChange('faxNo', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter fax number"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">E-mail</label>
+                              <input
+                                type="email"
+                                value={formData.email}
+                                onChange={(e) => handleInputChange('email', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter e-mail"
+                              />
+                            </div>
+                          </>
+  );
+}
+
+// ========================================
+// CUSTODIAN MODAL COMPONENT
+// ========================================
+function CustodianModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+  return (
+                          <>
+                            <div>
+        <label className="setup-input-label">Custodian Code</label>
+                              <input
+                                type="text"
+                                value={formData.custodianCode}
+                                onChange={(e) => handleInputChange('custodianCode', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter custodian code"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Active</label>
+        <div className="setup-checkbox-group">
+                                <input
+                                  type="checkbox"
+                                  checked={formData.custodianActive}
+                                  onChange={(e) => handleInputChange('custodianActive', e.target.checked.toString())}
+            className="setup-checkbox"
+          />
+          <span className="setup-checkbox-label">Active</span>
+                              </div>
+                            </div>
+                            <div>
+        <label className="setup-input-label">Custodian Name</label>
+                              <input
+                                type="text"
+                                value={formData.custodianName}
+                                onChange={(e) => handleInputChange('custodianName', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter custodian name"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Address 1</label>
+                              <input
+                                type="text"
+                                value={formData.custodianAddress1}
+                                onChange={(e) => handleInputChange('custodianAddress1', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter address 1"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Address 2</label>
+                              <input
+                                type="text"
+                                value={formData.custodianAddress2}
+                                onChange={(e) => handleInputChange('custodianAddress2', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter address 2"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Address 3</label>
+                              <input
+                                type="text"
+                                value={formData.custodianAddress3}
+                                onChange={(e) => handleInputChange('custodianAddress3', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter address 3"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Telephone Number</label>
+                              <input
+                                type="text"
+                                value={formData.custodianTelephoneNumber}
+                                onChange={(e) => handleInputChange('custodianTelephoneNumber', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter telephone number"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Fax No</label>
+                              <input
+                                type="text"
+                                value={formData.custodianFaxNo}
+                                onChange={(e) => handleInputChange('custodianFaxNo', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter fax number"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">E-mail</label>
+                              <input
+                                type="email"
+                                value={formData.custodianEmail}
+                                onChange={(e) => handleInputChange('custodianEmail', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter e-mail"
+                              />
+                            </div>
+                          </>
+  );
+}
+
+// ========================================
+// POSTAL AREA MODAL COMPONENT
+// ========================================
+function PostalAreaModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+  return (
+                          <>
+                            <div>
+        <label className="setup-input-label">Postal Code</label>
+                              <input
+                                type="text"
+                                value={formData.postalCode}
+                                onChange={(e) => handleInputChange('postalCode', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter postal code"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Active</label>
+        <div className="setup-checkbox-group">
+                                <input
+                                  type="checkbox"
+                                  checked={formData.postalActive}
+                                  onChange={(e) => handleInputChange('postalActive', e.target.checked.toString())}
+            className="setup-checkbox"
+          />
+          <span className="setup-checkbox-label">Active</span>
+                              </div>
+                            </div>
+                            <div>
+        <label className="setup-input-label">Description</label>
+                              <input
+                                type="text"
+                                value={formData.postalDescription}
+                                onChange={(e) => handleInputChange('postalDescription', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter description"
+                              />
+                            </div>
+                          </>
+  );
+}
+
+// ========================================
+// DIVIDEND TYPE MODAL COMPONENT
+// ========================================
+function DividendTypeModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+  return (
+                          <>
+                            <div>
+        <label className="setup-input-label">Dividend Type</label>
+                              <input
+                                type="text"
+                                value={formData.dividendType}
+                                onChange={(e) => handleInputChange('dividendType', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter dividend type"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Active</label>
+        <div className="setup-checkbox-group">
+                                <input
+                                  type="checkbox"
+                                  checked={formData.dividendActive}
+                                  onChange={(e) => handleInputChange('dividendActive', e.target.checked.toString())}
+            className="setup-checkbox"
+          />
+          <span className="setup-checkbox-label">Active</span>
+                              </div>
+                            </div>
+                            <div>
+        <label className="setup-input-label">Description</label>
+                              <input
+                                type="text"
+                                value={formData.dividendDescription}
+                                onChange={(e) => handleInputChange('dividendDescription', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter description"
+                              />
+                            </div>
+                          </>
+  );
+}
+
+// ========================================
+// FUNDS MODAL COMPONENT
+// ========================================
+function FundsModalContent({ formData, handleInputChange, handleDateChange, isFormEditable = false, setSuspenseModalOpen }: { formData: FormData, handleInputChange: (field: string, value: string) => void, handleDateChange: (field: string, date: Date | null) => void, isFormEditable: boolean, setSuspenseModalOpen: (open: boolean) => void }) {
+  return (
+                          <>
+                            <div>
+        <label className="setup-input-label">Fund</label>
+                              <input
+                                type="text"
+                                value={formData.fund}
+                                onChange={(e) => handleInputChange('fund', e.target.value)}
+                                disabled={!isFormEditable}
+          className="setup-input-field"
+                                placeholder="Enter Fund"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Name</label>
+                              <input
+                                type="text"
+                                value={formData.fundName}
+                                onChange={(e) => handleInputChange('fundName', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter Name"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Manager</label>
+                              <input
+                                type="text"
+                                value={formData.manager}
+                                onChange={(e) => handleInputChange('manager', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter Manager"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Trustee</label>
+                              <select
+                                value={formData.trustee}
+                                onChange={(e) => handleInputChange('trustee', e.target.value)}
+                                disabled={!isFormEditable}
+          className="setup-select-field"
+                              >
+                                <option value="">Select Trustee</option>
+                                <option value="Trust Corp">Trust Corp</option>
+                                <option value="Fiduciary Ltd">Fiduciary Ltd</option>
+                                <option value="Trustee Corp">Trustee Corp</option>
+                              </select>
+                            </div>
+                            <div>
+        <label className="setup-input-label">Custodian</label>
+                              <select
+                                value={formData.custodian}
+                                onChange={(e) => handleInputChange('custodian', e.target.value)}
+          className="setup-select-field"
+                              >
+                                <option value="">Select Custodian</option>
+                                <option value="Global Custody">Global Custody</option>
+                                <option value="Euro Custody">Euro Custody</option>
+                                <option value="Asia Custody">Asia Custody</option>
+                              </select>
+                            </div>
+                            <div>
+        <label className="setup-input-label">Min Value of Investment</label>
+                              <input
+                                type="text"
+                                value={formData.minValue}
+                                onChange={(e) => handleInputChange('minValue', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter Min Value"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Min No of Units</label>
+                              <input
+                                type="text"
+                                value={formData.minUnits}
+                                onChange={(e) => handleInputChange('minUnits', e.target.value)}
+          className="setup-input-field"
+                                placeholder="Enter Units"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Fund Suspense Account</label>
+        <div className="setup-suspense-input-container">
+                                <button
+                                  type="button"
+            onClick={() => setSuspenseModalOpen?.(true)}
+            className="setup-suspense-account-button"
+                                >
+                                  A
+                                </button>
+                                <input
+                                  type="text"
+                                  value={formData.suspenseAccount}
+                                  onChange={(e) => handleInputChange('suspenseAccount', e.target.value)}
+            className="setup-suspense-input-field"
+                                  placeholder="Enter Suspense Account"
+                                />
+                              </div>
+                            </div>
+                                                           <div>
+        <label className="setup-input-label">Launch Date</label>
+                                 <DatePicker
+                                   selected={formData.launchDate}
+          onChange={(date) => handleDateChange?.('launchDate', date)}
+                                   dateFormat="dd/MM/yyyy"
+                                   placeholderText="dd/mm/yyyy"
+                                   className="date-picker-input"
+                                   disabled={!isFormEditable}
+                                 />
+                               </div>
+                            <div>
+        <label className="setup-input-label">Fund Type</label>
+        <div className="setup-radio-group">
+          <label className="setup-radio-item">
+                                  <input
+                                    type="radio"
+                                    name="fundType"
+                                    value="Open Ended"
+                                    checked={formData.fundType === 'Open Ended'}
+                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
+                                    disabled={!isFormEditable}
+              className="setup-radio-input"
+                                  />
+                                  Open Ended
+                                </label>
+          <label className="setup-radio-item">
+                                  <input
+                                    type="radio"
+                                    name="fundType"
+                                    value="Close Ended"
+                                    checked={formData.fundType === 'Close Ended'}
+                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
+                                    disabled={!isFormEditable}
+              className="setup-radio-input"
+                                  />
+                                  Close Ended
+                                </label>
+                              </div>
+                            </div>
+                                                           <div>
+        <label className="setup-input-label">IPO Starting Date</label>
+                                 <DatePicker
+                                   selected={formData.ipoStartDate}
+          onChange={(date) => handleDateChange?.('ipoStartDate', date)}
+                                   dateFormat="dd/MM/yyyy"
+                                   placeholderText="dd/mm/yyyy"
+                                   className="date-picker-input"
+                                 />
+                               </div>
+                                                           <div>
+        <label className="setup-input-label">IPO Ending Date</label>
+                                 <DatePicker
+                                   selected={formData.ipoEndDate}
+          onChange={(date) => handleDateChange?.('ipoEndDate', date)}
+                                   dateFormat="dd/MM/yyyy"
+                                   placeholderText="dd/mm/yyyy"
+                                   className="date-picker-input"
+                                 />
+                               </div>
+                            {formData.fundType === 'Close Ended' ? (
+                              <>
+                                <div>
+            <label className="setup-input-label">Maturity Date</label>
+                                  <DatePicker
+                                    selected={formData.maturityDate}
+              onChange={(date) => handleDateChange?.('maturityDate', date)}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="dd/mm/yyyy"
+                                    className="date-picker-input"
+                                  />
+                                </div>
+                                <div>
+            <label className="setup-input-label">Certificate Type</label>
+                                  <input
+                                    type="text"
+                                    value={formData.certificateType}
+                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
+              className="setup-input-field"
+                                    placeholder="Enter Certificate Type"
+                                  />
+                                </div>
+                                <div>
+            <label className="setup-input-label">Portfolio Code</label>
+                                  <input
+                                    type="text"
+                                    value={formData.portfolioCode}
+                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
+              className="setup-input-field"
+                                    placeholder="Enter PF Code"
+                                  />
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div>
+            <label className="setup-input-label">Certificate Type</label>
+                                  <input
+                                    type="text"
+                                    value={formData.certificateType}
+                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
+              className="setup-input-field"
+                                    placeholder="Enter Certificate Type"
+                                  />
+                                </div>
+                                <div>
+            <label className="setup-input-label">Portfolio Code</label>
+                                  <input
+                                    type="text"
+                                    value={formData.portfolioCode}
+                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
+              className="setup-input-field"
+                                    placeholder="Enter PF Code"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </>
+  );
+}
+
+// ========================================
+// PROMOTIONAL ACTIVITY MODAL COMPONENT
+// ========================================
+function PromotionalActivityModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+  return (
+                          <>
+                            <div>
+        <label className="setup-input-label">Promotion Code</label>
+                              <input
+                                type="text"
+          value={formData.promotionCode}
+          onChange={(e) => handleInputChange('promotionCode', e.target.value)}
+          className="setup-input-field"
+          placeholder="Enter promotion code"
+                              />
+          </div>
+                            <div>
+        <label className="setup-input-label">Promotion Name</label>
+                              <input
+                                type="text"
+          value={formData.promotionName}
+          onChange={(e) => handleInputChange('promotionName', e.target.value)}
+          className="setup-input-field"
+          placeholder="Enter promotion name"
+                              />
+                            </div>
+                            <div>
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.promotionDescription}
+          onChange={(e) => handleInputChange('promotionDescription', e.target.value)}
+                            className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+                          />
+                        </div>
+    </>
   );
 }
 

@@ -122,6 +122,14 @@ interface FormData {
   smsUserName: string;
   smsAlias: string;
   smsApiKey: string;
+  unitFeeApplicableFunds?: string[];
+  unitFeeTxnType?: string;
+  unitFeeCode?: string;
+  unitFeePercentage?: string;
+  unitFeeDescription?: string;
+  unitFeePriceOne?: string;
+  unitFeePriceTwo?: string;
+  unitFee?: string;
 }
 
 // ========================================
@@ -568,6 +576,14 @@ function Setup() {
     smsUserName: '',
     smsAlias: '',
     smsApiKey: '',
+    unitFeeApplicableFunds: [],
+    unitFeeTxnType: 'creation',
+    unitFeeCode: '',
+    unitFeePercentage: '',
+    unitFeeDescription: '',
+    unitFeePriceOne: '',
+    unitFeePriceTwo: '',
+    unitFee: '',
   });
 
   // Modal state management
@@ -609,7 +625,7 @@ function Setup() {
   // API Endpoint: GET /api/setup/default-values/{module}
   const handleNewButtonClick = () => {
     setIsFormEditable(true);
-    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '' });
+    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '', unitFeeApplicableFunds: [], unitFeeTxnType: 'creation', unitFeeCode: '', unitFeePercentage: '', unitFeeDescription: '', unitFeePriceOne: '', unitFeePriceTwo: '', unitFee: '' });
   };
 
   // Handle modal open
@@ -747,6 +763,15 @@ function Setup() {
               formData={formData} 
               handleInputChange={handleInputChange} 
             />
+          )}
+          {modalTitle === 'Unit Fee Codes' && (
+            <div className="setup-unit-fee-modal-content">
+              <UnitFeeCodesSection 
+                formData={formData}
+                handleInputChange={handleInputChange}
+                isFormEditable={isFormEditable}
+              />
+            </div>
           )}
           {/* Default Bank modal for other modules */}
           {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Company'].includes(modalTitle) && (
@@ -900,7 +925,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '', unitFeeApplicableFunds: [], unitFeeTxnType: 'creation', unitFeeCode: '', unitFeePercentage: '', unitFeeDescription: '', unitFeePriceOne: '', unitFeePriceTwo: '', unitFee: '' })}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >
@@ -2665,6 +2690,170 @@ function PromotionalActivityModalContent({ formData, handleInputChange }: { form
                           />
                         </div>
     </>
+  );
+}
+
+// ========================================
+// UNIT FEE CODES SECTION
+// ========================================
+function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { formData: any, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  // Example data for table
+  const funds = [
+    { code: 'FUND001', name: 'Equity Growth Fund' },
+    { code: 'FUND002', name: 'Balanced Income Fund' },
+    { code: 'FUND003', name: 'Income Plus Fund' },
+    { code: 'FUND004', name: 'Global Opportunities' },
+  ];
+  // Simulate backend loading for checkboxes
+  const selectedFunds = formData.unitFeeApplicableFunds || [];
+  const handleFundCheckbox = (code: string, checked: boolean) => {
+    let updated = selectedFunds ? [...selectedFunds] : [];
+    if (checked) {
+      if (!updated.includes(code)) updated.push(code);
+    } else {
+      updated = updated.filter((c: string) => c !== code);
+    }
+    handleInputChange('unitFeeApplicableFunds', updated);
+  };
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginTop: '32px' }}>
+      {/* Left Column */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Txn. Type Box */}
+        <div className="setup-ash-box" style={{ marginBottom: '8px' }}>
+          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Txn. Type</div>
+          <div style={{ display: 'flex', gap: '24px' }}>
+            <label className="setup-radio-label">
+                              <input
+                type="radio"
+                name="unitFeeTxnType"
+                value="creation"
+                checked={formData.unitFeeTxnType === 'creation'}
+                onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
+                                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              Creation
+                              </label>
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="unitFeeTxnType"
+                value="redemption"
+                checked={formData.unitFeeTxnType === 'redemption'}
+                onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
+                                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              Redemption
+                              </label>
+          </div>
+        </div>
+        {/* Code */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+          <label className="setup-input-label" style={{ marginBottom: 0 }}>Code</label>
+                              <input
+                                type="text"
+            value={formData.unitFeeCode || ''}
+            onChange={e => handleInputChange('unitFeeCode', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter code"
+                              />
+                            </div>
+        {/* Percentage */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+          <label className="setup-input-label" style={{ marginBottom: 0 }}>Percentage</label>
+                              <input
+                                type="text"
+            value={formData.unitFeePercentage || ''}
+            onChange={e => handleInputChange('unitFeePercentage', e.target.value)}
+                                disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter percentage"
+                              />
+                            </div>
+        {/* Description */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+          <label className="setup-input-label" style={{ marginBottom: 0 }}>Description</label>
+          <input
+            type="text"
+            value={formData.unitFeeDescription || ''}
+            onChange={e => handleInputChange('unitFeeDescription', e.target.value)}
+                        disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter description"
+                        />
+                      </div>
+        {/* Price One (%) and Price Two (%) in one row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+            <label className="setup-input-label" style={{ marginBottom: 0 }}>Price One (%)</label>
+                          <input
+                            type="text"
+              value={formData.unitFeePriceOne || ''}
+              onChange={e => handleInputChange('unitFeePriceOne', e.target.value)}
+              disabled={!isFormEditable}
+                            className="setup-input-field"
+              placeholder="Price One (%)"
+                          />
+                        </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+            <label className="setup-input-label" style={{ marginBottom: 0 }}>Price Two (%)</label>
+                          <input
+                            type="text"
+              value={formData.unitFeePriceTwo || ''}
+              onChange={e => handleInputChange('unitFeePriceTwo', e.target.value)}
+              disabled={!isFormEditable}
+                            className="setup-input-field"
+              placeholder="Price Two (%)"
+                          />
+                        </div>
+                        </div>
+        {/* Unit Fee */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+          <label className="setup-input-label" style={{ marginBottom: 0 }}>Unit Fee</label>
+                            <input
+            type="text"
+            value={formData.unitFee || ''}
+            onChange={e => handleInputChange('unitFee', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter unit fee"
+          />
+                          </div>
+                        </div>
+      {/* Right Column: Card with scrollable table */}
+      <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Applicable Funds</div>
+        <div style={{ flex: 1, overflowY: 'auto', maxHeight: '320px' }}>
+          <table className="setup-custom-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left', padding: '8px' }}>Code</th>
+                <th style={{ textAlign: 'left', padding: '8px' }}>Fund Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {funds.map(fund => (
+                <tr key={fund.code}>
+                  <td style={{ padding: '8px' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedFunds && selectedFunds.includes(fund.code)}
+                      onChange={e => handleFundCheckbox(fund.code, e.target.checked)}
+                      className="setup-checkbox-input"
+                    />
+                    <span style={{ marginLeft: '8px' }}>{fund.code}</span>
+                  </td>
+                  <td style={{ padding: '8px' }}>{fund.name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+                      </div>
+                    </div>
+                  </div>
   );
 }
 

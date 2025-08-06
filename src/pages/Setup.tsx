@@ -86,6 +86,29 @@ interface FormData {
   companyAccountApproval: boolean;
   companyEmail: string;
   companyWebsite: string;
+  // Administrator tab fields
+  reportPath: string;
+  documentPath: string;
+  unitsDecimalPosition: string;
+  unitsDecimalMethod: string;
+  amountDecimalPosition: string;
+  amountDecimalMethod: string;
+  smtpInvalidLogin: boolean;
+  smtpLockedAccount: boolean;
+  smtpRegistrationApproval: boolean;
+  applicationApprove: boolean;
+  registrationApprove: boolean;
+  accountApprove: boolean;
+  transactionApprove: boolean;
+  unitPriceApprove: boolean;
+  sendEmailsAccountApproval: boolean;
+  sendEmailsAcknowledgment: boolean;
+  sendEmailsInvestment: boolean;
+  loginInvalidUser: boolean;
+  loginAccountLock: boolean;
+  multipleUserAccess: string;
+  tableName: string;
+  certificateSeparateExitFee: boolean;
 }
 
 // ========================================
@@ -496,6 +519,29 @@ function Setup() {
     companyTelephone: '',
     companyEmail: '',
     companyWebsite: '',
+    // Administrator tab fields
+    reportPath: '',
+    documentPath: '',
+    unitsDecimalPosition: '',
+    unitsDecimalMethod: '',
+    amountDecimalPosition: '',
+    amountDecimalMethod: '',
+    smtpInvalidLogin: false,
+    smtpLockedAccount: false,
+    smtpRegistrationApproval: false,
+    applicationApprove: false,
+    registrationApprove: false,
+    accountApprove: false,
+    transactionApprove: false,
+    unitPriceApprove: false,
+    sendEmailsAccountApproval: false,
+    sendEmailsAcknowledgment: false,
+    sendEmailsInvestment: false,
+    loginInvalidUser: false,
+    loginAccountLock: false,
+    multipleUserAccess: '',
+    tableName: '',
+    certificateSeparateExitFee: false,
   });
 
   // Modal state management
@@ -537,7 +583,7 @@ function Setup() {
   // API Endpoint: GET /api/setup/default-values/{module}
   const handleNewButtonClick = () => {
     setIsFormEditable(true);
-    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '' });
+    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false });
   };
 
   // Handle modal open
@@ -828,7 +874,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '' })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false })}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >
@@ -1311,9 +1357,429 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
         {activeTab === 'administrator' && (
           <div className="setup-administrator-tab">
             <div className="setup-administrator-form">
-              <div className="setup-administrator-inputs">
-                {/* Empty content for now */}
+              
+              {/* ========================================
+                 PATH CONFIGURATION SECTION (FULL WIDTH)
+                 ======================================== */}
+              <div className="setup-input-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="setup-input-label">Report Path</label>
+                <input
+                  type="text"
+                  value={formData.reportPath}
+                  onChange={(e) => handleInputChange('reportPath', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter report path"
+                />
               </div>
+              <div className="setup-input-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="setup-input-label">Document Path</label>
+                <input
+                  type="text"
+                  value={formData.documentPath}
+                  onChange={(e) => handleInputChange('documentPath', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter document path"
+                />
+              </div>
+
+              {/* ========================================
+                 TWO COLUMN LAYOUT SECTION
+                 ======================================== */}
+              <div className="setup-administrator-two-column">
+                
+                {/* LEFT COLUMN - 3 ROWS WITH ASH BACKGROUND */}
+                <div className="setup-administrator-left-column">
+                  
+                  {/* Row 1: Units */}
+                  <div className="setup-ash-box">
+                    <label className="setup-input-label">Units</label>
+                                                                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', alignItems: 'center' }}>
+                            <label className="setup-input-label" style={{ marginBottom: '0' }}>Decimal Position</label>
+                            <input
+                              type="text"
+                              value={formData.unitsDecimalPosition}
+                              onChange={(e) => handleInputChange('unitsDecimalPosition', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter decimal position"
+                            />
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <label className="setup-radio-label">
+                              <input
+                                type="radio"
+                                name="unitsDecimalMethod"
+                                value="truncate"
+                                checked={formData.unitsDecimalMethod === 'truncate'}
+                                onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)}
+                                disabled={!isFormEditable}
+                                className="setup-radio-input"
+                              />
+                              Truncate
+                            </label>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <label className="setup-radio-label">
+                              <input
+                                type="radio"
+                                name="unitsDecimalMethod"
+                                value="round"
+                                checked={formData.unitsDecimalMethod === 'round'}
+                                onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)}
+                                disabled={!isFormEditable}
+                                className="setup-radio-input"
+                              />
+                              Round
+                            </label>
+                          </div>
+                        </div>
+                  </div>
+
+                  {/* Row 2: Amount */}
+                  <div className="setup-ash-box">
+                    <label className="setup-input-label">Amount</label>
+                                                                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', alignItems: 'center' }}>
+                            <label className="setup-input-label" style={{ marginBottom: '0' }}>Decimal Position</label>
+                            <input
+                              type="text"
+                              value={formData.amountDecimalPosition}
+                              onChange={(e) => handleInputChange('amountDecimalPosition', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter decimal position"
+                            />
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <label className="setup-radio-label">
+                              <input
+                                type="radio"
+                                name="amountDecimalMethod"
+                                value="truncate"
+                                checked={formData.amountDecimalMethod === 'truncate'}
+                                onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)}
+                                disabled={!isFormEditable}
+                                className="setup-radio-input"
+                              />
+                              Truncate
+                            </label>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <label className="setup-radio-label">
+                              <input
+                                type="radio"
+                                name="amountDecimalMethod"
+                                value="round"
+                                checked={formData.amountDecimalMethod === 'round'}
+                                onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)}
+                                disabled={!isFormEditable}
+                                className="setup-radio-input"
+                              />
+                              Round
+                            </label>
+                          </div>
+                        </div>
+                  </div>
+
+                  {/* Row 3: SMTP Email Setup */}
+                  <div className="setup-ash-box">
+                    <label className="setup-input-label">SMTP Email Setup</label>
+                    <div className="setup-three-column-row">
+                      <div className="setup-column">
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="smtpInvalidLogin"
+                            checked={formData.smtpInvalidLogin}
+                            onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="smtpInvalidLogin" className="setup-checkbox-label">
+                            Invalid Login
+                          </label>
+                        </div>
+                      </div>
+                      <div className="setup-column">
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="smtpLockedAccount"
+                            checked={formData.smtpLockedAccount}
+                            onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="smtpLockedAccount" className="setup-checkbox-label">
+                            Locked Account
+                          </label>
+                        </div>
+                      </div>
+                      <div className="setup-column">
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="smtpRegistrationApproval"
+                            checked={formData.smtpRegistrationApproval}
+                            onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="smtpRegistrationApproval" className="setup-checkbox-label">
+                            Registration Approval
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT COLUMN - DIFFERENT DATA ENTRY CONFIRM/APPROVE */}
+                <div className="setup-administrator-right-column">
+                  <div className="setup-ash-box">
+                    <label className="setup-input-label">Different Data Entry Confirm/Approve</label>
+                    <div className="setup-checkbox-group">
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="applicationApprove"
+                          checked={formData.applicationApprove}
+                          onChange={(e) => handleInputChange('applicationApprove', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="applicationApprove" className="setup-checkbox-label">
+                          Application Approve
+                        </label>
+                      </div>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="registrationApprove"
+                          checked={formData.registrationApprove}
+                          onChange={(e) => handleInputChange('registrationApprove', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="registrationApprove" className="setup-checkbox-label">
+                          Registration Approve
+                        </label>
+                      </div>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="accountApprove"
+                          checked={formData.accountApprove}
+                          onChange={(e) => handleInputChange('accountApprove', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="accountApprove" className="setup-checkbox-label">
+                          Account Approve
+                        </label>
+                      </div>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="transactionApprove"
+                          checked={formData.transactionApprove}
+                          onChange={(e) => handleInputChange('transactionApprove', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="transactionApprove" className="setup-checkbox-label">
+                          Transaction Approve
+                        </label>
+                      </div>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="unitPriceApprove"
+                          checked={formData.unitPriceApprove}
+                          onChange={(e) => handleInputChange('unitPriceApprove', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="unitPriceApprove" className="setup-checkbox-label">
+                          Unit Price Approve
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* ========================================
+                 FULL WIDTH THREE COLUMN SECTION
+                 ======================================== */}
+              <div className="setup-administrator-full-width">
+                
+                {/* Column 1: Email Sending Options */}
+                <div className="setup-ash-box">
+                  <label className="setup-input-label">Email Sending Options</label>
+                  <div className="setup-checkbox-group">
+                    <div className="setup-checkbox-container">
+                      <input
+                        type="checkbox"
+                        id="sendEmailsAccountApproval"
+                        checked={formData.sendEmailsAccountApproval}
+                        onChange={(e) => handleInputChange('sendEmailsAccountApproval', e.target.checked.toString())}
+                        disabled={!isFormEditable}
+                        className="setup-checkbox-input"
+                      />
+                      <label htmlFor="sendEmailsAccountApproval" className="setup-checkbox-label">
+                        Send Emails on Account Approval
+                      </label>
+                    </div>
+                    <div className="setup-checkbox-container">
+                      <input
+                        type="checkbox"
+                        id="sendEmailsAcknowledgment"
+                        checked={formData.sendEmailsAcknowledgment}
+                        onChange={(e) => handleInputChange('sendEmailsAcknowledgment', e.target.checked.toString())}
+                        disabled={!isFormEditable}
+                        className="setup-checkbox-input"
+                      />
+                      <label htmlFor="sendEmailsAcknowledgment" className="setup-checkbox-label">
+                        Send Emails on Acknowledgment
+                      </label>
+                    </div>
+                    <div className="setup-checkbox-container">
+                      <input
+                        type="checkbox"
+                        id="sendEmailsInvestment"
+                        checked={formData.sendEmailsInvestment}
+                        onChange={(e) => handleInputChange('sendEmailsInvestment', e.target.checked.toString())}
+                        disabled={!isFormEditable}
+                        className="setup-checkbox-input"
+                      />
+                      <label htmlFor="sendEmailsInvestment" className="setup-checkbox-label">
+                        Send Emails on Investment
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Column 2: Login */}
+                <div className="setup-ash-box">
+                  <label className="setup-input-label">Login</label>
+                  <div className="setup-checkbox-group">
+                    <div className="setup-checkbox-container">
+                      <input
+                        type="checkbox"
+                        id="loginInvalidUser"
+                        checked={formData.loginInvalidUser}
+                        onChange={(e) => handleInputChange('loginInvalidUser', e.target.checked.toString())}
+                        disabled={!isFormEditable}
+                        className="setup-checkbox-input"
+                      />
+                      <label htmlFor="loginInvalidUser" className="setup-checkbox-label">
+                        Invalid User
+                      </label>
+                    </div>
+                    <div className="setup-checkbox-container">
+                      <input
+                        type="checkbox"
+                        id="loginAccountLock"
+                        checked={formData.loginAccountLock}
+                        onChange={(e) => handleInputChange('loginAccountLock', e.target.checked.toString())}
+                        disabled={!isFormEditable}
+                        className="setup-checkbox-input"
+                      />
+                      <label htmlFor="loginAccountLock" className="setup-checkbox-label">
+                        Account Lock
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Column 3: Multiple User Access */}
+                <div className="setup-ash-box">
+                  <label className="setup-input-label">Multiple User Access</label>
+                  <div className="setup-radio-group">
+                    <label className="setup-radio-label">
+                      <input
+                        type="radio"
+                        name="multipleUserAccess"
+                        value="yes"
+                        checked={formData.multipleUserAccess === 'yes'}
+                        onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-radio-input"
+                      />
+                      Yes
+                    </label>
+                    <label className="setup-radio-label">
+                      <input
+                        type="radio"
+                        name="multipleUserAccess"
+                        value="no"
+                        checked={formData.multipleUserAccess === 'no'}
+                        onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-radio-input"
+                      />
+                      No
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* ========================================
+                 BOTTOM SECTION - TABLE NAME, CREATE FILE, CERTIFICATE
+                 ======================================== */}
+              <div className="setup-three-column-row" style={{ marginTop: '20px' }}>
+                                 <div className="setup-column" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', alignItems: 'center' }}>
+                   <label className="setup-input-label" style={{ marginBottom: '0' }}>Table Name</label>
+                   <input
+                     type="text"
+                     value={formData.tableName}
+                     onChange={(e) => handleInputChange('tableName', e.target.value)}
+                     disabled={!isFormEditable}
+                     className="setup-input-field"
+                     placeholder="Enter table name"
+                   />
+                 </div>
+                
+                <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
+                  <button
+                    onClick={() => {
+                      // TODO: Add API call to create configuration file
+                      // API Endpoint: POST /api/setup/administrator/create-file
+                      console.log('Creating configuration file with data:', formData);
+                      alert('Configuration file created successfully!');
+                    }}
+                    disabled={!isFormEditable}
+                    className="setup-btn setup-btn-primary"
+                    style={{ width: '100%' }}
+                  >
+                    Create File
+                  </button>
+                </div>
+                
+                <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
+                  <div className="setup-checkbox-container">
+                    <input
+                      type="checkbox"
+                      id="certificateSeparateExitFee"
+                      checked={formData.certificateSeparateExitFee}
+                      onChange={(e) => handleInputChange('certificateSeparateExitFee', e.target.checked.toString())}
+                      disabled={!isFormEditable}
+                      className="setup-checkbox-input"
+                    />
+                    <label htmlFor="certificateSeparateExitFee" className="setup-checkbox-label">
+                      Certificate Separate with Exit Fee
+                    </label>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         )}

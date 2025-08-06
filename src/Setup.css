@@ -717,8 +717,8 @@
 .setup-checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 /* Primary Button Style */
@@ -752,19 +752,37 @@
    ADMINISTRATOR TAB LAYOUT STYLES
    ======================================== */
 
+/* Administrator Tab Container */
+.setup-administrator-tab {
+  width: 100%;
+  height: 100%;
+  margin-top: 24px;
+}
+
+.setup-administrator-tab {
+  margin-top: 0;
+}
+
+.setup-administrator-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 /* Two Column Layout */
 .setup-administrator-two-column {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin: 20px 0;
+  gap: 12px;
+  margin: 0;
 }
 
 /* Left Column */
 .setup-administrator-left-column {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 /* Right Column */
@@ -777,8 +795,8 @@
 .setup-administrator-full-width {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  margin: 20px 0;
+  gap: 12px;
+  margin: 0;
 }
 
 /* Ash Background Box */
@@ -786,7 +804,7 @@
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  padding: 16px;
+  padding: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -794,32 +812,32 @@
 .setup-three-column-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  margin-top: 12px;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 /* Column */
 .setup-column {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .setup-administrator-two-column {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 8px;
   }
   
   .setup-administrator-full-width {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 8px;
   }
   
   .setup-three-column-row {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 4px;
   }
 }
 
@@ -841,6 +859,9 @@
   border-radius: 8px 8px 0 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .setup-company-modal-content .setup-tab-button {
@@ -886,10 +907,8 @@
 }
 
 .setup-company-modal-content .setup-tab-content {
-  padding: 20px;
-  padding-bottom: 40px;
-  min-height: 300px;
-  max-height: 500px;
+  height: 500px;
+  padding: 0 20px 96px 20px;
   overflow-y: scroll;
   background: white;
   border-radius: 0 0 8px 8px;

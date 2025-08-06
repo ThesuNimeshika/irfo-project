@@ -109,6 +109,19 @@ interface FormData {
   multipleUserAccess: string;
   tableName: string;
   certificateSeparateExitFee: boolean;
+  sendEmailsOn: boolean;
+  senderAddress: string;
+  smtpServer: string;
+  smtpUser: string;
+  smtpPassword: string;
+  emailSendingMethod: string;
+  smtpPort: string;
+  useDefaultCredentials: string;
+  sendSmsOn: boolean;
+  smsProvider: string;
+  smsUserName: string;
+  smsAlias: string;
+  smsApiKey: string;
 }
 
 // ========================================
@@ -542,6 +555,19 @@ function Setup() {
     multipleUserAccess: '',
     tableName: '',
     certificateSeparateExitFee: false,
+    sendEmailsOn: false,
+    senderAddress: '',
+    smtpServer: '',
+    smtpUser: '',
+    smtpPassword: '',
+    emailSendingMethod: '',
+    smtpPort: '',
+    useDefaultCredentials: '',
+    sendSmsOn: false,
+    smsProvider: '',
+    smsUserName: '',
+    smsAlias: '',
+    smsApiKey: '',
   });
 
   // Modal state management
@@ -583,7 +609,7 @@ function Setup() {
   // API Endpoint: GET /api/setup/default-values/{module}
   const handleNewButtonClick = () => {
     setIsFormEditable(true);
-    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false });
+    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '' });
   };
 
   // Handle modal open
@@ -874,7 +900,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false })}
+                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '' })}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >
@@ -1234,7 +1260,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
           <div className="setup-company-tab">
             <div className="setup-company-form">
               <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
-                <div className="setup-input-group">
+                                                         <div className="setup-input-group">
                   <label className="setup-input-label">Code</label>
                   <input
                     type="text"
@@ -1334,7 +1360,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                     />
                     <label htmlFor="applicationApproval" className="setup-checkbox-label">
                       Application approval
-                    </label>
+                               </label>
                   </div>
                   <div className="setup-checkbox-container">
                     <input
@@ -1361,7 +1387,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
               {/* ========================================
                  PATH CONFIGURATION SECTION (FULL WIDTH)
                  ======================================== */}
-              <div className="setup-input-group" style={{ gridColumn: '1 / -1' }}>
+              <div className="setup-input-group">
                 <label className="setup-input-label">Report Path</label>
                 <input
                   type="text"
@@ -1372,7 +1398,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                   placeholder="Enter report path"
                 />
               </div>
-              <div className="setup-input-group" style={{ gridColumn: '1 / -1' }}>
+              <div className="setup-input-group">
                 <label className="setup-input-label">Document Path</label>
                 <input
                   type="text"
@@ -1734,18 +1760,18 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
               {/* ========================================
                  BOTTOM SECTION - TABLE NAME, CREATE FILE, CERTIFICATE
                  ======================================== */}
-              <div className="setup-three-column-row" style={{ marginTop: '20px' }}>
-                                 <div className="setup-column" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', alignItems: 'center' }}>
-                   <label className="setup-input-label" style={{ marginBottom: '0' }}>Table Name</label>
-                   <input
-                     type="text"
-                     value={formData.tableName}
-                     onChange={(e) => handleInputChange('tableName', e.target.value)}
-                     disabled={!isFormEditable}
-                     className="setup-input-field"
-                     placeholder="Enter table name"
-                   />
-                 </div>
+              <div className="setup-three-column-row" style={{ marginBottom: '48px' }}>
+                <div className="setup-column" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', alignItems: 'center' }}>
+                  <label className="setup-input-label" style={{ marginBottom: '0' }}>Table Name</label>
+                  <input
+                    type="text"
+                    value={formData.tableName}
+                    onChange={(e) => handleInputChange('tableName', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter table name"
+                  />
+                </div>
                 
                 <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
                   <button
@@ -1785,9 +1811,177 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
         )}
         {activeTab === 'email-sms' && (
           <div className="setup-email-sms-tab">
-            <div className="setup-email-sms-form">
-              <div className="setup-email-sms-inputs">
-                {/* Empty content for now */}
+            {/* Email Parameter Setting Box */}
+            <div className="setup-ash-box" style={{ marginBottom: '24px' }}>
+              <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Email Parameter Setting</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                {/* Left Column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div className="setup-checkbox-container">
+                    <input
+                      type="checkbox"
+                      id="sendEmailsOn"
+                      checked={formData.sendEmailsOn || false}
+                      onChange={e => handleInputChange('sendEmailsOn', e.target.checked.toString())}
+                      disabled={!isFormEditable}
+                      className="setup-checkbox-input"
+                    />
+                    <label htmlFor="sendEmailsOn" className="setup-checkbox-label">Send Emails On</label>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Sender Address</label>
+                    <input
+                      type="text"
+                      value={formData.senderAddress || ''}
+                      onChange={e => handleInputChange('senderAddress', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter sender address"
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP Server</label>
+                    <input
+                      type="text"
+                      value={formData.smtpServer || ''}
+                      onChange={e => handleInputChange('smtpServer', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter SMTP server"
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP User</label>
+                    <input
+                      type="text"
+                      value={formData.smtpUser || ''}
+                      onChange={e => handleInputChange('smtpUser', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter SMTP user"
+                    />
+                  </div>
+                </div>
+                {/* Right Column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Password</label>
+                    <input
+                      type="password"
+                      value={formData.smtpPassword || ''}
+                      onChange={e => handleInputChange('smtpPassword', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter password"
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Email Sending Method</label>
+                    <select
+                      value={formData.emailSendingMethod || ''}
+                      onChange={e => handleInputChange('emailSendingMethod', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                    >
+                      <option value="">Select method</option>
+                      <option value="smtp">SMTP</option>
+                      <option value="api">API</option>
+                    </select>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Port Number</label>
+                    <input
+                      type="text"
+                      value={formData.smtpPort || ''}
+                      onChange={e => handleInputChange('smtpPort', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter port number"
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Use Default Credentials</label>
+                    <select
+                      value={formData.useDefaultCredentials || ''}
+                      onChange={e => handleInputChange('useDefaultCredentials', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                    >
+                      <option value="">Select</option>
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* SMS Provider and Parameter Setting Box */}
+            <div className="setup-ash-box">
+              <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>SMS Provider and Parameter Setting</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                {/* Left Column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div className="setup-checkbox-container">
+                    <input
+                      type="checkbox"
+                      id="sendSmsOn"
+                      checked={formData.sendSmsOn || false}
+                      onChange={e => handleInputChange('sendSmsOn', e.target.checked.toString())}
+                      disabled={!isFormEditable}
+                      className="setup-checkbox-input"
+                    />
+                    <label htmlFor="sendSmsOn" className="setup-checkbox-label">Send SMS On</label>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>SMS Provider</label>
+                    <select
+                      value={formData.smsProvider || ''}
+                      onChange={e => handleInputChange('smsProvider', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                    >
+                      <option value="">Select provider</option>
+                      <option value="twilio">Twilio</option>
+                      <option value="nexmo">Nexmo</option>
+                    </select>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>User Name</label>
+                    <input
+                      type="text"
+                      value={formData.smsUserName || ''}
+                      onChange={e => handleInputChange('smsUserName', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter user name"
+                    />
+                  </div>
+                </div>
+                {/* Right Column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Alias</label>
+                    <input
+                      type="text"
+                      value={formData.smsAlias || ''}
+                      onChange={e => handleInputChange('smsAlias', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter alias"
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: 0 }}>API Key</label>
+                    <input
+                      type="text"
+                      value={formData.smsApiKey || ''}
+                      onChange={e => handleInputChange('smsApiKey', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter API key"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

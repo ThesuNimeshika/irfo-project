@@ -86,6 +86,8 @@ interface FormData {
   companyAccountApproval: boolean;
   companyEmail: string;
   companyWebsite: string;
+  companyAddress: string;
+  companyPhone: string;
   // Administrator tab fields
   reportPath: string;
   documentPath: string;
@@ -122,14 +124,99 @@ interface FormData {
   smsUserName: string;
   smsAlias: string;
   smsApiKey: string;
-  unitFeeApplicableFunds?: string[];
-  unitFeeTxnType?: string;
-  unitFeeCode?: string;
-  unitFeePercentage?: string;
-  unitFeeDescription?: string;
-  unitFeePriceOne?: string;
-  unitFeePriceTwo?: string;
-  unitFee?: string;
+  unitFeeApplicableFunds: string[];
+  unitFeeTxnType: string;
+  unitFeeCode: string;
+  unitFeePercentage: string;
+  unitFeeDescription: string;
+  unitFeePriceOne: string;
+  unitFeePriceTwo: string;
+  unitFee: string;
+  // Agency Type fields
+  agencyTypeCode: string;
+  agencyTypeDescription: string;
+  // Agency fields
+  agencyCode: string;
+  agencyDescription: string;
+  agencyType: string;
+  calculateCommission: string;
+  // Sub Agency fields
+  agency: string;
+  subAgencyCode: string;
+  subAgencyDescription: string;
+  // Agent fields
+  subAgency: string;
+  agentCode: string;
+  registrationNumber: string;
+  city: string;
+  residence: string;
+  agentType: string;
+  joinedDate: string;
+  territory: string;
+  // Additional fields used in resetFormData
+  dividendCode: string;
+  activityCode: string;
+  activityName: string;
+  activityType: string;
+  activityDescription: string;
+  fundCode: string;
+  fundRisk: string;
+  fundReturn: string;
+  postalArea: string;
+  postalCity: string;
+  postalDistrict: string;
+  commissionType: string;
+  commissionDescription: string;
+  territoryCode: string;
+  territoryDescription: string;
+  institutionCategoryCode: string;
+  institutionCategoryActive: boolean;
+  institutionCategoryType: string;
+  institutionCategoryName: string;
+  institutionCategoryAddress1: string;
+  institutionCategoryAddress2: string;
+  institutionCategoryAddress3: string;
+  institutionCategoryContactPerson: string;
+  institutionCategoryContactNo: string;
+  institutionCategoryDescription: string;
+  // New fields for Blocking Category
+  blockingCategoryType: string;
+  blockingCategoryActive: boolean;
+  blockingCategoryDescription: string;
+  // New fields for Customer Zone
+  customerZoneCode: string;
+  customerZoneActive: boolean;
+  customerZoneDescription: string;
+  // New fields for Compliance Msg Setup
+  compliancePosition: string;
+  complianceUser: string;
+  // New fields for Title
+  titleCode: string;
+  titleActive: boolean;
+  titleDescription: string;
+  // New fields for Other Charges
+  otherChargesCode: string;
+  otherChargesActive: boolean;
+  otherChargesName: string;
+  otherChargesValidFrom: Date | null;
+  otherChargesValidTo: Date | null;
+  otherChargesType: 'percentage' | 'value';
+  otherChargesPercentage: string;
+  otherChargesValue: string;
+  // New fields for Commission Level
+  commissionLevelCode: string;
+  commissionLevelDescription: string;
+  // New fields for Agent Commission Definition
+  agentCommissionCategory: 'investment' | 'trailer';
+  agentCommissionType: string;
+  agentCommissionLevel: string;
+  agentCommissionFund: string;
+  agentCommissionAgentType: 'agency' | 'subAgency' | 'agent';
+  agentCommissionPeriodFrom: Date | null;
+  agentCommissionPeriodTo: Date | null;
+  agentCommissionAmountFrom: string;
+  agentCommissionAmountTo: string;
+  agentCommissionRate: string;
 }
 
 // ========================================
@@ -149,6 +236,7 @@ const moduleData = [
   { title: 'Funds', icon: '💰' },
   { title: 'Company', icon: '🏢' },
   { title: 'Promotional Activity', icon: '🎉' },
+  { title: 'Other Charges', icon: '💳' },
   { title: 'Unit Fee Codes', icon: '🧾' },
   { title: 'Agency Type', icon: '🏷️' },
   { title: 'Agency', icon: '🏬' },
@@ -157,16 +245,13 @@ const moduleData = [
   { title: 'Territory', icon: '🗺️' },
   { title: 'Commision Type', icon: '📊' },
   { title: 'Commission Level', icon: '📈' },
-  { title: 'Agent commission Definitions', icon: '📝' },
-  { title: 'Assign Agents to Commission Definition', icon: '🔗' },
+  { title: 'Agent Commission Definition', icon: '💰' },
   { title: 'Institution Category', icon: '🏛️' },
   { title: 'Documents Setup', icon: '📄' },
   { title: 'Institution', icon: '🏫' },
   { title: 'Blocking Category', icon: '🚫' },
   { title: 'Customer Zone', icon: '🌐' },
-  { title: 'Join Sale Agent', icon: '🤝' },
   { title: 'Complience MSG Setup', icon: '💬' },
-  { title: 'Product type', icon: '📦' },
   { title: 'Title', icon: '🔔' },
 ];
 
@@ -228,25 +313,56 @@ const tableData = {
     { code: 'PA001', activity: 'Summer Sale', period: 'Jun-Aug 2024', discount: '20%' },
     { code: 'PA002', activity: 'Holiday Special', period: 'Dec 2024', discount: '15%' }
   ],
+  'Other Charges': [
+    { code: 'OC001', active: 'Yes', name: 'Processing Fee', validFrom: '2024-01-01', validTo: '2024-12-31', type: 'Percentage', percentage: '2.5%', value: '' },
+    { code: 'OC002', active: 'Yes', name: 'Service Charge', validFrom: '2024-01-01', validTo: '2024-12-31', type: 'Value', percentage: '', value: '50.00' },
+    { code: 'OC003', active: 'No', name: 'Maintenance Fee', validFrom: '2024-01-01', validTo: '2024-12-31', type: 'Percentage', percentage: '1.0%', value: '' }
+  ],
   'Unit Fee Codes': [
     { code: 'UFC001', description: 'Entry Fee', rate: '2.5%', type: 'Percentage' },
     { code: 'UFC002', description: 'Exit Fee', rate: '1.5%', type: 'Percentage' }
   ],
   'Agency Type': [
-    { code: 'AT001', type: 'Primary Agent', commission: '3.0%' },
-    { code: 'AT002', type: 'Sub Agent', commission: '1.5%' }
+    { agencyTypeCode: 'AT001', agencyTypeDescription: 'Primary Agent' },
+    { agencyTypeCode: 'AT002', agencyTypeDescription: 'Sub Agent' }
   ],
   Agency: [
-    { code: 'AG001', name: 'Main Street Agency', location: 'Downtown', status: 'Active' },
-    { code: 'AG002', name: 'Central Agency', location: 'Midtown', status: 'Active' }
+    { agencyCode: 'AG001', agencyDescription: 'Main Street Agency', agencyType: 'Primary Agent', calculateCommission: 'Yes' },
+    { agencyCode: 'AG002', agencyDescription: 'Central Agency', agencyType: 'Sub Agent', calculateCommission: 'Percentage' }
   ],
   'Sub Agency': [
-    { code: 'SA001', name: 'Downtown Branch', parent: 'Main Street Agency', manager: 'John Doe' },
-    { code: 'SA002', name: 'Uptown Branch', parent: 'Central Agency', manager: 'Jane Smith' }
+    { agency: 'AG001', subAgencyCode: 'SA001', subAgencyDescription: 'Downtown Branch' },
+    { agency: 'AG002', subAgencyCode: 'SA002', subAgencyDescription: 'Uptown Branch' }
   ],
   Agents: [
-    { code: 'AGT001', name: 'John Smith', phone: '+1-555-0123', email: 'john@agency.com' },
-    { code: 'AGT002', name: 'Sarah Johnson', phone: '+1-555-0456', email: 'sarah@agency.com' }
+    { 
+      agency: 'AG001', 
+      subAgency: 'SA001', 
+      agentCode: 'AGT001', 
+      registrationNumber: 'REG001', 
+      description: 'John Smith', 
+      city: 'Colombo', 
+      district: 'Western', 
+      residence: 'Residence', 
+      agentType: 'Non-Institution', 
+      calculateCommission: 'Percentage', 
+      joinedDate: '2023-01-15', 
+      territory: 'Western Province' 
+    },
+    { 
+      agency: 'AG002', 
+      subAgency: 'SA002', 
+      agentCode: 'AGT002', 
+      registrationNumber: 'REG002', 
+      description: 'Sarah Johnson', 
+      city: 'Kandy', 
+      district: 'Central', 
+      residence: 'Non-Residence', 
+      agentType: 'Institution', 
+      calculateCommission: 'Fixed Amount', 
+      joinedDate: '2023-03-20', 
+      territory: 'Central Province' 
+    }
   ],
   Territory: [
     { code: 'T001', name: 'North Region', manager: 'Mike Wilson', area: 'Northern States' },
@@ -257,54 +373,120 @@ const tableData = {
     { code: 'CT002', type: 'Percentage', rate: '2.5%', description: 'Percentage of transaction value' }
   ],
   'Commission Level': [
-    { code: 'CL001', level: 'Bronze', rate: '1.0%', minAmount: '1000' },
-    { code: 'CL002', level: 'Silver', rate: '1.5%', minAmount: '5000' },
-    { code: 'CL003', level: 'Gold', rate: '2.0%', minAmount: '10000' }
+    { commissionLevel: 'CL001', description: 'Entry Level Commission - Basic commission structure for new agents' },
+    { commissionLevel: 'CL002', description: 'Intermediate Level Commission - Enhanced commission for experienced agents' },
+    { commissionLevel: 'CL003', description: 'Senior Level Commission - Premium commission for top-performing agents' },
+    { commissionLevel: 'CL004', description: 'Executive Level Commission - Highest commission tier for elite agents' }
   ],
-  'Agent commission Definitions': [
-    { code: 'ACD001', agent: 'John Smith', type: 'Flat Rate', amount: '25.00' },
-    { code: 'ACD002', agent: 'Sarah Johnson', type: 'Percentage', rate: '2.0%' }
-  ],
-  'Assign Agents to Commission Definition': [
-    { agent: 'John Smith', definition: 'ACD001', effectiveDate: '2024-01-01', status: 'Active' },
-    { agent: 'Sarah Johnson', definition: 'ACD002', effectiveDate: '2024-01-01', status: 'Active' }
+  'Agent Commission Definition': [
+    { 
+      commissionCategory: 'Investment Wise Commission', 
+      commissionType: 'Flat Rate', 
+      commissionLevel: 'Entry Level', 
+      fund: 'Growth Fund',
+      agentType: 'Agency Wise',
+      periodFrom: '2024-01-01',
+      periodTo: '2024-12-31',
+      amountFrom: '1000',
+      amountTo: '10000',
+      commissionRate: '2.5%'
+    },
+    { 
+      commissionCategory: 'Trailer Fee', 
+      commissionType: 'Percentage', 
+      commissionLevel: 'Senior Level', 
+      fund: 'Income Fund',
+      agentType: 'Agent Wise',
+      periodFrom: '2024-01-01',
+      periodTo: '2024-12-31',
+      amountFrom: '5000',
+      amountTo: '50000',
+      commissionRate: '1.5%'
+    },
+    { 
+      commissionCategory: 'Investment Wise Commission', 
+      commissionType: 'Percentage', 
+      commissionLevel: 'Executive Level', 
+      fund: 'Balanced Fund',
+      agentType: 'Sub Agency Wise',
+      periodFrom: '2024-01-01',
+      periodTo: '2024-12-31',
+      amountFrom: '10000',
+      amountTo: '100000',
+      commissionRate: '3.0%'
+    }
   ],
   'Institution Category': [
-    { code: 'IC001', category: 'Bank', description: 'Financial Institutions' },
-    { code: 'IC002', category: 'Insurance', description: 'Insurance Companies' }
+    { institutionCategory: 'Bank', active: 'Yes', description: 'Financial Institutions including commercial banks, investment banks, and credit unions' },
+    { institutionCategory: 'Insurance', active: 'Yes', description: 'Insurance companies providing life, health, and property insurance services' },
+    { institutionCategory: 'Investment', active: 'Yes', description: 'Investment firms, asset management companies, and portfolio management services' },
+    { institutionCategory: 'Brokerage', active: 'No', description: 'Stock brokerage firms and trading platforms' }
+  ],
+  'Institution': [
+    { 
+      institutionCode: 'IC001', 
+      status: 'Active', 
+      institutionCategory: 'Bank', 
+      institutionName: 'First National Bank',
+      address1: '123 Main Street',
+      address2: 'Suite 100',
+      address3: 'Downtown',
+      contactPerson: 'John Smith',
+      contactNo: '+1-555-0123'
+    },
+    { 
+      institutionCode: 'IC002', 
+      status: 'Active', 
+      institutionCategory: 'Insurance', 
+      institutionName: 'Metro Insurance Co.',
+      address1: '456 Business Ave',
+      address2: 'Floor 5',
+      address3: 'Financial District',
+      contactPerson: 'Sarah Johnson',
+      contactNo: '+1-555-0456'
+    },
+    { 
+      institutionCode: 'IC003', 
+      status: 'Inactive', 
+      institutionCategory: 'Investment', 
+      institutionName: 'Global Investment Ltd.',
+      address1: '789 Finance Blvd',
+      address2: 'Tower A',
+      address3: 'Business Center',
+      contactPerson: 'Mike Wilson',
+      contactNo: '+1-555-0789'
+    }
   ],
   'Documents Setup': [
     { code: 'DS001', document: 'Application Form', required: 'Yes', format: 'PDF' },
     { code: 'DS002', document: 'ID Proof', required: 'Yes', format: 'Image' }
   ],
-  Institution: [
-    { code: 'INS001', name: 'First National Bank', type: 'Bank', status: 'Active' },
-    { code: 'INS002', name: 'Metro Insurance', type: 'Insurance', status: 'Active' }
-  ],
   'Blocking Category': [
-    { code: 'BC001', category: 'Fraud', description: 'Suspicious activity detected' },
-    { code: 'BC002', category: 'Compliance', description: 'Regulatory requirement' }
+    { blockingCategory: 'Fraud', active: 'Yes', description: 'Suspicious activity detected, potential fraud indicators, and fraudulent transactions' },
+    { blockingCategory: 'Compliance', active: 'Yes', description: 'Regulatory requirement violations, compliance issues, and policy breaches' },
+    { blockingCategory: 'Risk', active: 'Yes', description: 'High-risk transactions, suspicious patterns, and risk management concerns' },
+    { blockingCategory: 'Regulatory', active: 'No', description: 'Regulatory violations and compliance failures' }
   ],
   'Customer Zone': [
-    { code: 'CZ001', zone: 'Premium', criteria: 'High Value', benefits: 'VIP Services' },
-    { code: 'CZ002', zone: 'Standard', criteria: 'Regular', benefits: 'Standard Services' }
-  ],
-  'Join Sale Agent': [
-    { agent: 'John Smith', partner: 'Sarah Johnson', startDate: '2024-01-01', status: 'Active' },
-    { agent: 'Mike Wilson', partner: 'Lisa Brown', startDate: '2024-02-01', status: 'Active' }
+    { zoneCode: 'CZ001', active: 'Yes', description: 'Premium customer zone with high-value clients, VIP services, and priority support' },
+    { zoneCode: 'CZ002', active: 'Yes', description: 'Standard customer zone with regular clients, standard services, and normal support' },
+    { zoneCode: 'CZ003', active: 'Yes', description: 'Corporate customer zone with business clients, enterprise services, and dedicated support' },
+    { zoneCode: 'CZ004', active: 'No', description: 'Inactive customer zone for suspended or terminated accounts' }
   ],
   'Complience MSG Setup': [
-    { code: 'CMS001', message: 'Risk Warning', type: 'Mandatory', frequency: 'Every Transaction' },
-    { code: 'CMS002', message: 'Terms & Conditions', type: 'Required', frequency: 'First Time' }
-  ],
-  'Product type': [
-    { code: 'PT001', type: 'Equity Fund', risk: 'High', return: '8-12%' },
-    { code: 'PT002', type: 'Bond Fund', risk: 'Low', return: '4-6%' }
+    { position: 'Manager', user: 'John Smith' },
+    { position: 'Supervisor', user: 'Sarah Johnson' },
+    { position: 'Officer', user: 'Michael Brown' },
+    { position: 'Analyst', user: 'Emily Davis' },
+    { position: 'Coordinator', user: 'David Wilson' },
+    { position: 'Specialist', user: 'Lisa Anderson' }
   ],
   Title: [
-    { code: 'T001', title: 'Mr.', gender: 'Male', formal: 'Yes' },
-    { code: 'T002', title: 'Ms.', gender: 'Female', formal: 'Yes' },
-    { code: 'T003', title: 'Dr.', gender: 'Any', formal: 'Yes' }
+    { titleCode: 'T001', active: 'Yes', description: 'Mr. - Formal title for adult males, commonly used in business and formal correspondence' },
+    { titleCode: 'T002', active: 'Yes', description: 'Ms. - Formal title for adult females, commonly used in business and formal correspondence' },
+    { titleCode: 'T003', active: 'Yes', description: 'Dr. - Academic title for individuals with doctoral degrees, used in professional and academic contexts' },
+    { titleCode: 'T004', active: 'Yes', description: 'Prof. - Academic title for professors, used in educational and research institutions' },
+    { titleCode: 'T005', active: 'No', description: 'Sir - Honorary title for knights, currently inactive in the system' }
   ]
 };
 
@@ -338,6 +520,21 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                 column === 'district' ? 'District' : 
                 column === 'swiftCode' ? 'Swift Code' : 
                 column === 'branchNo' ? 'Branch No' : 
+                column === 'institutionCode' ? 'Institution Code' : 
+                column === 'status' ? 'Status' : 
+                column === 'institutionCategory' ? 'Institution Category' : 
+                column === 'institutionName' ? 'Institution Name' : 
+                column === 'address1' ? 'Address 1' : 
+                column === 'address2' ? 'Address 2' : 
+                column === 'address3' ? 'Address 3' : 
+                column === 'contactPerson' ? 'Contact Person' : 
+                column === 'contactNo' ? 'Contact No' : 
+                column === 'active' ? 'Active' : 
+                column === 'blockingCategory' ? 'Blocking Category' : 
+                column === 'zoneCode' ? 'Zone Code' : 
+                column === 'position' ? 'Position' : 
+                column === 'user' ? 'User' : 
+                column === 'titleCode' ? 'Title Code' : 
                 column.replace(/([A-Z])/g, ' $1').trim(),
         cell: (info) => (
           <span className="text-gray-900">{info.getValue()}</span>
@@ -534,12 +731,14 @@ function Setup() {
     companyStreet: '',
     companyTown: '',
     companyCity: '',
+    companyTelephone: '',
     companyFax: '',
     companyApplicationApproval: false,
     companyAccountApproval: false,
-    companyTelephone: '',
     companyEmail: '',
     companyWebsite: '',
+    companyAddress: '',
+    companyPhone: '',
     // Administrator tab fields
     reportPath: '',
     documentPath: '',
@@ -584,7 +783,304 @@ function Setup() {
     unitFeePriceOne: '',
     unitFeePriceTwo: '',
     unitFee: '',
+    // Agency Type fields
+    agencyTypeCode: '',
+    agencyTypeDescription: '',
+    // Agency fields
+    agencyCode: '',
+    agencyDescription: '',
+    agencyType: '',
+    calculateCommission: '',
+    // Sub Agency fields
+    agency: '',
+    subAgencyCode: '',
+    subAgencyDescription: '',
+    // Agent fields
+    subAgency: '',
+    agentCode: '',
+    registrationNumber: '',
+    city: '',
+    residence: '',
+    agentType: '',
+    joinedDate: '',
+    territory: '',
+    // Additional fields
+    dividendCode: '',
+    activityCode: '',
+    activityName: '',
+    activityType: '',
+    activityDescription: '',
+    fundCode: '',
+    fundRisk: '',
+    fundReturn: '',
+    postalArea: '',
+    postalCity: '',
+    postalDistrict: '',
+    commissionType: '',
+    commissionDescription: '',
+    territoryCode: '',
+    territoryDescription: '',
+    institutionCategoryCode: '',
+    institutionCategoryActive: false,
+    institutionCategoryType: '',
+    institutionCategoryName: '',
+    institutionCategoryAddress1: '',
+    institutionCategoryAddress2: '',
+    institutionCategoryAddress3: '',
+    institutionCategoryContactPerson: '',
+    institutionCategoryContactNo: '',
+    institutionCategoryDescription: '',
+    // New fields for Blocking Category
+    blockingCategoryType: '',
+    blockingCategoryActive: false,
+    blockingCategoryDescription: '',
+    // New fields for Customer Zone
+    customerZoneCode: '',
+    customerZoneActive: false,
+    customerZoneDescription: '',
+    // New fields for Compliance Msg Setup
+    compliancePosition: '',
+    complianceUser: '',
+    // New fields for Title
+    titleCode: '',
+    titleActive: false,
+    titleDescription: '',
+    // New fields for Other Charges
+    otherChargesCode: '',
+    otherChargesActive: false,
+    otherChargesName: '',
+    otherChargesValidFrom: null,
+    otherChargesValidTo: null,
+    otherChargesType: 'percentage',
+    otherChargesPercentage: '',
+    otherChargesValue: '',
+    // New fields for Commission Level
+    commissionLevelCode: '',
+    commissionLevelDescription: '',
+    // New fields for Agent Commission Definition
+    agentCommissionCategory: 'investment',
+    agentCommissionType: '',
+    agentCommissionLevel: '',
+    agentCommissionFund: '',
+    agentCommissionAgentType: 'agency',
+    agentCommissionPeriodFrom: null,
+    agentCommissionPeriodTo: null,
+    agentCommissionAmountFrom: '',
+    agentCommissionAmountTo: '',
+    agentCommissionRate: '',
   });
+
+  // Reset form data function
+  const resetFormData = () => {
+    setFormData({
+      // Bank fields
+      code: '',
+      description: '',
+      address: '',
+      district: '',
+      swiftCode: '',
+      branchNo: '',
+      // Transaction Type fields
+      transactionCode: '',
+      transactionType: '',
+      transactionName: '',
+      lastTransactionNumber: '',
+      // Trustees fields
+      trusteeCode: '',
+      active: false,
+      trusteeName: '',
+      trusteeAddress: '',
+      telephoneNumber: '',
+      faxNo: '',
+      email: '',
+      // Custodian fields
+      custodianCode: '',
+      custodianActive: false,
+      custodianName: '',
+      custodianAddress1: '',
+      custodianAddress2: '',
+      custodianAddress3: '',
+      custodianTelephoneNumber: '',
+      custodianFaxNo: '',
+      custodianEmail: '',
+      // Postal Area fields
+      postalCode: '',
+      postalActive: false,
+      postalDescription: '',
+      postalArea: '',
+      postalCity: '',
+      postalDistrict: '',
+      // Dividend Type fields
+      dividendCode: '',
+      dividendType: '',
+      dividendDescription: '',
+      // Funds fields
+      fund: '',
+      fundCode: '',
+      fundName: '',
+      manager: '',
+      trustee: '',
+      custodian: '',
+      minValue: '',
+      minUnits: '',
+      suspenseAccount: '',
+      fundType: '',
+      fundRisk: '',
+      fundReturn: '',
+      // Promotional Activity fields
+      promotionCode: '',
+      promotionName: '',
+      promotionDescription: '',
+      activityCode: '',
+      activityName: '',
+      activityType: '',
+      activityDescription: '',
+      // Additional fields
+      certificateType: '',
+      portfolioCode: '',
+      // Company fields
+      companyCode: '',
+      companyName: '',
+      companyAddress: '',
+      companyPhone: '',
+      companyEmail: '',
+      companyWebsite: '',
+      // Unit Fee Codes fields
+      unitFeeApplicableFunds: [],
+      unitFeeTxnType: '',
+      unitFeeCode: '',
+      unitFeePercentage: '',
+      unitFeeDescription: '',
+      unitFeePriceOne: '',
+      unitFeePriceTwo: '',
+      unitFee: '',
+      // Agency Type fields
+      agencyTypeCode: '',
+      agencyTypeDescription: '',
+      // Agency fields
+      agencyCode: '',
+      agencyDescription: '',
+      agencyType: '',
+      calculateCommission: '',
+      // Sub Agency fields
+      agency: '',
+      subAgencyCode: '',
+      subAgencyDescription: '',
+      // Agent fields
+      subAgency: '',
+      agentCode: '',
+      registrationNumber: '',
+      city: '',
+      residence: '',
+      agentType: '',
+      joinedDate: '',
+      territory: '',
+      // Additional fields
+      // Boolean fields
+      dividendActive: false,
+      companyApplicationApproval: false,
+      companyAccountApproval: false,
+      smtpInvalidLogin: false,
+      smtpLockedAccount: false,
+      smtpRegistrationApproval: false,
+      applicationApprove: false,
+      registrationApprove: false,
+      accountApprove: false,
+      transactionApprove: false,
+      unitPriceApprove: false,
+      sendEmailsAccountApproval: false,
+      sendEmailsAcknowledgment: false,
+      sendEmailsInvestment: false,
+      loginInvalidUser: false,
+      loginAccountLock: false,
+      certificateSeparateExitFee: false,
+      sendEmailsOn: false,
+      sendSmsOn: false,
+      // Additional string fields
+      companyPostalCode: '',
+      companyStreet: '',
+      companyTown: '',
+      companyCity: '',
+      companyTelephone: '',
+      companyFax: '',
+      reportPath: '',
+      documentPath: '',
+      unitsDecimalPosition: '',
+      unitsDecimalMethod: '',
+      amountDecimalPosition: '',
+      amountDecimalMethod: '',
+      multipleUserAccess: '',
+      tableName: '',
+      senderAddress: '',
+      smtpServer: '',
+      smtpUser: '',
+      smtpPassword: '',
+      emailSendingMethod: '',
+      smtpPort: '',
+      useDefaultCredentials: '',
+      smsProvider: '',
+      smsUserName: '',
+      smsAlias: '',
+      smsApiKey: '',
+      // Date fields
+      launchDate: null,
+      ipoStartDate: null,
+      ipoEndDate: null,
+      maturityDate: null,
+      commissionType: '',
+      commissionDescription: '',
+      territoryCode: '',
+      territoryDescription: '',
+      institutionCategoryCode: '',
+      institutionCategoryActive: false,
+      institutionCategoryType: '',
+      institutionCategoryName: '',
+      institutionCategoryAddress1: '',
+      institutionCategoryAddress2: '',
+      institutionCategoryAddress3: '',
+      institutionCategoryContactPerson: '',
+      institutionCategoryContactNo: '',
+      institutionCategoryDescription: '',
+      // New fields for Blocking Category
+      blockingCategoryType: '',
+      blockingCategoryActive: false,
+      blockingCategoryDescription: '',
+      // New fields for Customer Zone
+      customerZoneCode: '',
+      customerZoneActive: false,
+      customerZoneDescription: '',
+      // New fields for Compliance Msg Setup
+      compliancePosition: '',
+      complianceUser: '',
+      // New fields for Title
+      titleCode: '',
+      titleActive: false,
+      titleDescription: '',
+      // New fields for Other Charges
+      otherChargesCode: '',
+      otherChargesActive: false,
+      otherChargesName: '',
+      otherChargesValidFrom: null,
+      otherChargesValidTo: null,
+      otherChargesType: 'percentage',
+      otherChargesPercentage: '',
+      otherChargesValue: '',
+      // New fields for Commission Level
+      commissionLevelCode: '',
+      commissionLevelDescription: '',
+      // New fields for Agent Commission Definition
+      agentCommissionCategory: 'investment',
+      agentCommissionType: '',
+      agentCommissionLevel: '',
+      agentCommissionFund: '',
+      agentCommissionAgentType: 'agency',
+      agentCommissionPeriodFrom: null,
+      agentCommissionPeriodTo: null,
+      agentCommissionAmountFrom: '',
+      agentCommissionAmountTo: '',
+      agentCommissionRate: '',
+    });
+  };
 
   // Modal state management
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -606,10 +1102,10 @@ function Setup() {
   // Handle input field changes
   // TODO: Add validation and API call for real-time validation
   // API Endpoint: POST /api/setup/validate-field
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | string[] | boolean) => {
     setFormData(prev => ({ 
       ...prev, 
-      [field]: field.includes('Approval') ? value === 'true' : value 
+      [field]: value 
     }));
   };
 
@@ -625,7 +1121,7 @@ function Setup() {
   // API Endpoint: GET /api/setup/default-values/{module}
   const handleNewButtonClick = () => {
     setIsFormEditable(true);
-    setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '', unitFeeApplicableFunds: [], unitFeeTxnType: 'creation', unitFeeCode: '', unitFeePercentage: '', unitFeeDescription: '', unitFeePriceOne: '', unitFeePriceTwo: '', unitFee: '' });
+    resetFormData();
   };
 
   // Handle modal open
@@ -762,19 +1258,125 @@ function Setup() {
             <PromotionalActivityModalContent 
               formData={formData} 
               handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Other Charges' && (
+            <OtherChargesModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              handleDateChange={handleDateChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Unit Fee Codes' && (
-            <div className="setup-unit-fee-modal-content">
-              <UnitFeeCodesSection 
-                formData={formData}
-                handleInputChange={handleInputChange}
-                isFormEditable={isFormEditable}
-              />
-            </div>
+            <UnitFeeCodesSection 
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
           )}
+          {modalTitle === 'Agency Type' && (
+            <AgencyTypeModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Agency' && (
+            <AgencyModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Sub Agency' && (
+            <SubAgencyModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Agents' && (
+            <AgentModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Commision Type' && (
+            <CommissionTypeModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Commission Level' && (
+            <CommissionLevelModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Agent Commission Definition' && (
+            <AgentCommissionDefinitionModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              handleDateChange={handleDateChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Territory' && (
+            <TerritoryModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Institution' && (
+            <InstitutionModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Institution Category' && (
+            <InstitutionCategoryModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+          {modalTitle === 'Blocking Category' && (
+            <BlockingCategoryModalContent 
+              formData={formData} 
+              handleInputChange={handleInputChange} 
+              isFormEditable={isFormEditable} 
+            />
+          )}
+                      {modalTitle === 'Customer Zone' && (
+              <CustomerZoneModalContent 
+                formData={formData} 
+                handleInputChange={handleInputChange} 
+                isFormEditable={isFormEditable} 
+              />
+            )}
+            {modalTitle === 'Complience MSG Setup' && (
+              <ComplianceMsgSetupModalContent 
+                formData={formData} 
+                handleInputChange={handleInputChange} 
+                isFormEditable={isFormEditable} 
+              />
+            )}
+            {modalTitle === 'Title' && (
+              <TitleModalContent 
+                formData={formData} 
+                handleInputChange={handleInputChange} 
+                isFormEditable={isFormEditable} 
+              />
+            )}
           {/* Default Bank modal for other modules */}
-          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Company'].includes(modalTitle) && (
+          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title'].includes(modalTitle) && (
             <BankModalContent 
               formData={formData} 
               handleInputChange={handleInputChange} 
@@ -925,7 +1527,7 @@ function Setup() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({ code: '', description: '', address: '', district: '', swiftCode: '', branchNo: '', transactionCode: '', transactionType: '', transactionName: '', lastTransactionNumber: '', trusteeCode: '', active: false, trusteeName: '', trusteeAddress: '', telephoneNumber: '', faxNo: '', email: '', custodianCode: '', custodianActive: false, custodianName: '', custodianAddress1: '', custodianAddress2: '', custodianAddress3: '', custodianTelephoneNumber: '', custodianFaxNo: '', custodianEmail: '', postalCode: '', postalActive: false, postalDescription: '', dividendType: '', dividendActive: false, dividendDescription: '', fund: '', fundName: '', manager: '', trustee: '', custodian: '', minValue: '', minUnits: '', suspenseAccount: '', launchDate: null, fundType: '', ipoStartDate: null, ipoEndDate: null, certificateType: '', portfolioCode: '', maturityDate: null, promotionCode: '', promotionName: '', promotionDescription: '', companyCode: '', companyName: '', companyPostalCode: '', companyStreet: '', companyTown: '', companyCity: '', companyTelephone: '', companyFax: '', companyApplicationApproval: false, companyAccountApproval: false, companyEmail: '', companyWebsite: '', reportPath: '', documentPath: '', unitsDecimalPosition: '', unitsDecimalMethod: '', amountDecimalPosition: '', amountDecimalMethod: '', smtpInvalidLogin: false, smtpLockedAccount: false, smtpRegistrationApproval: false, applicationApprove: false, registrationApprove: false, accountApprove: false, transactionApprove: false, unitPriceApprove: false, sendEmailsAccountApproval: false, sendEmailsAcknowledgment: false, sendEmailsInvestment: false, loginInvalidUser: false, loginAccountLock: false, multipleUserAccess: '', tableName: '', certificateSeparateExitFee: false, sendEmailsOn: false, senderAddress: '', smtpServer: '', smtpUser: '', smtpPassword: '', emailSendingMethod: '', smtpPort: '', useDefaultCredentials: '', sendSmsOn: false, smsProvider: '', smsUserName: '', smsAlias: '', smsApiKey: '', unitFeeApplicableFunds: [], unitFeeTxnType: 'creation', unitFeeCode: '', unitFeePercentage: '', unitFeeDescription: '', unitFeePriceOne: '', unitFeePriceTwo: '', unitFee: '' })}
+                        onClick={resetFormData}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >
@@ -1270,7 +1872,7 @@ function FundsDetailsTabs() {
   );
 }
 
-function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMobile }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean, isMobile: boolean }) {
+function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMobile }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean, isMobile: boolean }) {
   const [activeTab, setActiveTab] = React.useState('company');
   
   return (
@@ -1379,7 +1981,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                       type="checkbox"
                       id="applicationApproval"
                       checked={formData.companyApplicationApproval}
-                      onChange={(e) => handleInputChange('companyApplicationApproval', e.target.checked.toString())}
+                                                  onChange={(e) => handleInputChange('companyApplicationApproval', e.target.checked)}
                       disabled={!isFormEditable}
                       className="setup-checkbox-input"
                     />
@@ -1392,7 +1994,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                       type="checkbox"
                       id="accountApproval"
                       checked={formData.companyAccountApproval}
-                      onChange={(e) => handleInputChange('companyAccountApproval', e.target.checked.toString())}
+                                                  onChange={(e) => handleInputChange('companyAccountApproval', e.target.checked)}
                       disabled={!isFormEditable}
                       className="setup-checkbox-input"
                     />
@@ -1545,7 +2147,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                             type="checkbox"
                             id="smtpInvalidLogin"
                             checked={formData.smtpInvalidLogin}
-                            onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked.toString())}
+                            onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked)}
                             disabled={!isFormEditable}
                             className="setup-checkbox-input"
                           />
@@ -1560,7 +2162,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                             type="checkbox"
                             id="smtpLockedAccount"
                             checked={formData.smtpLockedAccount}
-                            onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked.toString())}
+                            onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked)}
                             disabled={!isFormEditable}
                             className="setup-checkbox-input"
                           />
@@ -1575,7 +2177,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                             type="checkbox"
                             id="smtpRegistrationApproval"
                             checked={formData.smtpRegistrationApproval}
-                            onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked.toString())}
+                            onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked)}
                             disabled={!isFormEditable}
                             className="setup-checkbox-input"
                           />
@@ -1599,7 +2201,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                           type="checkbox"
                           id="applicationApprove"
                           checked={formData.applicationApprove}
-                          onChange={(e) => handleInputChange('applicationApprove', e.target.checked.toString())}
+                          onChange={(e) => handleInputChange('applicationApprove', e.target.checked)}
                           disabled={!isFormEditable}
                           className="setup-checkbox-input"
                         />
@@ -1612,7 +2214,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                           type="checkbox"
                           id="registrationApprove"
                           checked={formData.registrationApprove}
-                          onChange={(e) => handleInputChange('registrationApprove', e.target.checked.toString())}
+                          onChange={(e) => handleInputChange('registrationApprove', e.target.checked)}
                           disabled={!isFormEditable}
                           className="setup-checkbox-input"
                         />
@@ -2026,7 +2628,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
 function BankModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
     <>
-      <div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Bank Code</label>
         <input
           type="text"
@@ -2038,18 +2640,19 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
           placeholder="Enter bank code"
         />
       </div>
-      <div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
-        <input
-          type="text"
+        <textarea
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
         />
       </div>
-      <div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Address (No/Street/Town/City)</label>
         <input
           type="text"
@@ -2060,7 +2663,7 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
           placeholder="Enter address as: No, Street Name, Town, City"
         />
       </div>
-      <div>
+      <div className="setup-input-group">
         <label className="setup-input-label">District</label>
         <select
           value={formData.district}
@@ -2075,7 +2678,7 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
           <option value="west">West District</option>
         </select>
       </div>
-      <div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Swift Code</label>
         <input
           type="text"
@@ -2086,7 +2689,7 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
           readOnly
         />
       </div>
-      <div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Branch No</label>
         <input
           type="text"
@@ -2656,39 +3259,564 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
 // ========================================
 // PROMOTIONAL ACTIVITY MODAL COMPONENT
 // ========================================
-function PromotionalActivityModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+function PromotionalActivityModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
                           <>
-                            <div>
+                            <div className="setup-input-group">
         <label className="setup-input-label">Promotion Code</label>
                               <input
                                 type="text"
           value={formData.promotionCode}
           onChange={(e) => handleInputChange('promotionCode', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter promotion code"
                               />
           </div>
-                            <div>
+                            <div className="setup-input-group">
         <label className="setup-input-label">Promotion Name</label>
                               <input
                                 type="text"
           value={formData.promotionName}
           onChange={(e) => handleInputChange('promotionName', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter promotion name"
                               />
                             </div>
-                            <div>
+                            <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
         <textarea
           value={formData.promotionDescription}
           onChange={(e) => handleInputChange('promotionDescription', e.target.value)}
-                            className="setup-input-field"
+          disabled={!isFormEditable}
+          className="setup-input-field"
           placeholder="Enter description"
           rows={3}
-                          />
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
                         </div>
+    </>
+  );
+}
+
+// ========================================
+// OTHER CHARGES MODAL CONTENT
+// ========================================
+function OtherChargesModalContent({ formData, handleInputChange, handleDateChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, handleDateChange: (field: string, date: Date | null) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Code</label>
+        <input
+          type="text"
+          value={formData.otherChargesCode || ''}
+          onChange={e => handleInputChange('otherChargesCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter code"
+        />
+      </div>
+      
+      {/* Active Checkbox */}
+      <div className="setup-input-group">
+        <label className="setup-checkbox-label">
+          <input
+            type="checkbox"
+            checked={formData.otherChargesActive || false}
+            onChange={e => handleInputChange('otherChargesActive', e.target.checked)}
+            disabled={!isFormEditable}
+            className="setup-checkbox-input"
+          />
+          <span className="setup-checkbox-text">Active</span>
+        </label>
+      </div>
+      
+      {/* Name */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Name</label>
+        <input
+          type="text"
+          value={formData.otherChargesName || ''}
+          onChange={e => handleInputChange('otherChargesName', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter name"
+        />
+      </div>
+      
+      {/* Valid From Date */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Valid From</label>
+        <input
+          type="date"
+          value={formData.otherChargesValidFrom ? formData.otherChargesValidFrom.toISOString().split('T')[0] : ''}
+          onChange={e => handleDateChange('otherChargesValidFrom', e.target.value ? new Date(e.target.value) : null)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+        />
+      </div>
+      
+      {/* Valid To Date */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Valid To</label>
+        <input
+          type="date"
+          value={formData.otherChargesValidFrom ? formData.otherChargesValidTo?.toISOString().split('T')[0] : ''}
+          onChange={e => handleDateChange('otherChargesValidTo', e.target.value ? new Date(e.target.value) : null)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+        />
+      </div>
+      
+      {/* Type Radio Buttons */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Type</label>
+        <div className="setup-radio-group">
+          <label className="setup-radio-label">
+            <input
+              type="radio"
+              name="otherChargesType"
+              value="percentage"
+              checked={formData.otherChargesType === 'percentage'}
+              onChange={e => handleInputChange('otherChargesType', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-radio-input"
+            />
+            <span className="setup-radio-text">Percentage</span>
+          </label>
+          <label className="setup-radio-label">
+            <input
+              type="radio"
+              name="otherChargesType"
+              value="value"
+              checked={formData.otherChargesType === 'value'}
+              onChange={e => handleInputChange('otherChargesType', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-radio-input"
+            />
+            <span className="setup-radio-text">Value</span>
+          </label>
+        </div>
+      </div>
+      
+      {/* Percentage Input */}
+      {formData.otherChargesType === 'percentage' && (
+        <div className="setup-input-group">
+          <label className="setup-input-label">Percentage</label>
+          <input
+            type="text"
+            value={formData.otherChargesPercentage || ''}
+            onChange={e => handleInputChange('otherChargesPercentage', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter percentage (e.g., 2.5)"
+          />
+        </div>
+      )}
+      
+      {/* Value Input */}
+      {formData.otherChargesType === 'value' && (
+        <div className="setup-input-group">
+          <label className="setup-input-label">Value</label>
+          <input
+            type="text"
+            value={formData.otherChargesValue || ''}
+            onChange={e => handleInputChange('otherChargesValue', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter value (e.g., 50.00)"
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+// ========================================
+// AGENCY MODAL COMPONENT
+// ========================================
+function AgencyModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      <div>
+        <label className="setup-input-label">Agency Code</label>
+        <input
+          type="text"
+          value={formData.agencyCode || ''}
+          onChange={(e) => handleInputChange('agencyCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter agency code"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.agencyDescription || ''}
+          onChange={(e) => handleInputChange('agencyDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+      <div>
+        <label className="setup-input-label">Agency Type</label>
+        <select
+          value={formData.agencyType || ''}
+          onChange={(e) => handleInputChange('agencyType', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select agency type</option>
+          <option value="Primary Agent">Primary Agent</option>
+          <option value="Sub Agent">Sub Agent</option>
+          <option value="Broker">Broker</option>
+          <option value="Distributor">Distributor</option>
+        </select>
+      </div>
+      <div>
+        <label className="setup-input-label">Calculate Commission</label>
+        <select
+          value={formData.calculateCommission || ''}
+          onChange={(e) => handleInputChange('calculateCommission', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select commission type</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Percentage">Percentage</option>
+          <option value="Fixed Amount">Fixed Amount</option>
+        </select>
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// AGENT MODAL COMPONENT
+// ========================================
+// AGENT MODAL COMPONENT
+// ========================================
+function AgentModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Agency */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Agency</label>
+        <select
+          value={formData.agency || ''}
+          onChange={(e) => handleInputChange('agency', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select agency</option>
+          <option value="AG001">AG001 - Main Street Agency</option>
+          <option value="AG002">AG002 - Central Agency</option>
+          <option value="AG003">AG003 - Downtown Agency</option>
+        </select>
+      </div>
+
+      {/* Sub Agency */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Sub Agency</label>
+        <select
+          value={formData.subAgency || ''}
+          onChange={(e) => handleInputChange('subAgency', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select sub agency</option>
+          <option value="SA001">SA001 - Downtown Branch</option>
+          <option value="SA002">SA002 - Uptown Branch</option>
+          <option value="SA003">SA003 - Central Branch</option>
+        </select>
+      </div>
+
+      {/* Agent Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Agent Code</label>
+        <input
+          type="text"
+          value={formData.agentCode || ''}
+          onChange={(e) => handleInputChange('agentCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter agent code"
+        />
+      </div>
+
+      {/* Registration Number */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Registration Number</label>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'end' }}>
+          <input
+            type="text"
+            value={formData.registrationNumber || ''}
+            onChange={(e) => handleInputChange('registrationNumber', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter registration number"
+            style={{ flex: 1 }}
+          />
+          <button
+            type="button"
+            disabled={!isFormEditable}
+            className="setup-button"
+            style={{ 
+              padding: '8px 12px', 
+              height: '40px', 
+              minWidth: '40px',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: isFormEditable ? 'pointer' : 'not-allowed',
+              opacity: isFormEditable ? 1 : 0.5
+            }}
+            onClick={() => {
+              console.log('Open top-up modal');
+            }}
+          >
+            P
+          </button>
+        </div>
+      </div>
+
+      {/* Add reg No as Agent Code button */}
+      <div className="setup-input-group">
+        <button
+          type="button"
+          disabled={!isFormEditable}
+          className="setup-button"
+          style={{ 
+            width: '100%',
+            padding: '10px',
+            backgroundColor: '#10b981',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: isFormEditable ? 'pointer' : 'not-allowed',
+            opacity: isFormEditable ? 1 : 0.5
+          }}
+          onClick={() => {
+            if (formData.registrationNumber) {
+              handleInputChange('agentCode', formData.registrationNumber);
+            }
+          }}
+        >
+          Add reg No as Agent Code
+        </button>
+      </div>
+
+      {/* Calculate Commission */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Calculate Commission</label>
+        <select
+          value={formData.calculateCommission || ''}
+          onChange={(e) => handleInputChange('calculateCommission', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select commission type</option>
+          <option value="Percentage">Percentage</option>
+          <option value="Fixed Amount">Fixed Amount</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description (Name)</label>
+        <input
+          type="text"
+          value={formData.description || ''}
+          onChange={(e) => handleInputChange('description', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter agent name"
+        />
+      </div>
+
+      {/* City */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">City</label>
+        <select
+          value={formData.city || ''}
+          onChange={(e) => handleInputChange('city', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select city</option>
+          <option value="Colombo">Colombo</option>
+          <option value="Kandy">Kandy</option>
+          <option value="Galle">Galle</option>
+          <option value="Jaffna">Jaffna</option>
+        </select>
+      </div>
+
+      {/* District */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">District</label>
+        <select
+          value={formData.district || ''}
+          onChange={(e) => handleInputChange('district', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select district</option>
+          <option value="Western">Western</option>
+          <option value="Central">Central</option>
+          <option value="Southern">Southern</option>
+          <option value="Northern">Northern</option>
+        </select>
+      </div>
+
+      {/* Residence */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Residence</label>
+        <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <input
+              type="radio"
+              name="residence"
+              value="Residence"
+              checked={formData.residence === 'Residence'}
+              onChange={(e) => handleInputChange('residence', e.target.value)}
+              disabled={!isFormEditable}
+              style={{ margin: 0 }}
+            />
+            <span>Residence</span>
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <input
+              type="radio"
+              name="residence"
+              value="Non-Residence"
+              checked={formData.residence === 'Non-Residence'}
+              onChange={(e) => handleInputChange('residence', e.target.value)}
+              disabled={!isFormEditable}
+              style={{ margin: 0 }}
+            />
+            <span>Non-Residence</span>
+          </label>
+        </div>
+      </div>
+
+      {/* Joined Date */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Joined Date</label>
+        <input
+          type="date"
+          value={formData.joinedDate || ''}
+          onChange={(e) => handleInputChange('joinedDate', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+        />
+      </div>
+
+      {/* Territory */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Territory</label>
+        <select
+          value={formData.territory || ''}
+          onChange={(e) => handleInputChange('territory', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select territory</option>
+          <option value="Western Province">Western Province</option>
+          <option value="Central Province">Central Province</option>
+          <option value="Southern Province">Southern Province</option>
+          <option value="Northern Province">Northern Province</option>
+        </select>
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// SUB AGENCY MODAL COMPONENT
+// ========================================
+function SubAgencyModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Agency</label>
+        <select
+          value={formData.agency || ''}
+          onChange={(e) => handleInputChange('agency', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select agency</option>
+          <option value="AG001">AG001 - Main Street Agency</option>
+          <option value="AG002">AG002 - Central Agency</option>
+          <option value="AG003">AG003 - Downtown Agency</option>
+          <option value="AG004">AG004 - Uptown Agency</option>
+        </select>
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Sub Agency Code</label>
+        <input
+          type="text"
+          value={formData.subAgencyCode || ''}
+          onChange={(e) => handleInputChange('subAgencyCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter sub agency code"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.subAgencyDescription || ''}
+          onChange={(e) => handleInputChange('subAgencyDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// AGENCY TYPE MODAL COMPONENT
+// ========================================
+function AgencyTypeModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Agency Type Code</label>
+        <input
+          type="text"
+          value={formData.agencyTypeCode || ''}
+          onChange={(e) => handleInputChange('agencyTypeCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter agency type code"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.agencyTypeDescription || ''}
+          onChange={(e) => handleInputChange('agencyTypeDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
     </>
   );
 }
@@ -2696,7 +3824,7 @@ function PromotionalActivityModalContent({ formData, handleInputChange }: { form
 // ========================================
 // UNIT FEE CODES SECTION
 // ========================================
-function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { formData: any, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
   // Example data for table
   const funds = [
     { code: 'FUND001', name: 'Equity Growth Fund' },
@@ -2707,7 +3835,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
   // Simulate backend loading for checkboxes
   const selectedFunds = formData.unitFeeApplicableFunds || [];
   const handleFundCheckbox = (code: string, checked: boolean) => {
-    let updated = selectedFunds ? [...selectedFunds] : [];
+    let updated: string[] = selectedFunds ? [...selectedFunds] : [];
     if (checked) {
       if (!updated.includes(code)) updated.push(code);
     } else {
@@ -2716,9 +3844,20 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
     handleInputChange('unitFeeApplicableFunds', updated);
   };
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginTop: '32px' }}>
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: '1fr 1fr', 
+      gap: '48px', 
+      width: '100%', 
+      maxWidth: 'none',
+      minWidth: '100%',
+      boxSizing: 'border-box',
+      padding: '0',
+      gridColumn: '1 / -1', // Span all columns of parent grid
+      marginTop: '32px'
+    }}>
       {/* Left Column */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
         {/* Txn. Type Box */}
         <div className="setup-ash-box" style={{ marginBottom: '8px' }}>
           <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Txn. Type</div>
@@ -2824,7 +3963,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                           </div>
                         </div>
       {/* Right Column: Card with scrollable table */}
-      <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>
         <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Applicable Funds</div>
         <div style={{ flex: 1, overflowY: 'auto', maxHeight: '320px' }}>
           <table className="setup-custom-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -2854,6 +3993,735 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                       </div>
                     </div>
                   </div>
+  );
+}
+
+// ========================================
+// COMMISSION TYPE MODAL CONTENT
+// ========================================
+function CommissionTypeModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Commission Type */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Commission Type</label>
+        <input
+          type="text"
+          value={formData.commissionType || ''}
+          onChange={e => handleInputChange('commissionType', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter commission type"
+        />
+      </div>
+      
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.commissionDescription || ''}
+          onChange={e => handleInputChange('commissionDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// COMMISSION LEVEL MODAL CONTENT
+// ========================================
+function CommissionLevelModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Commission Level */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Commission Level</label>
+        <input
+          type="text"
+          value={formData.commissionLevelCode || ''}
+          onChange={e => handleInputChange('commissionLevelCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter commission level"
+        />
+      </div>
+      
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.commissionLevelDescription || ''}
+          onChange={e => handleInputChange('commissionLevelDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// AGENT COMMISSION DEFINITION MODAL CONTENT
+// ========================================
+function AgentCommissionDefinitionModalContent({ formData, handleInputChange, handleDateChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, handleDateChange: (field: string, date: Date | null) => void, isFormEditable: boolean }) {
+  return (
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: '1fr 1fr', 
+      gap: '48px', 
+      width: '100%', 
+      maxWidth: 'none',
+      minWidth: '100%',
+      boxSizing: 'border-box',
+      padding: '0',
+      gridColumn: '1 / -1' // Span all columns of parent grid
+    }}>
+      {/* Left Column */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
+        {/* Commission Category Group */}
+        <div className="setup-ash-box">
+          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Commission Category</div>
+          <div className="setup-radio-group">
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="agentCommissionCategory"
+                value="investment"
+                checked={formData.agentCommissionCategory === 'investment'}
+                onChange={e => handleInputChange('agentCommissionCategory', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              <span className="setup-radio-text">Investment Wise Commission</span>
+            </label>
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="agentCommissionCategory"
+                value="trailer"
+                checked={formData.agentCommissionCategory === 'trailer'}
+                onChange={e => handleInputChange('agentCommissionCategory', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              <span className="setup-radio-text">Trailer Fee</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Commission Type, Level, Fund Group */}
+        <div className="setup-ash-box">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Commission Type */}
+            <div className="setup-input-group">
+              <label className="setup-input-label">Commission Type</label>
+              <select
+                value={formData.agentCommissionType || ''}
+                onChange={e => handleInputChange('agentCommissionType', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-dropdown-select"
+              >
+                <option value="">Select Commission Type</option>
+                <option value="Flat Rate">Flat Rate</option>
+                <option value="Percentage">Percentage</option>
+                <option value="Tiered">Tiered</option>
+              </select>
+            </div>
+
+            {/* Commission Level */}
+            <div className="setup-input-group">
+              <label className="setup-input-label">Commission Level</label>
+              <select
+                value={formData.agentCommissionLevel || ''}
+                onChange={e => handleInputChange('agentCommissionLevel', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-dropdown-select"
+              >
+                <option value="">Select Commission Level</option>
+                <option value="Entry Level">Entry Level</option>
+                <option value="Intermediate Level">Intermediate Level</option>
+                <option value="Senior Level">Senior Level</option>
+                <option value="Executive Level">Executive Level</option>
+              </select>
+            </div>
+
+            {/* Fund */}
+            <div className="setup-input-group">
+              <label className="setup-input-label">Fund</label>
+              <select
+                value={formData.agentCommissionFund || ''}
+                onChange={e => handleInputChange('agentCommissionFund', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-dropdown-select"
+              >
+                <option value="">Select Fund</option>
+                <option value="Growth Fund">Growth Fund</option>
+                <option value="Income Fund">Income Fund</option>
+                <option value="Balanced Fund">Balanced Fund</option>
+                <option value="Money Market Fund">Money Market Fund</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
+        {/* Agent Type Group */}
+        <div className="setup-ash-box">
+          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Agent Type</div>
+          <div className="setup-radio-group">
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="agentCommissionAgentType"
+                value="agency"
+                checked={formData.agentCommissionAgentType === 'agency'}
+                onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              <span className="setup-radio-text">Agency Wise</span>
+            </label>
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="agentCommissionAgentType"
+                value="subAgency"
+                checked={formData.agentCommissionAgentType === 'subAgency'}
+                onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              <span className="setup-radio-text">Sub Agency Wise</span>
+            </label>
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="agentCommissionAgentType"
+                value="agent"
+                checked={formData.agentCommissionAgentType === 'agent'}
+                onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              <span className="setup-radio-text">Agent Wise</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Period and Amount Group */}
+        <div className="setup-ash-box">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Period From/To */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="setup-input-group">
+                <label className="setup-input-label">Period From</label>
+                <input
+                  type="date"
+                  value={formData.agentCommissionPeriodFrom ? formData.agentCommissionPeriodFrom.toISOString().split('T')[0] : ''}
+                  onChange={e => handleDateChange('agentCommissionPeriodFrom', e.target.value ? new Date(e.target.value) : null)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                />
+              </div>
+              <div className="setup-input-group">
+                <label className="setup-input-label">Period To</label>
+                <input
+                  type="date"
+                  value={formData.agentCommissionPeriodTo ? formData.agentCommissionPeriodTo.toISOString().split('T')[0] : ''}
+                  onChange={e => handleDateChange('agentCommissionPeriodTo', e.target.value ? new Date(e.target.value) : null)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                />
+              </div>
+            </div>
+
+            {/* Amount From/To */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="setup-input-group">
+                <label className="setup-input-label">Amount From</label>
+                <input
+                  type="text"
+                  value={formData.agentCommissionAmountFrom || ''}
+                  onChange={e => handleInputChange('agentCommissionAmountFrom', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter amount from"
+                />
+              </div>
+              <div className="setup-input-group">
+                <label className="setup-input-label">Amount To</label>
+                <input
+                  type="text"
+                  value={formData.agentCommissionAmountTo || ''}
+                  onChange={e => handleInputChange('agentCommissionAmountTo', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter amount to"
+                />
+              </div>
+            </div>
+
+            {/* Commission Rate */}
+            <div className="setup-input-group">
+              <label className="setup-input-label">Commission Rate</label>
+              <input
+                type="text"
+                value={formData.agentCommissionRate || ''}
+                onChange={e => handleInputChange('agentCommissionRate', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder="Enter commission rate (e.g., 2.5%)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========================================
+// TERRITORY MODAL CONTENT
+// ========================================
+function TerritoryModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Territory Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Territory Code</label>
+        <input
+          type="text"
+          value={formData.territoryCode || ''}
+          onChange={e => handleInputChange('territoryCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter territory code"
+        />
+      </div>
+      
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.territoryDescription || ''}
+          onChange={e => handleInputChange('territoryDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// INSTITUTION MODAL CONTENT
+// ========================================
+function InstitutionModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Institution Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Institution Code</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryCode || ''}
+          onChange={e => handleInputChange('institutionCategoryCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter institution code"
+        />
+      </div>
+      
+      {/* Active Checkbox */}
+      <div className="setup-input-group">
+        <label className="setup-checkbox-label">
+          <input
+            type="checkbox"
+            checked={formData.institutionCategoryActive || false}
+            onChange={e => handleInputChange('institutionCategoryActive', e.target.checked)}
+            disabled={!isFormEditable}
+            className="setup-checkbox-input"
+          />
+          <span className="setup-checkbox-text">Active</span>
+        </label>
+      </div>
+      
+      {/* Institution Category Dropdown */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Institution Category</label>
+        <select
+          value={formData.institutionCategoryType || ''}
+          onChange={e => handleInputChange('institutionCategoryType', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-dropdown-select"
+        >
+          <option value="">Select institution category</option>
+          <option value="Bank">Bank</option>
+          <option value="Insurance">Insurance</option>
+          <option value="Investment">Investment</option>
+          <option value="Brokerage">Brokerage</option>
+          <option value="Mutual Fund">Mutual Fund</option>
+          <option value="Pension Fund">Pension Fund</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      
+      {/* Institution Name */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Institution Name</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryName || ''}
+          onChange={e => handleInputChange('institutionCategoryName', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter institution name"
+        />
+      </div>
+      
+      {/* Address 1 */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Address 1</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryAddress1 || ''}
+          onChange={e => handleInputChange('institutionCategoryAddress1', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address line 1"
+        />
+      </div>
+      
+      {/* Address 2 */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Address 2</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryAddress2 || ''}
+          onChange={e => handleInputChange('institutionCategoryAddress2', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address line 2"
+        />
+      </div>
+      
+      {/* Address 3 */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Address 3</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryAddress3 || ''}
+          onChange={e => handleInputChange('institutionCategoryAddress3', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address line 3"
+        />
+      </div>
+      
+      {/* Contact Person */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Contact Person</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryContactPerson || ''}
+          onChange={e => handleInputChange('institutionCategoryContactPerson', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter contact person name"
+        />
+      </div>
+      
+      {/* Contact No */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Contact No</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryContactNo || ''}
+          onChange={e => handleInputChange('institutionCategoryContactNo', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter contact number"
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// INSTITUTION CATEGORY MODAL CONTENT
+// ========================================
+function InstitutionCategoryModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Institution Category Dropdown */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Institution Category</label>
+        <select
+          value={formData.institutionCategoryType || ''}
+          onChange={e => handleInputChange('institutionCategoryType', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-dropdown-select"
+        >
+          <option value="">Select institution category</option>
+          <option value="Bank">Bank</option>
+          <option value="Insurance">Insurance</option>
+          <option value="Investment">Investment</option>
+          <option value="Brokerage">Brokerage</option>
+          <option value="Mutual Fund">Mutual Fund</option>
+          <option value="Pension Fund">Pension Fund</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      
+      {/* Active Checkbox */}
+      <div className="setup-input-group">
+        <label className="setup-checkbox-label">
+          <input
+            type="checkbox"
+            checked={formData.institutionCategoryActive || false}
+            onChange={e => handleInputChange('institutionCategoryActive', e.target.checked)}
+            disabled={!isFormEditable}
+            className="setup-checkbox-input"
+          />
+          <span className="setup-checkbox-text">Active</span>
+        </label>
+      </div>
+      
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.institutionCategoryDescription || ''}
+          onChange={e => handleInputChange('institutionCategoryDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// BLOCKING CATEGORY MODAL CONTENT
+// ========================================
+function BlockingCategoryModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Blocking Category Dropdown */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Blocking Category</label>
+        <select
+          value={formData.blockingCategoryType || ''}
+          onChange={e => handleInputChange('blockingCategoryType', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-dropdown-select"
+        >
+          <option value="">Select blocking category</option>
+          <option value="Fraud">Fraud</option>
+          <option value="Compliance">Compliance</option>
+          <option value="Risk">Risk</option>
+          <option value="Regulatory">Regulatory</option>
+          <option value="Suspicious Activity">Suspicious Activity</option>
+          <option value="Legal">Legal</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      
+      {/* Active Checkbox */}
+      <div className="setup-input-group">
+        <label className="setup-checkbox-label">
+          <input
+            type="checkbox"
+            checked={formData.blockingCategoryActive || false}
+            onChange={e => handleInputChange('blockingCategoryActive', e.target.checked)}
+            disabled={!isFormEditable}
+            className="setup-checkbox-input"
+          />
+          <span className="setup-checkbox-text">Active</span>
+        </label>
+      </div>
+      
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.blockingCategoryDescription || ''}
+          onChange={e => handleInputChange('blockingCategoryDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// CUSTOMER ZONE MODAL CONTENT
+// ========================================
+function CustomerZoneModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Zone Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Zone Code</label>
+        <input
+          type="text"
+          value={formData.customerZoneCode || ''}
+          onChange={e => handleInputChange('customerZoneCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter zone code"
+        />
+      </div>
+      
+      {/* Active Checkbox */}
+      <div className="setup-input-group">
+        <label className="setup-checkbox-label">
+          <input
+            type="checkbox"
+            checked={formData.customerZoneActive || false}
+            onChange={e => handleInputChange('customerZoneActive', e.target.checked)}
+            disabled={!isFormEditable}
+            className="setup-checkbox-input"
+          />
+          <span className="setup-checkbox-text">Active</span>
+        </label>
+      </div>
+      
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.customerZoneDescription || ''}
+          onChange={e => handleInputChange('customerZoneDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// COMPLIANCE MSG SETUP MODAL CONTENT
+// ========================================
+function ComplianceMsgSetupModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Position Dropdown */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Position</label>
+        <select
+          value={formData.compliancePosition || ''}
+          onChange={e => handleInputChange('compliancePosition', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+        >
+          <option value="">Select Position</option>
+          <option value="Manager">Manager</option>
+          <option value="Supervisor">Supervisor</option>
+          <option value="Officer">Officer</option>
+          <option value="Analyst">Analyst</option>
+          <option value="Coordinator">Coordinator</option>
+          <option value="Specialist">Specialist</option>
+        </select>
+      </div>
+      
+      {/* User Dropdown */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">User</label>
+        <select
+          value={formData.complianceUser || ''}
+          onChange={e => handleInputChange('complianceUser', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+        >
+          <option value="">Select User</option>
+          <option value="John Smith">John Smith</option>
+          <option value="Sarah Johnson">Sarah Johnson</option>
+          <option value="Michael Brown">Michael Brown</option>
+          <option value="Emily Davis">Emily Davis</option>
+          <option value="David Wilson">David Wilson</option>
+          <option value="Lisa Anderson">Lisa Anderson</option>
+          <option value="Robert Taylor">Robert Taylor</option>
+          <option value="Jennifer Martinez">Jennifer Martinez</option>
+        </select>
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// TITLE MODAL CONTENT
+// ========================================
+function TitleModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Title Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Title Code</label>
+        <input
+          type="text"
+          value={formData.titleCode || ''}
+          onChange={e => handleInputChange('titleCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter title code"
+        />
+      </div>
+      
+      {/* Active Checkbox */}
+      <div className="setup-input-group">
+        <label className="setup-checkbox-label">
+          <label className="setup-checkbox-label">
+            <input
+              type="checkbox"
+              checked={formData.titleActive || false}
+              onChange={e => handleInputChange('titleActive', e.target.checked)}
+              disabled={!isFormEditable}
+              className="setup-checkbox-input"
+            />
+            <span className="setup-checkbox-text">Active</span>
+          </label>
+        </label>
+      </div>
+      
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+                  <textarea
+            value={formData.titleDescription || ''}
+            onChange={e => handleInputChange('titleDescription', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter description"
+            rows={3}
+            style={{ resize: 'vertical', minHeight: '80px' }}
+          />
+      </div>
+    </>
   );
 }
 

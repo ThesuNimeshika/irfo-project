@@ -44,7 +44,6 @@ function Home() {
   // Pie chart state
   const [pieType, setPieType] = useState<'unit' | 'market'>('unit');
   const [pieData, setPieData] = useState<PieEntry[]>(defaultPieData);
-  const [tableTotalCount, setTableTotalCount] = useState(0);
   // Toggle tooltip state
   const [showToggleTooltip, setShowToggleTooltip] = useState(false);
 
@@ -138,13 +137,17 @@ function Home() {
     fetchPieOnly(selectedDate, pieType);
   }, [pieType]);
 
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 900 : false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+  const [isTablet, setIsTablet] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 && window.innerWidth <= 1024 : false);
 
-  // Update isMobile on resize
+  // Update responsive states on resize
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 900);
+      const width = window.innerWidth;
+      setIsMobile(width <= 768);
+      setIsTablet(width > 768 && width <= 1024);
     };
+    handleResize(); // Call immediately
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -158,16 +161,19 @@ function Home() {
         marginTop: 0, 
         paddingTop: 0, 
         display: 'flex', 
-        flexDirection: 'row', 
+        flexDirection: isMobile ? 'column' : 'row', 
         height: '100vh', 
         minHeight: 'unset', 
         overflow: 'hidden',
         background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
         marginBottom: 0
       }}>
-        {/* Sidebar left-aligned, fixed width (120px) on desktop only */}
+        {/* Sidebar left-aligned, fixed width on desktop only */}
         {!isMobile && (
-          <div className="home-sidebar-container">
+          <div className="home-sidebar-container" style={{
+            width: isTablet ? '100px' : '120px',
+            flexShrink: 0
+          }}>
             <Sidebar />
           </div>
         )}
@@ -181,45 +187,66 @@ function Home() {
           overflow: 'hidden',
           background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
           marginBottom: 0,
-          paddingTop: '50px'
+          paddingTop: isMobile ? '60px' : isTablet ? '55px' : '50px',
+          paddingLeft: '0px',
+          paddingRight: '0px'
         }}>
           {/* Unified magical layout card */}
           <div className="home-card magical-bg animated-bg dashboard-main-card" style={{ 
-            flex: 0.8, 
+            flex: isMobile ? '1' : '0.8', 
             minHeight: 0, 
             marginBottom: 0,
             background: 'transparent',
             boxShadow: 'none',
             border: 'none',
-            height: '70vh'
+            height: isMobile ? 'auto' : '70vh',
+            width: '100%'
           }}>
             {/* Pie chart section */}
-                                      <div className="dashboard-pie-section" style={{ paddingTop: '35px', paddingBottom: '20px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingLeft: '100px' }}>
-                {/* Legend right - only show if fund names are short */}
-                {pieData.some(entry => entry.name.length <= 15) && (
-              <div className="dashboard-pie-legend" style={{ 
-                     maxHeight: '190px', 
-                overflowY: 'auto',
-                     paddingLeft: '18px',
-                     paddingTop: '0px',
-                     width: '250px',
-                     display: 'flex',
-                     flexDirection: 'column',
-                     alignItems: 'flex-start',
-                     justifyContent: 'flex-start',
-                     textAlign: 'left'
-              }}>
+            <div className="dashboard-pie-section" style={{ 
+              paddingTop: isMobile ? '20px' : isTablet ? '25px' : '35px', 
+              paddingBottom: '20px', 
+              position: 'relative', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              width: '100%',
+              paddingLeft: isMobile ? '10px' : isTablet ? '15px' : '20px',
+              paddingRight: isMobile ? '10px' : isTablet ? '15px' : '20px',
+              flexDirection: isMobile ? 'column' : 'row'
+            }}>
+              {/* Legend right - only show if fund names are short */}
+              {pieData.some(entry => entry.name.length <= 15) && (
+                <div className="dashboard-pie-legend" style={{ 
+                  maxHeight: isMobile ? '120px' : isTablet ? '170px' : '190px', 
+                  overflowY: 'auto',
+                  paddingLeft: isMobile ? '20px' : isTablet ? '35px' : '38px',
+                  paddingTop: '0px',
+                  width: isMobile ? '100%' : isTablet ? '220px' : '250px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  marginBottom: isMobile ? '10px' : '0'
+                }}>
                 {pieData.map((entry) => (
-                      <div key={entry.name} className="dashboard-pie-legend-row" style={{ textAlign: 'left', marginBottom: '8px', width: '100%', display: 'flex', alignItems: 'center' }}>
-                        <span className="dashboard-pie-legend-color" style={{ background: entry.color, display: 'inline-block', width: '12px', height: '12px', borderRadius: '2px', flexShrink: 0, marginRight: '8px' }}></span>
-                                                 <span className="dashboard-pie-legend-label" style={{ fontSize: '14px', wordBreak: 'break-word', maxWidth: '200px' }}>{entry.name}</span>
+                    <div key={entry.name} className="dashboard-pie-legend-row" style={{ textAlign: 'left', marginBottom: '8px', width: '100%', display: 'flex', alignItems: 'center' }}>
+                      <span className="dashboard-pie-legend-color" style={{ background: entry.color, display: 'inline-block', width: '12px', height: '12px', borderRadius: '2px', flexShrink: 0, marginRight: '8px' }}></span>
+                      <span className="dashboard-pie-legend-label" style={{ fontSize: isMobile ? '12px' : '14px', wordBreak: 'break-word', maxWidth: isMobile ? '150px' : '200px' }}>{entry.name}</span>
                   </div>
                 ))}
               </div>
-                )}
+              )}
               {/* Pie chart center */}
-                                 <div className="dashboard-pie-chart" style={{ marginRight: pieData.some(entry => entry.name.length <= 15) ? '20px' : 'auto' }}>
-                 <ResponsiveContainer width="80%" height={220}>
+              <div className="dashboard-pie-chart" style={{ 
+                marginRight: pieData.some(entry => entry.name.length <= 15) ? (isMobile ? '0' : '20px') : 'auto',
+                width: isMobile ? '100%' : 'auto',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <ResponsiveContainer width={isMobile ? "90%" : "80%"} height={isMobile ? 200 : 220}>
                   <PieChart>
                     <Pie
                       data={pieData}
@@ -227,8 +254,8 @@ function Home() {
                       nameKey="name"
                       cx="50%"
                       cy="50%"
-                      outerRadius={110}
-                      innerRadius={60}
+                      outerRadius={isMobile ? 80 : 110}
+                      innerRadius={isMobile ? 40 : 60}
                       isAnimationActive={true}
                       animationDuration={700}
                       key={pieType}
@@ -256,7 +283,7 @@ function Home() {
                           const percent = total ? ((entry.value / total) * 100).toFixed(1) : 0;
                           return (
                             <div className="dashboard-pie-tooltip">
-                              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{entry.name}</div>
+                              <div style={{ fontWeight: 700, fontSize: isMobile ? 14 : 18, marginBottom: 4 }}>{entry.name}</div>
                               <div>Percent: <b>{percent}%</b></div>
                               {pieType === 'unit' ? (
                                 <div>Units: <b>{entry.value.toLocaleString()}</b></div>
@@ -272,310 +299,288 @@ function Home() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-                                                                                               {/* Toggle switch for pie type selection */}
-                                  <div style={{ 
-                     display: 'flex', 
-                     flexDirection: 'column', 
-                     alignItems: 'center', 
-                     gap: '12px',
-                     cursor: 'help',
-                     position: 'relative',
-                                          marginLeft: pieData.some(entry => entry.name.length <= 15) ? '10px' : 'auto',
-                     marginRight: pieData.some(entry => entry.name.length <= 15) ? '0' : 'auto',
-                     paddingRight: '30px'
-                   }}
-                 onMouseEnter={() => setShowToggleTooltip(true)}
-                 onMouseLeave={() => setShowToggleTooltip(false)}
-                 >
-                                       {/* Custom tooltip */}
-                    {showToggleTooltip && createPortal(
-                      <div style={{
-                        position: 'fixed',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        background: 'rgba(0, 0, 0, 0.9)',
-                        color: 'white',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        whiteSpace: 'nowrap',
-                        zIndex: 99999999999,
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                      }}>
-                        You can switch the pie chart data between fund size wise and unit wise from this switch
-                      </div>,
-                      document.body
-                    )}
-                   <div style={{ 
-                     fontSize: '16px', 
-                     fontWeight: '700', 
-                     color: '#166534',
-                     marginBottom: '8px',
-                     textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-                   }}>
-                     View Mode
-                   </div>
-                                   <div style={{
-                    position: 'relative',
-                    width: '180px',
-                    height: '50px',
-                    background: 'linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%)',
-                    borderRadius: '25px',
-                    padding: '4px',
-                    cursor: 'pointer',
-                    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.15)',
+              {/* Toggle switch for pie type selection */}
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                gap: isMobile ? '8px' : '12px',
+                cursor: 'help',
+                position: 'relative',
+                marginLeft: pieData.some(entry => entry.name.length <= 15) ? (isMobile ? '0' : '10px') : 'auto',
+                marginRight: pieData.some(entry => entry.name.length <= 15) ? '0' : 'auto',
+                paddingRight: isMobile ? '10px' : '30px',
+                marginTop: isMobile ? '15px' : '0'
+              }}
+                onMouseEnter={() => setShowToggleTooltip(true)}
+                onMouseLeave={() => setShowToggleTooltip(false)}
+              >
+                {/* Custom tooltip */}
+                {showToggleTooltip && createPortal(
+                  <div style={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    background: 'rgba(0, 0, 0, 0.9)',
+                    color: 'white',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    fontSize: isMobile ? '10px' : '12px',
+                    fontWeight: '500',
+                    whiteSpace: 'nowrap',
+                    zIndex: 99999999999,
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}>
+                    You can switch the pie chart data between fund size wise and unit wise from this switch
+                  </div>,
+                  document.body
+                )}
+                <div style={{ 
+                  fontSize: isMobile ? '14px' : '16px', 
+                  fontWeight: '700', 
+                  color: '#166534',
+                  marginBottom: isMobile ? '4px' : '8px',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                }}>
+                  View Mode
+                </div>
+                <div style={{
+                  position: 'relative',
+                  width: isMobile ? '140px' : '180px',
+                  height: isMobile ? '40px' : '50px',
+                  background: 'linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%)',
+                  borderRadius: isMobile ? '20px' : '25px',
+                  padding: '4px',
+                  cursor: 'pointer',
+                  boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.15)',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  border: '2px solid rgba(34, 197, 94, 0.3)',
+                  overflow: 'hidden'
+                }} onClick={() => setPieType(pieType === 'unit' ? 'market' : 'unit')}>
+                  {/* Background gradient overlay */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%)',
+                    borderRadius: isMobile ? '18px' : '23px',
+                    zIndex: 1
+                  }} />
+                  
+                  {/* Slider with enhanced design */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '4px',
+                    left: pieType === 'unit' ? '4px' : `calc(100% - ${isMobile ? '36px' : '46px'})`,
+                    width: isMobile ? '32px' : '42px',
+                    height: isMobile ? '32px' : '42px',
+                    background: 'linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%)',
+                    borderRadius: isMobile ? '16px' : '21px',
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    border: '2px solid rgba(34, 197, 94, 0.3)',
-                    overflow: 'hidden'
-                  }} onClick={() => setPieType(pieType === 'unit' ? 'market' : 'unit')}>
-                    {/* Background gradient overlay */}
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%)',
-                      borderRadius: '23px',
-                      zIndex: 1
-                    }} />
-                    
-                    {/* Slider with enhanced design */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '4px',
-                      left: pieType === 'unit' ? '4px' : 'calc(100% - 46px)',
-                      width: '42px',
-                      height: '42px',
-                      background: 'linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%)',
-                      borderRadius: '21px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8)',
+                    zIndex: 3,
+                    border: '1px solid rgba(34, 197, 94, 0.2)'
+                  }} />
+                  
+                  {/* Glow effect for active state */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '4px',
+                    left: pieType === 'unit' ? '4px' : `calc(100% - ${isMobile ? '36px' : '46px'})`,
+                    width: isMobile ? '32px' : '42px',
+                    height: isMobile ? '32px' : '42px',
+                    background: 'radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, transparent 70%)',
+                    borderRadius: isMobile ? '16px' : '21px',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    zIndex: 2
+                  }} />
+                  
+                  {/* Labels with enhanced styling */}
+                  <div style={{
+                    position: 'relative',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    height: '100%',
+                    padding: isMobile ? '0 8px' : '0 16px',
+                    zIndex: 4
+                  }}>
+                    <span style={{
+                      fontSize: isMobile ? '12px' : '16px',
+                      fontWeight: '800',
+                      color: pieType === 'unit' ? '#166534' : '#64748b',
                       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8)',
-                      zIndex: 3,
-                      border: '1px solid rgba(34, 197, 94, 0.2)'
-                    }} />
-                    
-                    {/* Glow effect for active state */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '4px',
-                      left: pieType === 'unit' ? '4px' : 'calc(100% - 46px)',
-                      width: '42px',
-                      height: '42px',
-                      background: 'radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, transparent 70%)',
-                      borderRadius: '21px',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                      zIndex: 2
-                    }} />
-                    
-                    {/* Labels with enhanced styling */}
-                    <div style={{
-                      position: 'relative',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      height: '100%',
-                      padding: '0 16px',
-                      zIndex: 4
+                      textShadow: pieType === 'unit' ? '0 1px 3px rgba(0, 0, 0, 0.2)' : 'none',
+                      filter: pieType === 'unit' ? 'drop-shadow(0 1px 2px rgba(34, 197, 94, 0.3))' : 'none',
+                      transform: pieType === 'unit' ? 'scale(1.05)' : 'scale(1)'
                     }}>
-                      <span style={{
-                        fontSize: '16px',
-                        fontWeight: '800',
-                        color: pieType === 'unit' ? '#166534' : '#64748b',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                        textShadow: pieType === 'unit' ? '0 1px 3px rgba(0, 0, 0, 0.2)' : 'none',
-                        filter: pieType === 'unit' ? 'drop-shadow(0 1px 2px rgba(34, 197, 94, 0.3))' : 'none',
-                        transform: pieType === 'unit' ? 'scale(1.05)' : 'scale(1)'
-                      }}>
-                        Unit Wise
-                      </span>
-                      <span style={{
-                        fontSize: '16px',
-                        fontWeight: '800',
-                        color: pieType === 'market' ? '#166534' : '#64748b',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                        textShadow: pieType === 'market' ? '0 1px 3px rgba(0, 0, 0, 0.2)' : 'none',
-                        filter: pieType === 'market' ? 'drop-shadow(0 1px 2px rgba(34, 197, 94, 0.3))' : 'none',
-                        transform: pieType === 'market' ? 'scale(1.05)' : 'scale(1)'
-                      }}>
+                      Unit Wise
+                    </span>
+                    <span style={{
+                      fontSize: isMobile ? '12px' : '16px',
+                      fontWeight: '800',
+                      color: pieType === 'market' ? '#166534' : '#64748b',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      textShadow: pieType === 'market' ? '0 1px 3px rgba(0, 0, 0, 0.2)' : 'none',
+                      filter: pieType === 'market' ? 'drop-shadow(0 1px 2px rgba(34, 197, 94, 0.3))' : 'none',
+                      transform: pieType === 'market' ? 'scale(1.05)' : 'scale(1)'
+                    }}>
                   Fund Size
-                      </span>
-                    </div>
+                    </span>
                   </div>
+                </div>
               </div>
             </div>
-                           {/* Spacing between cards */}
-              <div style={{ height: '60px' }}></div>
+            {/* Spacing between cards */}
+            <div style={{ height: isMobile ? '20px' : '60px' }}></div>
             {/* Date section */}
-                             <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '16px',
-                padding: '20px',
-                background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
-                borderRadius: '20px',
-                backdropFilter: 'blur(15px)',
-                border: '2px solid rgba(99, 102, 241, 0.2)',
-                boxShadow: '0 8px 32px rgba(99, 102, 241, 0.15)',
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: isMobile ? '8px' : '16px',
+              padding: isMobile ? '12px' : '20px',
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)',
+              borderRadius: isMobile ? '12px' : '20px',
+              backdropFilter: 'blur(15px)',
+              border: '2px solid rgba(99, 102, 241, 0.2)',
+              boxShadow: '0 8px 32px rgba(99, 102, 241, 0.15)',
+              position: 'relative',
+              overflow: 'hidden',
+              width: '100%',
+              maxWidth: isMobile ? '280px' : '400px',
+              margin: '0 auto'
+            }}>
+              {/* Background glow effect */}
+              <div style={{
+                position: 'absolute',
+                top: '-50%',
+                left: '-50%',
+                width: '200%',
+                height: '200%',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
+                animation: 'pulse 3s ease-in-out infinite'
+              }} />
+              
+              {/* Date label */}
+              <div style={{
+                fontSize: isMobile ? '16px' : '18px',
+                fontWeight: '800',
+                color: '#000000',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                marginBottom: '8px',
                 position: 'relative',
-                overflow: 'hidden',
-                minWidth: '300px'
+                zIndex: 2
               }}>
-               {/* Background glow effect */}
-               <div style={{
-                 position: 'absolute',
-                 top: '-50%',
-                 left: '-50%',
-                 width: '200%',
-                 height: '200%',
-                 background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
-                 animation: 'pulse 3s ease-in-out infinite'
-               }} />
-               
-                               {/* Date label */}
-                <div style={{
-                  fontSize: '18px',
-                  fontWeight: '800',
-                  color: '#000000',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                  marginBottom: '8px',
-                  position: 'relative',
-                  zIndex: 2
-                }}>
-                  📅 Date Selection
-                </div>
-               
-                               {/* Enhanced date input */}
-                <div style={{
-                  position: 'relative',
-                  zIndex: 2
-                }}>
+                📅 Date Selection
+              </div>
+              
+              {/* Enhanced date input */}
+              <div style={{
+                position: 'relative',
+                zIndex: 2
+              }}>
               <input
                 type="date"
                 value={selectedDate}
                 onChange={e => setSelectedDate(e.target.value)}
                 max={todayStr}
-                    style={{
-                      padding: '12px 16px',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                      border: '2px solid rgba(99, 102, 241, 0.3)',
-                      borderRadius: '12px',
-                      color: '#1e293b',
-                      cursor: 'pointer',
-                      boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(99, 102, 241, 0.2)',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      outline: 'none',
-                      minWidth: '160px'
-                    }}
-                   onFocus={(e) => {
-                     e.target.style.border = '2px solid #4f46e5';
-                     e.target.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(99, 102, 241, 0.3)';
-                   }}
-                   onBlur={(e) => {
-                     e.target.style.border = '2px solid rgba(99, 102, 241, 0.3)';
-                     e.target.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(99, 102, 241, 0.2)';
-                   }}
-                 />
-               </div>
-               
-                               {/* Date display */}
-                                                   <div style={{
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    color: '#000000',
-                    textAlign: 'center',
-                    padding: '8px 16px',
-                    background: 'rgba(255, 255, 255, 0.3)',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
-                    boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
-                    position: 'relative',
-                    zIndex: 2
-                  }}>
-                                     {new Date(selectedDate).toLocaleDateString(undefined, { 
-                     year: 'numeric', 
-                     month: 'long', 
-                     day: 'numeric' 
-                   })}
+                  style={{
+                    padding: isMobile ? '10px 12px' : '12px 16px',
+                    fontSize: isMobile ? '12px' : '14px',
+                    fontWeight: '600',
+                    background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+                    border: '2px solid rgba(99, 102, 241, 0.3)',
+                    borderRadius: isMobile ? '10px' : '12px',
+                    color: '#1e293b',
+                    cursor: 'pointer',
+                    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(99, 102, 241, 0.2)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    outline: 'none',
+                    minWidth: isMobile ? '140px' : '160px'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.border = '2px solid #4f46e5';
+                    e.target.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(99, 102, 241, 0.3)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.border = '2px solid rgba(99, 102, 241, 0.3)';
+                    e.target.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(99, 102, 241, 0.2)';
+                  }}
+                />
               </div>
-               
-               {/* Decorative elements */}
-               <div style={{
-                 position: 'absolute',
-                 top: '10px',
-                 right: '10px',
-                 width: '20px',
-                 height: '20px',
-                 background: 'linear-gradient(45deg, #4f46e5, #8b5cf6)',
-                 borderRadius: '50%',
-                 opacity: 0.6
-               }} />
-               <div style={{
-                 position: 'absolute',
-                 bottom: '10px',
-                 left: '10px',
-                 width: '15px',
-                 height: '15px',
-                 background: 'linear-gradient(45deg, #8b5cf6, #4f46e5)',
-                 borderRadius: '50%',
-                 opacity: 0.4
-               }} />
+              
+              {/* Date display */}
+              <div style={{
+                fontSize: isMobile ? '14px' : '16px',
+                fontWeight: '700',
+                color: '#000000',
+                textAlign: 'center',
+                padding: isMobile ? '6px 12px' : '8px 16px',
+                background: 'rgba(255, 255, 255, 0.3)',
+                borderRadius: '8px',
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
+                position: 'relative',
+                zIndex: 2
+              }}>
+                {new Date(selectedDate).toLocaleDateString(undefined, { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </div>
+              
+              {/* Decorative elements */}
+              <div style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                width: '20px',
+                height: '20px',
+                background: 'linear-gradient(45deg, #4f46e5, #8b5cf6)',
+                borderRadius: '50%',
+                opacity: 0.6
+              }} />
+              <div style={{
+                position: 'absolute',
+                bottom: '10px',
+                left: '10px',
+                width: '15px',
+                height: '15px',
+                background: 'linear-gradient(45deg, #8b5cf6, #4f46e5)',
+                borderRadius: '50%',
+                opacity: 0.4
+              }} />
             </div>
           </div>
           {/* DataTable Card */}
           <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ 
-            flex: 1.2, 
+            flex: isMobile ? '0.8' : '1.2', 
             minHeight: 0, 
             marginTop: 4, 
             marginBottom: 0, 
             display: 'flex', 
             flexDirection: 'column', 
             justifyContent: 'stretch', 
-            height: '30vh', 
+            height: isMobile ? 'auto' : '30vh', 
             borderBottomLeftRadius: 0, 
             borderBottomRightRadius: 0, 
-            paddingTop: 4 
+            paddingTop: 4,
+            width: '100%',
+            paddingLeft: '0px',
+            paddingRight: '0px'
           }}>
             {/* Animated background elements */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl animate-pulse"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 rounded-full blur-2xl animate-pulse delay-1000"></div>
             </div>
-            <div className="relative z-10" style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 0, marginTop: 0 }}>
-              <div className="flex items-center justify-between" style={{ marginBottom: 0 }}>
-                <div className="flex items-center space-x-2">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-800" style={{ fontSize: 12 }}>
-                    {tableTotalCount.toLocaleString()} Records
-                  </span>
-                </div>
-              </div>
-              <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden" style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: 0, paddingTop: 0, height: '100%' }}>
-                <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-                  <DataTable onTotalCountChange={setTableTotalCount} />
-                </div>
-              </div>
-              <span style={{ fontSize: 12, marginTop: 4 }}>Showing {Math.min(2, tableTotalCount)} of {tableTotalCount} results</span>
-              <div className="flex items-center space-x-2">
-                <button
-                  className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
-                  disabled={tableTotalCount <= 2}
-                >
-                  Previous
-                </button>
-                <button
-                  className="px-3 py-1 text-xs font-medium text-gray-500 bg-white rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
-                  disabled={tableTotalCount <= 2}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
+            <DataTable />
           </div>
         </div>
       </div>

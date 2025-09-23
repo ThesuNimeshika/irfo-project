@@ -83,6 +83,20 @@ const sampleData: FundData[] = [
 export default function DataTable({ onTotalCountChange, onVisibleCountChange }: { onTotalCountChange?: (count: number) => void, onVisibleCountChange?: (count: number) => void } = {}) {
   const [pageSize, setPageSize] = useState(3);
   const [search, setSearch] = useState("");
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+  const [isTablet, setIsTablet] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 && window.innerWidth <= 1024 : false);
+
+  // Update responsive states on resize
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 768);
+      setIsTablet(width > 768 && width <= 1024);
+    };
+    handleResize(); // Call immediately
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const columns = useMemo(() => [
     columnHelper.accessor("fundCode", {
       header: "Fund Code",
@@ -169,9 +183,15 @@ export default function DataTable({ onTotalCountChange, onVisibleCountChange }: 
   })
 
   return (
-    <div className="overflow-hidden" style={{ padding: '0 12px 24px 12px', minWidth: 0, boxSizing: 'border-box' }}>
+    <div className="overflow-hidden" style={{ 
+      padding: isMobile ? '0 20px 24px 30px' : isTablet ? '0 40px 24px 60px' : '0 60px 24px 80px', 
+      minWidth: 0, 
+      boxSizing: 'border-box', 
+      width: '100%', 
+      height: '100%' 
+    }}>
       {/* Top bar: page size switcher and search */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, padding: '0 2px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, padding: '0 0px' }}>
         <div>
           <label htmlFor="pageSize" style={{ fontSize: 14, marginRight: 8 }}>Show</label>
           <select
@@ -196,7 +216,7 @@ export default function DataTable({ onTotalCountChange, onVisibleCountChange }: 
           />
         </div>
       </div>
-      <div style={{ padding: 0, minWidth: 0, width: '100%', maxWidth: '100%', margin: '0 auto', overflowY: 'auto', overflowX: 'hidden', height: 160 }}>
+      <div style={{ padding: 0, minWidth: 0, width: '100%', maxWidth: 'none', margin: '0', overflowY: 'auto', overflowX: 'auto', height: 160 }}>
         <table className="min-w-full divide-y divide-gray-200" style={{ width: '100%', tableLayout: 'auto', background: 'white' }}>
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (

@@ -241,8 +241,8 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
          background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
          borderRadius: '20px',
          boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-         width: '90vw',
-         maxWidth: '500px',
+         width: '95vw',
+         maxWidth: '1200px',
          maxHeight: '90vh',
          overflow: 'hidden',
          position: 'relative'
@@ -302,13 +302,27 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           </button>
         </div>
 
-        {/* Calendar Navigation */}
+        {/* Main Content - Two Column Layout */}
         <div style={{
+          display: 'flex',
+          height: 'calc(90vh - 140px)',
+          overflow: 'hidden'
+        }}>
+          {/* Left Column - Calendar */}
+          <div style={{
+            flex: '1',
           padding: '20px',
+            borderRight: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            {/* Calendar Navigation */}
+            <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'rgba(255,255,255,0.05)'
+              marginBottom: '20px',
+              background: 'rgba(255,255,255,0.05)',
+              padding: '15px',
+              borderRadius: '10px'
         }}>
                      <button
              onClick={() => navigateMonth('prev')}
@@ -355,7 +369,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
         </div>
 
         {/* Calendar Grid */}
-        <div style={{ padding: '0 20px 20px' }}>
+            <div>
           {/* Day Headers */}
           <div style={{
             display: 'grid',
@@ -453,22 +467,64 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           </div>
         </div>
 
-        {/* Holiday/Weekend Management */}
+            {/* Legend */}
         <div style={{
-          padding: '15px 20px',
+              marginTop: '20px',
+              padding: '15px',
           background: 'rgba(255,255,255,0.05)',
-          borderTop: '1px solid rgba(255,255,255,0.2)'
+              borderRadius: '10px',
+              display: 'flex',
+              justifyContent: 'space-around',
+                         fontSize: '12px',
+               color: '#1976d2'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.3)'
+                }}></div>
+                <span>Today</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,193,7,0.3)'
+                }}></div>
+                <span>Weekend</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,107,107,0.8)'
+                }}></div>
+                <span>Holiday</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Holiday & Weekend Management */}
+          <div style={{
+            width: '400px',
+            padding: '20px',
+            background: 'rgba(255,255,255,0.05)',
+            overflowY: 'auto'
         }}>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '15px'
+              marginBottom: '20px'
           }}>
                          <h4 style={{ 
                color: '#1565c0', 
                margin: 0, 
-               fontSize: '16px', 
+                 fontSize: '18px', 
                fontWeight: 'bold' 
              }}>
                Holiday & Weekend Management
@@ -476,14 +532,15 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
             <button
               onClick={() => setShowAddForm(!showAddForm)}
               style={{
-                padding: '6px 12px',
+                   padding: '8px 16px',
                 background: 'rgba(255,255,255,0.2)',
                 border: 'none',
-                borderRadius: '6px',
-                color: 'white',
+                   borderRadius: '8px',
+                 color: '#000000',
                 cursor: 'pointer',
-                fontSize: '12px',
-                transition: 'all 0.2s ease'
+                   fontSize: '14px',
+                   transition: 'all 0.2s ease',
+                   fontWeight: 'bold'
               }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
@@ -496,22 +553,23 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           {showAddForm && (
             <div style={{
               background: 'rgba(255,255,255,0.1)',
-              borderRadius: '8px',
-              padding: '15px',
-              marginBottom: '15px'
+                borderRadius: '12px',
+                padding: '20px',
+                marginBottom: '20px',
+                border: '1px solid rgba(255,255,255,0.2)'
             }}>
               <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr auto',
-                gap: '10px',
-                alignItems: 'end'
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '15px'
               }}>
                 <div>
                   <label style={{ 
-                    color: 'rgba(255,255,255,0.9)', 
-                    fontSize: '12px', 
-                    marginBottom: '4px',
-                    display: 'block'
+                     color: '#000000', 
+                       fontSize: '14px', 
+                       marginBottom: '8px',
+                       display: 'block',
+                       fontWeight: 'bold'
                   }}>
                     Date
                   </label>
@@ -521,21 +579,23 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                     onChange={(e) => setNewEntry(prev => ({ ...prev, date: e.target.value }))}
                     style={{
                       width: '100%',
-                      padding: '6px 8px',
+                         padding: '10px 12px',
                       border: '1px solid rgba(255,255,255,0.3)',
-                      borderRadius: '4px',
-                      background: 'rgba(255,255,255,0.1)',
-                      color: 'white',
-                      fontSize: '12px'
+                         borderRadius: '8px',
+                       background: 'rgba(255,255,255,0.9)',
+                       color: '#000000',
+                         fontSize: '14px',
+                         boxSizing: 'border-box'
                     }}
                   />
                 </div>
                 <div>
                   <label style={{ 
-                    color: 'rgba(255,255,255,0.9)', 
-                    fontSize: '12px', 
-                    marginBottom: '4px',
-                    display: 'block'
+                     color: '#000000', 
+                       fontSize: '14px', 
+                       marginBottom: '8px',
+                       display: 'block',
+                       fontWeight: 'bold'
                   }}>
                     Description
                   </label>
@@ -546,21 +606,23 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                     placeholder="Enter description"
                     style={{
                       width: '100%',
-                      padding: '6px 8px',
+                         padding: '10px 12px',
                       border: '1px solid rgba(255,255,255,0.3)',
-                      borderRadius: '4px',
-                      background: 'rgba(255,255,255,0.1)',
-                      color: 'white',
-                      fontSize: '12px'
+                         borderRadius: '8px',
+                       background: 'rgba(255,255,255,0.9)',
+                       color: '#000000',
+                         fontSize: '14px',
+                         boxSizing: 'border-box'
                     }}
                   />
                 </div>
                 <div>
                   <label style={{ 
-                    color: 'rgba(255,255,255,0.9)', 
-                    fontSize: '12px', 
-                    marginBottom: '4px',
-                    display: 'block'
+                     color: '#000000', 
+                       fontSize: '14px', 
+                       marginBottom: '8px',
+                       display: 'block',
+                       fontWeight: 'bold'
                   }}>
                     Type
                   </label>
@@ -569,12 +631,13 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                     onChange={(e) => setNewEntry(prev => ({ ...prev, type: e.target.value as 'holiday' | 'weekend' }))}
                     style={{
                       width: '100%',
-                      padding: '6px 8px',
+                         padding: '10px 12px',
                       border: '1px solid rgba(255,255,255,0.3)',
-                      borderRadius: '4px',
-                      background: 'rgba(255,255,255,0.1)',
-                      color: 'white',
-                      fontSize: '12px'
+                         borderRadius: '8px',
+                       background: 'rgba(255,255,255,0.9)',
+                       color: '#000000',
+                         fontSize: '14px',
+                         boxSizing: 'border-box'
                     }}
                   >
                     <option value="holiday">Holiday</option>
@@ -584,19 +647,20 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                 <button
                   onClick={addHolidayWeekend}
                   style={{
-                    padding: '6px 12px',
+                       padding: '12px 20px',
                     background: 'rgba(76, 175, 80, 0.8)',
                     border: 'none',
-                    borderRadius: '4px',
-                    color: 'white',
+                       borderRadius: '8px',
+                     color: '#000000',
                     cursor: 'pointer',
-                    fontSize: '12px',
+                       fontSize: '14px',
+                       fontWeight: 'bold',
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(76, 175, 80, 1)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'rgba(76, 175, 80, 0.8)'}
                 >
-                  Add
+                    Add Entry
                 </button>
               </div>
             </div>
@@ -604,21 +668,22 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
 
                      {/* Current Year Holidays Section */}
            <div style={{
-             marginTop: '15px',
-             padding: '10px',
+              marginBottom: '20px',
+              padding: '15px',
              background: 'rgba(255,255,255,0.05)',
-             borderRadius: '6px'
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.1)'
            }}>
                             <h5 style={{ 
                  color: '#1565c0', 
-                 margin: '0 0 10px 0', 
-                 fontSize: '14px', 
+                margin: '0 0 15px 0', 
+                fontSize: '16px', 
                  fontWeight: 'bold' 
                }}>
                  {new Date().getFullYear()} Holidays
                </h5>
              <div style={{
-               maxHeight: '100px',
+                maxHeight: '120px',
                overflowY: 'auto'
              }}>
                {(() => {
@@ -632,8 +697,10 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                      <div style={{ 
                        color: 'rgba(255,255,255,0.6)', 
                        textAlign: 'center', 
-                       fontSize: '11px',
-                       padding: '10px'
+                        fontSize: '12px',
+                        padding: '20px',
+                        background: 'rgba(255,255,255,0.05)',
+                        borderRadius: '8px'
                      }}>
                        No holidays for {currentYear} yet
                      </div>
@@ -645,56 +712,81 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                      display: 'flex',
                      justifyContent: 'space-between',
                      alignItems: 'center',
-                     padding: '6px',
-                     marginBottom: '3px',
+                      padding: '10px',
+                      marginBottom: '8px',
                      background: 'rgba(255,107,107,0.2)',
-                     borderRadius: '4px',
+                      borderRadius: '8px',
                      border: '1px solid rgba(255,107,107,0.4)'
                    }}>
                      <div style={{ flex: 1 }}>
                        <div style={{ 
                          color: 'white', 
-                         fontSize: '11px', 
+                          fontSize: '13px', 
                          fontWeight: 'bold' 
                        }}>
                          {item.description}
                        </div>
                        <div style={{ 
                          color: 'rgba(255,255,255,0.7)', 
-                         fontSize: '9px' 
+                          fontSize: '11px' 
                        }}>
                          {item.date}
                        </div>
                      </div>
+                      <button
+                        onClick={() => removeHolidayWeekend(item.id)}
+                        style={{
+                          background: 'rgba(255,255,255,0.2)',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '24px',
+                          height: '24px',
+                          color: 'white',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                      >
+                        ×
+                      </button>
                    </div>
                  ));
                })()}
              </div>
            </div>
 
-           {/* Existing List */}
+            {/* All Entries Section */}
            <div style={{
-             marginTop: '15px',
-             maxHeight: '120px',
-             overflowY: 'auto',
+              padding: '15px',
              background: 'rgba(255,255,255,0.05)',
-             borderRadius: '6px',
-             padding: '10px'
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.1)'
            }}>
                             <h5 style={{ 
                  color: '#1565c0', 
-                 margin: '0 0 10px 0', 
-                 fontSize: '14px', 
+                margin: '0 0 15px 0', 
+                fontSize: '16px', 
                  fontWeight: 'bold' 
                }}>
                  All Entries
                </h5>
+              <div style={{
+                maxHeight: '200px',
+                overflowY: 'auto'
+              }}>
              {holidayWeekendList.length === 0 ? (
                <div style={{ 
                  color: 'rgba(255,255,255,0.6)', 
                  textAlign: 'center', 
                  fontSize: '12px',
-                 padding: '20px'
+                    padding: '30px',
+                    background: 'rgba(255,255,255,0.05)',
+                    borderRadius: '8px'
                }}>
                  No holidays/weekends added yet
                </div>
@@ -704,12 +796,12 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                    display: 'flex',
                    justifyContent: 'space-between',
                    alignItems: 'center',
-                   padding: '8px',
-                   marginBottom: '5px',
+                      padding: '12px',
+                      marginBottom: '8px',
                    background: item.type === 'holiday' 
                      ? 'rgba(255,107,107,0.2)' 
                      : 'rgba(255,193,7,0.2)',
-                   borderRadius: '4px',
+                      borderRadius: '8px',
                    border: `1px solid ${item.type === 'holiday' 
                      ? 'rgba(255,107,107,0.4)' 
                      : 'rgba(255,193,7,0.4)'}`
@@ -717,14 +809,14 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                    <div style={{ flex: 1 }}>
                      <div style={{ 
                        color: 'white', 
-                       fontSize: '12px', 
+                          fontSize: '13px', 
                        fontWeight: 'bold' 
                      }}>
                        {item.description}
                      </div>
                      <div style={{ 
                        color: 'rgba(255,255,255,0.7)', 
-                       fontSize: '10px' 
+                          fontSize: '11px' 
                      }}>
                        {item.date} • {item.type}
                      </div>
@@ -735,11 +827,11 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
                        background: 'rgba(255,255,255,0.2)',
                        border: 'none',
                        borderRadius: '50%',
-                       width: '20px',
-                       height: '20px',
+                          width: '24px',
+                          height: '24px',
                        color: 'white',
                        cursor: 'pointer',
-                       fontSize: '12px',
+                          fontSize: '14px',
                        display: 'flex',
                        alignItems: 'center',
                        justifyContent: 'center',
@@ -755,43 +847,6 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
              )}
            </div>
         </div>
-
-        {/* Legend */}
-        <div style={{
-          padding: '15px 20px',
-          background: 'rgba(255,255,255,0.05)',
-          borderTop: '1px solid rgba(255,255,255,0.2)',
-          display: 'flex',
-          justifyContent: 'space-around',
-                     fontSize: '12px',
-           color: '#1976d2'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.3)'
-            }}></div>
-            <span>Today</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              background: 'rgba(255,193,7,0.3)'
-            }}></div>
-            <span>Weekend</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              background: 'rgba(255,107,107,0.8)'
-            }}></div>
-            <span>Holiday</span>
           </div>
         </div>
 
@@ -800,17 +855,20 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           padding: '15px 20px',
           display: 'flex',
           gap: '10px',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          background: 'rgba(255,255,255,0.05)',
+          borderTop: '1px solid rgba(255,255,255,0.2)'
         }}>
           <button
             style={{
-              padding: '8px 16px',
+               padding: '10px 20px',
               background: 'rgba(255,255,255,0.2)',
               border: 'none',
               borderRadius: '8px',
-              color: 'white',
+               color: '#000000',
               cursor: 'pointer',
               fontSize: '14px',
+               fontWeight: 'bold',
               transition: 'all 0.2s ease'
             }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
@@ -821,13 +879,14 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           <button
             onClick={onClose}
             style={{
-              padding: '8px 16px',
+               padding: '10px 20px',
               background: 'rgba(255,255,255,0.1)',
               border: 'none',
               borderRadius: '8px',
-              color: 'white',
+               color: '#000000',
               cursor: 'pointer',
               fontSize: '14px',
+               fontWeight: 'bold',
               transition: 'all 0.2s ease'
             }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}

@@ -1,4 +1,4 @@
-import logo from '../assets/img/logo.jpg';
+import logo from '../assets/img/logo.png';
 import React from 'react'; // Added missing import for React
 import { ImExit } from 'react-icons/im';
 

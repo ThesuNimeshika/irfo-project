@@ -4220,6 +4220,7 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                 onChange={e => handleInputChange('agentCommissionType', e.target.value)}
                 disabled={!isFormEditable}
                 className="setup-dropdown-select"
+                style={{ color: '#000000' }}
               >
                 <option value="">Select Commission Type</option>
                 <option value="Flat Rate">Flat Rate</option>
@@ -4236,6 +4237,7 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                 onChange={e => handleInputChange('agentCommissionLevel', e.target.value)}
                 disabled={!isFormEditable}
                 className="setup-dropdown-select"
+                style={{ color: '#000000' }}
               >
                 <option value="">Select Commission Level</option>
                 <option value="Entry Level">Entry Level</option>
@@ -4253,6 +4255,7 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                 onChange={e => handleInputChange('agentCommissionFund', e.target.value)}
                 disabled={!isFormEditable}
                 className="setup-dropdown-select"
+                style={{ color: '#000000' }}
               >
                 <option value="">Select Fund</option>
                 <option value="Growth Fund">Growth Fund</option>
@@ -4316,23 +4319,25 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
             {/* Period From/To */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="setup-input-group">
-                <label className="setup-input-label">Period From</label>
+                <label className="setup-input-label" style={{ color: '#000000' }}>Period From</label>
                 <input
                   type="date"
                   value={formData.agentCommissionPeriodFrom ? formData.agentCommissionPeriodFrom.toISOString().split('T')[0] : ''}
                   onChange={e => handleDateChange('agentCommissionPeriodFrom', e.target.value ? new Date(e.target.value) : null)}
                   disabled={!isFormEditable}
                   className="setup-input-field"
+                  style={{ color: '#000000' }}
                 />
               </div>
               <div className="setup-input-group">
-                <label className="setup-input-label">Period To</label>
+                <label className="setup-input-label" style={{ color: '#000000' }}>Period To</label>
                 <input
                   type="date"
                   value={formData.agentCommissionPeriodTo ? formData.agentCommissionPeriodTo.toISOString().split('T')[0] : ''}
                   onChange={e => handleDateChange('agentCommissionPeriodTo', e.target.value ? new Date(e.target.value) : null)}
                   disabled={!isFormEditable}
                   className="setup-input-field"
+                  style={{ color: '#000000' }}
                 />
               </div>
             </div>
@@ -4340,7 +4345,7 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
             {/* Amount From/To */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="setup-input-group">
-                <label className="setup-input-label">Amount From</label>
+                <label className="setup-input-label" style={{ color: '#000000' }}>Amount From</label>
                 <input
                   type="text"
                   value={formData.agentCommissionAmountFrom || ''}
@@ -4348,10 +4353,11 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                   disabled={!isFormEditable}
                   className="setup-input-field"
                   placeholder="Enter amount from"
+                  style={{ color: '#000000' }}
                 />
               </div>
               <div className="setup-input-group">
-                <label className="setup-input-label">Amount To</label>
+                <label className="setup-input-label" style={{ color: '#000000' }}>Amount To</label>
                 <input
                   type="text"
                   value={formData.agentCommissionAmountTo || ''}
@@ -4359,13 +4365,14 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                   disabled={!isFormEditable}
                   className="setup-input-field"
                   placeholder="Enter amount to"
+                  style={{ color: '#000000' }}
                 />
               </div>
             </div>
 
             {/* Commission Rate */}
             <div className="setup-input-group">
-              <label className="setup-input-label">Commission Rate</label>
+              <label className="setup-input-label" style={{ color: '#000000' }}>Commission Rate</label>
               <input
                 type="text"
                 value={formData.agentCommissionRate || ''}
@@ -4373,6 +4380,7 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                 disabled={!isFormEditable}
                 className="setup-input-field"
                 placeholder="Enter commission rate (e.g., 2.5%)"
+                style={{ color: '#000000' }}
               />
             </div>
           </div>

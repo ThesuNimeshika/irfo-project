@@ -4326,7 +4326,11 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                   onChange={e => handleDateChange('agentCommissionPeriodFrom', e.target.value ? new Date(e.target.value) : null)}
                   disabled={!isFormEditable}
                   className="setup-input-field"
-                  style={{ color: '#000000' }}
+                  style={{ color: '#000000', cursor: 'pointer' }}
+                  onClick={(e) => {
+                    if (!isFormEditable) return;
+                    e.currentTarget.showPicker?.();
+                  }}
                 />
               </div>
               <div className="setup-input-group">
@@ -4337,7 +4341,11 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
                   onChange={e => handleDateChange('agentCommissionPeriodTo', e.target.value ? new Date(e.target.value) : null)}
                   disabled={!isFormEditable}
                   className="setup-input-field"
-                  style={{ color: '#000000' }}
+                  style={{ color: '#000000', cursor: 'pointer' }}
+                  onClick={(e) => {
+                    if (!isFormEditable) return;
+                    e.currentTarget.showPicker?.();
+                  }}
                 />
               </div>
             </div>

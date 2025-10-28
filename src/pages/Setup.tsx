@@ -3599,6 +3599,7 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           onChange={(e) => handleInputChange('agency', e.target.value)}
           disabled={!isFormEditable}
           className="setup-select-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select agency</option>
           <option value="AG001">AG001 - Main Street Agency</option>
@@ -3615,6 +3616,7 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           onChange={(e) => handleInputChange('subAgency', e.target.value)}
           disabled={!isFormEditable}
           className="setup-select-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select sub agency</option>
           <option value="SA001">SA001 - Downtown Branch</option>
@@ -3707,6 +3709,7 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           onChange={(e) => handleInputChange('calculateCommission', e.target.value)}
           disabled={!isFormEditable}
           className="setup-select-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select commission type</option>
           <option value="Percentage">Percentage</option>
@@ -3737,6 +3740,7 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           onChange={(e) => handleInputChange('city', e.target.value)}
           disabled={!isFormEditable}
           className="setup-select-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select city</option>
           <option value="Colombo">Colombo</option>
@@ -3754,6 +3758,7 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           onChange={(e) => handleInputChange('district', e.target.value)}
           disabled={!isFormEditable}
           className="setup-select-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select district</option>
           <option value="Western">Western</option>
@@ -3775,9 +3780,9 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
               checked={formData.residence === 'Residence'}
               onChange={(e) => handleInputChange('residence', e.target.value)}
               disabled={!isFormEditable}
-              style={{ margin: 0 }}
+              style={{ margin: 0, accentColor: '#8b5cf6' }}
             />
-            <span>Residence</span>
+            <span style={{ color: '#000000' }}>Residence</span>
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input
@@ -3787,9 +3792,9 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
               checked={formData.residence === 'Non-Residence'}
               onChange={(e) => handleInputChange('residence', e.target.value)}
               disabled={!isFormEditable}
-              style={{ margin: 0 }}
+              style={{ margin: 0, accentColor: '#8b5cf6' }}
             />
-            <span>Non-Residence</span>
+            <span style={{ color: '#000000' }}>Non-Residence</span>
           </label>
         </div>
       </div>
@@ -3814,6 +3819,7 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           onChange={(e) => handleInputChange('territory', e.target.value)}
           disabled={!isFormEditable}
           className="setup-select-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select territory</option>
           <option value="Western Province">Western Province</option>

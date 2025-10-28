@@ -212,7 +212,7 @@ function Home() {
             </div>
             {/* Pie chart section */}
             <div className="dashboard-pie-section" style={{ paddingTop: '35px', paddingBottom: '20px', position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                            {/* Legend left */}
+            {/* Legend left */}
                 <div className="dashboard-pie-legend" style={{ 
                   maxHeight: '158px', 
                   overflowY: 'auto',
@@ -231,7 +231,7 @@ function Home() {
                    </div>
                  ))}
                </div>
-                             {/* Pie chart center */}
+                {/* Pie chart center */}
                <div className="dashboard-pie-chart">
                  <ResponsiveContainer width="100%" height={220}>
                   <PieChart>

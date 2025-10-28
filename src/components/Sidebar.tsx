@@ -15,7 +15,7 @@ const getSidebarWidth = () => {
 const navItems = [
   { label: 'Dashboard', icon: '🏠', link: '/' },
   { label: 'Setup', icon: '⚙️', link: '/Setup' },
-  { label: 'Registration', icon: '📝', link: '/registration' },
+  { label: 'Registration', icon: '📝', link: '/RegistrationSetup' },
   { label: 'Unit Operations', icon: '🔢', link: '/unit-operations' },
   { label: 'Approval', icon: '✅', link: '/approval' },
   { label: 'Document Printing', icon: '🖨️', link: '/document-printing' },

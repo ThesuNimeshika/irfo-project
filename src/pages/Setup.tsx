@@ -617,6 +617,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="setup-table-search"
+            style={{ color: '#000000' }}
           />
           {/* Shortlist Dropdown */}
           <select
@@ -630,6 +631,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
               }));
             }}
             className="setup-table-shortlist"
+            style={{ color: '#000000' }}
           >
             {[3, 5, 10, 15].map(pageSize => (
               <option key={pageSize} value={pageSize}>
@@ -637,7 +639,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
               </option>
             ))}
           </select>
-          <span className="setup-table-records">
+          <span className="setup-table-records" style={{ color: '#000000' }}>
             {data.length} Records
           </span>
         </div>
@@ -656,6 +658,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                           key={header.id}
                           className="setup-table-header-th"
                           onClick={header.column.getToggleSortingHandler()}
+                          style={{ color: '#000000' }}
                         >
                           {flexRender(
                             header.column.columnDef.header,
@@ -692,6 +695,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                         <td 
                           key={cell.id} 
                           className="setup-table-body-td"
+                          style={{ color: '#000000' }}
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
@@ -2725,25 +2729,25 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
       </div>
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
-        <textarea
+        <input
+          type="text"
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
-          rows={3}
-          style={{ resize: 'vertical', minHeight: '80px' }}
         />
       </div>
       <div className="setup-input-group">
         <label className="setup-input-label">Address (No/Street/Town/City)</label>
-        <input
-          type="text"
+        <textarea
           value={formData.address}
           onChange={(e) => handleInputChange('address', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter address as: No, Street Name, Town, City"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
         />
       </div>
       <div className="setup-input-group">
@@ -4046,19 +4050,19 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                         </div>
       {/* Right Column: Card with scrollable table */}
       <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Applicable Funds</div>
+        <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#000000' }}>Applicable Funds</div>
         <div style={{ flex: 1, overflowY: 'auto', maxHeight: '320px' }}>
           <table className="setup-custom-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th style={{ textAlign: 'left', padding: '8px' }}>Code</th>
-                <th style={{ textAlign: 'left', padding: '8px' }}>Fund Name</th>
+                <th style={{ textAlign: 'left', padding: '8px', color: '#000000', fontWeight: 600 }}>Code</th>
+                <th style={{ textAlign: 'left', padding: '8px', color: '#000000', fontWeight: 600 }}>Fund Name</th>
               </tr>
             </thead>
             <tbody>
               {funds.map(fund => (
                 <tr key={fund.code}>
-                  <td style={{ padding: '8px' }}>
+                  <td style={{ padding: '8px', color: '#000000' }}>
                     <input
                       type="checkbox"
                       checked={selectedFunds && selectedFunds.includes(fund.code)}
@@ -4067,7 +4071,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                     />
                     <span style={{ marginLeft: '8px' }}>{fund.code}</span>
                   </td>
-                  <td style={{ padding: '8px' }}>{fund.name}</td>
+                  <td style={{ padding: '8px', color: '#000000' }}>{fund.name}</td>
                 </tr>
               ))}
             </tbody>

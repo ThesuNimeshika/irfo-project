@@ -51,30 +51,30 @@
 ### Installation Steps
 
 1. **Clone the repository** (if using version control):
-   ```bash
+```bash
    git clone <repository-url>
-   cd irfo-project
-   ```
+cd irfo-project
+```
 
 2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
 3. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
+```bash
+npm run dev
+```
 
 4. **Build for production**:
-   ```bash
-   npm run build
-   ```
+```bash
+npm run build
+```
 
 5. **Preview production build**:
-   ```bash
-   npm run preview
-   ```
+```bash
+npm run preview
+```
 
 The application will be available at `http://localhost:5173` (default Vite port).
 

@@ -4646,7 +4646,7 @@ function InstitutionCategoryModalContent({ formData, handleInputChange, isFormEd
 // ========================================
 // INSTITUTION MODAL CONTENT
 // ========================================
-function InstitutionModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+function InstitutionModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
   return (
     <>
       <div className="setup-input-group">
@@ -4661,19 +4661,101 @@ function InstitutionModalContent({ formData, handleInputChange, isFormEditable }
         />
       </div>
       <div className="setup-input-group">
+        <div className="setup-checkbox-container" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <label htmlFor="institutionCategoryActive" className="setup-checkbox-label" style={{ marginRight: '8px', order: -1 }}>
+            Active
+          </label>
+          <input
+            type="checkbox"
+            id="institutionCategoryActive"
+            checked={formData.institutionCategoryActive || false}
+            onChange={e => handleInputChange('institutionCategoryActive', e.target.checked)}
+            disabled={!isFormEditable}
+            className="setup-checkbox-input"
+          />
+        </div>
+      </div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Institution Category</label>
         <select
           value={formData.institutionCategoryType || ''}
           onChange={e => handleInputChange('institutionCategoryType', e.target.value)}
           disabled={!isFormEditable}
           className="setup-select-field"
+          style={{ color: '#000000' }}
         >
-          <option value="">Select institution category</option>
-          <option value="Bank">Bank</option>
-          <option value="Insurance">Insurance</option>
-          <option value="Investment">Investment</option>
-          <option value="Brokerage">Brokerage</option>
+          <option value="" style={{ color: '#000000' }}>Select institution category</option>
+          <option value="Bank" style={{ color: '#000000' }}>Bank</option>
+          <option value="Insurance" style={{ color: '#000000' }}>Insurance</option>
+          <option value="Investment" style={{ color: '#000000' }}>Investment</option>
+          <option value="Brokerage" style={{ color: '#000000' }}>Brokerage</option>
         </select>
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Institution Name</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryName || ''}
+          onChange={e => handleInputChange('institutionCategoryName', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter institution name"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Address 1</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryAddress1 || ''}
+          onChange={e => handleInputChange('institutionCategoryAddress1', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address 1"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Address 2</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryAddress2 || ''}
+          onChange={e => handleInputChange('institutionCategoryAddress2', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address 2"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Address 3</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryAddress3 || ''}
+          onChange={e => handleInputChange('institutionCategoryAddress3', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address 3"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Contact Person</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryContactPerson || ''}
+          onChange={e => handleInputChange('institutionCategoryContactPerson', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter contact person"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Contact No</label>
+        <input
+          type="text"
+          value={formData.institutionCategoryContactNo || ''}
+          onChange={e => handleInputChange('institutionCategoryContactNo', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter contact number"
+        />
       </div>
     </>
   );

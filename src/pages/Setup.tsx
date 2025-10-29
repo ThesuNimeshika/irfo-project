@@ -4599,15 +4599,16 @@ function InstitutionCategoryModalContent({ formData, handleInputChange, isFormEd
           onChange={e => handleInputChange('institutionCategoryType', e.target.value)}
           disabled={!isFormEditable}
           className="setup-dropdown-select"
+          style={{ color: '#000000' }}
         >
-          <option value="">Select institution category</option>
-          <option value="Bank">Bank</option>
-          <option value="Insurance">Insurance</option>
-          <option value="Investment">Investment</option>
-          <option value="Brokerage">Brokerage</option>
-          <option value="Mutual Fund">Mutual Fund</option>
-          <option value="Pension Fund">Pension Fund</option>
-          <option value="Other">Other</option>
+          <option value="" style={{ color: '#000000' }}>Select institution category</option>
+          <option value="Bank" style={{ color: '#000000' }}>Bank</option>
+          <option value="Insurance" style={{ color: '#000000' }}>Insurance</option>
+          <option value="Investment" style={{ color: '#000000' }}>Investment</option>
+          <option value="Brokerage" style={{ color: '#000000' }}>Brokerage</option>
+          <option value="Mutual Fund" style={{ color: '#000000' }}>Mutual Fund</option>
+          <option value="Pension Fund" style={{ color: '#000000' }}>Pension Fund</option>
+          <option value="Other" style={{ color: '#000000' }}>Other</option>
         </select>
       </div>
       

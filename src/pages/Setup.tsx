@@ -245,7 +245,6 @@ const moduleData = [
   { title: 'Funds', icon: '💰' },
   { title: 'Company', icon: '🏢' },
   { title: 'Promotional Activity', icon: '🎉' },
-  { title: 'Other Charges', icon: '💳' },
   { title: 'Unit Fee Codes', icon: '🧾' },
   { title: 'Agency Type', icon: '🏷️' },
   { title: 'Agency', icon: '🏬' },
@@ -322,8 +321,8 @@ const tableData = {
     { code: 'C002', name: 'XYZ Industries', sector: 'Manufacturing', employees: '3000' }
   ],
   'Promotional Activity': [
-    { code: 'PA001', activity: 'Summer Sale', period: 'Jun-Aug 2024', discount: '20%' },
-    { code: 'PA002', activity: 'Holiday Special', period: 'Dec 2024', discount: '15%' }
+    { code: 'PA001', Name: 'Summer Sale', discription: '20%' },
+    { code: 'PA002', Name: 'Holiday Special', discription: '15%' }
   ],
   'Other Charges': [
     { code: 'OC001', active: 'Yes', name: 'Processing Fee', validFrom: '2024-01-01', validTo: '2024-12-31', type: 'Percentage', percentage: '2.5%', value: '' },
@@ -331,8 +330,8 @@ const tableData = {
     { code: 'OC003', active: 'No', name: 'Maintenance Fee', validFrom: '2024-01-01', validTo: '2024-12-31', type: 'Percentage', percentage: '1.0%', value: '' }
   ],
   'Unit Fee Codes': [
-    { code: 'UFC001', description: 'Entry Fee', rate: '2.5%', type: 'Percentage' },
-    { code: 'UFC002', description: 'Exit Fee', rate: '1.5%', type: 'Percentage' }
+    { feeCode: 'UFC001', description: 'Entry Fee', percentage: '2.5%', ageFrom: '18', ageTo: '65', unitFee: '100.00' },
+    { feeCode: 'UFC002', description: 'Exit Fee', percentage: '1.5%', ageFrom: '18', ageTo: '65', unitFee: '75.00' }
   ],
   'Agency Type': [
     { agencyTypeCode: 'AT001', agencyTypeDescription: 'Primary Agent' },
@@ -580,6 +579,11 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                 column === 'position' ? 'Position' : 
                 column === 'user' ? 'User' : 
                 column === 'titleCode' ? 'Title Code' : 
+                column === 'feeCode' ? 'Fee Code' : 
+                column === 'percentage' ? 'Percentage' : 
+                column === 'ageFrom' ? 'Age From' : 
+                column === 'ageTo' ? 'Age To' : 
+                column === 'unitFee' ? 'Unit Fee' : 
                 column.replace(/([A-Z])/g, ' $1').trim(),
         cell: (info) => (
           <span className="text-gray-900">{info.getValue()}</span>
@@ -1399,7 +1403,7 @@ function Setup() {
               isFormEditable={isFormEditable}
             />
           )}
-          {modalTitle === 'Territory' && (
+            {modalTitle === 'Territory' && (
             <TerritoryModalContent 
               formData={formData} 
               handleInputChange={handleInputChange} 
@@ -4398,7 +4402,40 @@ function AgentCommissionDefinitionModalContent({ formData, handleInputChange, ha
   );
 }
 
- 
+
+// ========================================
+// TERRITORY MODAL CONTENT
+// ========================================
+function TerritoryModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Territory Code</label>
+        <input
+          type="text"
+          value={formData.territoryCode || ''}
+          onChange={e => handleInputChange('territoryCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter territory code"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.territoryDescription || ''}
+          onChange={e => handleInputChange('territoryDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+    </>
+  );
+}
+
 // ========================================
 // INSTITUTION CATEGORY MODAL CONTENT
 // ========================================
@@ -4451,6 +4488,42 @@ function InstitutionCategoryModalContent({ formData, handleInputChange, isFormEd
           rows={3}
           style={{ resize: 'vertical', minHeight: '80px' }}
         />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// INSTITUTION MODAL CONTENT
+// ========================================
+function InstitutionModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Institution Code</label>
+        <input
+          type="text"
+          value={formData.code || ''}
+          onChange={e => handleInputChange('code', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter institution code"
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Institution Category</label>
+        <select
+          value={formData.institutionCategoryType || ''}
+          onChange={e => handleInputChange('institutionCategoryType', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-select-field"
+        >
+          <option value="">Select institution category</option>
+          <option value="Bank">Bank</option>
+          <option value="Insurance">Insurance</option>
+          <option value="Investment">Investment</option>
+          <option value="Brokerage">Brokerage</option>
+        </select>
       </div>
     </>
   );

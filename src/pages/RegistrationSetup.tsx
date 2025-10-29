@@ -19,7 +19,7 @@ import type { SortingState, RowSelectionState } from "@tanstack/react-table";
 // TYPE DEFINITIONS
 // ========================================
 
-  interface FormData {
+interface FormData {
   // Join Sale Agent Details fields
   bankCode: string;
   description: string;

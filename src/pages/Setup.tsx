@@ -132,6 +132,12 @@ interface FormData {
   unitFeePriceOne: string;
   unitFeePriceTwo: string;
   unitFee: string;
+  // Documents Setup fields
+  documentType: string;
+  documentHolderType: string;
+  documentCode: string;
+  documentActive: boolean;
+  documentName: string;
   // Agency Type fields
   agencyTypeCode: string;
   agencyTypeDescription: string;
@@ -376,12 +382,12 @@ const tableData = {
     }
   ],
   Territory: [
-    { code: 'T001', name: 'North Region', manager: 'Mike Wilson', area: 'Northern States' },
-    { code: 'T002', name: 'South Region', manager: 'Lisa Brown', area: 'Southern States' }
+    { code: 'T001', name: 'North Region'},
+    { code: 'T002', name: 'South Region'}
   ],
   'Commision Type': [
-    { code: 'CT001', type: 'Flat Rate', rate: '50.00', description: 'Fixed commission per transaction' },
-    { code: 'CT002', type: 'Percentage', rate: '2.5%', description: 'Percentage of transaction value' }
+    { type: 'Flat Rate', description: 'Fixed commission per transaction' },
+    { type: 'Percentage', description: 'Percentage of transaction value' }
   ],
   'Commission Level': [
     { commissionLevel: 'CL001', description: 'Entry Level Commission - Basic commission structure for new agents' },
@@ -487,8 +493,8 @@ const tableData = {
     }
   ],
   'Documents Setup': [
-    { code: 'DS001', document: 'Application Form', required: 'Yes', format: 'PDF' },
-    { code: 'DS002', document: 'ID Proof', required: 'Yes', format: 'Image' }
+    { code: 'DS001', name: 'Application Form', holderType: 'Individual' },
+    { code: 'DS002', name: 'ID Proof', holderType: 'Cooperate' }
   ],
   'Blocking Category': [
     { blockingCategory: 'Fraud', active: 'Yes', description: 'Suspicious activity detected, potential fraud indicators, and fraudulent transactions' },
@@ -584,6 +590,7 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                 column === 'ageFrom' ? 'Age From' : 
                 column === 'ageTo' ? 'Age To' : 
                 column === 'unitFee' ? 'Unit Fee' : 
+                column === 'holderType' ? 'Holder Type' : 
                 column.replace(/([A-Z])/g, ' $1').trim(),
         cell: (info) => (
           <span className="text-gray-900">{info.getValue()}</span>
@@ -836,6 +843,12 @@ function Setup() {
     unitFeePriceOne: '',
     unitFeePriceTwo: '',
     unitFee: '',
+    // Documents Setup fields
+    documentType: '',
+    documentHolderType: '',
+    documentCode: '',
+    documentActive: false,
+    documentName: '',
     // Agency Type fields
     agencyTypeCode: '',
     agencyTypeDescription: '',
@@ -1015,6 +1028,12 @@ function Setup() {
       unitFeePriceOne: '',
       unitFeePriceTwo: '',
       unitFee: '',
+      // Documents Setup fields
+      documentType: '',
+      documentHolderType: '',
+      documentCode: '',
+      documentActive: false,
+      documentName: '',
       // Agency Type fields
       agencyTypeCode: '',
       agencyTypeDescription: '',
@@ -1345,6 +1364,13 @@ function Setup() {
               isFormEditable={isFormEditable}
             />
           )}
+          {modalTitle === 'Documents Setup' && (
+            <DocumentsSetupModalContent 
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
           {modalTitle === 'Agency Type' && (
             <AgencyTypeModalContent 
               formData={formData} 
@@ -1467,7 +1493,7 @@ function Setup() {
   />
 )}
           {/* Default Bank modal for other modules */}
-          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title'].includes(modalTitle) && (
+          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title'].includes(modalTitle) && (
             <BankModalContent 
               formData={formData} 
               handleInputChange={handleInputChange} 
@@ -3912,6 +3938,129 @@ function AgencyTypeModalContent({ formData, handleInputChange, isFormEditable = 
           rows={3}
           style={{ resize: 'vertical', minHeight: '80px' }}
         />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// DOCUMENTS SETUP MODAL COMPONENT
+// ========================================
+function DocumentsSetupModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Wrapper to force full card width */}
+      <div style={{ width: '100%', gridColumn: '1 / -1' }}>
+      {/* Row 1: Title + centered two-column radios (50% each) */}
+      <div style={{ width: '100%' }}>
+        <div className="setup-input-group" style={{ marginBottom: '8px' }}>
+          <label className="setup-input-label" style={{ fontWeight: 600 }}>Select Document Type</label>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'center', width: '100%' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="documentType"
+                value="remote"
+                checked={formData.documentType === 'remote'}
+                onChange={(e) => handleInputChange('documentType', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              Remote Documents
+            </label>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <label className="setup-radio-label">
+              <input
+                type="radio"
+                name="documentType"
+                value="checklist"
+                checked={formData.documentType === 'checklist'}
+                onChange={(e) => handleInputChange('documentType', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-radio-input"
+              />
+              Checklist Documents
+            </label>
+            {formData.documentType === 'checklist' && (
+              <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', width: '100%' }}>
+                <label className="setup-radio-label">
+                  <input
+                    type="radio"
+                    name="documentHolderType"
+                    value="individual"
+                    checked={formData.documentHolderType === 'individual'}
+                    onChange={(e) => handleInputChange('documentHolderType', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-radio-input"
+                  />
+                  Individual
+                </label>
+                <label className="setup-radio-label">
+                  <input
+                    type="radio"
+                    name="documentHolderType"
+                    value="cooperate"
+                    checked={formData.documentHolderType === 'cooperate'}
+                    onChange={(e) => handleInputChange('documentHolderType', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-radio-input"
+                  />
+                  Cooperate
+                </label>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Row 2: Code + input | Active | Name + input (single row, 3 columns) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '32px', alignItems: 'center', width: '100%', marginTop: '16px' }}>
+        {/* Column 1: Code label + input inline */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px', alignItems: 'center' }}>
+          <label className="setup-input-label" style={{ marginBottom: 0 }}>Code</label>
+          <input
+            type="text"
+            value={formData.documentCode || ''}
+            onChange={(e) => handleInputChange('documentCode', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            style={{ width: '100%', maxWidth: '600px' }}
+            placeholder="Enter code"
+          />
+        </div>
+
+        {/* Column 2: Active checkbox centered */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="setup-checkbox-container" style={{ marginBottom: 0 }}>
+            <input
+              type="checkbox"
+              id="documentActive"
+              checked={formData.documentActive || false}
+              onChange={(e) => handleInputChange('documentActive', e.target.checked)}
+              disabled={!isFormEditable}
+              className="setup-checkbox-input"
+            />
+            <label htmlFor="documentActive" className="setup-checkbox-label">Active</label>
+          </div>
+        </div>
+
+        {/* Column 3: Name label + input inline */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px', alignItems: 'center' }}>
+          <label className="setup-input-label" style={{ marginBottom: 0 }}>Name</label>
+          <input
+            type="text"
+            value={formData.documentName || ''}
+            onChange={(e) => handleInputChange('documentName', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            style={{ width: '100%', maxWidth: '600px' }}
+            placeholder="Enter name"
+          />
+        </div>
+      </div>
       </div>
     </>
   );

@@ -1504,7 +1504,7 @@ function Setup() {
   />
 )}
           {/* Default Bank modal for other modules */}
-          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title', 'Join Sale Agent'].includes(modalTitle) && (
+          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title', 'Join Sale Agent', 'Product Type'].includes(modalTitle) && (
             <BankModalContent 
               formData={formData} 
               handleInputChange={handleInputChange} 
@@ -5137,6 +5137,11 @@ function ProductTypeModalContent({
   handleInputChange: (field: string, value: string | string[] | boolean) => void, 
   isFormEditable: boolean 
 }) {
+  const applicableFunds = [
+    { code: 'F001', name: 'Growth Fund' },
+    { code: 'F002', name: 'Income Fund' },
+    { code: 'F003', name: 'Balanced Fund' }
+  ];
   return (
     <div style={{ 
       display: 'grid', 
@@ -5156,7 +5161,7 @@ function ProductTypeModalContent({
         <div className="setup-ash-box">
           
           {/* Product Type Input */}
-          <div className="setup-input-group">
+          <div className="setup-input-group" style={{ marginBottom: '24px' }}>
             <label className="setup-input-label">Product Type</label>
             <input
               type="text"
@@ -5165,6 +5170,7 @@ function ProductTypeModalContent({
               disabled={!isFormEditable}
               className="setup-input-field"
               placeholder="Enter product type"
+              style={{ color: '#000000' }}
             />
           </div>
 
@@ -5193,6 +5199,7 @@ function ProductTypeModalContent({
               placeholder="Enter product type description"
               rows={3}
               style={{ resize: 'vertical', minHeight: '80px' }}
+              
             />
           </div>
         </div>
@@ -5201,22 +5208,35 @@ function ProductTypeModalContent({
       {/* Right Column - Product Types Table */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
         
-        {/* Product Types Table */}
+        {/* Applicable Funds Table */}
         <div className="setup-ash-box" style={{ flex: 1 }}>
-          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Product Types</div>
+          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#000000' }}>Applicable Funds</div>
           
           {/* Simple table with just the structure */}
           <div style={{ overflowX: 'auto' }}>
-            <table className="setup-custom-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className="setup-custom-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+              <colgroup>
+                <col style={{ width: '50%' }} />
+                <col style={{ width: '50%' }} />
+              </colgroup>
               <thead>
                 <tr style={{ backgroundColor: '#f1f5f9' }}>
-                  <th style={{ padding: '12px', border: '1px solid #e2e8f0', textAlign: 'left' }}>Product Type</th>
-                  <th style={{ padding: '12px', border: '1px solid #e2e8f0', textAlign: 'left' }}>Description</th>
-                  <th style={{ padding: '12px', border: '1px solid #e2e8f0', textAlign: 'left' }}>Active</th>
+                  <th style={{ padding: '12px', border: '1px solid #e2e8f0', textAlign: 'left', color: '#000000', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>Code</th>
+                  <th style={{ padding: '12px', border: '1px solid #e2e8f0', textAlign: 'left', color: '#000000', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>Fund Name</th>
                 </tr>
               </thead>
               <tbody>
-                {/* Table rows will be populated by the CustomDataTable component */}
+                {applicableFunds.map(f => (
+                  <tr key={f.code}>
+                    <td style={{ padding: '12px', border: '1px solid #e2e8f0', color: '#000000', verticalAlign: 'middle' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <input type="checkbox" disabled={!isFormEditable} />
+                        <span>{f.code}</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: '12px', border: '1px solid #e2e8f0', color: '#000000', verticalAlign: 'middle' }}>{f.name}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

@@ -4916,6 +4916,7 @@ function JointSaleAgentModalContent({
               onChange={e => handleInputChange('agency', e.target.value)}
               disabled={!isFormEditable}
               className="setup-dropdown-select"
+              style={{ color: '#000000' }}
             >
               <option value="">Select Agency</option>
               <option value="AG001">AG001 - Main Street Agency</option>
@@ -4931,6 +4932,7 @@ function JointSaleAgentModalContent({
               onChange={e => handleInputChange('subAgency', e.target.value)}
               disabled={!isFormEditable}
               className="setup-dropdown-select"
+              style={{ color: '#000000' }}
             >
               <option value="">Select Sub Agency</option>
               <option value="SA001">SA001 - Downtown Branch</option>
@@ -4969,6 +4971,7 @@ function JointSaleAgentModalContent({
               onChange={e => handleInputChange('nameAgency', e.target.value)}
               disabled={!isFormEditable}
               className="setup-dropdown-select"
+              style={{ color: '#000000' }}
             >
               <option value="">Select Agency</option>
               <option value="AG001">AG001 - Main Street Agency</option>
@@ -4984,6 +4987,7 @@ function JointSaleAgentModalContent({
               onChange={e => handleInputChange('nameSubAgency', e.target.value)}
               disabled={!isFormEditable}
               className="setup-dropdown-select"
+              style={{ color: '#000000' }}
             >
               <option value="">Select Sub Agency</option>
               <option value="SA001">SA001 - Downtown Branch</option>
@@ -5018,6 +5022,7 @@ function JointSaleAgentModalContent({
               onChange={e => handleInputChange('jointAgency', e.target.value)}
               disabled={!isFormEditable}
               className="setup-dropdown-select"
+              style={{ color: '#000000' }}
             >
               <option value="">Select Agency</option>
               <option value="AG001">AG001 - Main Street Agency</option>
@@ -5033,6 +5038,7 @@ function JointSaleAgentModalContent({
               onChange={e => handleInputChange('jointSubAgency', e.target.value)}
               disabled={!isFormEditable}
               className="setup-dropdown-select"
+              style={{ color: '#000000' }}
             >
               <option value="">Select Sub Agency</option>
               <option value="SA001">SA001 - Downtown Branch</option>
@@ -5083,6 +5089,7 @@ function ComplianceMsgSetupModalContent({ formData, handleInputChange, isFormEdi
           onChange={e => handleInputChange('compliancePosition', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select Position</option>
           <option value="Manager">Manager</option>
@@ -5102,6 +5109,7 @@ function ComplianceMsgSetupModalContent({ formData, handleInputChange, isFormEdi
           onChange={e => handleInputChange('complianceUser', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
+          style={{ color: '#000000' }}
         >
           <option value="">Select User</option>
           <option value="John Smith">John Smith</option>

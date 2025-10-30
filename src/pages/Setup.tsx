@@ -509,9 +509,17 @@ const tableData = {
     { zoneCode: 'CZ004', active: 'No', description: 'Inactive customer zone for suspended or terminated accounts' }
   ],
   'Joint Sale Agent': [
-    { 
-
-
+    {
+      agencyCode: 'AG001',
+      subAgencyCode: 'SA001',
+      agentCode: 'AGT001',
+      agentDescription: 'John Smith'
+    },
+    {
+      agencyCode: 'AG002',
+      subAgencyCode: 'SA002',
+      agentCode: 'AGT002',
+      agentDescription: 'Sarah Johnson'
     },
   ],
   
@@ -1252,9 +1260,12 @@ function Setup() {
   // TODO: Replace with API call to fetch table columns from backend
   // API Endpoint: GET /api/setup/table-columns/{module}
   const getTableColumns = (title: string) => {
+    // Enforce explicit column order for specific modules
+    if (title === 'Join Sale Agent') {
+      return ['agencyCode', 'subAgencyCode', 'agentCode', 'agentDescription'];
+    }
     const data = tableData[title as keyof typeof tableData] || [];
     if (data.length === 0) return [];
-    
     return Object.keys(data[0]);
   };
 
@@ -1493,7 +1504,7 @@ function Setup() {
   />
 )}
           {/* Default Bank modal for other modules */}
-          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title'].includes(modalTitle) && (
+          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title', 'Join Sale Agent'].includes(modalTitle) && (
             <BankModalContent 
               formData={formData} 
               handleInputChange={handleInputChange} 
@@ -4941,10 +4952,65 @@ function JointSaleAgentModalContent({
           </div>
         </div>
 
-        {/* Joint Agent Section */}
+        
+      </div>
+
+      {/* Right Column - Name Section */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
+        
+        {/* Name Section */}
         <div className="setup-ash-box">
-          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Joint Agent</div>
+          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Normal</div>
           
+          <div className="setup-input-group">
+            <label className="setup-input-label">Agency</label>
+            <select
+              value={formData.nameAgency || ''}
+              onChange={e => handleInputChange('nameAgency', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-dropdown-select"
+            >
+              <option value="">Select Agency</option>
+              <option value="AG001">AG001 - Main Street Agency</option>
+              <option value="AG002">AG002 - Central Agency</option>
+              <option value="AG003">AG003 - Downtown Agency</option>
+            </select>
+          </div>
+
+          <div className="setup-input-group">
+            <label className="setup-input-label">Sub Agency</label>
+            <select
+              value={formData.nameSubAgency || ''}
+              onChange={e => handleInputChange('nameSubAgency', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-dropdown-select"
+            >
+              <option value="">Select Sub Agency</option>
+              <option value="SA001">SA001 - Downtown Branch</option>
+              <option value="SA002">SA002 - Uptown Branch</option>
+              <option value="SA003">SA003 - Central Branch</option>
+            </select>
+          </div>
+
+          <div className="setup-input-group">
+            <label className="setup-input-label">Agent Code</label>
+            <input
+              type="text"
+              value={formData.nameAgentCode || ''}
+              onChange={e => handleInputChange('nameAgentCode', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-input-field"
+              placeholder="Enter agent code"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Centered Joint Agent Card spanning full width */}
+      <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
+        <div className="setup-ash-box" style={{ width: '100%', maxWidth: '720px' }}>
+          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Joint Agent</div>
+
           <div className="setup-input-group">
             <label className="setup-input-label">Agency</label>
             <select
@@ -4996,57 +5062,6 @@ function JointSaleAgentModalContent({
               disabled={!isFormEditable}
               className="setup-input-field"
               placeholder="Enter description"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Right Column - Name Section */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
-        
-        {/* Name Section */}
-        <div className="setup-ash-box">
-          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Name</div>
-          
-          <div className="setup-input-group">
-            <label className="setup-input-label">Agency</label>
-            <select
-              value={formData.nameAgency || ''}
-              onChange={e => handleInputChange('nameAgency', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-dropdown-select"
-            >
-              <option value="">Select Agency</option>
-              <option value="AG001">AG001 - Main Street Agency</option>
-              <option value="AG002">AG002 - Central Agency</option>
-              <option value="AG003">AG003 - Downtown Agency</option>
-            </select>
-          </div>
-
-          <div className="setup-input-group">
-            <label className="setup-input-label">Sub Agency</label>
-            <select
-              value={formData.nameSubAgency || ''}
-              onChange={e => handleInputChange('nameSubAgency', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-dropdown-select"
-            >
-              <option value="">Select Sub Agency</option>
-              <option value="SA001">SA001 - Downtown Branch</option>
-              <option value="SA002">SA002 - Uptown Branch</option>
-              <option value="SA003">SA003 - Central Branch</option>
-            </select>
-          </div>
-
-          <div className="setup-input-group">
-            <label className="setup-input-label">Agent Code</label>
-            <input
-              type="text"
-              value={formData.nameAgentCode || ''}
-              onChange={e => handleInputChange('nameAgentCode', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-input-field"
-              placeholder="Enter agent code"
             />
           </div>
         </div>

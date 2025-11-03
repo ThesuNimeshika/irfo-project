@@ -524,7 +524,17 @@ function FourCardsWithModal() {
                       onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                       disabled={!isFormEditable}
                       className="setup-input-field"
-                      style={{ color: '#000000' }}
+                      style={{ 
+                        color: '#000000',
+                        cursor: isFormEditable ? 'pointer' : 'default',
+                        width: '100%',
+                        padding: '8px 12px'
+                      }}
+                      onClick={(e) => {
+                        if (isFormEditable && e.currentTarget) {
+                          e.currentTarget.showPicker?.();
+                        }
+                      }}
                     />
                   </div>
                   <div>
@@ -584,7 +594,7 @@ function FourCardsWithModal() {
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <select
                         className="setup-dropdown-select"
-                        style={{ color: '#000000', minWidth: '80px' }}
+                        style={{ color: '#000000', width: '70px' }}
                         value={formData.telCode}
                         onChange={e => handleInputChange('telCode', e.target.value)}
                         disabled={!isFormEditable}
@@ -600,7 +610,8 @@ function FourCardsWithModal() {
                         disabled={!isFormEditable}
                         className="setup-input-field"
                         placeholder="Enter telephone"
-                        style={{ color: '#000000', flex: 1 }}
+                        style={{ color: '#000000', flex: 1, minWidth: '150px' }}
+                        maxLength={10}
                       />
                     </div>
                   </div>
@@ -609,7 +620,7 @@ function FourCardsWithModal() {
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <select
                         className="setup-dropdown-select"
-                        style={{ color: '#000000', minWidth: '80px' }}
+                        style={{ color: '#000000', width: '70px' }}
                         value={formData.faxCode}
                         onChange={e => handleInputChange('faxCode', e.target.value)}
                         disabled={!isFormEditable}
@@ -625,7 +636,8 @@ function FourCardsWithModal() {
                         disabled={!isFormEditable}
                         className="setup-input-field"
                         placeholder="Enter fax"
-                        style={{ color: '#000000', flex: 1 }}
+                        style={{ color: '#000000', flex: 1, minWidth: '150px' }}
+                        maxLength={10}
                       />
                     </div>
                   </div>
@@ -634,7 +646,7 @@ function FourCardsWithModal() {
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <select
                         className="setup-dropdown-select"
-                        style={{ color: '#000000', minWidth: '80px' }}
+                        style={{ color: '#000000', width: '70px' }}
                         value={formData.mobileCode}
                         onChange={e => handleInputChange('mobileCode', e.target.value)}
                         disabled={!isFormEditable}
@@ -650,7 +662,8 @@ function FourCardsWithModal() {
                         disabled={!isFormEditable}
                         className="setup-input-field"
                         placeholder="Enter mobile"
-                        style={{ color: '#000000', flex: 1 }}
+                        style={{ color: '#000000', flex: 1, minWidth: '150px' }}
+                        maxLength={10}
                       />
                     </div>
                   </div>

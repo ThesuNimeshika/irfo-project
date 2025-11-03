@@ -10,6 +10,13 @@ import { createPortal } from 'react-dom';
 // TYPE DEFINITIONS
 // ========================================
 
+interface BankAccount {
+  bankCode: string;
+  accountNo: string;
+  accountType: string;
+  bankName: string;
+}
+
 interface FormData {
   // Legacy placeholder fields
   bankCode: string;
@@ -41,6 +48,27 @@ interface FormData {
   tinNo: string;
   nationality: 'Foreign' | 'Local';
   relatedPartyStatus: 'None Related' | 'Related party';
+  // Address fields
+  correspondenceStreet: string;
+  correspondenceTown: string;
+  correspondenceCity: string;
+  correspondenceDistrict: string;
+  correspondenceCountry: string;
+  correspondencePostalCode: string;
+  correspondencePostalArea: string;
+  permanentStreet: string;
+  permanentTown: string;
+  permanentCity: string;
+  permanentDistrict: string;
+  permanentCountry: string;
+  permanentPostalCode: string;
+  permanentPostalArea: string;
+  addressType: 'Office' | 'Lease / Rent' | 'Owner';
+  otherAddress: string;
+  zone: string;
+  bank: string;
+  accountNo: string;
+  accountType: string;
 }
 
 // ========================================
@@ -114,6 +142,26 @@ function FourCardsWithModal() {
     tinNo: '',
     nationality: 'Local',
     relatedPartyStatus: 'None Related',
+    correspondenceStreet: '',
+    correspondenceTown: '',
+    correspondenceCity: '',
+    correspondenceDistrict: '',
+    correspondenceCountry: 'Sri Lanka',
+    correspondencePostalCode: '',
+    correspondencePostalArea: '',
+    permanentStreet: '',
+    permanentTown: '',
+    permanentCity: '',
+    permanentDistrict: '',
+    permanentCountry: 'Sri Lanka',
+    permanentPostalCode: '',
+    permanentPostalArea: '',
+    addressType: 'Office',
+    otherAddress: '',
+    zone: '',
+    bank: '',
+    accountNo: '',
+    accountType: '',
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -121,6 +169,7 @@ function FourCardsWithModal() {
   const [isFormEditable, setIsFormEditable] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('Personal Details');
   const [showCompanyTable, setShowCompanyTable] = useState(false);
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -143,6 +192,39 @@ function FourCardsWithModal() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCopyAddress = () => {
+    setFormData(prev => ({
+      ...prev,
+      permanentStreet: prev.correspondenceStreet,
+      permanentTown: prev.correspondenceTown,
+      permanentCity: prev.correspondenceCity,
+      permanentDistrict: prev.correspondenceDistrict,
+      permanentCountry: prev.correspondenceCountry,
+      permanentPostalCode: prev.correspondencePostalCode,
+      permanentPostalArea: prev.correspondencePostalArea,
+    }));
+  };
+
+  const handleAddBankAccount = () => {
+    if (formData.bank && formData.accountNo) {
+      const newAccount: BankAccount = {
+        bankCode: formData.bankCode || '',
+        accountNo: formData.accountNo,
+        accountType: formData.accountType || '',
+        bankName: formData.bank,
+      };
+      setBankAccounts(prev => [...prev, newAccount]);
+      // Clear bank input fields
+      handleInputChange('bank', '');
+      handleInputChange('accountNo', '');
+      handleInputChange('accountType', '');
+    }
+  };
+
+  const handleRemoveBankAccount = (index: number) => {
+    setBankAccounts(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleNewButtonClick = () => {
@@ -176,7 +258,28 @@ function FourCardsWithModal() {
       tinNo: '',
       nationality: 'Local',
       relatedPartyStatus: 'None Related',
+      correspondenceStreet: '',
+      correspondenceTown: '',
+      correspondenceCity: '',
+      correspondenceDistrict: '',
+      correspondenceCountry: 'Sri Lanka',
+      correspondencePostalCode: '',
+      correspondencePostalArea: '',
+      permanentStreet: '',
+      permanentTown: '',
+      permanentCity: '',
+      permanentDistrict: '',
+      permanentCountry: 'Sri Lanka',
+      permanentPostalCode: '',
+      permanentPostalArea: '',
+      addressType: 'Office',
+      otherAddress: '',
+      zone: '',
+      bank: '',
+      accountNo: '',
+      accountType: '',
     });
+    setBankAccounts([]);
   };
 
   const handleModalOpen = (idx: number) => {
@@ -483,30 +586,34 @@ function FourCardsWithModal() {
                 {formData.applicantType === 'Individual' && (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px' }}>
                     <div>
-                      <label className="setup-input-label">Name Denoted by Initials</label>
-                      <input
-                        type="text"
-                        value={formData.nameByInitials}
-                        onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter full name"
-                        style={{ color: '#000000' }}
-                      />
-                      <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>Example: Kankanamge Lakshan Chathuranga.</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '140px' }}>Name Denoted by Initials</label>
+                        <input
+                          type="text"
+                          value={formData.nameByInitials}
+                          onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter full name"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '148px' }}>Example: Kankanamge Lakshan Chathuranga.</div>
                     </div>
                     <div>
-                      <label className="setup-input-label">Surname</label>
-                      <input
-                        type="text"
-                        value={formData.surname}
-                        onChange={(e) => handleInputChange('surname', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter surname"
-                        style={{ color: '#000000' }}
-                      />
-                      <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>Example: Fernando.</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Surname</label>
+                        <input
+                          type="text"
+                          value={formData.surname}
+                          onChange={(e) => handleInputChange('surname', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter surname"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '88px' }}>Example: Fernando.</div>
                     </div>
                   </div>
                 )}
@@ -515,30 +622,34 @@ function FourCardsWithModal() {
                 {formData.applicantType === 'Corporate' && (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px' }}>
                     <div>
-                      <label className="setup-input-label">Company Name</label>
-                      <input
-                        type="text"
-                        value={formData.nameByInitials}
-                        onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter company name"
-                        style={{ color: '#000000' }}
-                      />
-                      <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>Example: Management System (PVT) LTD</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '120px' }}>Company Name</label>
+                        <input
+                          type="text"
+                          value={formData.nameByInitials}
+                          onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter company name"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '128px' }}>Example: Management System (PVT) LTD</div>
                     </div>
                     <div>
-                      <label className="setup-input-label">Business</label>
-                      <input
-                        type="text"
-                        value={formData.surname}
-                        onChange={(e) => handleInputChange('surname', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter business"
-                        style={{ color: '#000000' }}
-                      />
-                      <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>Example: Unit Trust</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Business</label>
+                        <input
+                          type="text"
+                          value={formData.surname}
+                          onChange={(e) => handleInputChange('surname', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter business"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '88px' }}>Example: Unit Trust</div>
                     </div>
                   </div>
                 )}
@@ -548,8 +659,8 @@ function FourCardsWithModal() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
                 {/* Left Column - Identification */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div>
-                    <label className="setup-input-label">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '140px' }}>
                       {formData.applicantType === 'Corporate' ? 'Commence' : 'Date of Birth'}
                     </label>
                     <input
@@ -561,7 +672,7 @@ function FourCardsWithModal() {
                       style={{ 
                         color: '#000000',
                         cursor: isFormEditable ? 'pointer' : 'default',
-                        width: '100%',
+                        flex: 1,
                         padding: '8px 12px'
                       }}
                       onClick={(e) => {
@@ -571,8 +682,8 @@ function FourCardsWithModal() {
                       }}
                     />
                   </div>
-                  <div>
-                    <label className="setup-input-label">NIC</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '140px' }}>NIC</label>
                     <input
                       type="text"
                       value={formData.nic}
@@ -580,11 +691,11 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="Enter NIC"
-                      style={{ color: '#000000' }}
+                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  <div>
-                    <label className="setup-input-label">Passport</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Passport</label>
                     <input
                       type="text"
                       value={formData.passport}
@@ -592,11 +703,11 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="Enter passport number"
-                      style={{ color: '#000000' }}
+                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  <div>
-                    <label className="setup-input-label">Other No.</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Other No.</label>
                     <input
                       type="text"
                       value={formData.otherNo}
@@ -604,11 +715,11 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="Enter other number"
-                      style={{ color: '#000000' }}
+                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  <div>
-                    <label className="setup-input-label">Comp Reg. No</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Comp Reg. No</label>
                     <input
                       type="text"
                       value={formData.compRegNo}
@@ -616,93 +727,87 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="Enter company registration number"
-                      style={{ color: '#000000' }}
+                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
                 </div>
 
                 {/* Right Column - Contact */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div>
-                    <label className="setup-input-label">Telephone</label>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <select
-                        className="setup-dropdown-select"
-                        style={{ color: '#000000', width: '70px' }}
-                        value={formData.telCode}
-                        onChange={e => handleInputChange('telCode', e.target.value)}
-                        disabled={!isFormEditable}
-                      >
-                        <option value="+94">+94</option>
-                        <option value="+1">+1</option>
-                        <option value="+44">+44</option>
-                      </select>
-                      <input
-                        type="text"
-                        value={formData.telephone}
-                        onChange={(e) => handleInputChange('telephone', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter telephone"
-                        style={{ color: '#000000', flex: 1, minWidth: '150px' }}
-                        maxLength={10}
-                      />
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px' }}>Telephone</label>
+                    <select
+                      className="setup-dropdown-select"
+                      style={{ color: '#000000', width: '70px' }}
+                      value={formData.telCode}
+                      onChange={e => handleInputChange('telCode', e.target.value)}
+                      disabled={!isFormEditable}
+                    >
+                      <option value="+94">+94</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                    </select>
+                    <input
+                      type="text"
+                      value={formData.telephone}
+                      onChange={(e) => handleInputChange('telephone', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter telephone"
+                      style={{ color: '#000000', flex: 1, minWidth: '150px' }}
+                      maxLength={10}
+                    />
                   </div>
-                  <div>
-                    <label className="setup-input-label">Fax</label>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <select
-                        className="setup-dropdown-select"
-                        style={{ color: '#000000', width: '70px' }}
-                        value={formData.faxCode}
-                        onChange={e => handleInputChange('faxCode', e.target.value)}
-                        disabled={!isFormEditable}
-                      >
-                        <option value="+94">+94</option>
-                        <option value="+1">+1</option>
-                        <option value="+44">+44</option>
-                      </select>
-                      <input
-                        type="text"
-                        value={formData.fax}
-                        onChange={(e) => handleInputChange('fax', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter fax"
-                        style={{ color: '#000000', flex: 1, minWidth: '150px' }}
-                        maxLength={10}
-                      />
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px' }}>Fax</label>
+                    <select
+                      className="setup-dropdown-select"
+                      style={{ color: '#000000', width: '70px' }}
+                      value={formData.faxCode}
+                      onChange={e => handleInputChange('faxCode', e.target.value)}
+                      disabled={!isFormEditable}
+                    >
+                      <option value="+94">+94</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                    </select>
+                    <input
+                      type="text"
+                      value={formData.fax}
+                      onChange={(e) => handleInputChange('fax', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter fax"
+                      style={{ color: '#000000', flex: 1, minWidth: '150px' }}
+                      maxLength={10}
+                    />
                   </div>
-                  <div>
-                    <label className="setup-input-label">Mobile</label>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <select
-                        className="setup-dropdown-select"
-                        style={{ color: '#000000', width: '70px' }}
-                        value={formData.mobileCode}
-                        onChange={e => handleInputChange('mobileCode', e.target.value)}
-                        disabled={!isFormEditable}
-                      >
-                        <option value="+94">+94</option>
-                        <option value="+1">+1</option>
-                        <option value="+44">+44</option>
-                      </select>
-                      <input
-                        type="text"
-                        value={formData.mobile}
-                        onChange={(e) => handleInputChange('mobile', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter mobile"
-                        style={{ color: '#000000', flex: 1, minWidth: '150px' }}
-                        maxLength={10}
-                      />
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px' }}>Mobile</label>
+                    <select
+                      className="setup-dropdown-select"
+                      style={{ color: '#000000', width: '70px' }}
+                      value={formData.mobileCode}
+                      onChange={e => handleInputChange('mobileCode', e.target.value)}
+                      disabled={!isFormEditable}
+                    >
+                      <option value="+94">+94</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                    </select>
+                    <input
+                      type="text"
+                      value={formData.mobile}
+                      onChange={(e) => handleInputChange('mobile', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter mobile"
+                      style={{ color: '#000000', flex: 1, minWidth: '150px' }}
+                      maxLength={10}
+                    />
                   </div>
-                  <div>
-                    <label className="setup-input-label">E-mail</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px' }}>E-mail</label>
                     <input
                       type="email"
                       value={formData.email}
@@ -710,11 +815,11 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="Enter email"
-                      style={{ color: '#000000' }}
+                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  <div>
-                    <label className="setup-input-label">Tin No.</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px' }}>Tin No.</label>
                     <input
                       type="text"
                       value={formData.tinNo}
@@ -722,7 +827,7 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="Enter TIN number"
-                      style={{ color: '#000000' }}
+                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
                 </div>
@@ -803,14 +908,450 @@ function FourCardsWithModal() {
       case 'Address/Bank Details':
         return (
           <div className="setup-input-section">
-            <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Address</label>
-                <textarea className="setup-input-field" rows={3} placeholder="Enter address" disabled={!isFormEditable} />
+            <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+              {/* Two Address Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '16px', marginBottom: '24px', alignItems: 'start' }}>
+                {/* Correspondence Address Card */}
+                <div className="setup-ash-box" style={{ padding: '16px' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                    Correspondence Address
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                      <input
+                        type="text"
+                        value={formData.correspondenceStreet}
+                        onChange={(e) => handleInputChange('correspondenceStreet', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter street"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                      <input
+                        type="text"
+                        value={formData.correspondenceTown}
+                        onChange={(e) => handleInputChange('correspondenceTown', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter town"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                      <input
+                        type="text"
+                        value={formData.correspondenceCity}
+                        onChange={(e) => handleInputChange('correspondenceCity', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter city"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>District</label>
+                        <select
+                          className="setup-dropdown-select"
+                          style={{ color: '#000000', flex: 1 }}
+                          value={formData.correspondenceDistrict}
+                          onChange={e => handleInputChange('correspondenceDistrict', e.target.value)}
+                          disabled={!isFormEditable}
+                        >
+                          <option value="">Select District</option>
+                          <option value="COLOMBO">COLOMBO</option>
+                          <option value="GAMPAHA">GAMPAHA</option>
+                          <option value="KALUTARA">KALUTARA</option>
+                        </select>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Country</label>
+                        <select
+                          className="setup-dropdown-select"
+                          style={{ color: '#000000', flex: 1 }}
+                          value={formData.correspondenceCountry}
+                          onChange={e => handleInputChange('correspondenceCountry', e.target.value)}
+                          disabled={!isFormEditable}
+                        >
+                          <option value="Sri Lanka">Sri Lanka</option>
+                          <option value="India">India</option>
+                          <option value="UK">UK</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Code</label>
+                        <input
+                          type="text"
+                          value={formData.correspondencePostalCode}
+                          onChange={(e) => handleInputChange('correspondencePostalCode', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter postal code"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Area</label>
+                        <select
+                          className="setup-dropdown-select"
+                          style={{ color: '#000000', flex: 1 }}
+                          value={formData.correspondencePostalArea}
+                          onChange={e => handleInputChange('correspondencePostalArea', e.target.value)}
+                          disabled={!isFormEditable}
+                        >
+                          <option value="">Select Postal Area</option>
+                          <option value="Colombo">Colombo</option>
+                          <option value="Kandy">Kandy</option>
+                          <option value="Galle">Galle</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Copy Button */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingTop: '60px' }}>
+                  <button
+                    onClick={handleCopyAddress}
+                    disabled={!isFormEditable}
+                    style={{
+                      backgroundColor: '#0ea5e9',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '8px 12px',
+                      borderRadius: '4px',
+                      cursor: isFormEditable ? 'pointer' : 'default',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      minWidth: '60px'
+                    }}
+                  >
+                    ==&gt;&gt;
+                  </button>
+                  <div style={{ color: '#0ea5e9', fontSize: '12px', textAlign: 'center', maxWidth: '100px' }}>
+                    Click If Correspondence Address And The Personal Address are the Same
+                  </div>
+                </div>
+
+                {/* Personal / Permanent Address Card */}
+                <div className="setup-ash-box" style={{ padding: '16px' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                    Personal / Permanent Address
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                      <input
+                        type="text"
+                        value={formData.permanentStreet}
+                        onChange={(e) => handleInputChange('permanentStreet', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter street"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                      <input
+                        type="text"
+                        value={formData.permanentTown}
+                        onChange={(e) => handleInputChange('permanentTown', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter town"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                      <input
+                        type="text"
+                        value={formData.permanentCity}
+                        onChange={(e) => handleInputChange('permanentCity', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter city"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>District</label>
+                        <select
+                          className="setup-dropdown-select"
+                          style={{ color: '#000000', flex: 1 }}
+                          value={formData.permanentDistrict}
+                          onChange={e => handleInputChange('permanentDistrict', e.target.value)}
+                          disabled={!isFormEditable}
+                        >
+                          <option value="">Select District</option>
+                          <option value="COLOMBO">COLOMBO</option>
+                          <option value="GAMPAHA">GAMPAHA</option>
+                          <option value="KALUTARA">KALUTARA</option>
+                        </select>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Country</label>
+                        <select
+                          className="setup-dropdown-select"
+                          style={{ color: '#000000', flex: 1 }}
+                          value={formData.permanentCountry}
+                          onChange={e => handleInputChange('permanentCountry', e.target.value)}
+                          disabled={!isFormEditable}
+                        >
+                          <option value="Sri Lanka">Sri Lanka</option>
+                          <option value="India">India</option>
+                          <option value="UK">UK</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Code</label>
+                        <input
+                          type="text"
+                          value={formData.permanentPostalCode}
+                          onChange={(e) => handleInputChange('permanentPostalCode', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter postal code"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Area</label>
+                        <select
+                          className="setup-dropdown-select"
+                          style={{ color: '#000000', flex: 1 }}
+                          value={formData.permanentPostalArea}
+                          onChange={e => handleInputChange('permanentPostalArea', e.target.value)}
+                          disabled={!isFormEditable}
+                        >
+                          <option value="">Select Postal Area</option>
+                          <option value="Colombo">Colombo</option>
+                          <option value="Kandy">Kandy</option>
+                          <option value="Galle">Galle</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Bank</label>
-                <input className="setup-input-field" type="text" placeholder="Enter bank" disabled={!isFormEditable} />
+
+              {/* Lower Section */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                {/* Left - Additional Details */}
+                <div>
+                  <div style={{ marginBottom: '16px' }}>
+                    <label className="setup-input-label" style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>
+                      Additional Details
+                    </label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="addressType"
+                          checked={formData.addressType === 'Office'}
+                          onChange={() => handleInputChange('addressType', 'Office')}
+                          disabled={!isFormEditable}
+                          style={{
+                            accentColor: '#9333ea',
+                            cursor: isFormEditable ? 'pointer' : 'default'
+                          }}
+                        />
+                        Office
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="addressType"
+                          checked={formData.addressType === 'Lease / Rent'}
+                          onChange={() => handleInputChange('addressType', 'Lease / Rent')}
+                          disabled={!isFormEditable}
+                          style={{
+                            accentColor: '#9333ea',
+                            cursor: isFormEditable ? 'pointer' : 'default'
+                          }}
+                        />
+                        Lease / Rent
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="addressType"
+                          checked={formData.addressType === 'Owner'}
+                          onChange={() => handleInputChange('addressType', 'Owner')}
+                          disabled={!isFormEditable}
+                          style={{
+                            accentColor: '#9333ea',
+                            cursor: isFormEditable ? 'pointer' : 'default'
+                          }}
+                        />
+                        Owner
+                      </label>
+                    </div>
+                    <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Other</label>
+                      <input
+                        type="text"
+                        value={formData.otherAddress}
+                        onChange={(e) => handleInputChange('otherAddress', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter other"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Zone</label>
+                      <select
+                        className="setup-dropdown-select"
+                        style={{ color: '#000000', flex: 1 }}
+                        value={formData.zone}
+                        onChange={e => handleInputChange('zone', e.target.value)}
+                        disabled={!isFormEditable}
+                      >
+                        <option value="">Select Zone</option>
+                        <option value="Zone 1">Zone 1</option>
+                        <option value="Zone 2">Zone 2</option>
+                        <option value="Zone 3">Zone 3</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right - Bank Details */}
+                <div>
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
+                    Bank Details
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Bank</label>
+                      <select
+                        className="setup-dropdown-select"
+                        style={{ color: '#000000', flex: 1 }}
+                        value={formData.bank}
+                        onChange={e => handleInputChange('bank', e.target.value)}
+                        disabled={!isFormEditable}
+                      >
+                        <option value="">Select Bank</option>
+                        <option value="Amana Bank Anuradhapura">Amana Bank Anuradhapura</option>
+                        <option value="Commercial Bank">Commercial Bank</option>
+                        <option value="People's Bank">People's Bank</option>
+                      </select>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account No</label>
+                      <input
+                        type="text"
+                        value={formData.accountNo}
+                        onChange={(e) => handleInputChange('accountNo', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter account number"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                      <button
+                        onClick={handleAddBankAccount}
+                        disabled={!isFormEditable}
+                        style={{
+                          backgroundColor: '#a16207',
+                          color: '#ffffff',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: isFormEditable ? 'pointer' : 'default',
+                          fontSize: '16px',
+                          minWidth: '40px',
+                          height: '38px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                        title="Add Bank Account"
+                      >
+                        ↓
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account Type</label>
+                      <select
+                        className="setup-dropdown-select"
+                        style={{ color: '#000000', flex: 1 }}
+                        value={formData.accountType}
+                        onChange={e => handleInputChange('accountType', e.target.value)}
+                        disabled={!isFormEditable}
+                      >
+                        <option value="">Select Account Type</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Current">Current</option>
+                        <option value="Fixed Deposit">Fixed Deposit</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Bank Accounts Table */}
+                  <div style={{ marginTop: '16px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cbd5e1', marginBottom: '12px' }}>
+                      <thead>
+                        <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Bank Code</th>
+                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account No.</th>
+                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account Type</th>
+                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a' }}>Bank Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {bankAccounts.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} style={{ padding: '16px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                              No bank accounts added
+                            </td>
+                          </tr>
+                        ) : (
+                          bankAccounts.map((account, index) => (
+                            <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.bankCode}</td>
+                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountNo}</td>
+                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountType}</td>
+                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a' }}>{account.bankName}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                    <button
+                      onClick={() => {
+                        const selectedIndex = bankAccounts.length > 0 ? bankAccounts.length - 1 : -1;
+                        if (selectedIndex >= 0) {
+                          handleRemoveBankAccount(selectedIndex);
+                        }
+                      }}
+                      disabled={!isFormEditable || bankAccounts.length === 0}
+                      style={{
+                        backgroundColor: '#ffffff',
+                        color: '#dc2626',
+                        border: '1px solid #cbd5e1',
+                        padding: '8px 16px',
+                        borderRadius: '4px',
+                        cursor: isFormEditable && bankAccounts.length > 0 ? 'pointer' : 'default',
+                        fontSize: '13px',
+                        fontWeight: 500
+                      }}
+                    >
+                      Remove From List
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -962,36 +1503,59 @@ function FourCardsWithModal() {
                         Print
                       </button>
                       <button
-                        onClick={() => setFormData({
-                          bankCode: '',
-                          description: '',
-                          address: '',
-                          district: '',
-                          swiftCode: 'SBLILKLX',
-                          branchNo: '',
-                          applicationNo: '',
-                          applicationStatus: 'All',
-                          applicantType: '',
-                          title: '',
-                          initials: '',
-                          nameByInitials: '',
-                          surname: '',
-                          dateOfBirth: '',
-                          nic: '',
-                          passport: '',
-                          otherNo: '',
-                          compRegNo: '',
-                          telCode: '+94',
-                          telephone: '',
-                          faxCode: '+94',
-                          fax: '',
-                          mobileCode: '+94',
-                          mobile: '',
-                          email: '',
-                          tinNo: '',
-                          nationality: 'Local',
-                          relatedPartyStatus: 'None Related',
-                        })}
+                        onClick={() => {
+                          setFormData({
+                            bankCode: '',
+                            description: '',
+                            address: '',
+                            district: '',
+                            swiftCode: 'SBLILKLX',
+                            branchNo: '',
+                            applicationNo: '',
+                            applicationStatus: 'All',
+                            applicantType: '',
+                            title: '',
+                            initials: '',
+                            nameByInitials: '',
+                            surname: '',
+                            dateOfBirth: '',
+                            nic: '',
+                            passport: '',
+                            otherNo: '',
+                            compRegNo: '',
+                            telCode: '+94',
+                            telephone: '',
+                            faxCode: '+94',
+                            fax: '',
+                            mobileCode: '+94',
+                            mobile: '',
+                            email: '',
+                            tinNo: '',
+                            nationality: 'Local',
+                            relatedPartyStatus: 'None Related',
+                            correspondenceStreet: '',
+                            correspondenceTown: '',
+                            correspondenceCity: '',
+                            correspondenceDistrict: '',
+                            correspondenceCountry: 'Sri Lanka',
+                            correspondencePostalCode: '',
+                            correspondencePostalArea: '',
+                            permanentStreet: '',
+                            permanentTown: '',
+                            permanentCity: '',
+                            permanentDistrict: '',
+                            permanentCountry: 'Sri Lanka',
+                            permanentPostalCode: '',
+                            permanentPostalArea: '',
+                            addressType: 'Office',
+                            otherAddress: '',
+                            zone: '',
+                            bank: '',
+                            accountNo: '',
+                            accountType: '',
+                          });
+                          setBankAccounts([]);
+                        }}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >

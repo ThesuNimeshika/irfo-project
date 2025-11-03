@@ -729,6 +729,30 @@ function FourCardsWithModal() {
         </div>
       );
     }
+    
+    if (modalTitle === 'Registration Unit Holders Profiles') {
+      return (
+        <div className="setup-input-section">
+          {/* Top: Registration No + Search + Compulsory Data Fields */}
+          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
+              <input
+                type="text"
+                value={formData.applicationNo}
+                onChange={(e) => handleInputChange('applicationNo', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder="Enter registration number"
+                style={{ color: '#000000', flex: 1 }}
+              />
+              <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+              <button className="setup-btn setup-btn-save" disabled={!isFormEditable} style={{ marginLeft: '12px' }}>Compulsory Data Fields</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     // Default content (kept for other modules if any)
     return (

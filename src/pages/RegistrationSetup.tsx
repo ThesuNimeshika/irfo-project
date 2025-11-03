@@ -103,6 +103,35 @@ interface FormData {
   contactPersonEmail: string;
   heardAboutUs: 'Media' | 'Promotion' | 'Referral' | 'Call Centre' | 'Other';
   promotionOther: string;
+  // Company other fields - Finance Details
+  annualSalesTurnoverCurrent: string;
+  annualSalesTurnoverPrevious: string;
+  netProfitLossCurrent: string;
+  netProfitLossPrevious: string;
+  paidUpCapitalAccumulatedProfitCurrent: string;
+  paidUpCapitalAccumulatedProfitPrevious: string;
+  financialStatementsAvailable: 'Yes' | 'No';
+  // Notification fields
+  statementDelivery: 'Mail' | 'E-Mail' | 'Both';
+  emailNotifyEnabled: boolean;
+  emailConfirmInvestment: boolean;
+  emailConfirmRedemption: boolean;
+  emailUnitBalance: boolean;
+  emailDailyUnitPrice: boolean;
+  smsNotifyEnabled: boolean;
+  smsConfirmInvestment: boolean;
+  smsConfirmRedemption: boolean;
+  smsUnitBalance: boolean;
+  smsDailyUnitPrice: boolean;
+}
+
+interface DirectorInfo {
+  name: string;
+  designation: string;
+  nic: string;
+  shares: string;
+  contactNo: string;
+  address: string;
 }
 
 // ========================================
@@ -228,6 +257,24 @@ function FourCardsWithModal() {
     contactPersonEmail: '',
     heardAboutUs: 'Media',
     promotionOther: '',
+    annualSalesTurnoverCurrent: '0',
+    annualSalesTurnoverPrevious: '0',
+    netProfitLossCurrent: '0',
+    netProfitLossPrevious: '0',
+    paidUpCapitalAccumulatedProfitCurrent: '0',
+    paidUpCapitalAccumulatedProfitPrevious: '0',
+    financialStatementsAvailable: 'No',
+    statementDelivery: 'Mail',
+    emailNotifyEnabled: false,
+    emailConfirmInvestment: false,
+    emailConfirmRedemption: false,
+    emailUnitBalance: false,
+    emailDailyUnitPrice: false,
+    smsNotifyEnabled: false,
+    smsConfirmInvestment: false,
+    smsConfirmRedemption: false,
+    smsUnitBalance: false,
+    smsDailyUnitPrice: false,
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -238,6 +285,15 @@ function FourCardsWithModal() {
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const signatureCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [directors, setDirectors] = useState<DirectorInfo[]>([]);
+  const [newDirector, setNewDirector] = useState<DirectorInfo>({
+    name: '',
+    designation: '',
+    nic: '',
+    shares: '',
+    contactNo: '',
+    address: ''
+  });
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -293,6 +349,31 @@ function FourCardsWithModal() {
 
   const handleRemoveBankAccount = (index: number) => {
     setBankAccounts(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAddDirector = () => {
+    if (!isFormEditable) return;
+    const trimmed: DirectorInfo = {
+      name: newDirector.name.trim(),
+      designation: newDirector.designation.trim(),
+      nic: newDirector.nic.trim(),
+      shares: newDirector.shares.trim(),
+      contactNo: newDirector.contactNo.trim(),
+      address: newDirector.address.trim()
+    };
+    if (!trimmed.name) return;
+    setDirectors(prev => [...prev, trimmed]);
+    setNewDirector({ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' });
+  };
+
+  const handleRemoveDirector = (index: number) => {
+    if (directors.length > 1) {
+      setDirectors(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  const handleNewDirectorChange = (field: keyof DirectorInfo, value: string) => {
+    setNewDirector(prev => ({ ...prev, [field]: value }));
   };
 
   // Signature drawing handlers
@@ -455,8 +536,27 @@ function FourCardsWithModal() {
       contactPersonEmail: '',
       heardAboutUs: 'Media',
       promotionOther: '',
+      annualSalesTurnoverCurrent: '0',
+      annualSalesTurnoverPrevious: '0',
+      netProfitLossCurrent: '0',
+      netProfitLossPrevious: '0',
+      paidUpCapitalAccumulatedProfitCurrent: '0',
+      paidUpCapitalAccumulatedProfitPrevious: '0',
+      financialStatementsAvailable: 'No',
+      statementDelivery: 'Mail',
+      emailNotifyEnabled: false,
+      emailConfirmInvestment: false,
+      emailConfirmRedemption: false,
+      emailUnitBalance: false,
+      emailDailyUnitPrice: false,
+      smsNotifyEnabled: false,
+      smsConfirmInvestment: false,
+      smsConfirmRedemption: false,
+      smsUnitBalance: false,
+      smsDailyUnitPrice: false,
     });
     setBankAccounts([]);
+    setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
   };
 
   const handleModalOpen = (idx: number) => {
@@ -2252,9 +2352,386 @@ function FourCardsWithModal() {
           </div>
         );
       case 'Company other':
-        return <div className="setup-input-section">Company other details go here.</div>;
+        return (
+          <div className="setup-input-section">
+            <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+              {/* Finance Details Section */}
+              <div style={{ marginBottom: '24px' }}>
+                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                  Finance Details
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Header Row with Current Year and Previous Year */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                    <div></div>
+                    <div className="setup-input-label" style={{ fontWeight: 600, textAlign: 'center' }}>Current Year</div>
+                    <div className="setup-input-label" style={{ fontWeight: 600, textAlign: 'center' }}>Previous Year</div>
+                  </div>
+
+                  {/* Annual Sales Turnover */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                    <label className="setup-input-label" style={{ minWidth: '200px' }}>Annual Sales Turnover</label>
+                    <input
+                      type="text"
+                      value={formData.annualSalesTurnoverCurrent}
+                      onChange={(e) => handleInputChange('annualSalesTurnoverCurrent', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="0"
+                      style={{ color: '#000000', textAlign: 'center' }}
+                    />
+                    <input
+                      type="text"
+                      value={formData.annualSalesTurnoverPrevious}
+                      onChange={(e) => handleInputChange('annualSalesTurnoverPrevious', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="0"
+                      style={{ color: '#000000', textAlign: 'center' }}
+                    />
+                  </div>
+
+                  {/* Net Profit/Loss */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                    <label className="setup-input-label" style={{ minWidth: '200px' }}>Net Profit/Loss</label>
+                    <input
+                      type="text"
+                      value={formData.netProfitLossCurrent}
+                      onChange={(e) => handleInputChange('netProfitLossCurrent', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="0"
+                      style={{ color: '#000000', textAlign: 'center' }}
+                    />
+                    <input
+                      type="text"
+                      value={formData.netProfitLossPrevious}
+                      onChange={(e) => handleInputChange('netProfitLossPrevious', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="0"
+                      style={{ color: '#000000', textAlign: 'center' }}
+                    />
+                  </div>
+
+                  {/* Paid-Up Capital + Accumulated Profit */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                    <label className="setup-input-label" style={{ minWidth: '200px' }}>Paid-Up Capital + Accumulated Profit</label>
+                    <input
+                      type="text"
+                      value={formData.paidUpCapitalAccumulatedProfitCurrent}
+                      onChange={(e) => handleInputChange('paidUpCapitalAccumulatedProfitCurrent', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="0"
+                      style={{ color: '#000000', textAlign: 'center' }}
+                    />
+                    <input
+                      type="text"
+                      value={formData.paidUpCapitalAccumulatedProfitPrevious}
+                      onChange={(e) => handleInputChange('paidUpCapitalAccumulatedProfitPrevious', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="0"
+                      style={{ color: '#000000', textAlign: 'center' }}
+                    />
+                  </div>
+
+                  {/* Financial Statements Question */}
+                  <div style={{ marginTop: '16px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: '8px', display: 'block' }}>
+                      Are the Financial statements for the last two years available ?
+                    </label>
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="financialStatementsAvailable"
+                          checked={formData.financialStatementsAvailable === 'Yes'}
+                          onChange={() => handleInputChange('financialStatementsAvailable', 'Yes')}
+                          disabled={!isFormEditable}
+                          style={{
+                            accentColor: '#9333ea',
+                            cursor: isFormEditable ? 'pointer' : 'default'
+                          }}
+                        />
+                        Yes
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="financialStatementsAvailable"
+                          checked={formData.financialStatementsAvailable === 'No'}
+                          onChange={() => handleInputChange('financialStatementsAvailable', 'No')}
+                          disabled={!isFormEditable}
+                          style={{
+                            accentColor: '#9333ea',
+                            cursor: isFormEditable ? 'pointer' : 'default'
+                          }}
+                        />
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Director/Committee/Governing Body Information Section */}
+              <div style={{ borderTop: '1px solid #cbd5e1', paddingTop: '16px' }}>
+                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                  Director/Committee/Governing Body Information
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Inputs Row (first) */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr auto', gap: '8px', alignItems: 'center' }}>
+                    <input
+                      type="text"
+                      value={newDirector.name}
+                      onChange={(e) => handleNewDirectorChange('name', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Name"
+                      style={{ color: '#000000' }}
+                    />
+                    <input
+                      type="text"
+                      value={newDirector.designation}
+                      onChange={(e) => handleNewDirectorChange('designation', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Designation"
+                      style={{ color: '#000000' }}
+                    />
+                    <input
+                      type="text"
+                      value={newDirector.nic}
+                      onChange={(e) => handleNewDirectorChange('nic', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="NIC"
+                      style={{ color: '#000000' }}
+                    />
+                    <input
+                      type="text"
+                      value={newDirector.shares}
+                      onChange={(e) => handleNewDirectorChange('shares', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Shares"
+                      style={{ color: '#000000' }}
+                    />
+                    <input
+                      type="text"
+                      value={newDirector.contactNo}
+                      onChange={(e) => handleNewDirectorChange('contactNo', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Contact No"
+                      style={{ color: '#000000' }}
+                    />
+                    <input
+                      type="text"
+                      value={newDirector.address}
+                      onChange={(e) => handleNewDirectorChange('address', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Address"
+                      style={{ color: '#000000' }}
+                    />
+                    <button
+                      onClick={handleAddDirector}
+                      disabled={!isFormEditable}
+                      style={{
+                        backgroundColor: '#fbbf24',
+                        color: '#ffffff',
+                        border: 'none',
+                        padding: '6px 10px',
+                        borderRadius: '4px',
+                        cursor: isFormEditable ? 'pointer' : 'default',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        width: '36px',
+                        height: '36px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      title="Add to list"
+                    >
+                      ↓
+                    </button>
+                  </div>
+
+                  {/* Table (headers black) */}
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+                          <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Name</th>
+                          <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Designation</th>
+                          <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>NIC</th>
+                          <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Shares</th>
+                          <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Contact No</th>
+                          <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Address</th>
+                          <th style={{ width: '60px' }}></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {directors.length === 0 ? (
+                          <tr>
+                            <td colSpan={7} style={{ padding: '16px', color: '#64748b', textAlign: 'center' }}>No entries added</td>
+                          </tr>
+                        ) : (
+                          directors.map((d, i) => (
+                            <tr key={i} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                              <td style={{ padding: '8px 12px', color: '#0f172a' }}>{d.name}</td>
+                              <td style={{ padding: '8px 12px', color: '#0f172a' }}>{d.designation}</td>
+                              <td style={{ padding: '8px 12px', color: '#0f172a' }}>{d.nic}</td>
+                              <td style={{ padding: '8px 12px', color: '#0f172a' }}>{d.shares}</td>
+                              <td style={{ padding: '8px 12px', color: '#0f172a' }}>{d.contactNo}</td>
+                              <td style={{ padding: '8px 12px', color: '#0f172a' }}>{d.address}</td>
+                              <td style={{ padding: '8px 12px' }}>
+                                <button
+                                  onClick={() => handleRemoveDirector(i)}
+                                  disabled={!isFormEditable}
+                                  style={{
+                                    backgroundColor: '#dc2626',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    cursor: isFormEditable ? 'pointer' : 'default',
+                                    fontWeight: 600
+                                  }}
+                                  title="Remove"
+                                >
+                                  ×
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
       case 'Notification':
-        return <div className="setup-input-section">Notification settings go here.</div>;
+        return (
+          <div className="setup-input-section">
+            <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+              {/* Statement Delivery */}
+              <div style={{ marginBottom: '16px' }}>
+                <label className="setup-input-label" style={{ fontWeight: 600, marginRight: '16px' }}>
+                  How do you wish to receive Statement ?
+                </label>
+                <label style={{ marginRight: '18px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                  <input
+                    type="radio"
+                    name="statementDelivery"
+                    checked={formData.statementDelivery === 'Mail'}
+                    onChange={() => handleInputChange('statementDelivery', 'Mail')}
+                    disabled={!isFormEditable}
+                    style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                  />
+                  Mail
+                </label>
+                <label style={{ marginRight: '18px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                  <input
+                    type="radio"
+                    name="statementDelivery"
+                    checked={formData.statementDelivery === 'E-Mail'}
+                    onChange={() => handleInputChange('statementDelivery', 'E-Mail')}
+                    disabled={!isFormEditable}
+                    style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                  />
+                  E-Mail
+                </label>
+                <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                  <input
+                    type="radio"
+                    name="statementDelivery"
+                    checked={formData.statementDelivery === 'Both'}
+                    onChange={() => handleInputChange('statementDelivery', 'Both')}
+                    disabled={!isFormEditable}
+                    style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                  />
+                  Both
+                </label>
+              </div>
+
+              {/* Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                {/* E-Mail Card */}
+                <div className="setup-ash-box" style={{ padding: '16px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '8px' }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.emailNotifyEnabled}
+                      onChange={(e) => handleInputChange('emailNotifyEnabled', e.target.checked.toString())}
+                      disabled={!isFormEditable}
+                      style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                    />
+                    Send me E-Mail on
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '18px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.emailConfirmInvestment} onChange={(e) => handleInputChange('emailConfirmInvestment', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Confirmation of Investment
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.emailConfirmRedemption} onChange={(e) => handleInputChange('emailConfirmRedemption', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Confirmation of Redemption
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.emailUnitBalance} onChange={(e) => handleInputChange('emailUnitBalance', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Unit Balance - Confirmation
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.emailDailyUnitPrice} onChange={(e) => handleInputChange('emailDailyUnitPrice', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Daily Unit Price
+                    </label>
+                  </div>
+                </div>
+
+                {/* SMS Card */}
+                <div className="setup-ash-box" style={{ padding: '16px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '8px' }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.smsNotifyEnabled}
+                      onChange={(e) => handleInputChange('smsNotifyEnabled', e.target.checked.toString())}
+                      disabled={!isFormEditable}
+                      style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                    />
+                    Send me SMS on
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '18px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.smsConfirmInvestment} onChange={(e) => handleInputChange('smsConfirmInvestment', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Confirmation of Investment
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.smsConfirmRedemption} onChange={(e) => handleInputChange('smsConfirmRedemption', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Confirmation of Redemption
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.smsUnitBalance} onChange={(e) => handleInputChange('smsUnitBalance', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Unit Balance - Confirmation
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input type="checkbox" checked={formData.smsDailyUnitPrice} onChange={(e) => handleInputChange('smsDailyUnitPrice', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                      Daily Unit Price
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
       case 'Supporting Document Check List':
         return <div className="setup-input-section">Supporting documents checklist.</div>;
       case 'Office Use Details':
@@ -2467,8 +2944,27 @@ function FourCardsWithModal() {
                             contactPersonEmail: '',
                             heardAboutUs: 'Media',
                             promotionOther: '',
+                            annualSalesTurnoverCurrent: '0',
+                            annualSalesTurnoverPrevious: '0',
+                            netProfitLossCurrent: '0',
+                            netProfitLossPrevious: '0',
+                            paidUpCapitalAccumulatedProfitCurrent: '0',
+                            paidUpCapitalAccumulatedProfitPrevious: '0',
+                            financialStatementsAvailable: 'No',
+                            statementDelivery: 'Mail',
+                            emailNotifyEnabled: false,
+                            emailConfirmInvestment: false,
+                            emailConfirmRedemption: false,
+                            emailUnitBalance: false,
+                            emailDailyUnitPrice: false,
+                            smsNotifyEnabled: false,
+                            smsConfirmInvestment: false,
+                            smsConfirmRedemption: false,
+                            smsUnitBalance: false,
+                            smsDailyUnitPrice: false,
                           });
                           setBankAccounts([]);
+                          setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
                         }}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}

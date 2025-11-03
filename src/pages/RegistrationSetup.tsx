@@ -1036,9 +1036,7 @@ function FourCardsWithModal() {
                         </div>
 
                         {/* Tab Content */}
-                        <div className="setup-ash-box" style={{ padding: '16px' }}>
-                          {renderApplicationTabContent()}
-                        </div>
+                        {renderApplicationTabContent()}
                       </div>
                     </div>
                   </div>

@@ -81,6 +81,28 @@ interface FormData {
   officeFaxNo: string;
   officeEmail: string;
   signature: string;
+  // Other Details fields
+  married: boolean;
+  spouseName: string;
+  spouseOccupation: string;
+  spouseEmployer: string;
+  sourceOfIncome: string;
+  annualIncome: string;
+  incomeCurrency: string;
+  isSubsidiaryAssociate: 'Yes' | 'No';
+  ownershipType: 'Subsidiary' | 'Associate';
+  organizationName: string;
+  contactPersonTitle: string;
+  contactPersonInitials: string;
+  contactPersonFirstName: string;
+  contactPersonSurname: string;
+  contactPersonDesignation: string;
+  contactPersonAddress: string;
+  contactPersonTelephone: string;
+  contactPersonFax: string;
+  contactPersonEmail: string;
+  heardAboutUs: 'Media' | 'Promotion' | 'Referral' | 'Call Centre' | 'Other';
+  promotionOther: string;
 }
 
 // ========================================
@@ -185,6 +207,27 @@ function FourCardsWithModal() {
     officeFaxNo: '',
     officeEmail: '',
     signature: '',
+    married: false,
+    spouseName: '',
+    spouseOccupation: '',
+    spouseEmployer: '',
+    sourceOfIncome: '',
+    annualIncome: '',
+    incomeCurrency: 'Sri Lanka',
+    isSubsidiaryAssociate: 'No',
+    ownershipType: 'Subsidiary',
+    organizationName: '',
+    contactPersonTitle: '',
+    contactPersonInitials: '',
+    contactPersonFirstName: '',
+    contactPersonSurname: '',
+    contactPersonDesignation: '',
+    contactPersonAddress: '',
+    contactPersonTelephone: '',
+    contactPersonFax: '',
+    contactPersonEmail: '',
+    heardAboutUs: 'Media',
+    promotionOther: '',
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -391,6 +434,27 @@ function FourCardsWithModal() {
       officeFaxNo: '',
       officeEmail: '',
       signature: '',
+      married: false,
+      spouseName: '',
+      spouseOccupation: '',
+      spouseEmployer: '',
+      sourceOfIncome: '',
+      annualIncome: '',
+      incomeCurrency: 'Sri Lanka',
+      isSubsidiaryAssociate: 'No',
+      ownershipType: 'Subsidiary',
+      organizationName: '',
+      contactPersonTitle: '',
+      contactPersonInitials: '',
+      contactPersonFirstName: '',
+      contactPersonSurname: '',
+      contactPersonDesignation: '',
+      contactPersonAddress: '',
+      contactPersonTelephone: '',
+      contactPersonFax: '',
+      contactPersonEmail: '',
+      heardAboutUs: 'Media',
+      promotionOther: '',
     });
     setBankAccounts([]);
   };
@@ -1723,7 +1787,470 @@ function FourCardsWithModal() {
           </div>
         );
       case 'Other Details':
-        return <div className="setup-input-section">Other details go here.</div>;
+        return (
+          <div className="setup-input-section">
+            <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                {/* Left Column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                  {/* Personal Customer Applicant Details */}
+                  {formData.applicantType === 'Individual' && (
+                    <div>
+                      <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+                        If Personal Customer Applicant
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                          <input
+                            type="checkbox"
+                            checked={formData.married}
+                            onChange={(e) => setFormData(prev => ({ ...prev, married: e.target.checked }))}
+                            disabled={!isFormEditable}
+                            style={{
+                              accentColor: '#9333ea',
+                              cursor: isFormEditable ? 'pointer' : 'default'
+                            }}
+                          />
+                          Married
+                        </label>
+                        {formData.married && (
+                          <>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <label className="setup-input-label" style={{ minWidth: '140px' }}>Spouse's Name</label>
+                              <input
+                                type="text"
+                                value={formData.spouseName}
+                                onChange={(e) => handleInputChange('spouseName', e.target.value)}
+                                disabled={!isFormEditable}
+                                className="setup-input-field"
+                                placeholder="Enter spouse's name"
+                                style={{ color: '#000000', flex: 1 }}
+                              />
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <label className="setup-input-label" style={{ minWidth: '140px' }}>Spouse's Occupation</label>
+                              <input
+                                type="text"
+                                value={formData.spouseOccupation}
+                                onChange={(e) => handleInputChange('spouseOccupation', e.target.value)}
+                                disabled={!isFormEditable}
+                                className="setup-input-field"
+                                placeholder="Enter spouse's occupation"
+                                style={{ color: '#000000', flex: 1 }}
+                              />
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <label className="setup-input-label" style={{ minWidth: '140px' }}>Spouse's Employer</label>
+                              <input
+                                type="text"
+                                value={formData.spouseEmployer}
+                                onChange={(e) => handleInputChange('spouseEmployer', e.target.value)}
+                                disabled={!isFormEditable}
+                                className="setup-input-field"
+                                placeholder="Enter spouse's employer"
+                                style={{ color: '#000000', flex: 1 }}
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Income Details */}
+                  <div>
+                    <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+                      Income Details
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '140px' }}>Source of Income</label>
+                        <select
+                          className="setup-dropdown-select"
+                          style={{ color: '#000000', flex: 1 }}
+                          value={formData.sourceOfIncome}
+                          onChange={e => handleInputChange('sourceOfIncome', e.target.value)}
+                          disabled={!isFormEditable}
+                        >
+                          <option value="">N/A</option>
+                          <option value="Salary">Salary</option>
+                          <option value="Business">Business</option>
+                          <option value="Investment">Investment</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ minWidth: '120px' }}>Annual Income</label>
+                          <input
+                            type="text"
+                            value={formData.annualIncome}
+                            onChange={(e) => handleInputChange('annualIncome', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-input-field"
+                            placeholder="N/A"
+                            style={{ color: '#000000', flex: 1 }}
+                          />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ minWidth: '100px' }}>Currency</label>
+                          <select
+                            className="setup-dropdown-select"
+                            style={{ color: '#000000', flex: 1 }}
+                            value={formData.incomeCurrency}
+                            onChange={e => handleInputChange('incomeCurrency', e.target.value)}
+                            disabled={!isFormEditable}
+                          >
+                            <option value="Sri Lanka">Sri Lanka</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* If Corporate Applicant */}
+                  {formData.applicantType === 'Corporate' && (
+                    <div className="setup-ash-box" style={{ padding: '16px' }}>
+                      <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+                        If Corporate Applicant
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div style={{ marginBottom: '8px' }}>
+                          <label className="setup-input-label" style={{ marginBottom: '8px', display: 'block' }}>
+                            Are you a Subsidiary / Associate of another organization?
+                          </label>
+                          <div style={{ display: 'flex', gap: '16px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                              <input
+                                type="radio"
+                                name="isSubsidiaryAssociate"
+                                checked={formData.isSubsidiaryAssociate === 'Yes'}
+                                onChange={() => handleInputChange('isSubsidiaryAssociate', 'Yes')}
+                                disabled={!isFormEditable}
+                                style={{
+                                  accentColor: '#9333ea',
+                                  cursor: isFormEditable ? 'pointer' : 'default'
+                                }}
+                              />
+                              Yes
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                              <input
+                                type="radio"
+                                name="isSubsidiaryAssociate"
+                                checked={formData.isSubsidiaryAssociate === 'No'}
+                                onChange={() => handleInputChange('isSubsidiaryAssociate', 'No')}
+                                disabled={!isFormEditable}
+                                style={{
+                                  accentColor: '#9333ea',
+                                  cursor: isFormEditable ? 'pointer' : 'default'
+                                }}
+                              />
+                              No
+                            </label>
+                          </div>
+                        </div>
+                        <div style={{ marginTop: '12px' }}>
+                          <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '8px' }}>
+                            Ownership
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '12px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                              <input
+                                type="radio"
+                                name="ownershipType"
+                                checked={formData.ownershipType === 'Subsidiary'}
+                                onChange={() => handleInputChange('ownershipType', 'Subsidiary')}
+                                disabled={!isFormEditable}
+                                style={{
+                                  accentColor: '#9333ea',
+                                  cursor: isFormEditable ? 'pointer' : 'default'
+                                }}
+                              />
+                              Subsidiary
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                              <input
+                                type="radio"
+                                name="ownershipType"
+                                checked={formData.ownershipType === 'Associate'}
+                                onChange={() => handleInputChange('ownershipType', 'Associate')}
+                                disabled={!isFormEditable}
+                                style={{
+                                  accentColor: '#9333ea',
+                                  cursor: isFormEditable ? 'pointer' : 'default'
+                                }}
+                              />
+                              Associate
+                            </label>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ minWidth: '100px' }}>Organization</label>
+                            <input
+                              type="text"
+                              value={formData.organizationName}
+                              onChange={(e) => handleInputChange('organizationName', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter organization name"
+                              style={{ color: '#000000', flex: 1 }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Column */}
+                <div>
+                  {/* Contact Person - Only for Corporate */}
+                  {formData.applicantType === 'Corporate' && (
+                    <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '24px' }}>
+                      <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
+                        Contact Person
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {/* Row 1: Title | Initials */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ minWidth: '100px' }}>Title</label>
+                            <select
+                              className="setup-dropdown-select"
+                              style={{ color: '#000000', flex: 1 }}
+                              value={formData.contactPersonTitle}
+                              onChange={e => handleInputChange('contactPersonTitle', e.target.value)}
+                              disabled={!isFormEditable}
+                            >
+                              <option value="">Select Title</option>
+                              <option value="Mr">Mr</option>
+                              <option value="Mrs">Mrs</option>
+                              <option value="Miss">Miss</option>
+                              <option value="Dr">Dr</option>
+                            </select>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ minWidth: '100px' }}>Initials</label>
+                            <input
+                              type="text"
+                              value={formData.contactPersonInitials}
+                              onChange={(e) => handleInputChange('contactPersonInitials', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter initials"
+                              style={{ color: '#000000', flex: 1 }}
+                            />
+                          </div>
+                        </div>
+                        {/* Row 2: First Name | Surname */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ minWidth: '100px' }}>First Name</label>
+                            <input
+                              type="text"
+                              value={formData.contactPersonFirstName}
+                              onChange={(e) => handleInputChange('contactPersonFirstName', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter first name"
+                              style={{ color: '#000000', flex: 1 }}
+                            />
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ minWidth: '100px' }}>Surname</label>
+                            <input
+                              type="text"
+                              value={formData.contactPersonSurname}
+                              onChange={(e) => handleInputChange('contactPersonSurname', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter surname"
+                              style={{ color: '#000000', flex: 1 }}
+                            />
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ minWidth: '100px' }}>Designation</label>
+                          <input
+                            type="text"
+                            value={formData.contactPersonDesignation}
+                            onChange={(e) => handleInputChange('contactPersonDesignation', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-input-field"
+                            placeholder="Enter designation"
+                            style={{ color: '#000000', flex: 1 }}
+                          />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ minWidth: '100px' }}>Address</label>
+                          <input
+                            type="text"
+                            value={formData.contactPersonAddress}
+                            onChange={(e) => handleInputChange('contactPersonAddress', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-input-field"
+                            placeholder="Enter address"
+                            style={{ color: '#000000', flex: 1 }}
+                          />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ minWidth: '100px' }}>Telephone</label>
+                          <input
+                            type="text"
+                            value={formData.contactPersonTelephone}
+                            onChange={(e) => handleInputChange('contactPersonTelephone', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-input-field"
+                            placeholder="Enter telephone"
+                            style={{ color: '#000000', flex: 1 }}
+                          />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ minWidth: '100px' }}>Fax</label>
+                          <input
+                            type="text"
+                            value={formData.contactPersonFax}
+                            onChange={(e) => handleInputChange('contactPersonFax', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-input-field"
+                            placeholder="Enter fax"
+                            style={{ color: '#000000', flex: 1 }}
+                          />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ minWidth: '100px' }}>E-Mail</label>
+                          <input
+                            type="email"
+                            value={formData.contactPersonEmail}
+                            onChange={(e) => handleInputChange('contactPersonEmail', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-input-field"
+                            placeholder="Enter email"
+                            style={{ color: '#000000', flex: 1 }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* How did you hear about us? */}
+              <div style={{ marginTop: '24px', borderTop: '1px solid #cbd5e1', paddingTop: '16px' }}>
+                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+                  How did you hear about us?
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                    <input
+                      type="radio"
+                      name="heardAboutUs"
+                      checked={formData.heardAboutUs === 'Media'}
+                      onChange={() => {
+                        handleInputChange('heardAboutUs', 'Media');
+                        handleInputChange('promotionOther', '');
+                      }}
+                      disabled={!isFormEditable}
+                      style={{
+                        accentColor: '#9333ea',
+                        cursor: isFormEditable ? 'pointer' : 'default'
+                      }}
+                    />
+                    Media
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                    <input
+                      type="radio"
+                      name="heardAboutUs"
+                      checked={formData.heardAboutUs === 'Promotion'}
+                      onChange={() => {
+                        handleInputChange('heardAboutUs', 'Promotion');
+                        // Keep previously selected promotion option (if any)
+                      }}
+                      disabled={!isFormEditable}
+                      style={{
+                        accentColor: '#9333ea',
+                        cursor: isFormEditable ? 'pointer' : 'default'
+                      }}
+                    />
+                    Promotion
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                    <input
+                      type="radio"
+                      name="heardAboutUs"
+                      checked={formData.heardAboutUs === 'Referral'}
+                      onChange={() => {
+                        handleInputChange('heardAboutUs', 'Referral');
+                        handleInputChange('promotionOther', '');
+                      }}
+                      disabled={!isFormEditable}
+                      style={{
+                        accentColor: '#9333ea',
+                        cursor: isFormEditable ? 'pointer' : 'default'
+                      }}
+                    />
+                    Referral
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                    <input
+                      type="radio"
+                      name="heardAboutUs"
+                      checked={formData.heardAboutUs === 'Call Centre'}
+                      onChange={() => {
+                        handleInputChange('heardAboutUs', 'Call Centre');
+                        handleInputChange('promotionOther', '');
+                      }}
+                      disabled={!isFormEditable}
+                      style={{
+                        accentColor: '#9333ea',
+                        cursor: isFormEditable ? 'pointer' : 'default'
+                      }}
+                    />
+                    Call Centre
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                    <input
+                      type="radio"
+                      name="heardAboutUs"
+                      checked={formData.heardAboutUs === 'Other'}
+                      onChange={() => {
+                        handleInputChange('heardAboutUs', 'Other');
+                        handleInputChange('promotionOther', '');
+                      }}
+                      disabled={!isFormEditable}
+                      style={{
+                        accentColor: '#9333ea',
+                        cursor: isFormEditable ? 'pointer' : 'default'
+                      }}
+                    />
+                    Other
+                  </label>
+                  {formData.heardAboutUs === 'Promotion' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Promotion</label>
+                      <select
+                        className="setup-dropdown-select"
+                        style={{ color: '#000000', minWidth: '200px' }}
+                        value={formData.promotionOther}
+                        onChange={e => handleInputChange('promotionOther', e.target.value)}
+                        disabled={!isFormEditable}
+                      >
+                        <option value="">Select Promotion</option>
+                        <option value="Online Campaign">Online Campaign</option>
+                        <option value="Print Media">Print Media</option>
+                        <option value="TV Advertisement">TV Advertisement</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
       case 'Company other':
         return <div className="setup-input-section">Company other details go here.</div>;
       case 'Notification':
@@ -1919,6 +2446,27 @@ function FourCardsWithModal() {
                             officeFaxNo: '',
                             officeEmail: '',
                             signature: '',
+                            married: false,
+                            spouseName: '',
+                            spouseOccupation: '',
+                            spouseEmployer: '',
+                            sourceOfIncome: '',
+                            annualIncome: '',
+                            incomeCurrency: 'Sri Lanka',
+                            isSubsidiaryAssociate: 'No',
+                            ownershipType: 'Subsidiary',
+                            organizationName: '',
+                            contactPersonTitle: '',
+                            contactPersonInitials: '',
+                            contactPersonFirstName: '',
+                            contactPersonSurname: '',
+                            contactPersonDesignation: '',
+                            contactPersonAddress: '',
+                            contactPersonTelephone: '',
+                            contactPersonFax: '',
+                            contactPersonEmail: '',
+                            heardAboutUs: 'Media',
+                            promotionOther: '',
                           });
                           setBankAccounts([]);
                         }}

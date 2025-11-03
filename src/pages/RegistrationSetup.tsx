@@ -134,6 +134,14 @@ interface DirectorInfo {
   address: string;
 }
 
+interface SupportingDoc {
+  code: string;
+  name: string;
+  selected: boolean;
+  receiveDate: string; // ISO yyyy-mm-dd
+  user: string;
+}
+
 // ========================================
 // STATIC DATA AND CONFIGURATION
 // ========================================
@@ -294,6 +302,15 @@ function FourCardsWithModal() {
     contactNo: '',
     address: ''
   });
+
+  const defaultSupportingDocs: SupportingDoc[] = [
+    { code: '20', name: 'A copy of Business registration certificate', selected: false, receiveDate: '', user: '' },
+    { code: '21', name: 'Address Verification', selected: false, receiveDate: '', user: '' },
+    { code: '22', name: 'Letter of Authorized Signatory', selected: false, receiveDate: '', user: '' },
+    { code: '23', name: 'Board Resolution', selected: false, receiveDate: '', user: '' },
+    { code: '24', name: 'Directors NIC copies', selected: false, receiveDate: '', user: '' },
+  ];
+  const [supportingDocs, setSupportingDocs] = useState<SupportingDoc[]>(defaultSupportingDocs);
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -557,6 +574,7 @@ function FourCardsWithModal() {
     });
     setBankAccounts([]);
     setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
+    setSupportingDocs(defaultSupportingDocs);
   };
 
   const handleModalOpen = (idx: number) => {
@@ -2733,7 +2751,99 @@ function FourCardsWithModal() {
           </div>
         );
       case 'Supporting Document Check List':
-        return <div className="setup-input-section">Supporting documents checklist.</div>;
+        return (
+          <div className="setup-input-section">
+            <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+                      <th style={{ width: '40px' }}></th>
+                      <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Document Code</th>
+                      <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Document</th>
+                      <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>Receive Date</th>
+                      <th style={{ textAlign: 'left', padding: '8px 12px', color: '#000000' }}>User</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {supportingDocs.map((doc, idx) => (
+                      <tr key={doc.code} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '6px 8px' }}>
+                          <input
+                            type="checkbox"
+                            checked={doc.selected}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setSupportingDocs(prev => prev.map((d, i) => i === idx ? { ...d, selected: checked } : d));
+                            }}
+                            disabled={!isFormEditable}
+                            style={{ accentColor: '#9333ea' }}
+                          />
+                        </td>
+                        <td style={{ padding: '8px 12px', color: '#0f172a' }}>{doc.code}</td>
+                        <td style={{ padding: '8px 12px', color: '#0f172a' }}>{doc.name}</td>
+                        <td style={{ padding: '8px 12px' }}>
+                          <input
+                            type="date"
+                            value={doc.receiveDate}
+                            onChange={(e) => setSupportingDocs(prev => prev.map((d, i) => i === idx ? { ...d, receiveDate: e.target.value } : d))}
+                            onClick={(e) => {
+                              const input = e.currentTarget as HTMLInputElement & { showPicker?: () => void };
+                              if (typeof input.showPicker === 'function') {
+                                input.showPicker();
+                              }
+                            }}
+                            onFocus={(e) => {
+                              const input = e.currentTarget as HTMLInputElement & { showPicker?: () => void };
+                              if (typeof input.showPicker === 'function') {
+                                input.showPicker();
+                              }
+                            }}
+                            disabled={!isFormEditable || !doc.selected}
+                            className="setup-input-field"
+                            style={{ color: '#000000', minWidth: '160px' }}
+                          />
+                        </td>
+                        <td style={{ padding: '8px 12px' }}>
+                          <input
+                            type="text"
+                            value={doc.user}
+                            onChange={(e) => setSupportingDocs(prev => prev.map((d, i) => i === idx ? { ...d, user: e.target.value } : d))}
+                            disabled={!isFormEditable || !doc.selected}
+                            className="setup-input-field"
+                            placeholder=""
+                            style={{ color: '#000000' }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Select All */}
+              <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  type="checkbox"
+                  checked={supportingDocs.every(d => d.selected)}
+                  ref={el => {
+                    if (!el) return;
+                    const some = supportingDocs.some(d => d.selected);
+                    const all = supportingDocs.every(d => d.selected);
+                    el.indeterminate = some && !all;
+                  }}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setSupportingDocs(prev => prev.map(d => ({ ...d, selected: checked })));
+                  }}
+                  disabled={!isFormEditable}
+                  style={{ accentColor: '#9333ea' }}
+                />
+                <span className="setup-input-label" style={{ color: '#000000' }}>Select All</span>
+              </div>
+            </div>
+          </div>
+        );
       case 'Office Use Details':
         return <div className="setup-input-section">Office use details.</div>;
       default:
@@ -2965,6 +3075,7 @@ function FourCardsWithModal() {
                           });
                           setBankAccounts([]);
                           setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
+                          setSupportingDocs(defaultSupportingDocs);
                         }}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}

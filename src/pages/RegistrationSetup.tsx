@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';
 import '../Setup.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
  
 
@@ -69,6 +69,18 @@ interface FormData {
   bank: string;
   accountNo: string;
   accountType: string;
+  // Office/Employee details fields
+  occupation: string;
+  officeName: string;
+  officeStreet: string;
+  officeTown: string;
+  officeCity: string;
+  officePostalCode: string;
+  officeCountry: string;
+  officeTele: string;
+  officeFaxNo: string;
+  officeEmail: string;
+  signature: string;
 }
 
 // ========================================
@@ -162,6 +174,17 @@ function FourCardsWithModal() {
     bank: '',
     accountNo: '',
     accountType: '',
+    occupation: '',
+    officeName: '',
+    officeStreet: '',
+    officeTown: '',
+    officeCity: '',
+    officePostalCode: '',
+    officeCountry: 'Sri Lanka',
+    officeTele: '',
+    officeFaxNo: '',
+    officeEmail: '',
+    signature: '',
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -170,6 +193,8 @@ function FourCardsWithModal() {
   const [activeTab, setActiveTab] = useState<string>('Personal Details');
   const [showCompanyTable, setShowCompanyTable] = useState(false);
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+  const signatureCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -227,6 +252,83 @@ function FourCardsWithModal() {
     setBankAccounts(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Signature drawing handlers
+  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+    
+    return { x, y };
+  };
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isFormEditable || !signatureCanvasRef.current) return;
+    setIsDrawing(true);
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const { x, y } = getCoordinates(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing || !isFormEditable || !signatureCanvasRef.current) return;
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const { x, y } = getCoordinates(e, canvas);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  };
+
+  const stopDrawing = () => {
+    if (isDrawing && signatureCanvasRef.current) {
+      const canvas = signatureCanvasRef.current;
+      const dataURL = canvas.toDataURL('image/png');
+      handleInputChange('signature', dataURL);
+    }
+    setIsDrawing(false);
+  };
+
+  const clearSignature = () => {
+    if (!signatureCanvasRef.current) return;
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      handleInputChange('signature', '');
+    }
+  };
+
+  // Initialize canvas when signature section is shown
+  useEffect(() => {
+    if (signatureCanvasRef.current && activeTab === 'Office/ Employee details') {
+      const canvas = signatureCanvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx && formData.signature) {
+        const img = new Image();
+        img.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        img.src = formData.signature;
+      }
+    }
+  }, [activeTab, formData.signature]);
+
   const handleNewButtonClick = () => {
     setIsFormEditable(true);
     setFormData({
@@ -278,6 +380,17 @@ function FourCardsWithModal() {
       bank: '',
       accountNo: '',
       accountType: '',
+      occupation: '',
+      officeName: '',
+      officeStreet: '',
+      officeTown: '',
+      officeCity: '',
+      officePostalCode: '',
+      officeCountry: 'Sri Lanka',
+      officeTele: '',
+      officeFaxNo: '',
+      officeEmail: '',
+      signature: '',
     });
     setBankAccounts([]);
   };
@@ -1357,12 +1470,254 @@ function FourCardsWithModal() {
           </div>
         );
       case 'Office/ Employee details':
-    return (
+        return (
           <div className="setup-input-section">
-            <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Employee No</label>
-                <input className="setup-input-field" type="text" placeholder="Enter employee number" disabled={!isFormEditable} />
+            <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+              {/* Office Details Section */}
+              <div style={{ marginBottom: '24px' }}>
+                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                  Office Details
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Row 1: Occupation | Office Name */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Occupation</label>
+                      <input
+                        type="text"
+                        value={formData.occupation}
+                        onChange={(e) => handleInputChange('occupation', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter occupation"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Office Name</label>
+                      <input
+                        type="text"
+                        value={formData.officeName}
+                        onChange={(e) => handleInputChange('officeName', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter office name"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                  </div>
+                  {/* Row 2: Street | Town */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                      <input
+                        type="text"
+                        value={formData.officeStreet}
+                        onChange={(e) => handleInputChange('officeStreet', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter street"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                      <input
+                        type="text"
+                        value={formData.officeTown}
+                        onChange={(e) => handleInputChange('officeTown', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter town"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                  </div>
+                  {/* Row 3: City | Postal Code */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                      <input
+                        type="text"
+                        value={formData.officeCity}
+                        onChange={(e) => handleInputChange('officeCity', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter city"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Postal Code</label>
+                      <input
+                        type="text"
+                        value={formData.officePostalCode}
+                        onChange={(e) => handleInputChange('officePostalCode', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter postal code"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                  </div>
+                  {/* Row 4: Country | Tele. */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Country</label>
+                      <select
+                        className="setup-dropdown-select"
+                        style={{ color: '#000000', flex: 1 }}
+                        value={formData.officeCountry}
+                        onChange={e => handleInputChange('officeCountry', e.target.value)}
+                        disabled={!isFormEditable}
+                      >
+                        <option value="Sri Lanka">Sri Lanka</option>
+                        <option value="India">India</option>
+                        <option value="UK">UK</option>
+                      </select>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Tele.</label>
+                      <input
+                        type="text"
+                        value={formData.officeTele}
+                        onChange={(e) => handleInputChange('officeTele', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter telephone"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                  </div>
+                  {/* Row 5: Fax No. | E-mail */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Fax No.</label>
+                      <input
+                        type="text"
+                        value={formData.officeFaxNo}
+                        onChange={(e) => handleInputChange('officeFaxNo', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter fax number"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>E-mail</label>
+                      <input
+                        type="email"
+                        value={formData.officeEmail}
+                        onChange={(e) => handleInputChange('officeEmail', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter email"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Signature Section */}
+              <div style={{ borderTop: '1px solid #cbd5e1', paddingTop: '16px' }}>
+                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+                  Signature
+                </div>
+                <div style={{ position: 'relative', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff' }}>
+                  <canvas
+                    ref={signatureCanvasRef}
+                    width={800}
+                    height={200}
+                    onMouseDown={startDrawing}
+                    onMouseMove={draw}
+                    onMouseUp={stopDrawing}
+                    onMouseLeave={stopDrawing}
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      startDrawing(e);
+                    }}
+                    onTouchMove={(e) => {
+                      e.preventDefault();
+                      draw(e);
+                    }}
+                    onTouchEnd={(e) => {
+                      e.preventDefault();
+                      stopDrawing();
+                    }}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      cursor: isFormEditable ? 'crosshair' : 'default',
+                      display: 'block',
+                      borderRadius: '4px'
+                    }}
+                  />
+                  <div style={{ position: 'absolute', bottom: '8px', right: '8px', display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={clearSignature}
+                      disabled={!isFormEditable}
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: '#ffffff',
+                        border: 'none',
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        cursor: isFormEditable ? 'pointer' : 'default',
+                        fontSize: '12px',
+                        fontWeight: 500
+                      }}
+                      title="Clear Signature"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Handle signature upload from PC
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.onchange = (e: Event) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (file && signatureCanvasRef.current) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const img = new Image();
+                              img.onload = () => {
+                                const canvas = signatureCanvasRef.current;
+                                if (canvas) {
+                                  const ctx = canvas.getContext('2d');
+                                  if (ctx) {
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                    handleInputChange('signature', canvas.toDataURL('image/png'));
+                                  }
+                                }
+                              };
+                              img.src = event.target?.result as string;
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        };
+                        input.click();
+                      }}
+                      disabled={!isFormEditable}
+                      style={{
+                        backgroundColor: '#0ea5e9',
+                        color: '#ffffff',
+                        border: 'none',
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        cursor: isFormEditable ? 'pointer' : 'default',
+                        fontSize: '16px',
+                        fontWeight: 600
+                      }}
+                      title="Upload Signature from PC"
+                    >
+                      ...
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1553,6 +1908,17 @@ function FourCardsWithModal() {
                             bank: '',
                             accountNo: '',
                             accountType: '',
+                            occupation: '',
+                            officeName: '',
+                            officeStreet: '',
+                            officeTown: '',
+                            officeCity: '',
+                            officePostalCode: '',
+                            officeCountry: 'Sri Lanka',
+                            officeTele: '',
+                            officeFaxNo: '',
+                            officeEmail: '',
+                            signature: '',
                           });
                           setBankAccounts([]);
                         }}

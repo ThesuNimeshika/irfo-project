@@ -510,6 +510,38 @@ function FourCardsWithModal() {
                     </div>
                   </div>
                 )}
+                
+                {/* Company Name and Business (for Corporate) */}
+                {formData.applicantType === 'Corporate' && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px' }}>
+                    <div>
+                      <label className="setup-input-label">Company Name</label>
+                      <input
+                        type="text"
+                        value={formData.nameByInitials}
+                        onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter company name"
+                        style={{ color: '#000000' }}
+                      />
+                      <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>Example: Management System (PVT) LTD</div>
+                    </div>
+                    <div>
+                      <label className="setup-input-label">Business</label>
+                      <input
+                        type="text"
+                        value={formData.surname}
+                        onChange={(e) => handleInputChange('surname', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter business"
+                        style={{ color: '#000000' }}
+                      />
+                      <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>Example: Unit Trust</div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Identification and Contact Information Section */}
@@ -517,7 +549,9 @@ function FourCardsWithModal() {
                 {/* Left Column - Identification */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div>
-                    <label className="setup-input-label">Date of Birth</label>
+                    <label className="setup-input-label">
+                      {formData.applicantType === 'Corporate' ? 'Commence' : 'Date of Birth'}
+                    </label>
                     <input
                       type="date"
                       value={formData.dateOfBirth}

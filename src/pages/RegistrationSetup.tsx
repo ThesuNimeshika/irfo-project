@@ -132,6 +132,8 @@ interface FormData {
   verifyingOfficer: string;
   inputOfficer: string;
   authorizedOfficer: string;
+  // Unit Holders Accounts (top card)
+  ackNo: string;
 }
 
 interface DirectorInfo {
@@ -300,6 +302,7 @@ function FourCardsWithModal() {
     verifyingOfficer: '',
     inputOfficer: '',
     authorizedOfficer: '',
+    ackNo: '',
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -345,6 +348,7 @@ function FourCardsWithModal() {
   const [showAgencyTable, setShowAgencyTable] = useState(false);
   const [showSubAgencyTable, setShowSubAgencyTable] = useState(false);
   const [showAgentTable, setShowAgentTable] = useState(false);
+  const [accountsActiveTab, setAccountsActiveTab] = useState<string>('Details');
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -613,6 +617,7 @@ function FourCardsWithModal() {
       verifyingOfficer: '',
       inputOfficer: '',
       authorizedOfficer: '',
+      ackNo: '',
     });
     setBankAccounts([]);
     setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
@@ -748,6 +753,39 @@ function FourCardsWithModal() {
               />
               <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
               <button className="setup-btn setup-btn-save" disabled={!isFormEditable} style={{ marginLeft: '12px' }}>Compulsory Data Fields</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (modalTitle === 'Unit Holders Accounts') {
+      return (
+        <div className="setup-input-section">
+          {/* Top card: Registration No + Search + ACKNO */}
+          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+              <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
+              <input
+                type="text"
+                value={formData.applicationNo}
+                onChange={(e) => handleInputChange('applicationNo', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder="Enter registration number"
+                style={{ color: '#000000', flex: 1 }}
+              />
+              <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+              <label className="setup-input-label" style={{ minWidth: '80px', marginLeft: 'auto' }}>ACKNO</label>
+              <input
+                type="text"
+                value={formData.ackNo}
+                onChange={(e) => handleInputChange('ackNo', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder="ACKNO"
+                style={{ color: '#000000', width: '220px' }}
+              />
             </div>
           </div>
         </div>
@@ -3304,6 +3342,7 @@ function FourCardsWithModal() {
       verifyingOfficer: '',
       inputOfficer: '',
       authorizedOfficer: '',
+      ackNo: '',
                           });
                           setBankAccounts([]);
                           setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
@@ -3317,45 +3356,128 @@ function FourCardsWithModal() {
                       </button>
                     </div>
 
-                    {/* Tabs Section */}
-                    <div className="setup-data-table-container">
-                      <div className="setup-data-table-content" style={{ maxHeight: '600px', overflowY: 'auto' }}>
-                        {/* Tab Headers */}
-                        <div role="tablist" aria-label="Application Entry Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                          {applicationTabs.map(tab => (
-                            <div
-                              key={tab}
-                              role="tab"
-                              aria-selected={activeTab === tab}
-                              tabIndex={0}
-                              onClick={() => setActiveTab(tab)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') setActiveTab(tab);
-                              }}
-                              style={{
-                                padding: '10px 14px',
-                                background: activeTab === tab ? '#ffffff' : '#e2e8f0',
-                                color: '#0f172a',
-                                border: activeTab === tab ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
-                                borderBottom: activeTab === tab ? '2px solid #ffffff' : '1px solid #cbd5e1',
-                                borderRadius: '6px 6px 0 0',
-                                cursor: 'pointer',
-                                fontWeight: 600,
-                                minHeight: '36px',
-                                lineHeight: 1.25,
-                                fontSize: '12px',
-                                flex: '0 0 auto'
-                              }}
-                            >
-                              {tab}
-                            </div>
-                          ))}
-                        </div>
+                    {/* Tabs Section - Only for Application Entry and Registration Unit Holders Profiles */}
+                    {modules[modalIdx].title !== 'Unit Holders Accounts' && (
+                      <div className="setup-data-table-container">
+                        <div className="setup-data-table-content" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                          {/* Tab Headers */}
+                          <div role="tablist" aria-label="Application Entry Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                            {applicationTabs.map(tab => (
+                              <div
+                                key={tab}
+                                role="tab"
+                                aria-selected={activeTab === tab}
+                                tabIndex={0}
+                                onClick={() => setActiveTab(tab)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') setActiveTab(tab);
+                                }}
+                                style={{
+                                  padding: '10px 14px',
+                                  background: activeTab === tab ? '#ffffff' : '#e2e8f0',
+                                  color: '#0f172a',
+                                  border: activeTab === tab ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
+                                  borderBottom: activeTab === tab ? '2px solid #ffffff' : '1px solid #cbd5e1',
+                                  borderRadius: '6px 6px 0 0',
+                                  cursor: 'pointer',
+                                  fontWeight: 600,
+                                  minHeight: '36px',
+                                  lineHeight: 1.25,
+                                  fontSize: '12px',
+                                  flex: '0 0 auto'
+                                }}
+                              >
+                                {tab}
+                              </div>
+                            ))}
+                          </div>
 
-                        {/* Tab Content */}
+                          {/* Tab Content */}
                           {renderApplicationTabContent()}
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {/* Unit Holders Accounts: bottom full-width 3 tabs card */}
+                    {modules[modalIdx].title === 'Unit Holders Accounts' && (
+                      <div className="setup-input-section" style={{ marginTop: '12px' }}>
+                        <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+                          {/* Tab headers */}
+                          <div role="tablist" aria-label="Unit Holders Accounts Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                            {['Details', 'Bank Details', 'Existing Accounts'].map(tab => (
+                              <div
+                                key={tab}
+                                role="tab"
+                                aria-selected={accountsActiveTab === tab}
+                                tabIndex={0}
+                                onClick={() => setAccountsActiveTab(tab)}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setAccountsActiveTab(tab); }}
+                                style={{
+                                  padding: '10px 14px',
+                                  background: accountsActiveTab === tab ? '#ffffff' : '#e2e8f0',
+                                  color: '#0f172a',
+                                  border: accountsActiveTab === tab ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
+                                  borderBottom: accountsActiveTab === tab ? '2px solid #ffffff' : '1px solid #cbd5e1',
+                                  borderRadius: '6px 6px 0 0',
+                                  cursor: 'pointer',
+                                  fontWeight: 600,
+                                  minHeight: '36px',
+                                  lineHeight: 1.25,
+                                  fontSize: '12px',
+                                  flex: '0 0 auto'
+                                }}
+                              >
+                                {tab}
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Tab content */}
+                          <div>
+                            {accountsActiveTab === 'Details' && (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Account Title</label>
+                                  <input type="text" className="setup-input-field" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }} placeholder="Enter account title" />
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Account Type</label>
+                                  <select className="setup-dropdown-select" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }}>
+                                    <option value="">-- Select --</option>
+                                    <option value="Single">Single</option>
+                                    <option value="Joint">Joint</option>
+                                    <option value="Corporate">Corporate</option>
+                                  </select>
+                                </div>
+                              </div>
+                            )}
+
+                            {accountsActiveTab === 'Bank Details' && (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Bank</label>
+                                  <select className="setup-dropdown-select" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }}>
+                                    <option value="">Select bank</option>
+                                    <option value="BOC">Bank of Ceylon</option>
+                                    <option value="Sampath">Sampath Bank</option>
+                                  </select>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Account No</label>
+                                  <input type="text" className="setup-input-field" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }} placeholder="Enter account number" />
+                                </div>
+                              </div>
+                            )}
+
+                            {accountsActiveTab === 'Existing Accounts' && (
+                              <div>
+                                <div className="setup-list-placeholder">Existing accounts list goes here.</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Footer */}

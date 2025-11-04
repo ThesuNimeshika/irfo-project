@@ -67,7 +67,6 @@ interface FormData {
   otherAddress: string;
   zone: string;
   bank: string;
-  accountNo: string;
   accountType: string;
   // Office/Employee details fields
   occupation: string;
@@ -134,6 +133,29 @@ interface FormData {
   authorizedOfficer: string;
   // Unit Holders Accounts (top card)
   ackNo: string;
+  // Unit Holders Accounts Details tab
+  fund: string;
+  lastInvestmentNo: string;
+  accountNo: string;
+  isActive: boolean;
+  holderId: string;
+  accCreatedOn: string;
+  accountHolderType: 'Individual' | 'Joint' | 'Guardian';
+  individualInput: string;
+  jointHolderInput: string;
+  guardianInput: string;
+  rightInput: string;
+  accountOperate: 'Either Party' | 'Jointly' | '';
+  reinvestPayout: 'Reinvest' | 'Payout';
+  reinvestToDifferentAccount: boolean;
+  reinvestFund: string;
+  reinvestAccountNo: string;
+  paymentType: string;
+  payoutBank: string;
+  payoutAccountNo: string;
+  payee: string;
+  nomineeInput: string;
+  nomineeRightInput: string;
 }
 
 interface DirectorInfo {
@@ -151,6 +173,12 @@ interface SupportingDoc {
   selected: boolean;
   receiveDate: string; // ISO yyyy-mm-dd
   user: string;
+}
+
+interface HolderInfo {
+  holderNo: string;
+  holderName: string;
+  selected?: boolean;
 }
 
 // ========================================
@@ -178,6 +206,27 @@ const companyData = [
   { code: 'C001', description: 'ABC Holdings' },
   { code: 'C002', description: 'XYZ Enterprises' },
   { code: 'C003', description: 'Global Ventures' },
+];
+
+// Fund data for dropdowns
+const fundData = [
+  { code: 'F001', name: 'Equity Fund' },
+  { code: 'F002', name: 'Bond Fund' },
+  { code: 'F003', name: 'Mixed Fund' },
+];
+
+// Payment Type data
+const paymentTypeData = [
+  { code: 'PT001', name: 'Bank Transfer' },
+  { code: 'PT002', name: 'Cheque' },
+  { code: 'PT003', name: 'Cash' },
+];
+
+// Bank data for payout
+const bankData = [
+  { code: 'B001', name: 'Bank of Ceylon', district: 'Colombo' },
+  { code: 'B002', name: 'Sampath Bank', district: 'Colombo' },
+  { code: 'B003', name: 'Commercial Bank', district: 'Kandy' },
 ];
 
 // ========================================
@@ -242,7 +291,7 @@ function FourCardsWithModal() {
     otherAddress: '',
     zone: '',
     bank: '',
-    accountNo: '',
+    accountNo: '', // For bank accounts
     accountType: '',
     occupation: '',
     officeName: '',
@@ -303,6 +352,29 @@ function FourCardsWithModal() {
     inputOfficer: '',
     authorizedOfficer: '',
     ackNo: '',
+    // Unit Holders Accounts Details tab
+    fund: '',
+    lastInvestmentNo: '',
+    // accountNo is already defined above for bank accounts, reused here
+    isActive: true,
+    holderId: '',
+    accCreatedOn: '',
+    accountHolderType: 'Individual',
+    individualInput: '',
+    jointHolderInput: '',
+    guardianInput: '',
+    rightInput: '',
+    accountOperate: '',
+    reinvestPayout: 'Reinvest',
+    reinvestToDifferentAccount: false,
+    reinvestFund: '',
+    reinvestAccountNo: '',
+    paymentType: '',
+    payoutBank: '',
+    payoutAccountNo: '',
+    payee: '',
+    nomineeInput: '',
+    nomineeRightInput: '',
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -349,6 +421,13 @@ function FourCardsWithModal() {
   const [showSubAgencyTable, setShowSubAgencyTable] = useState(false);
   const [showAgentTable, setShowAgentTable] = useState(false);
   const [accountsActiveTab, setAccountsActiveTab] = useState<string>('Details');
+  const [accountHolderDetailsTab, setAccountHolderDetailsTab] = useState<string>('Joint Account Details');
+  const [jointHolders, setJointHolders] = useState<HolderInfo[]>([]);
+  const [nomineeHolders, setNomineeHolders] = useState<HolderInfo[]>([]);
+  const [showFundTable, setShowFundTable] = useState(false);
+  const [showReinvestFundTable, setShowReinvestFundTable] = useState(false);
+  const [showPaymentTypeTable, setShowPaymentTypeTable] = useState(false);
+  const [showPayoutBankTable, setShowPayoutBankTable] = useState(false);
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -369,7 +448,7 @@ function FourCardsWithModal() {
     setIsMobile(width <= 768);
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -557,7 +636,6 @@ function FourCardsWithModal() {
       otherAddress: '',
       zone: '',
       bank: '',
-      accountNo: '',
       accountType: '',
       occupation: '',
       officeName: '',
@@ -618,6 +696,29 @@ function FourCardsWithModal() {
       inputOfficer: '',
       authorizedOfficer: '',
       ackNo: '',
+      // Unit Holders Accounts Details tab
+      fund: '',
+      lastInvestmentNo: '',
+      accountNo: '',
+      isActive: true,
+      holderId: '',
+      accCreatedOn: '',
+      accountHolderType: 'Individual',
+      individualInput: '',
+      jointHolderInput: '',
+      guardianInput: '',
+      rightInput: '',
+      accountOperate: '',
+      reinvestPayout: 'Reinvest',
+      reinvestToDifferentAccount: false,
+      reinvestFund: '',
+      reinvestAccountNo: '',
+      paymentType: '',
+      payoutBank: '',
+      payoutAccountNo: '',
+      payee: '',
+      nomineeInput: '',
+      nomineeRightInput: '',
     });
     setBankAccounts([]);
     setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
@@ -764,28 +865,34 @@ function FourCardsWithModal() {
         <div className="setup-input-section">
           {/* Top card: Registration No + Search + ACKNO */}
           <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-              <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
-              <input
-                type="text"
-                value={formData.applicationNo}
-                onChange={(e) => handleInputChange('applicationNo', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-input-field"
-                placeholder="Enter registration number"
-                style={{ color: '#000000', flex: 1 }}
-              />
-              <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
-              <label className="setup-input-label" style={{ minWidth: '80px', marginLeft: 'auto' }}>ACKNO</label>
-              <input
-                type="text"
-                value={formData.ackNo}
-                onChange={(e) => handleInputChange('ackNo', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-input-field"
-                placeholder="ACKNO"
-                style={{ color: '#000000', width: '220px' }}
-              />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+              {/* Left Column: 50% width - Registration No label + input */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
+                <input
+                  type="text"
+                  value={formData.applicationNo}
+                  onChange={(e) => handleInputChange('applicationNo', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter registration number"
+                  style={{ color: '#000000', flex: 1 }}
+                />
+              </div>
+              {/* Right Column: 50% width - Search button + ACKNO label + input */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '50%', flex: '1 1 50%' }}>
+                <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 20px', minWidth: '60px' }}>🔍</button>
+                <label className="setup-input-label" style={{ minWidth: '80px' }}>ACKNO</label>
+                <input
+                  type="text"
+                  value={formData.ackNo}
+                  onChange={(e) => handleInputChange('ackNo', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="ACKNO"
+                  style={{ color: '#000000', flex: 1 }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -3130,13 +3237,17 @@ function FourCardsWithModal() {
       if (showAgencyTable && !target.closest('[data-table="agency"]')) setShowAgencyTable(false);
       if (showSubAgencyTable && !target.closest('[data-table="subagency"]')) setShowSubAgencyTable(false);
       if (showAgentTable && !target.closest('[data-table="agent"]')) setShowAgentTable(false);
+      if (showFundTable && !target.closest('[data-table="fund"]')) setShowFundTable(false);
+      if (showReinvestFundTable && !target.closest('[data-table="reinvestFund"]')) setShowReinvestFundTable(false);
+      if (showPaymentTypeTable && !target.closest('[data-table="paymentType"]')) setShowPaymentTypeTable(false);
+      if (showPayoutBankTable && !target.closest('[data-table="payoutBank"]')) setShowPayoutBankTable(false);
     };
     
-    if (showCompanyTable || showAgencyTable || showSubAgencyTable || showAgentTable) {
+    if (showCompanyTable || showAgencyTable || showSubAgencyTable || showAgentTable || showFundTable || showReinvestFundTable || showPaymentTypeTable || showPayoutBankTable) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [showCompanyTable, showAgencyTable, showSubAgencyTable, showAgentTable]);
+  }, [showCompanyTable, showAgencyTable, showSubAgencyTable, showAgentTable, showFundTable, showReinvestFundTable, showPaymentTypeTable, showPayoutBankTable]);
 
   // ========================================
   // RENDER
@@ -3282,7 +3393,6 @@ function FourCardsWithModal() {
                             otherAddress: '',
                             zone: '',
                             bank: '',
-                            accountNo: '',
                             accountType: '',
                             occupation: '',
                             officeName: '',
@@ -3340,9 +3450,32 @@ function FourCardsWithModal() {
       officeAgent: '',
       investorCategory: '',
       verifyingOfficer: '',
-      inputOfficer: '',
-      authorizedOfficer: '',
-      ackNo: '',
+                            inputOfficer: '',
+                            authorizedOfficer: '',
+                            ackNo: '',
+                            // Unit Holders Accounts Details tab
+                            fund: '',
+                            lastInvestmentNo: '',
+                            accountNo: '',
+                            isActive: true,
+                            holderId: '',
+                            accCreatedOn: '',
+                            accountHolderType: 'Individual',
+                            individualInput: '',
+                            jointHolderInput: '',
+                            guardianInput: '',
+                            rightInput: '',
+                            accountOperate: '',
+                            reinvestPayout: 'Reinvest',
+                            reinvestToDifferentAccount: false,
+                            reinvestFund: '',
+                            reinvestAccountNo: '',
+                            paymentType: '',
+                            payoutBank: '',
+                            payoutAccountNo: '',
+                            payee: '',
+                            nomineeInput: '',
+                            nomineeRightInput: '',
                           });
                           setBankAccounts([]);
                           setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
@@ -3435,19 +3568,566 @@ function FourCardsWithModal() {
                           {/* Tab content */}
                           <div>
                             {accountsActiveTab === 'Details' && (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Account Title</label>
-                                  <input type="text" className="setup-input-field" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }} placeholder="Enter account title" />
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
+                                {/* First Row: Fund + Last Investment No */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                  {/* Left Column: Fund */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Fund</label>
+                                    <div style={{ position: 'relative', flex: 1 }}>
+                                      <div onClick={() => isFormEditable && setShowFundTable(!showFundTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.fund ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                        {formData.fund || 'Select fund (Name - Code)'}
+                                      </div>
+                                      {showFundTable && isFormEditable && (
+                                        <div data-table="fund" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <thead>
+                                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
+                                                <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Code</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {fundData.map((fund, idx) => (
+                                                <tr
+                                                  key={idx}
+                                                  onClick={() => {
+                                                    handleInputChange('fund', `${fund.name} - ${fund.code}`);
+                                                    setShowFundTable(false);
+                                                  }}
+                                                  style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{fund.name}</td>
+                                                  <td style={{ padding: '8px 12px', color: '#000000' }}>{fund.code}</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {/* Right Column: Last Investment No */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Last Investment No</label>
+                                    <input
+                                      type="text"
+                                      value={formData.lastInvestmentNo}
+                                      onChange={(e) => handleInputChange('lastInvestmentNo', e.target.value)}
+                                      disabled={!isFormEditable}
+                                      className="setup-input-field"
+                                      placeholder="Enter last investment number"
+                                      style={{ color: '#000000', flex: 1 }}
+                                    />
+                                  </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Account Type</label>
-                                  <select className="setup-dropdown-select" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }}>
-                                    <option value="">-- Select --</option>
-                                    <option value="Single">Single</option>
-                                    <option value="Joint">Joint</option>
-                                    <option value="Corporate">Corporate</option>
-                                  </select>
+
+                                {/* Second Row: Account No + Active | Holder ID | Acc. Created On */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                  {/* Left Column: Account No + Active checkbox */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '33.33%', flex: '1 1 33.33%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '100px' }}>Account No</label>
+                                    <input
+                                      type="text"
+                                      value={formData.accountNo}
+                                      onChange={(e) => handleInputChange('accountNo', e.target.value)}
+                                      disabled={!isFormEditable}
+                                      className="setup-input-field"
+                                      placeholder="Enter account number"
+                                      style={{ color: '#000000', flex: 1 }}
+                                    />
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '8px', cursor: 'pointer' }}>
+                                      <input
+                                        type="checkbox"
+                                        checked={formData.isActive}
+                                        onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                                        disabled={!isFormEditable}
+                                      />
+                                      <span style={{ fontSize: '14px', color: '#000000' }}>Active</span>
+                                    </label>
+                                  </div>
+                                  {/* Middle Column: Holder ID */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '33.33%', flex: '1 1 33.33%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '100px' }}>HolderID</label>
+                                    <input
+                                      type="text"
+                                      value={formData.holderId}
+                                      onChange={(e) => handleInputChange('holderId', e.target.value)}
+                                      disabled={!isFormEditable}
+                                      className="setup-input-field"
+                                      placeholder="Enter holder ID"
+                                      style={{ color: '#000000', flex: 1 }}
+                                    />
+                                  </div>
+                                  {/* Right Column: Acc. Created On */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '33.33%', flex: '1 1 33.33%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '120px' }}>Acc. Created On:</label>
+                                    <input
+                                      type="date"
+                                      value={formData.accCreatedOn}
+                                      onChange={(e) => handleInputChange('accCreatedOn', e.target.value)}
+                                      disabled={!isFormEditable}
+                                      className="setup-input-field"
+                                      style={{ color: '#000000', flex: 1 }}
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Card with 2 tabs: Joint Account Details and Nominee Details */}
+                                <div className="setup-ash-box" style={{ padding: '16px', marginTop: '12px' }}>
+                                  {/* Tab headers */}
+                                  <div role="tablist" style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                                    {['Joint Account Details', 'Nominee Details'].map(tab => (
+                                      <div
+                                        key={tab}
+                                        role="tab"
+                                        aria-selected={accountHolderDetailsTab === tab}
+                                        tabIndex={0}
+                                        onClick={() => setAccountHolderDetailsTab(tab)}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setAccountHolderDetailsTab(tab); }}
+                                        style={{
+                                          padding: '10px 14px',
+                                          background: accountHolderDetailsTab === tab ? '#ffffff' : '#e2e8f0',
+                                          color: '#000000',
+                                          border: accountHolderDetailsTab === tab ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
+                                          borderRadius: '6px 6px 0 0',
+                                          cursor: 'pointer',
+                                          fontWeight: 600,
+                                          fontSize: '12px',
+                                        }}
+                                      >
+                                        {tab}
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  {/* Tab content */}
+                                  {accountHolderDetailsTab === 'Joint Account Details' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                      {/* Account Holder Type card */}
+                                      <div className="setup-ash-box" style={{ padding: '16px', background: '#f1f5f9' }}>
+                                        <div style={{ fontWeight: 'bold', marginBottom: '12px', color: '#000000' }}>Account Holder Type</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                          {/* Column 1: Radio buttons */}
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '33.33%' }}>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                              <input
+                                                type="radio"
+                                                name="accountHolderType"
+                                                value="Individual"
+                                                checked={formData.accountHolderType === 'Individual'}
+                                                onChange={(e) => handleInputChange('accountHolderType', e.target.value as 'Individual' | 'Joint' | 'Guardian')}
+                                                disabled={!isFormEditable}
+                                                style={{ accentColor: formData.accountHolderType === 'Individual' ? '#9333ea' : undefined }}
+                                              />
+                                              <span style={{ color: '#000000' }}>Individual</span>
+                                            </label>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                              <input
+                                                type="radio"
+                                                name="accountHolderType"
+                                                value="Joint"
+                                                checked={formData.accountHolderType === 'Joint'}
+                                                onChange={(e) => handleInputChange('accountHolderType', e.target.value as 'Individual' | 'Joint' | 'Guardian')}
+                                                disabled={!isFormEditable}
+                                                style={{ accentColor: formData.accountHolderType === 'Joint' ? '#9333ea' : undefined }}
+                                              />
+                                              <span style={{ color: '#000000' }}>Joint</span>
+                                            </label>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                              <input
+                                                type="radio"
+                                                name="accountHolderType"
+                                                value="Guardian"
+                                                checked={formData.accountHolderType === 'Guardian'}
+                                                onChange={(e) => handleInputChange('accountHolderType', e.target.value as 'Individual' | 'Joint' | 'Guardian')}
+                                                disabled={!isFormEditable}
+                                                style={{ accentColor: formData.accountHolderType === 'Guardian' ? '#9333ea' : undefined }}
+                                              />
+                                              <span style={{ color: '#000000' }}>Guardian</span>
+                                            </label>
+                                          </div>
+                                          {/* Column 2: Middle input + search (conditional) */}
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '33.33%', visibility: formData.accountHolderType === 'Individual' ? 'hidden' : 'visible' }}>
+                                            <label className="setup-input-label" style={{ minWidth: formData.accountHolderType === 'Joint' ? '100px' : '90px' }}>
+                                              {formData.accountHolderType === 'Joint' ? 'Joint Holder' : formData.accountHolderType === 'Guardian' ? 'Guardian' : ''}
+                                            </label>
+                                            <input
+                                              type="text"
+                                              value={formData.accountHolderType === 'Joint' ? formData.jointHolderInput : formData.guardianInput}
+                                              onChange={(e) => handleInputChange(formData.accountHolderType === 'Joint' ? 'jointHolderInput' : 'guardianInput', e.target.value)}
+                                              disabled={!isFormEditable}
+                                              className="setup-input-field"
+                                              placeholder="Enter"
+                                              style={{ color: '#000000', flex: 1 }}
+                                            />
+                                            <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                          </div>
+                                          {/* Column 3: Right input + search */}
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '33.33%' }}>
+                                            <input
+                                              type="text"
+                                              value={formData.rightInput}
+                                              onChange={(e) => handleInputChange('rightInput', e.target.value)}
+                                              disabled={!isFormEditable}
+                                              className="setup-input-field"
+                                              placeholder="Enter"
+                                              style={{ color: '#000000', flex: 1 }}
+                                            />
+                                            <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      {/* Account Operate card (visible for all account holder types) */}
+                                      <div className="setup-ash-box" style={{ padding: '16px', background: '#f1f5f9' }}>
+                                        <div style={{ fontWeight: 'bold', marginBottom: '12px', color: '#000000' }}>Account Operate</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                                          {/* Either Party and Jointly radio buttons only visible when Joint is selected */}
+                                          {formData.accountHolderType === 'Joint' && (
+                                            <>
+                                              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                                <input
+                                                  type="radio"
+                                                  name="accountOperate"
+                                                  value="Either Party"
+                                                  checked={formData.accountOperate === 'Either Party'}
+                                                  onChange={(e) => handleInputChange('accountOperate', e.target.value as 'Either Party' | 'Jointly')}
+                                                  disabled={!isFormEditable}
+                                                  style={{ accentColor: formData.accountOperate === 'Either Party' ? '#9333ea' : undefined }}
+                                                />
+                                                <span style={{ color: '#000000' }}>Either Party</span>
+                                              </label>
+                                              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                                <input
+                                                  type="radio"
+                                                  name="accountOperate"
+                                                  value="Jointly"
+                                                  checked={formData.accountOperate === 'Jointly'}
+                                                  onChange={(e) => handleInputChange('accountOperate', e.target.value as 'Either Party' | 'Jointly')}
+                                                  disabled={!isFormEditable}
+                                                  style={{ accentColor: formData.accountOperate === 'Jointly' ? '#9333ea' : undefined }}
+                                                />
+                                                <span style={{ color: '#000000' }}>Jointly</span>
+                                              </label>
+                                            </>
+                                          )}
+                                        </div>
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                                            <div style={{ flex: 1 }}>
+                                              <table className="setup-data-table" style={{ width: '100%' }}>
+                                                <thead>
+                                                  <tr>
+                                                    <th>Holder No</th>
+                                                    <th>Holder Name</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {jointHolders.length === 0 ? (
+                                                    <tr>
+                                                      <td colSpan={2} style={{ textAlign: 'center', padding: '20px', color: '#94a3b8' }}>No holders added</td>
+                                                    </tr>
+                                                  ) : (
+                                                    jointHolders.map((holder, idx) => (
+                                                      <tr key={idx}>
+                                                        <td>{holder.holderNo}</td>
+                                                        <td>{holder.holderName}</td>
+                                                      </tr>
+                                                    ))
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                            <button
+                                              className="setup-btn"
+                                              style={{ background: '#dc2626', color: '#ffffff', padding: '8px 16px', marginLeft: '12px' }}
+                                              onClick={() => {
+                                                setJointHolders(jointHolders.filter((_, idx) => !jointHolders[idx].selected));
+                                              }}
+                                              disabled={!isFormEditable || jointHolders.filter(h => h.selected).length === 0}
+                                            >
+                                              Remove selected Item
+                                            </button>
+                                          </div>
+                                        </div>
+                                    </div>
+                                  )}
+
+                                  {accountHolderDetailsTab === 'Nominee Details' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                      {/* First row: 2 columns */}
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                        {/* Left Column: Nominee + input + search */}
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                                          <label className="setup-input-label" style={{ minWidth: '100px' }}>Nominee</label>
+                                          <input
+                                            type="text"
+                                            value={formData.nomineeInput}
+                                            onChange={(e) => handleInputChange('nomineeInput', e.target.value)}
+                                            disabled={!isFormEditable}
+                                            className="setup-input-field"
+                                            placeholder="Enter nominee"
+                                            style={{ color: '#000000', flex: 1 }}
+                                          />
+                                          <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                        </div>
+                                        {/* Right Column: Input + search */}
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '50%', flex: '1 1 50%' }}>
+                                          <input
+                                            type="text"
+                                            value={formData.nomineeRightInput}
+                                            onChange={(e) => handleInputChange('nomineeRightInput', e.target.value)}
+                                            disabled={!isFormEditable}
+                                            className="setup-input-field"
+                                            placeholder="Enter"
+                                            style={{ color: '#000000', flex: 1 }}
+                                          />
+                                          <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                        </div>
+                                      </div>
+                                      {/* Table: Holder No and Holder Name */}
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <div style={{ flex: 1 }}>
+                                          <table className="setup-data-table" style={{ width: '100%' }}>
+                                            <thead>
+                                              <tr>
+                                                <th>Holder No</th>
+                                                <th>Holder Name</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {nomineeHolders.length === 0 ? (
+                                                <tr>
+                                                  <td colSpan={2} style={{ textAlign: 'center', padding: '20px', color: '#94a3b8' }}>No nominees added</td>
+                                                </tr>
+                                              ) : (
+                                                nomineeHolders.map((holder, idx) => (
+                                                  <tr key={idx}>
+                                                    <td>{holder.holderNo}</td>
+                                                    <td>{holder.holderName}</td>
+                                                  </tr>
+                                                ))
+                                              )}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                        <button
+                                          className="setup-btn"
+                                          style={{ background: '#dc2626', color: '#ffffff', padding: '8px 16px', marginLeft: '12px' }}
+                                          onClick={() => {
+                                            setNomineeHolders(nomineeHolders.filter((_, idx) => !nomineeHolders[idx].selected));
+                                          }}
+                                          disabled={!isFormEditable || nomineeHolders.filter(h => h.selected).length === 0}
+                                        >
+                                          Remove selected Item
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Reinvest/Payout radio buttons */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '12px' }}>
+                                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                    <input
+                                      type="radio"
+                                      name="reinvestPayout"
+                                      value="Reinvest"
+                                      checked={formData.reinvestPayout === 'Reinvest'}
+                                      onChange={(e) => handleInputChange('reinvestPayout', e.target.value as 'Reinvest' | 'Payout')}
+                                      disabled={!isFormEditable}
+                                      style={{ accentColor: formData.reinvestPayout === 'Reinvest' ? '#9333ea' : undefined }}
+                                    />
+                                    <span style={{ color: '#000000' }}>Reinvest</span>
+                                  </label>
+                                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                    <input
+                                      type="radio"
+                                      name="reinvestPayout"
+                                      value="Payout"
+                                      checked={formData.reinvestPayout === 'Payout'}
+                                      onChange={(e) => handleInputChange('reinvestPayout', e.target.value as 'Reinvest' | 'Payout')}
+                                      disabled={!isFormEditable}
+                                      style={{ accentColor: formData.reinvestPayout === 'Payout' ? '#9333ea' : undefined }}
+                                    />
+                                    <span style={{ color: '#000000' }}>Payout</span>
+                                  </label>
+                                </div>
+
+                                {/* Reinvest card */}
+                                {formData.reinvestPayout === 'Reinvest' && (
+                                  <div className="setup-ash-box" style={{ padding: '16px', marginTop: '12px' }}>
+                                    <div style={{ fontWeight: 'bold', marginBottom: '12px', color: '#000000' }}>Reinvest to Diffrent Account Yes (tick)</div>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px', cursor: 'pointer' }}>
+                                      <input
+                                        type="checkbox"
+                                        checked={formData.reinvestToDifferentAccount}
+                                        onChange={(e) => handleInputChange('reinvestToDifferentAccount', e.target.checked)}
+                                        disabled={!isFormEditable}
+                                      />
+                                      <span style={{ color: '#000000' }}>Yes</span>
+                                    </label>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Fund</label>
+                                      <div style={{ position: 'relative', flex: 1 }}>
+                                        <div onClick={() => isFormEditable && setShowReinvestFundTable(!showReinvestFundTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.reinvestFund ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                          {formData.reinvestFund || 'Select fund (Name - Code)'}
+                                        </div>
+                                        {showReinvestFundTable && isFormEditable && (
+                                          <div data-table="reinvestFund" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                              <thead>
+                                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
+                                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Code</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {fundData.map((fund, idx) => (
+                                                  <tr
+                                                    key={idx}
+                                                    onClick={() => {
+                                                      handleInputChange('reinvestFund', `${fund.name} - ${fund.code}`);
+                                                      setShowReinvestFundTable(false);
+                                                    }}
+                                                    style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                  >
+                                                    <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{fund.name}</td>
+                                                    <td style={{ padding: '8px 12px', color: '#000000' }}>{fund.code}</td>
+                                                  </tr>
+                                                ))}
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account No</label>
+                                      <input
+                                        type="text"
+                                        value={formData.reinvestAccountNo}
+                                        onChange={(e) => handleInputChange('reinvestAccountNo', e.target.value)}
+                                        disabled={!isFormEditable}
+                                        className="setup-input-field"
+                                        placeholder="Enter account number"
+                                        style={{ color: '#000000', flex: 1 }}
+                                      />
+                                      <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Payout card */}
+                                {formData.reinvestPayout === 'Payout' && (
+                                  <div className="setup-ash-box" style={{ padding: '16px', marginTop: '12px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                                      <label className="setup-input-label" style={{ minWidth: '120px' }}>Payment Type</label>
+                                      <div style={{ position: 'relative', flex: 1 }}>
+                                        <div onClick={() => isFormEditable && setShowPaymentTypeTable(!showPaymentTypeTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.paymentType ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                          {formData.paymentType || 'Select payment type (Code - Name)'}
+                                        </div>
+                                        {showPaymentTypeTable && isFormEditable && (
+                                          <div data-table="paymentType" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                              <thead>
+                                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {paymentTypeData.map((pt, idx) => (
+                                                  <tr
+                                                    key={idx}
+                                                    onClick={() => {
+                                                      handleInputChange('paymentType', `${pt.name} - ${pt.code}`);
+                                                      setShowPaymentTypeTable(false);
+                                                    }}
+                                                    style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                  >
+                                                    <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{pt.code}</td>
+                                                    <td style={{ padding: '8px 12px', color: '#000000' }}>{pt.name}</td>
+                                                  </tr>
+                                                ))}
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                                      <label className="setup-input-label" style={{ minWidth: '120px' }}>Bank</label>
+                                      <div style={{ position: 'relative', flex: 1 }}>
+                                        <div onClick={() => isFormEditable && setShowPayoutBankTable(!showPayoutBankTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.payoutBank ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                          {formData.payoutBank || 'Select bank (Name - Code)'}
+                                        </div>
+                                        {showPayoutBankTable && isFormEditable && (
+                                          <div data-table="payoutBank" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                              <thead>
+                                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
+                                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>District</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {bankData.map((bank, idx) => (
+                                                  <tr
+                                                    key={idx}
+                                                    onClick={() => {
+                                                      handleInputChange('payoutBank', `${bank.name} - ${bank.code}`);
+                                                      setShowPayoutBankTable(false);
+                                                    }}
+                                                    style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                  >
+                                                    <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.name}</td>
+                                                    <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.code}</td>
+                                                    <td style={{ padding: '8px 12px', color: '#000000' }}>{bank.district}</td>
+                                                  </tr>
+                                                ))}
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                      <label className="setup-input-label" style={{ minWidth: '120px' }}>Account No</label>
+                                      <input
+                                        type="text"
+                                        value={formData.payoutAccountNo}
+                                        onChange={(e) => handleInputChange('payoutAccountNo', e.target.value)}
+                                        disabled={!isFormEditable}
+                                        className="setup-input-field"
+                                        placeholder="Enter account number"
+                                        style={{ color: '#000000', flex: 1 }}
+                                      />
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Payee input - full width */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '100px' }}>Payee</label>
+                                  <input
+                                    type="text"
+                                    value={formData.payee}
+                                    onChange={(e) => handleInputChange('payee', e.target.value)}
+                                    disabled={!isFormEditable}
+                                    className="setup-input-field"
+                                    placeholder="Enter payee"
+                                    style={{ color: '#000000', flex: 1, width: '100%' }}
+                                  />
                                 </div>
                               </div>
                             )}

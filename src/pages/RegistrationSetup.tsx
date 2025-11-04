@@ -162,6 +162,11 @@ interface FormData {
   bankDetailsAccountNo: string;
   bankDetailsAccountName: string;
   bankDetailsPayee: string;
+  // Holder Document Handling
+  documentCode: string;
+  document: string;
+  documentInput: string;
+  documentType: string;
 }
 
 interface DirectorInfo {
@@ -395,6 +400,11 @@ function FourCardsWithModal() {
     bankDetailsAccountNo: '',
     bankDetailsAccountName: '',
     bankDetailsPayee: '',
+    // Holder Document Handling
+    documentCode: '',
+    document: '',
+    documentInput: '',
+    documentType: '',
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -452,6 +462,7 @@ function FourCardsWithModal() {
   const [showBankDetailsBankTable, setShowBankDetailsBankTable] = useState(false);
   const [bankDetailsAccounts, setBankDetailsAccounts] = useState<BankAccount[]>([]);
   const [existingAccounts, setExistingAccounts] = useState<ExistingAccount[]>([]);
+  const [documentZoomLevel, setDocumentZoomLevel] = useState<string>('100%');
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -749,6 +760,11 @@ function FourCardsWithModal() {
       bankDetailsAccountNo: '',
       bankDetailsAccountName: '',
       bankDetailsPayee: '',
+      // Holder Document Handling
+      documentCode: '',
+      document: '',
+      documentInput: '',
+      documentType: '',
     });
     setBankAccounts([]);
     setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
@@ -946,6 +962,387 @@ function FourCardsWithModal() {
               />
               </div>
             </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (modalTitle === 'Holder Document Handling') {
+      return (
+        <div className="setup-input-section" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {/* Top Control Bar */}
+          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+              {/* Registration No */}
+              <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Registration No</label>
+              <input
+                type="text"
+                value={formData.applicationNo}
+                onChange={(e) => handleInputChange('applicationNo', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder="Enter registration number"
+                style={{ color: '#000000', flex: 1, minWidth: '250px' }}
+              />
+              {/* Brown dropdown button */}
+              <button
+                className="setup-btn"
+                title="Search"
+                style={{
+                  padding: '8px 12px',
+                  backgroundColor: '#92400e',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: isFormEditable ? 'pointer' : 'default',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minWidth: '40px'
+                }}
+                disabled={!isFormEditable}
+              >
+                <span style={{ color: '#ffffff' }}>▼</span>
+              </button>
+              {/* Another input field */}
+              <input
+                type="text"
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder=""
+                style={{ color: '#000000', flex: 1, minWidth: '250px' }}
+              />
+              {/* Zoom Level */}
+              <label className="setup-input-label" style={{ minWidth: '100px', marginLeft: 'auto', color: '#000000', fontWeight: 600 }}>Zoom Level</label>
+              <select
+                value={documentZoomLevel}
+                onChange={(e) => setDocumentZoomLevel(e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-dropdown-select"
+                style={{ color: '#000000', width: '85px', minWidth: '85px' }}
+              >
+                <option value="50%">50%</option>
+                <option value="75%">75%</option>
+                <option value="100%">100%</option>
+                <option value="125%">125%</option>
+                <option value="150%">150%</option>
+                <option value="200%">200%</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Button Palette */}
+          <div className="setup-action-buttons" style={{ marginBottom: '12px' }}>
+            <button
+              onClick={handleNewButtonClick}
+              className="setup-btn setup-btn-new"
+            >
+              <span className="setup-btn-icon">+</span>
+              New
+            </button>
+            <button
+              onClick={handleSave}
+              className="setup-btn setup-btn-save"
+              disabled={!isFormEditable}
+            >
+              <span className="setup-btn-icon">💾</span>
+              Save
+            </button>
+            <button
+              onClick={handleDelete}
+              className="setup-btn setup-btn-delete"
+              disabled={!isFormEditable}
+            >
+              <span className="setup-btn-icon">🗑️</span>
+              Delete
+            </button>
+            <button
+              onClick={handlePrint}
+              className="setup-btn setup-btn-print"
+              disabled={!isFormEditable}
+            >
+              <span className="setup-btn-icon">🖨️</span>
+              Print
+            </button>
+            <button
+              onClick={() => {
+                setFormData({
+                  bankCode: '',
+                  description: '',
+                  address: '',
+                  district: '',
+                  swiftCode: 'SBLILKLX',
+                  branchNo: '',
+                  applicationNo: '',
+                  applicationStatus: 'All',
+                  applicantType: '',
+                  title: '',
+                  initials: '',
+                  nameByInitials: '',
+                  surname: '',
+                  dateOfBirth: '',
+                  nic: '',
+                  passport: '',
+                  otherNo: '',
+                  compRegNo: '',
+                  telCode: '+94',
+                  telephone: '',
+                  faxCode: '+94',
+                  fax: '',
+                  mobileCode: '+94',
+                  mobile: '',
+                  email: '',
+                  tinNo: '',
+                  nationality: 'Local',
+                  relatedPartyStatus: 'None Related',
+                  correspondenceStreet: '',
+                  correspondenceTown: '',
+                  correspondenceCity: '',
+                  correspondenceDistrict: '',
+                  correspondenceCountry: 'Sri Lanka',
+                  correspondencePostalCode: '',
+                  correspondencePostalArea: '',
+                  permanentStreet: '',
+                  permanentTown: '',
+                  permanentCity: '',
+                  permanentDistrict: '',
+                  permanentCountry: 'Sri Lanka',
+                  permanentPostalCode: '',
+                  permanentPostalArea: '',
+                  addressType: 'Office',
+                  otherAddress: '',
+                  zone: '',
+                  bank: '',
+                  accountType: '',
+                  occupation: '',
+                  officeName: '',
+                  officeStreet: '',
+                  officeTown: '',
+                  officeCity: '',
+                  officePostalCode: '',
+                  officeCountry: 'Sri Lanka',
+                  officeTele: '',
+                  officeFaxNo: '',
+                  officeEmail: '',
+                  signature: '',
+                  married: false,
+                  spouseName: '',
+                  spouseOccupation: '',
+                  spouseEmployer: '',
+                  sourceOfIncome: '',
+                  annualIncome: '',
+                  incomeCurrency: 'Sri Lanka',
+                  isSubsidiaryAssociate: 'No',
+                  ownershipType: 'Subsidiary',
+                  organizationName: '',
+                  contactPersonTitle: '',
+                  contactPersonInitials: '',
+                  contactPersonFirstName: '',
+                  contactPersonSurname: '',
+                  contactPersonDesignation: '',
+                  contactPersonAddress: '',
+                  contactPersonTelephone: '',
+                  contactPersonFax: '',
+                  contactPersonEmail: '',
+                  heardAboutUs: 'Media',
+                  promotionOther: '',
+                  annualSalesTurnoverCurrent: '0',
+                  annualSalesTurnoverPrevious: '0',
+                  netProfitLossCurrent: '0',
+                  netProfitLossPrevious: '0',
+                  paidUpCapitalAccumulatedProfitCurrent: '0',
+                  paidUpCapitalAccumulatedProfitPrevious: '0',
+                  financialStatementsAvailable: 'No',
+                  statementDelivery: 'Mail',
+                  emailNotifyEnabled: false,
+                  emailConfirmInvestment: false,
+                  emailConfirmRedemption: false,
+                  emailUnitBalance: false,
+                  emailDailyUnitPrice: false,
+                  smsNotifyEnabled: false,
+                  smsConfirmInvestment: false,
+                  smsConfirmRedemption: false,
+                  smsUnitBalance: false,
+                  smsDailyUnitPrice: false,
+                  investmentTypeAtRegistration: '',
+                  officeAgency: '',
+                  officeSubAgency: '',
+                  officeAgent: '',
+                  investorCategory: '',
+                  verifyingOfficer: '',
+                  inputOfficer: '',
+                  authorizedOfficer: '',
+                  ackNo: '',
+                  // Unit Holders Accounts Details tab
+                  fund: '',
+                  lastInvestmentNo: '',
+                  accountNo: '',
+                  isActive: true,
+                  holderId: '',
+                  accCreatedOn: '',
+                  accountHolderType: 'Individual',
+                  individualInput: '',
+                  jointHolderInput: '',
+                  guardianInput: '',
+                  rightInput: '',
+                  accountOperate: '',
+                  reinvestPayout: 'Reinvest',
+                  reinvestToDifferentAccount: false,
+                  reinvestFund: '',
+                  reinvestAccountNo: '',
+                  paymentType: '',
+                  payoutBank: '',
+                  payoutAccountNo: '',
+                  payee: '',
+                  nomineeInput: '',
+                  nomineeRightInput: '',
+                  // Unit Holders Accounts Bank Details tab
+                  bankDetailsPaymentType: '',
+                  bankDetailsBank: '',
+                  bankDetailsAccountNo: '',
+                  bankDetailsAccountName: '',
+                  bankDetailsPayee: '',
+                  // Holder Document Handling
+                  documentCode: '',
+                  document: '',
+                  documentInput: '',
+                  documentType: '',
+                });
+                setBankAccounts([]);
+                setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
+                setSupportingDocs(defaultSupportingDocs);
+                setBankDetailsAccounts([]);
+                setExistingAccounts([]);
+              }}
+              className="setup-btn setup-btn-clear"
+              disabled={!isFormEditable}
+            >
+              <span className="setup-btn-icon">🗑️</span>
+              Clear
+            </button>
+          </div>
+
+          {/* Bottom Card: Main Content Area (Left Panel + Right Panel) + Input Rows */}
+          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
+            {/* Main Content Area: Left Panel + Right Panel */}
+          <div style={{ display: 'flex', gap: '12px', flex: 1, minHeight: '500px', height: '100%' }}>
+            {/* Left Panel (List/Preview Area) */}
+            <div style={{
+              width: '33.33%',
+              backgroundColor: '#ffffff',
+              border: '1px solid #cbd5e1',
+              borderRadius: '4px',
+              padding: '0',
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0'
+            }}>
+              {/* Horizontal lines to simulate list/preview */}
+              {Array.from({ length: 20 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    height: '28px',
+                    borderBottom: '1px solid #e2e8f0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '4px 8px',
+                    color: '#64748b'
+                  }}
+                >
+                  {/* Empty row - can be filled with document list items */}
+                </div>
+              ))}
+            </div>
+
+            {/* Right Panel (Content Display Area) */}
+            <div style={{
+              width: '66.67%',
+              backgroundColor: '#f1f5f9',
+              border: '1px solid #cbd5e1',
+              borderRadius: '4px',
+              padding: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#94a3b8',
+              fontSize: '14px'
+            }}>
+              {/* Empty content area for displaying documents */}
+            </div>
+          </div>
+
+          {/* Input Rows Below Panels */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
+            {/* First Row: 2 columns - Document Code + Document */}
+            <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
+              {/* Left Column: Document Code */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Document Code</label>
+                <input
+                  type="text"
+                  value={formData.documentCode}
+                  onChange={(e) => handleInputChange('documentCode', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter document code"
+                  style={{ color: '#000000', flex: 1 }}
+                />
+              </div>
+              {/* Right Column: Document */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Document</label>
+                <input
+                  type="text"
+                  value={formData.document}
+                  onChange={(e) => handleInputChange('document', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter document"
+                  style={{ color: '#000000', flex: 1 }}
+                />
+              </div>
+            </div>
+
+            {/* Second Row: 2 columns - Input + Browse button | Document Type + dropdown */}
+            <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
+              {/* Left Column: Input + Browse button */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                <input
+                  type="text"
+                  value={formData.documentInput}
+                  onChange={(e) => handleInputChange('documentInput', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter document"
+                  style={{ color: '#000000', flex: 1 }}
+                />
+                <button
+                  className="setup-btn setup-btn-new"
+                  disabled={!isFormEditable}
+                  style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}
+                >
+                  Browse
+                </button>
+              </div>
+              {/* Right Column: Document Type + dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
+                <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Document Type</label>
+                <select
+                  value={formData.documentType}
+                  onChange={(e) => handleInputChange('documentType', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', flex: 1 }}
+                >
+                  <option value="">Select document type</option>
+                  <option value="Image">Image</option>
+                  <option value="PDF">PDF</option>
+                </select>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
       );
@@ -3299,8 +3696,11 @@ function FourCardsWithModal() {
     
     if (showCompanyTable || showAgencyTable || showSubAgencyTable || showAgentTable || showFundTable || showReinvestFundTable || showPaymentTypeTable || showPayoutBankTable || showBankDetailsPaymentTypeTable || showBankDetailsBankTable) {
       document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
     }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [showCompanyTable, showAgencyTable, showSubAgencyTable, showAgentTable, showFundTable, showReinvestFundTable, showPaymentTypeTable, showPayoutBankTable, showBankDetailsPaymentTypeTable, showBankDetailsBankTable]);
 
   // ========================================
@@ -3365,194 +3765,201 @@ function FourCardsWithModal() {
                   <div className="setup-modal-content">
                     {renderModalContent()}
 
-                    {/* Action Buttons */}
-                    <div className="setup-action-buttons">
-                      <button
-                        onClick={handleNewButtonClick}
-                        className="setup-btn setup-btn-new"
-                      >
-                        <span className="setup-btn-icon">+</span>
-                        New
-                      </button>
-                      <button
-                        onClick={handleSave}
-                        className="setup-btn setup-btn-save"
-                        disabled={!isFormEditable}
-                      >
-                        <span className="setup-btn-icon">💾</span>
-                        Save
-                      </button>
-                      <button
-                        onClick={handleDelete}
-                        className="setup-btn setup-btn-delete"
-                        disabled={!isFormEditable}
-                      >
-                        <span className="setup-btn-icon">🗑️</span>
-                        Delete
-                      </button>
-                      <button
-                        onClick={handlePrint}
-                        className="setup-btn setup-btn-print"
-                        disabled={!isFormEditable}
-                      >
-                        <span className="setup-btn-icon">🖨️</span>
-                        Print
-                      </button>
-                      <button
-                        onClick={() => {
-                          setFormData({
-                          bankCode: '',
-                          description: '',
-                          address: '',
-                          district: '',
-                          swiftCode: 'SBLILKLX',
-                          branchNo: '',
-                          applicationNo: '',
-                          applicationStatus: 'All',
-                            applicantType: '',
-                          title: '',
-                          initials: '',
-                          nameByInitials: '',
-                          surname: '',
-                          dateOfBirth: '',
-                          nic: '',
-                          passport: '',
-                          otherNo: '',
-                          compRegNo: '',
-                          telCode: '+94',
-                          telephone: '',
-                          faxCode: '+94',
-                          fax: '',
-                          mobileCode: '+94',
-                          mobile: '',
-                          email: '',
-                          tinNo: '',
-                          nationality: 'Local',
-                          relatedPartyStatus: 'None Related',
-                            correspondenceStreet: '',
-                            correspondenceTown: '',
-                            correspondenceCity: '',
-                            correspondenceDistrict: '',
-                            correspondenceCountry: 'Sri Lanka',
-                            correspondencePostalCode: '',
-                            correspondencePostalArea: '',
-                            permanentStreet: '',
-                            permanentTown: '',
-                            permanentCity: '',
-                            permanentDistrict: '',
-                            permanentCountry: 'Sri Lanka',
-                            permanentPostalCode: '',
-                            permanentPostalArea: '',
-                            addressType: 'Office',
-                            otherAddress: '',
-                            zone: '',
-                            bank: '',
-                            accountType: '',
-                            occupation: '',
-                            officeName: '',
-                            officeStreet: '',
-                            officeTown: '',
-                            officeCity: '',
-                            officePostalCode: '',
-                            officeCountry: 'Sri Lanka',
-                            officeTele: '',
-                            officeFaxNo: '',
-                            officeEmail: '',
-                            signature: '',
-                            married: false,
-                            spouseName: '',
-                            spouseOccupation: '',
-                            spouseEmployer: '',
-                            sourceOfIncome: '',
-                            annualIncome: '',
-                            incomeCurrency: 'Sri Lanka',
-                            isSubsidiaryAssociate: 'No',
-                            ownershipType: 'Subsidiary',
-                            organizationName: '',
-                            contactPersonTitle: '',
-                            contactPersonInitials: '',
-                            contactPersonFirstName: '',
-                            contactPersonSurname: '',
-                            contactPersonDesignation: '',
-                            contactPersonAddress: '',
-                            contactPersonTelephone: '',
-                            contactPersonFax: '',
-                            contactPersonEmail: '',
-                            heardAboutUs: 'Media',
-                            promotionOther: '',
-                            annualSalesTurnoverCurrent: '0',
-                            annualSalesTurnoverPrevious: '0',
-                            netProfitLossCurrent: '0',
-                            netProfitLossPrevious: '0',
-                            paidUpCapitalAccumulatedProfitCurrent: '0',
-                            paidUpCapitalAccumulatedProfitPrevious: '0',
-                            financialStatementsAvailable: 'No',
-                            statementDelivery: 'Mail',
-                            emailNotifyEnabled: false,
-                            emailConfirmInvestment: false,
-                            emailConfirmRedemption: false,
-                            emailUnitBalance: false,
-                            emailDailyUnitPrice: false,
-                            smsNotifyEnabled: false,
-                            smsConfirmInvestment: false,
-                            smsConfirmRedemption: false,
-                            smsUnitBalance: false,
-                            smsDailyUnitPrice: false,
+                    {/* Action Buttons - Only show for non-Holder Document Handling modals */}
+                    {modules[modalIdx]?.title !== 'Holder Document Handling' && (
+                      <div className="setup-action-buttons">
+                        <button
+                          onClick={handleNewButtonClick}
+                          className="setup-btn setup-btn-new"
+                        >
+                          <span className="setup-btn-icon">+</span>
+                          New
+                        </button>
+                        <button
+                          onClick={handleSave}
+                          className="setup-btn setup-btn-save"
+                          disabled={!isFormEditable}
+                        >
+                          <span className="setup-btn-icon">💾</span>
+                          Save
+                        </button>
+                        <button
+                          onClick={handleDelete}
+                          className="setup-btn setup-btn-delete"
+                          disabled={!isFormEditable}
+                        >
+                          <span className="setup-btn-icon">🗑️</span>
+                          Delete
+                        </button>
+                        <button
+                          onClick={handlePrint}
+                          className="setup-btn setup-btn-print"
+                          disabled={!isFormEditable}
+                        >
+                          <span className="setup-btn-icon">🖨️</span>
+                          Print
+                        </button>
+                        <button
+                          onClick={() => {
+                            setFormData({
+                            bankCode: '',
+                            description: '',
+                            address: '',
+                            district: '',
+                            swiftCode: 'SBLILKLX',
+                            branchNo: '',
+                            applicationNo: '',
+                            applicationStatus: 'All',
+                              applicantType: '',
+                            title: '',
+                            initials: '',
+                            nameByInitials: '',
+                            surname: '',
+                            dateOfBirth: '',
+                            nic: '',
+                            passport: '',
+                            otherNo: '',
+                            compRegNo: '',
+                            telCode: '+94',
+                            telephone: '',
+                            faxCode: '+94',
+                            fax: '',
+                            mobileCode: '+94',
+                            mobile: '',
+                            email: '',
+                            tinNo: '',
+                            nationality: 'Local',
+                            relatedPartyStatus: 'None Related',
+                              correspondenceStreet: '',
+                              correspondenceTown: '',
+                              correspondenceCity: '',
+                              correspondenceDistrict: '',
+                              correspondenceCountry: 'Sri Lanka',
+                              correspondencePostalCode: '',
+                              correspondencePostalArea: '',
+                              permanentStreet: '',
+                              permanentTown: '',
+                              permanentCity: '',
+                              permanentDistrict: '',
+                              permanentCountry: 'Sri Lanka',
+                              permanentPostalCode: '',
+                              permanentPostalArea: '',
+                              addressType: 'Office',
+                              otherAddress: '',
+                              zone: '',
+                              bank: '',
+                              accountType: '',
+                              occupation: '',
+                              officeName: '',
+                              officeStreet: '',
+                              officeTown: '',
+                              officeCity: '',
+                              officePostalCode: '',
+                              officeCountry: 'Sri Lanka',
+                              officeTele: '',
+                              officeFaxNo: '',
+                              officeEmail: '',
+                              signature: '',
+                              married: false,
+                              spouseName: '',
+                              spouseOccupation: '',
+                              spouseEmployer: '',
+                              sourceOfIncome: '',
+                              annualIncome: '',
+                              incomeCurrency: 'Sri Lanka',
+                              isSubsidiaryAssociate: 'No',
+                              ownershipType: 'Subsidiary',
+                              organizationName: '',
+                              contactPersonTitle: '',
+                              contactPersonInitials: '',
+                              contactPersonFirstName: '',
+                              contactPersonSurname: '',
+                              contactPersonDesignation: '',
+                              contactPersonAddress: '',
+                              contactPersonTelephone: '',
+                              contactPersonFax: '',
+                              contactPersonEmail: '',
+                              heardAboutUs: 'Media',
+                              promotionOther: '',
+                              annualSalesTurnoverCurrent: '0',
+                              annualSalesTurnoverPrevious: '0',
+                              netProfitLossCurrent: '0',
+                              netProfitLossPrevious: '0',
+                              paidUpCapitalAccumulatedProfitCurrent: '0',
+                              paidUpCapitalAccumulatedProfitPrevious: '0',
+                              financialStatementsAvailable: 'No',
+                              statementDelivery: 'Mail',
+                              emailNotifyEnabled: false,
+                              emailConfirmInvestment: false,
+                              emailConfirmRedemption: false,
+                              emailUnitBalance: false,
+                              emailDailyUnitPrice: false,
+                              smsNotifyEnabled: false,
+                              smsConfirmInvestment: false,
+                              smsConfirmRedemption: false,
+                              smsUnitBalance: false,
+                              smsDailyUnitPrice: false,
       investmentTypeAtRegistration: '',
       officeAgency: '',
       officeSubAgency: '',
       officeAgent: '',
       investorCategory: '',
       verifyingOfficer: '',
-      inputOfficer: '',
-      authorizedOfficer: '',
-      ackNo: '',
-                            // Unit Holders Accounts Details tab
-                            fund: '',
-                            lastInvestmentNo: '',
-                            accountNo: '',
-                            isActive: true,
-                            holderId: '',
-                            accCreatedOn: '',
-                            accountHolderType: 'Individual',
-                            individualInput: '',
-                            jointHolderInput: '',
-                            guardianInput: '',
-                            rightInput: '',
-                            accountOperate: '',
-                            reinvestPayout: 'Reinvest',
-                            reinvestToDifferentAccount: false,
-                            reinvestFund: '',
-                            reinvestAccountNo: '',
-                            paymentType: '',
-                            payoutBank: '',
-                            payoutAccountNo: '',
-                            payee: '',
-                            nomineeInput: '',
-                            nomineeRightInput: '',
-                            // Unit Holders Accounts Bank Details tab
-                            bankDetailsPaymentType: '',
-                            bankDetailsBank: '',
-                            bankDetailsAccountNo: '',
-                            bankDetailsAccountName: '',
-                            bankDetailsPayee: '',
-                          });
-                          setBankAccounts([]);
-                          setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
-                          setSupportingDocs(defaultSupportingDocs);
-                          setBankDetailsAccounts([]);
-                          setExistingAccounts([]);
-                        }}
-                        className="setup-btn setup-btn-clear"
-                        disabled={!isFormEditable}
-                      >
-                        <span className="setup-btn-icon">🗑️</span>
-                        Clear
-                      </button>
-                    </div>
+                              inputOfficer: '',
+                              authorizedOfficer: '',
+                              ackNo: '',
+                              // Unit Holders Accounts Details tab
+                              fund: '',
+                              lastInvestmentNo: '',
+                              accountNo: '',
+                              isActive: true,
+                              holderId: '',
+                              accCreatedOn: '',
+                              accountHolderType: 'Individual',
+                              individualInput: '',
+                              jointHolderInput: '',
+                              guardianInput: '',
+                              rightInput: '',
+                              accountOperate: '',
+                              reinvestPayout: 'Reinvest',
+                              reinvestToDifferentAccount: false,
+                              reinvestFund: '',
+                              reinvestAccountNo: '',
+                              paymentType: '',
+                              payoutBank: '',
+                              payoutAccountNo: '',
+                              payee: '',
+                              nomineeInput: '',
+                              nomineeRightInput: '',
+                              // Unit Holders Accounts Bank Details tab
+                              bankDetailsPaymentType: '',
+                              bankDetailsBank: '',
+                              bankDetailsAccountNo: '',
+                              bankDetailsAccountName: '',
+                              bankDetailsPayee: '',
+                              // Holder Document Handling
+                              documentCode: '',
+                              document: '',
+                              documentInput: '',
+                              documentType: '',
+                            });
+                            setBankAccounts([]);
+                            setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
+                            setSupportingDocs(defaultSupportingDocs);
+                            setBankDetailsAccounts([]);
+                            setExistingAccounts([]);
+                          }}
+                          className="setup-btn setup-btn-clear"
+                          disabled={!isFormEditable}
+                        >
+                          <span className="setup-btn-icon">🗑️</span>
+                          Clear
+                        </button>
+                      </div>
+                    )}
 
                     {/* Tabs Section - Only for Application Entry and Registration Unit Holders Profiles */}
-                    {modules[modalIdx].title !== 'Unit Holders Accounts' && (
+                    {modules[modalIdx].title !== 'Unit Holders Accounts' && modules[modalIdx].title !== 'Holder Document Handling' && (
                       <div className="setup-data-table-container">
                         <div className="setup-data-table-content" style={{ maxHeight: '600px', overflowY: 'auto' }}>
                           {/* Tab Headers */}

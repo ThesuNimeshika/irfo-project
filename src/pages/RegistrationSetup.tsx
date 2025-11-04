@@ -1,5 +1,7 @@
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import UserSearchModal from '../components/UserSearchModal';
+import AccountSearchModal from '../components/AccountSearchModal';
 import '../App.css';
 import '../Setup.css';
 import { useState, useEffect, useRef } from 'react';
@@ -463,6 +465,14 @@ function FourCardsWithModal() {
   const [bankDetailsAccounts, setBankDetailsAccounts] = useState<BankAccount[]>([]);
   const [existingAccounts, setExistingAccounts] = useState<ExistingAccount[]>([]);
   const [documentZoomLevel, setDocumentZoomLevel] = useState<string>('100%');
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false);
+  const [isUnitHoldersSearchModalOpen, setIsUnitHoldersSearchModalOpen] = useState<boolean>(false);
+  const [isNomineeSearchModalOpen, setIsNomineeSearchModalOpen] = useState<boolean>(false);
+  const [isJointHolderSearchModalOpen, setIsJointHolderSearchModalOpen] = useState<boolean>(false);
+  const [isGuardianSearchModalOpen, setIsGuardianSearchModalOpen] = useState<boolean>(false);
+  const [isRegistrationProfilesSearchModalOpen, setIsRegistrationProfilesSearchModalOpen] = useState<boolean>(false);
+  const [isAccountSearchModalOpen, setIsAccountSearchModalOpen] = useState<boolean>(false);
+  const [showApplicationNoTable, setShowApplicationNoTable] = useState<boolean>(false);
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -821,13 +831,92 @@ function FourCardsWithModal() {
                   placeholder="Enter application number"
                   style={{ color: '#000000', flex: 1 }}
                 />
-                <button
-                  className="setup-btn setup-btn-new"
-                  title="Search"
-                  style={{ padding: '8px 12px' }}
-                >
-                  🔍
-                </button>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    className="setup-btn setup-btn-new"
+                    title="Select Application"
+                    style={{ padding: '8px 12px' }}
+                    onClick={() => isFormEditable && setShowApplicationNoTable(!showApplicationNoTable)}
+                    disabled={!isFormEditable}
+                  >
+                    +
+                  </button>
+                  {showApplicationNoTable && isFormEditable && (
+                    <div 
+                      data-table="applicationNo"
+                      style={{ 
+                        position: 'absolute', 
+                        top: '100%', 
+                        right: 0,
+                        backgroundColor: '#ffffff', 
+                        border: '1px solid #cbd5e1', 
+                        borderRadius: '4px', 
+                        marginTop: '4px', 
+                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+                        zIndex: 1000, 
+                        maxHeight: '400px',
+                        height: '400px',
+                        overflowY: 'auto', 
+                        overflowX: 'hidden',
+                        minWidth: '800px'
+                      }}
+                    >
+                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
+                          <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Application No</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Approved</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Registration_No</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Street</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Town</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>City</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Array.from({ length: 50 }).map((_, i) => ({
+                            appNo: `APP${String(i + 1).padStart(3, '0')}`,
+                            approved: i % 2 === 0 ? 'Yes' : 'No',
+                            name: ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown', 'Charlie Wilson'][i % 5],
+                            regNo: `REG${String(i + 1).padStart(3, '0')}`,
+                            street: ['Main Street', 'Park Avenue', 'Ocean Drive', 'First Street', 'Second Street'][i % 5],
+                            town: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
+                            city: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
+                            status: i % 3 === 0 ? 'Active' : i % 3 === 1 ? 'Pending' : 'Inactive',
+                          })).map((item, idx) => (
+                            <tr
+                              key={idx}
+                              onClick={() => {
+                                handleInputChange('applicationNo', item.appNo);
+                                setShowApplicationNoTable(false);
+                              }}
+                              style={{
+                                cursor: 'pointer',
+                                borderBottom: '1px solid #e2e8f0',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#f8fafc';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = '#ffffff';
+                              }}
+                            >
+                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.appNo}</td>
+                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.approved}</td>
+                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.name}</td>
+                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.regNo}</td>
+                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.street}</td>
+                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.town}</td>
+                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.city}</td>
+                              <td style={{ padding: '8px 12px', color: '#000000' }}>{item.status}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Compulsory Data Fields + Auto Number */}
@@ -900,10 +989,29 @@ function FourCardsWithModal() {
                 placeholder="Enter registration number"
                 style={{ color: '#000000', flex: 1 }}
               />
-              <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+              <button 
+                className="setup-btn setup-btn-new" 
+                title="Search" 
+                style={{ padding: '8px 12px' }}
+                onClick={() => setIsRegistrationProfilesSearchModalOpen(true)}
+                disabled={!isFormEditable}
+              >🔍</button>
               <button className="setup-btn setup-btn-save" disabled={!isFormEditable} style={{ marginLeft: '12px' }}>Compulsory Data Fields</button>
             </div>
           </div>
+
+          {/* Search Modal for Registration Unit Holders Profiles */}
+          <UserSearchModal
+            isOpen={isRegistrationProfilesSearchModalOpen}
+            onClose={() => setIsRegistrationProfilesSearchModalOpen(false)}
+            onGet={(result) => {
+              if (result.holderId) {
+                handleInputChange('applicationNo', result.holderId);
+              }
+              setIsRegistrationProfilesSearchModalOpen(false);
+            }}
+            title="Search Registration"
+          />
         </div>
       );
     }
@@ -933,22 +1041,8 @@ function FourCardsWithModal() {
                   className="setup-btn setup-btn-new" 
                   title="Search" 
                   style={{ padding: '8px 20px', minWidth: '60px' }}
-                  onClick={() => {
-                    // When search is clicked, populate existing accounts table
-                    if (formData.applicationNo || formData.ackNo) {
-                      // Simulate search - in real app, this would fetch from API
-                      const mockAccounts: ExistingAccount[] = [
-                        {
-                          accountNo: formData.applicationNo || '2010120492011401',
-                          fundName: 'Ceylon Financial Sector Fund',
-                          productType: 'Unit Trust',
-                          accType: 'Individual',
-                          active: 'N'
-                        }
-                      ];
-                      setExistingAccounts(mockAccounts);
-                    }
-                  }}
+                  onClick={() => setIsUnitHoldersSearchModalOpen(true)}
+                  disabled={!isFormEditable}
                 >🔍</button>
                 <label className="setup-input-label" style={{ minWidth: '80px' }}>ACKNO</label>
               <input
@@ -960,9 +1054,66 @@ function FourCardsWithModal() {
                 placeholder="ACKNO"
                   style={{ color: '#000000', flex: 1 }}
               />
-              </div>
             </div>
           </div>
+          </div>
+
+          {/* Search Modals for Unit Holders Accounts */}
+          <UserSearchModal
+            isOpen={isUnitHoldersSearchModalOpen}
+            onClose={() => setIsUnitHoldersSearchModalOpen(false)}
+            onGet={(result) => {
+              if (result.holderId) {
+                handleInputChange('applicationNo', result.holderId);
+              }
+              setIsUnitHoldersSearchModalOpen(false);
+            }}
+            title="Search Registration"
+          />
+          <UserSearchModal
+            isOpen={isNomineeSearchModalOpen}
+            onClose={() => setIsNomineeSearchModalOpen(false)}
+            onGet={(result) => {
+              if (result.holderId || result.holderName) {
+                handleInputChange('nomineeInput', result.holderName || result.holderId || '');
+              }
+              setIsNomineeSearchModalOpen(false);
+            }}
+            title="Search Nominee"
+          />
+          <UserSearchModal
+            isOpen={isJointHolderSearchModalOpen}
+            onClose={() => setIsJointHolderSearchModalOpen(false)}
+            onGet={(result) => {
+              if (result.holderId || result.holderName) {
+                handleInputChange('jointHolderInput', result.holderName || result.holderId || '');
+              }
+              setIsJointHolderSearchModalOpen(false);
+            }}
+            title="Search Joint Holder"
+          />
+          <UserSearchModal
+            isOpen={isGuardianSearchModalOpen}
+            onClose={() => setIsGuardianSearchModalOpen(false)}
+            onGet={(result) => {
+              if (result.holderId || result.holderName) {
+                handleInputChange('guardianInput', result.holderName || result.holderId || '');
+              }
+              setIsGuardianSearchModalOpen(false);
+            }}
+            title="Search Guardian"
+          />
+          <AccountSearchModal
+            isOpen={isAccountSearchModalOpen}
+            onClose={() => setIsAccountSearchModalOpen(false)}
+            onGet={(result) => {
+              if (result.accountNo) {
+                handleInputChange('reinvestAccountNo', result.accountNo);
+              }
+              setIsAccountSearchModalOpen(false);
+            }}
+            title="Search Account"
+          />
         </div>
       );
     }
@@ -984,15 +1135,16 @@ function FourCardsWithModal() {
                 placeholder="Enter registration number"
                 style={{ color: '#000000', flex: 1, minWidth: '250px' }}
               />
-              {/* Brown dropdown button */}
+              {/* Search button */}
               <button
                 className="setup-btn"
                 title="Search"
+                onClick={() => setIsSearchModalOpen(true)}
                 style={{
                   padding: '8px 12px',
-                  backgroundColor: '#92400e',
-                  color: '#ffffff',
-                  border: 'none',
+                  backgroundColor: '#ffffff',
+                  color: '#000000',
+                  border: '1px solid #cbd5e1',
                   borderRadius: '4px',
                   cursor: isFormEditable ? 'pointer' : 'default',
                   display: 'flex',
@@ -1002,7 +1154,7 @@ function FourCardsWithModal() {
                 }}
                 disabled={!isFormEditable}
               >
-                <span style={{ color: '#ffffff' }}>▼</span>
+                <span style={{ color: '#000000', fontSize: '16px' }}>🔍</span>
               </button>
               {/* Another input field */}
               <input
@@ -1344,6 +1496,19 @@ function FourCardsWithModal() {
             </div>
           </div>
           </div>
+
+          {/* Search Modal */}
+          <UserSearchModal
+            isOpen={isSearchModalOpen}
+            onClose={() => setIsSearchModalOpen(false)}
+            onGet={(result) => {
+              if (result.holderId) {
+                handleInputChange('applicationNo', result.holderId);
+              }
+              setIsSearchModalOpen(false);
+            }}
+            title="Search Registration"
+          />
         </div>
       );
     }
@@ -3692,16 +3857,17 @@ function FourCardsWithModal() {
       if (showPayoutBankTable && !target.closest('[data-table="payoutBank"]')) setShowPayoutBankTable(false);
       if (showBankDetailsPaymentTypeTable && !target.closest('[data-table="bankDetailsPaymentType"]')) setShowBankDetailsPaymentTypeTable(false);
       if (showBankDetailsBankTable && !target.closest('[data-table="bankDetailsBank"]')) setShowBankDetailsBankTable(false);
+      if (showApplicationNoTable && !target.closest('[data-table="applicationNo"]')) setShowApplicationNoTable(false);
     };
     
-    if (showCompanyTable || showAgencyTable || showSubAgencyTable || showAgentTable || showFundTable || showReinvestFundTable || showPaymentTypeTable || showPayoutBankTable || showBankDetailsPaymentTypeTable || showBankDetailsBankTable) {
+    if (showCompanyTable || showAgencyTable || showSubAgencyTable || showAgentTable || showFundTable || showReinvestFundTable || showPaymentTypeTable || showPayoutBankTable || showBankDetailsPaymentTypeTable || showBankDetailsBankTable || showApplicationNoTable) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showCompanyTable, showAgencyTable, showSubAgencyTable, showAgentTable, showFundTable, showReinvestFundTable, showPaymentTypeTable, showPayoutBankTable, showBankDetailsPaymentTypeTable, showBankDetailsBankTable]);
+  }, [showCompanyTable, showAgencyTable, showSubAgencyTable, showAgentTable, showFundTable, showReinvestFundTable, showPaymentTypeTable, showPayoutBankTable, showBankDetailsPaymentTypeTable, showBankDetailsBankTable, showApplicationNoTable]);
 
   // ========================================
   // RENDER
@@ -3767,147 +3933,147 @@ function FourCardsWithModal() {
 
                     {/* Action Buttons - Only show for non-Holder Document Handling modals */}
                     {modules[modalIdx]?.title !== 'Holder Document Handling' && (
-                      <div className="setup-action-buttons">
-                        <button
-                          onClick={handleNewButtonClick}
-                          className="setup-btn setup-btn-new"
-                        >
-                          <span className="setup-btn-icon">+</span>
-                          New
-                        </button>
-                        <button
-                          onClick={handleSave}
-                          className="setup-btn setup-btn-save"
-                          disabled={!isFormEditable}
-                        >
-                          <span className="setup-btn-icon">💾</span>
-                          Save
-                        </button>
-                        <button
-                          onClick={handleDelete}
-                          className="setup-btn setup-btn-delete"
-                          disabled={!isFormEditable}
-                        >
-                          <span className="setup-btn-icon">🗑️</span>
-                          Delete
-                        </button>
-                        <button
-                          onClick={handlePrint}
-                          className="setup-btn setup-btn-print"
-                          disabled={!isFormEditable}
-                        >
-                          <span className="setup-btn-icon">🖨️</span>
-                          Print
-                        </button>
-                        <button
-                          onClick={() => {
-                            setFormData({
-                            bankCode: '',
-                            description: '',
-                            address: '',
-                            district: '',
-                            swiftCode: 'SBLILKLX',
-                            branchNo: '',
-                            applicationNo: '',
-                            applicationStatus: 'All',
-                              applicantType: '',
-                            title: '',
-                            initials: '',
-                            nameByInitials: '',
-                            surname: '',
-                            dateOfBirth: '',
-                            nic: '',
-                            passport: '',
-                            otherNo: '',
-                            compRegNo: '',
-                            telCode: '+94',
-                            telephone: '',
-                            faxCode: '+94',
-                            fax: '',
-                            mobileCode: '+94',
-                            mobile: '',
-                            email: '',
-                            tinNo: '',
-                            nationality: 'Local',
-                            relatedPartyStatus: 'None Related',
-                              correspondenceStreet: '',
-                              correspondenceTown: '',
-                              correspondenceCity: '',
-                              correspondenceDistrict: '',
-                              correspondenceCountry: 'Sri Lanka',
-                              correspondencePostalCode: '',
-                              correspondencePostalArea: '',
-                              permanentStreet: '',
-                              permanentTown: '',
-                              permanentCity: '',
-                              permanentDistrict: '',
-                              permanentCountry: 'Sri Lanka',
-                              permanentPostalCode: '',
-                              permanentPostalArea: '',
-                              addressType: 'Office',
-                              otherAddress: '',
-                              zone: '',
-                              bank: '',
-                              accountType: '',
-                              occupation: '',
-                              officeName: '',
-                              officeStreet: '',
-                              officeTown: '',
-                              officeCity: '',
-                              officePostalCode: '',
-                              officeCountry: 'Sri Lanka',
-                              officeTele: '',
-                              officeFaxNo: '',
-                              officeEmail: '',
-                              signature: '',
-                              married: false,
-                              spouseName: '',
-                              spouseOccupation: '',
-                              spouseEmployer: '',
-                              sourceOfIncome: '',
-                              annualIncome: '',
-                              incomeCurrency: 'Sri Lanka',
-                              isSubsidiaryAssociate: 'No',
-                              ownershipType: 'Subsidiary',
-                              organizationName: '',
-                              contactPersonTitle: '',
-                              contactPersonInitials: '',
-                              contactPersonFirstName: '',
-                              contactPersonSurname: '',
-                              contactPersonDesignation: '',
-                              contactPersonAddress: '',
-                              contactPersonTelephone: '',
-                              contactPersonFax: '',
-                              contactPersonEmail: '',
-                              heardAboutUs: 'Media',
-                              promotionOther: '',
-                              annualSalesTurnoverCurrent: '0',
-                              annualSalesTurnoverPrevious: '0',
-                              netProfitLossCurrent: '0',
-                              netProfitLossPrevious: '0',
-                              paidUpCapitalAccumulatedProfitCurrent: '0',
-                              paidUpCapitalAccumulatedProfitPrevious: '0',
-                              financialStatementsAvailable: 'No',
-                              statementDelivery: 'Mail',
-                              emailNotifyEnabled: false,
-                              emailConfirmInvestment: false,
-                              emailConfirmRedemption: false,
-                              emailUnitBalance: false,
-                              emailDailyUnitPrice: false,
-                              smsNotifyEnabled: false,
-                              smsConfirmInvestment: false,
-                              smsConfirmRedemption: false,
-                              smsUnitBalance: false,
-                              smsDailyUnitPrice: false,
+                    <div className="setup-action-buttons">
+                      <button
+                        onClick={handleNewButtonClick}
+                        className="setup-btn setup-btn-new"
+                      >
+                        <span className="setup-btn-icon">+</span>
+                        New
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        className="setup-btn setup-btn-save"
+                        disabled={!isFormEditable}
+                      >
+                        <span className="setup-btn-icon">💾</span>
+                        Save
+                      </button>
+                      <button
+                        onClick={handleDelete}
+                        className="setup-btn setup-btn-delete"
+                        disabled={!isFormEditable}
+                      >
+                        <span className="setup-btn-icon">🗑️</span>
+                        Delete
+                      </button>
+                      <button
+                        onClick={handlePrint}
+                        className="setup-btn setup-btn-print"
+                        disabled={!isFormEditable}
+                      >
+                        <span className="setup-btn-icon">🖨️</span>
+                        Print
+                      </button>
+                      <button
+                        onClick={() => {
+                          setFormData({
+                          bankCode: '',
+                          description: '',
+                          address: '',
+                          district: '',
+                          swiftCode: 'SBLILKLX',
+                          branchNo: '',
+                          applicationNo: '',
+                          applicationStatus: 'All',
+                            applicantType: '',
+                          title: '',
+                          initials: '',
+                          nameByInitials: '',
+                          surname: '',
+                          dateOfBirth: '',
+                          nic: '',
+                          passport: '',
+                          otherNo: '',
+                          compRegNo: '',
+                          telCode: '+94',
+                          telephone: '',
+                          faxCode: '+94',
+                          fax: '',
+                          mobileCode: '+94',
+                          mobile: '',
+                          email: '',
+                          tinNo: '',
+                          nationality: 'Local',
+                          relatedPartyStatus: 'None Related',
+                            correspondenceStreet: '',
+                            correspondenceTown: '',
+                            correspondenceCity: '',
+                            correspondenceDistrict: '',
+                            correspondenceCountry: 'Sri Lanka',
+                            correspondencePostalCode: '',
+                            correspondencePostalArea: '',
+                            permanentStreet: '',
+                            permanentTown: '',
+                            permanentCity: '',
+                            permanentDistrict: '',
+                            permanentCountry: 'Sri Lanka',
+                            permanentPostalCode: '',
+                            permanentPostalArea: '',
+                            addressType: 'Office',
+                            otherAddress: '',
+                            zone: '',
+                            bank: '',
+                            accountType: '',
+                            occupation: '',
+                            officeName: '',
+                            officeStreet: '',
+                            officeTown: '',
+                            officeCity: '',
+                            officePostalCode: '',
+                            officeCountry: 'Sri Lanka',
+                            officeTele: '',
+                            officeFaxNo: '',
+                            officeEmail: '',
+                            signature: '',
+                            married: false,
+                            spouseName: '',
+                            spouseOccupation: '',
+                            spouseEmployer: '',
+                            sourceOfIncome: '',
+                            annualIncome: '',
+                            incomeCurrency: 'Sri Lanka',
+                            isSubsidiaryAssociate: 'No',
+                            ownershipType: 'Subsidiary',
+                            organizationName: '',
+                            contactPersonTitle: '',
+                            contactPersonInitials: '',
+                            contactPersonFirstName: '',
+                            contactPersonSurname: '',
+                            contactPersonDesignation: '',
+                            contactPersonAddress: '',
+                            contactPersonTelephone: '',
+                            contactPersonFax: '',
+                            contactPersonEmail: '',
+                            heardAboutUs: 'Media',
+                            promotionOther: '',
+                            annualSalesTurnoverCurrent: '0',
+                            annualSalesTurnoverPrevious: '0',
+                            netProfitLossCurrent: '0',
+                            netProfitLossPrevious: '0',
+                            paidUpCapitalAccumulatedProfitCurrent: '0',
+                            paidUpCapitalAccumulatedProfitPrevious: '0',
+                            financialStatementsAvailable: 'No',
+                            statementDelivery: 'Mail',
+                            emailNotifyEnabled: false,
+                            emailConfirmInvestment: false,
+                            emailConfirmRedemption: false,
+                            emailUnitBalance: false,
+                            emailDailyUnitPrice: false,
+                            smsNotifyEnabled: false,
+                            smsConfirmInvestment: false,
+                            smsConfirmRedemption: false,
+                            smsUnitBalance: false,
+                            smsDailyUnitPrice: false,
       investmentTypeAtRegistration: '',
       officeAgency: '',
       officeSubAgency: '',
       officeAgent: '',
       investorCategory: '',
       verifyingOfficer: '',
-                              inputOfficer: '',
-                              authorizedOfficer: '',
-                              ackNo: '',
+      inputOfficer: '',
+      authorizedOfficer: '',
+      ackNo: '',
                               // Unit Holders Accounts Details tab
                               fund: '',
                               lastInvestmentNo: '',
@@ -3942,20 +4108,20 @@ function FourCardsWithModal() {
                               document: '',
                               documentInput: '',
                               documentType: '',
-                            });
-                            setBankAccounts([]);
-                            setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
-                            setSupportingDocs(defaultSupportingDocs);
+                          });
+                          setBankAccounts([]);
+                          setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
+                          setSupportingDocs(defaultSupportingDocs);
                             setBankDetailsAccounts([]);
                             setExistingAccounts([]);
-                          }}
-                          className="setup-btn setup-btn-clear"
-                          disabled={!isFormEditable}
-                        >
-                          <span className="setup-btn-icon">🗑️</span>
-                          Clear
-                        </button>
-                      </div>
+                        }}
+                        className="setup-btn setup-btn-clear"
+                        disabled={!isFormEditable}
+                      >
+                        <span className="setup-btn-icon">🗑️</span>
+                        Clear
+                      </button>
+                    </div>
                     )}
 
                     {/* Tabs Section - Only for Application Entry and Registration Unit Holders Profiles */}
@@ -4133,14 +4299,32 @@ function FourCardsWithModal() {
                                   {/* Right Column: Acc. Created On */}
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '33.33%', flex: '1 1 33.33%' }}>
                                     <label className="setup-input-label" style={{ minWidth: '120px' }}>Acc. Created On:</label>
-                                    <input
-                                      type="date"
-                                      value={formData.accCreatedOn}
-                                      onChange={(e) => handleInputChange('accCreatedOn', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field"
-                                      style={{ color: '#000000', flex: 1 }}
-                                    />
+                                    <div style={{ position: 'relative', flex: 1 }}>
+                                      <input
+                                        type="date"
+                                        value={formData.accCreatedOn}
+                                        onChange={(e) => handleInputChange('accCreatedOn', e.target.value)}
+                                        disabled={!isFormEditable}
+                                        className="setup-input-field"
+                                        style={{ 
+                                          color: '#000000', 
+                                          flex: 1,
+                                          cursor: isFormEditable ? 'pointer' : 'default',
+                                          WebkitAppearance: 'none',
+                                          MozAppearance: 'textfield'
+                                        }}
+                                        onClick={(e) => {
+                                          if (isFormEditable) {
+                                            e.currentTarget.showPicker?.();
+                                          }
+                                        }}
+                                        onFocus={(e) => {
+                                          if (isFormEditable) {
+                                            e.currentTarget.showPicker?.();
+                                          }
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
 
@@ -4232,9 +4416,21 @@ function FourCardsWithModal() {
                                               placeholder="Enter"
                                               style={{ color: '#000000', flex: 1 }}
                                             />
-                                            <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                            <button 
+                                              className="setup-btn setup-btn-new" 
+                                              title="Search" 
+                                              style={{ padding: '8px 12px' }}
+                                              onClick={() => {
+                                                if (formData.accountHolderType === 'Joint') {
+                                                  setIsJointHolderSearchModalOpen(true);
+                                                } else if (formData.accountHolderType === 'Guardian') {
+                                                  setIsGuardianSearchModalOpen(true);
+                                                }
+                                              }}
+                                              disabled={!isFormEditable}
+                                            >🔍</button>
                                           </div>
-                                          {/* Column 3: Right input + search */}
+                                          {/* Column 3: Right input + add button */}
                                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '33.33%' }}>
                                             <input
                                               type="text"
@@ -4245,7 +4441,23 @@ function FourCardsWithModal() {
                                               placeholder="Enter"
                                               style={{ color: '#000000', flex: 1 }}
                                             />
-                                            <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                            <button 
+                                              className="setup-btn setup-btn-new" 
+                                              title="Add to table" 
+                                              style={{ padding: '8px 12px' }}
+                                              onClick={() => {
+                                                if (formData.rightInput.trim()) {
+                                                  const newHolder: HolderInfo = {
+                                                    holderNo: String(jointHolders.length + 1),
+                                                    holderName: formData.rightInput.trim(),
+                                                    selected: false,
+                                                  };
+                                                  setJointHolders([...jointHolders, newHolder]);
+                                                  handleInputChange('rightInput', '');
+                                                }
+                                              }}
+                                              disabled={!isFormEditable || !formData.rightInput.trim()}
+                                            >▼</button>
                                           </div>
                                         </div>
                                       </div>
@@ -4340,9 +4552,15 @@ function FourCardsWithModal() {
                                             placeholder="Enter nominee"
                                             style={{ color: '#000000', flex: 1 }}
                                           />
-                                          <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                          <button 
+                                            className="setup-btn setup-btn-new" 
+                                            title="Search" 
+                                            style={{ padding: '8px 12px' }}
+                                            onClick={() => setIsNomineeSearchModalOpen(true)}
+                                            disabled={!isFormEditable}
+                                          >🔍</button>
                                         </div>
-                                        {/* Right Column: Input + search */}
+                                        {/* Right Column: Input + add button */}
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '50%', flex: '1 1 50%' }}>
                                           <input
                                             type="text"
@@ -4353,7 +4571,23 @@ function FourCardsWithModal() {
                                             placeholder="Enter"
                                             style={{ color: '#000000', flex: 1 }}
                                           />
-                                          <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                          <button 
+                                            className="setup-btn setup-btn-new" 
+                                            title="Add to table" 
+                                            style={{ padding: '8px 12px' }}
+                                            onClick={() => {
+                                              if (formData.nomineeRightInput.trim()) {
+                                                const newNominee: HolderInfo = {
+                                                  holderNo: String(nomineeHolders.length + 1),
+                                                  holderName: formData.nomineeRightInput.trim(),
+                                                  selected: false,
+                                                };
+                                                setNomineeHolders([...nomineeHolders, newNominee]);
+                                                handleInputChange('nomineeRightInput', '');
+                                              }
+                                            }}
+                                            disabled={!isFormEditable || !formData.nomineeRightInput.trim()}
+                                          >▼</button>
                                         </div>
                                       </div>
                                       {/* Table: Holder No and Holder Name */}
@@ -4486,7 +4720,13 @@ function FourCardsWithModal() {
                                         placeholder="Enter account number"
                                         style={{ color: '#000000', flex: 1 }}
                                       />
-                                      <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 12px' }}>🔍</button>
+                                      <button 
+                                        className="setup-btn setup-btn-new" 
+                                        title="Search" 
+                                        style={{ padding: '8px 12px' }}
+                                        onClick={() => setIsAccountSearchModalOpen(true)}
+                                        disabled={!isFormEditable}
+                                      >🔍</button>
                                     </div>
                                   </div>
                                 )}

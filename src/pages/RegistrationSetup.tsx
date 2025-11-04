@@ -156,6 +156,12 @@ interface FormData {
   payee: string;
   nomineeInput: string;
   nomineeRightInput: string;
+  // Unit Holders Accounts Bank Details tab
+  bankDetailsPaymentType: string;
+  bankDetailsBank: string;
+  bankDetailsAccountNo: string;
+  bankDetailsAccountName: string;
+  bankDetailsPayee: string;
 }
 
 interface DirectorInfo {
@@ -179,6 +185,14 @@ interface HolderInfo {
   holderNo: string;
   holderName: string;
   selected?: boolean;
+}
+
+interface ExistingAccount {
+  accountNo: string;
+  fundName: string;
+  productType: string;
+  accType: string;
+  active: string;
 }
 
 // ========================================
@@ -375,6 +389,12 @@ function FourCardsWithModal() {
     payee: '',
     nomineeInput: '',
     nomineeRightInput: '',
+    // Unit Holders Accounts Bank Details tab
+    bankDetailsPaymentType: '',
+    bankDetailsBank: '',
+    bankDetailsAccountNo: '',
+    bankDetailsAccountName: '',
+    bankDetailsPayee: '',
   });
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
@@ -428,6 +448,10 @@ function FourCardsWithModal() {
   const [showReinvestFundTable, setShowReinvestFundTable] = useState(false);
   const [showPaymentTypeTable, setShowPaymentTypeTable] = useState(false);
   const [showPayoutBankTable, setShowPayoutBankTable] = useState(false);
+  const [showBankDetailsPaymentTypeTable, setShowBankDetailsPaymentTypeTable] = useState(false);
+  const [showBankDetailsBankTable, setShowBankDetailsBankTable] = useState(false);
+  const [bankDetailsAccounts, setBankDetailsAccounts] = useState<BankAccount[]>([]);
+  const [existingAccounts, setExistingAccounts] = useState<ExistingAccount[]>([]);
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -719,10 +743,18 @@ function FourCardsWithModal() {
       payee: '',
       nomineeInput: '',
       nomineeRightInput: '',
+      // Unit Holders Accounts Bank Details tab
+      bankDetailsPaymentType: '',
+      bankDetailsBank: '',
+      bankDetailsAccountNo: '',
+      bankDetailsAccountName: '',
+      bankDetailsPayee: '',
     });
     setBankAccounts([]);
     setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
     setSupportingDocs(defaultSupportingDocs);
+    setBankDetailsAccounts([]);
+    setExistingAccounts([]);
   };
 
   const handleModalOpen = (idx: number) => {
@@ -868,30 +900,50 @@ function FourCardsWithModal() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
               {/* Left Column: 50% width - Registration No label + input */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-                <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
-                <input
-                  type="text"
-                  value={formData.applicationNo}
-                  onChange={(e) => handleInputChange('applicationNo', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter registration number"
-                  style={{ color: '#000000', flex: 1 }}
-                />
+              <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
+              <input
+                type="text"
+                value={formData.applicationNo}
+                onChange={(e) => handleInputChange('applicationNo', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder="Enter registration number"
+                style={{ color: '#000000', flex: 1 }}
+              />
               </div>
               {/* Right Column: 50% width - Search button + ACKNO label + input */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '50%', flex: '1 1 50%' }}>
-                <button className="setup-btn setup-btn-new" title="Search" style={{ padding: '8px 20px', minWidth: '60px' }}>🔍</button>
+                <button 
+                  className="setup-btn setup-btn-new" 
+                  title="Search" 
+                  style={{ padding: '8px 20px', minWidth: '60px' }}
+                  onClick={() => {
+                    // When search is clicked, populate existing accounts table
+                    if (formData.applicationNo || formData.ackNo) {
+                      // Simulate search - in real app, this would fetch from API
+                      const mockAccounts: ExistingAccount[] = [
+                        {
+                          accountNo: formData.applicationNo || '2010120492011401',
+                          fundName: 'Ceylon Financial Sector Fund',
+                          productType: 'Unit Trust',
+                          accType: 'Individual',
+                          active: 'N'
+                        }
+                      ];
+                      setExistingAccounts(mockAccounts);
+                    }
+                  }}
+                >🔍</button>
                 <label className="setup-input-label" style={{ minWidth: '80px' }}>ACKNO</label>
-                <input
-                  type="text"
-                  value={formData.ackNo}
-                  onChange={(e) => handleInputChange('ackNo', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="ACKNO"
+              <input
+                type="text"
+                value={formData.ackNo}
+                onChange={(e) => handleInputChange('ackNo', e.target.value)}
+                disabled={!isFormEditable}
+                className="setup-input-field"
+                placeholder="ACKNO"
                   style={{ color: '#000000', flex: 1 }}
-                />
+              />
               </div>
             </div>
           </div>
@@ -3241,13 +3293,15 @@ function FourCardsWithModal() {
       if (showReinvestFundTable && !target.closest('[data-table="reinvestFund"]')) setShowReinvestFundTable(false);
       if (showPaymentTypeTable && !target.closest('[data-table="paymentType"]')) setShowPaymentTypeTable(false);
       if (showPayoutBankTable && !target.closest('[data-table="payoutBank"]')) setShowPayoutBankTable(false);
+      if (showBankDetailsPaymentTypeTable && !target.closest('[data-table="bankDetailsPaymentType"]')) setShowBankDetailsPaymentTypeTable(false);
+      if (showBankDetailsBankTable && !target.closest('[data-table="bankDetailsBank"]')) setShowBankDetailsBankTable(false);
     };
     
-    if (showCompanyTable || showAgencyTable || showSubAgencyTable || showAgentTable || showFundTable || showReinvestFundTable || showPaymentTypeTable || showPayoutBankTable) {
+    if (showCompanyTable || showAgencyTable || showSubAgencyTable || showAgentTable || showFundTable || showReinvestFundTable || showPaymentTypeTable || showPayoutBankTable || showBankDetailsPaymentTypeTable || showBankDetailsBankTable) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [showCompanyTable, showAgencyTable, showSubAgencyTable, showAgentTable, showFundTable, showReinvestFundTable, showPaymentTypeTable, showPayoutBankTable]);
+  }, [showCompanyTable, showAgencyTable, showSubAgencyTable, showAgentTable, showFundTable, showReinvestFundTable, showPaymentTypeTable, showPayoutBankTable, showBankDetailsPaymentTypeTable, showBankDetailsBankTable]);
 
   // ========================================
   // RENDER
@@ -3450,9 +3504,9 @@ function FourCardsWithModal() {
       officeAgent: '',
       investorCategory: '',
       verifyingOfficer: '',
-                            inputOfficer: '',
-                            authorizedOfficer: '',
-                            ackNo: '',
+      inputOfficer: '',
+      authorizedOfficer: '',
+      ackNo: '',
                             // Unit Holders Accounts Details tab
                             fund: '',
                             lastInvestmentNo: '',
@@ -3476,10 +3530,18 @@ function FourCardsWithModal() {
                             payee: '',
                             nomineeInput: '',
                             nomineeRightInput: '',
+                            // Unit Holders Accounts Bank Details tab
+                            bankDetailsPaymentType: '',
+                            bankDetailsBank: '',
+                            bankDetailsAccountNo: '',
+                            bankDetailsAccountName: '',
+                            bankDetailsPayee: '',
                           });
                           setBankAccounts([]);
                           setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
                           setSupportingDocs(defaultSupportingDocs);
+                          setBankDetailsAccounts([]);
+                          setExistingAccounts([]);
                         }}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
@@ -3577,7 +3639,7 @@ function FourCardsWithModal() {
                                     <div style={{ position: 'relative', flex: 1 }}>
                                       <div onClick={() => isFormEditable && setShowFundTable(!showFundTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.fund ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
                                         {formData.fund || 'Select fund (Name - Code)'}
-                                      </div>
+                                </div>
                                       {showFundTable && isFormEditable && (
                                         <div data-table="fund" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
                                           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -3605,7 +3667,7 @@ function FourCardsWithModal() {
                                               ))}
                                             </tbody>
                                           </table>
-                                        </div>
+                                </div>
                                       )}
                                     </div>
                                   </div>
@@ -4133,25 +4195,231 @@ function FourCardsWithModal() {
                             )}
 
                             {accountsActiveTab === 'Bank Details' && (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Bank</label>
-                                  <select className="setup-dropdown-select" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }}>
-                                    <option value="">Select bank</option>
-                                    <option value="BOC">Bank of Ceylon</option>
-                                    <option value="Sampath">Sampath Bank</option>
-                                  </select>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
+                                {/* Payment Type */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Payment Type</label>
+                                  <div style={{ position: 'relative', flex: 1 }}>
+                                    <div onClick={() => isFormEditable && setShowBankDetailsPaymentTypeTable(!showBankDetailsPaymentTypeTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsPaymentType ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                      {formData.bankDetailsPaymentType || 'Select payment type (Code - Name)'}
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px' }}>Account No</label>
-                                  <input type="text" className="setup-input-field" disabled={!isFormEditable} style={{ color: '#000000', flex: 1 }} placeholder="Enter account number" />
+                                    {showBankDetailsPaymentTypeTable && isFormEditable && (
+                                      <div data-table="bankDetailsPaymentType" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                          <thead>
+                                            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                                              <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {paymentTypeData.map((pt, idx) => (
+                                              <tr
+                                                key={idx}
+                                                onClick={() => {
+                                                  handleInputChange('bankDetailsPaymentType', `${pt.name} - ${pt.code}`);
+                                                  setShowBankDetailsPaymentTypeTable(false);
+                                                }}
+                                                style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                              >
+                                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{pt.code}</td>
+                                                <td style={{ padding: '8px 12px', color: '#000000' }}>{pt.name}</td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Bank */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Bank</label>
+                                  <div style={{ position: 'relative', flex: 1 }}>
+                                    <div onClick={() => isFormEditable && setShowBankDetailsBankTable(!showBankDetailsBankTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsBank ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                      {formData.bankDetailsBank || 'Select bank (Name - Code)'}
+                                    </div>
+                                    {showBankDetailsBankTable && isFormEditable && (
+                                      <div data-table="bankDetailsBank" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                          <thead>
+                                            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
+                                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                                              <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>District</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {bankData.map((bank, idx) => (
+                                              <tr
+                                                key={idx}
+                                                onClick={() => {
+                                                  handleInputChange('bankDetailsBank', `${bank.name} - ${bank.code}`);
+                                                  setShowBankDetailsBankTable(false);
+                                                }}
+                                                style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                              >
+                                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.name}</td>
+                                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.code}</td>
+                                                <td style={{ padding: '8px 12px', color: '#000000' }}>{bank.district}</td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Account No */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Account No</label>
+                                  <input
+                                    type="text"
+                                    value={formData.bankDetailsAccountNo}
+                                    onChange={(e) => handleInputChange('bankDetailsAccountNo', e.target.value)}
+                                    disabled={!isFormEditable}
+                                    className="setup-input-field"
+                                    placeholder="Enter account number"
+                                    style={{ color: '#000000', flex: 1 }}
+                                  />
+                                </div>
+
+                                {/* Account Name */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Account Name</label>
+                                  <input
+                                    type="text"
+                                    value={formData.bankDetailsAccountName}
+                                    onChange={(e) => handleInputChange('bankDetailsAccountName', e.target.value)}
+                                    disabled={!isFormEditable}
+                                    className="setup-input-field"
+                                    placeholder="Enter account name"
+                                    style={{ color: '#000000', flex: 1 }}
+                                  />
+                                </div>
+
+                                {/* Payee */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Payee</label>
+                                  <input
+                                    type="text"
+                                    value={formData.bankDetailsPayee}
+                                    onChange={(e) => handleInputChange('bankDetailsPayee', e.target.value)}
+                                    disabled={!isFormEditable}
+                                    className="setup-input-field"
+                                    placeholder="Enter payee"
+                                    style={{ color: '#000000', flex: 1 }}
+                                  />
+                                </div>
+
+                                {/* Bank Accounts Table */}
+                                <div style={{ marginTop: '12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#f9fafb' }}>
+                                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Bank Code</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Account No.</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Account Type</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Bank Name</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {bankDetailsAccounts.length === 0 ? (
+                                        <tr>
+                                          <td colSpan={4} style={{ padding: '20px', textAlign: 'center', color: '#94a3b8' }}>No bank accounts added</td>
+                                        </tr>
+                                      ) : (
+                                        bankDetailsAccounts.map((account, idx) => (
+                                          <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.bankCode}</td>
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accountNo}</td>
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accountType}</td>
+                                            <td style={{ padding: '8px 12px', color: '#000000' }}>{account.bankName}</td>
+                                          </tr>
+                                        ))
+                                      )}
+                                    </tbody>
+                                  </table>
                                 </div>
                               </div>
                             )}
 
                             {accountsActiveTab === 'Existing Accounts' && (
-                              <div>
-                                <div className="setup-list-placeholder">Existing accounts list goes here.</div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
+                                {/* Existing Accounts Table */}
+                                <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', overflow: 'hidden' }}>
+                                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Account No</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Fund Name</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Product Type</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Acc. Type</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Active</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {existingAccounts.length === 0 ? (
+                                        // Show empty rows when no data
+                                        Array.from({ length: 12 }).map((_, idx) => (
+                                          <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000', minHeight: '40px' }}></td>
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
+                                            <td style={{ padding: '8px 12px', color: '#000000' }}></td>
+                                          </tr>
+                                        ))
+                                      ) : (
+                                        <>
+                                          {existingAccounts.map((account, idx) => (
+                                            <tr 
+                                              key={idx} 
+                                              style={{ borderBottom: '1px solid #e2e8f0', cursor: 'pointer' }}
+                                              onDoubleClick={() => {
+                                                // Handle double click to edit
+                                                if (isFormEditable) {
+                                                  // Populate form fields with selected account data
+                                                  handleInputChange('accountNo', account.accountNo);
+                                                  handleInputChange('fund', account.fundName);
+                                                  // Switch to Details tab to show the data
+                                                  setAccountsActiveTab('Details');
+                                                }
+                                              }}
+                                            >
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accountNo}</td>
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.fundName}</td>
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.productType}</td>
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accType}</td>
+                                              <td style={{ padding: '8px 12px', color: '#000000' }}>{account.active}</td>
+                                            </tr>
+                                          ))}
+                                          {/* Fill remaining rows if needed */}
+                                          {existingAccounts.length < 12 && Array.from({ length: 12 - existingAccounts.length }).map((_, idx) => (
+                                            <tr key={`empty-${idx}`} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000', minHeight: '40px' }}></td>
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
+                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
+                                              <td style={{ padding: '8px 12px', color: '#000000' }}></td>
+                                            </tr>
+                                          ))}
+                                        </>
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                                
+                                {/* Instruction text */}
+                                <div style={{ marginTop: '8px', color: '#2563eb', fontSize: '14px', fontWeight: 500 }}>
+                                  Double click to Edit the selected value
+                                </div>
                               </div>
                             )}
                           </div>

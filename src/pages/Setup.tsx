@@ -4602,25 +4602,17 @@ function TerritoryModalContent({ formData, handleInputChange, isFormEditable }: 
 function InstitutionCategoryModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
   return (
     <>
-      {/* Institution Category Dropdown */}
+      {/* Institution Category Input */}
       <div className="setup-input-group">
         <label className="setup-input-label">Institution Category</label>
-        <select
+        <input
+          type="text"
           value={formData.institutionCategoryType || ''}
           onChange={e => handleInputChange('institutionCategoryType', e.target.value)}
           disabled={!isFormEditable}
-          className="setup-dropdown-select"
-          style={{ color: '#000000' }}
-        >
-          <option value="" style={{ color: '#000000' }}>Select institution category</option>
-          <option value="Bank" style={{ color: '#000000' }}>Bank</option>
-          <option value="Insurance" style={{ color: '#000000' }}>Insurance</option>
-          <option value="Investment" style={{ color: '#000000' }}>Investment</option>
-          <option value="Brokerage" style={{ color: '#000000' }}>Brokerage</option>
-          <option value="Mutual Fund" style={{ color: '#000000' }}>Mutual Fund</option>
-          <option value="Pension Fund" style={{ color: '#000000' }}>Pension Fund</option>
-          <option value="Other" style={{ color: '#000000' }}>Other</option>
-        </select>
+          className="setup-input-field"
+          placeholder="Enter institution category"
+        />
       </div>
       
       {/* Active Checkbox */}
@@ -4778,24 +4770,17 @@ function InstitutionModalContent({ formData, handleInputChange, isFormEditable }
 function BlockingCategoryModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
   return (
     <>
-      {/* Blocking Category Dropdown */}
+      {/* Blocking Category Input */}
       <div className="setup-input-group">
         <label className="setup-input-label">Blocking Category</label>
-        <select
+        <input
+          type="text"
           value={formData.blockingCategoryType || ''}
           onChange={e => handleInputChange('blockingCategoryType', e.target.value)}
           disabled={!isFormEditable}
-          className="setup-dropdown-select"
-        >
-          <option value="">Select blocking category</option>
-          <option value="Fraud">Fraud</option>
-          <option value="Compliance">Compliance</option>
-          <option value="Risk">Risk</option>
-          <option value="Regulatory">Regulatory</option>
-          <option value="Suspicious Activity">Suspicious Activity</option>
-          <option value="Legal">Legal</option>
-          <option value="Other">Other</option>
-        </select>
+          className="setup-input-field"
+          placeholder="Enter blocking category"
+        />
       </div>
       
       {/* Active Checkbox */}
@@ -4890,6 +4875,65 @@ function JointSaleAgentModalContent({
   handleInputChange: (field: string, value: string | string[] | boolean) => void, 
   isFormEditable: boolean 
 }) {
+  // State for dropdown table visibility
+  const [showInstituteAgentTable, setShowInstituteAgentTable] = useState(false);
+  const [showNormalAgentTable, setShowNormalAgentTable] = useState(false);
+  const [showJointAgencyTable, setShowJointAgencyTable] = useState(false);
+  const [showJointSubAgencyTable, setShowJointSubAgencyTable] = useState(false);
+
+  // Sample data for Agent Code dropdown table (4 columns: Agency_code, Sub_Agency_code, Agent_Code, Agent_Description)
+  const agentCodeData = [
+    { agencyCode: 'AG001', subAgencyCode: 'SA001', agentCode: 'AGT001', agentDescription: 'John Smith - Senior Agent' },
+    { agencyCode: 'AG001', subAgencyCode: 'SA002', agentCode: 'AGT002', agentDescription: 'Jane Doe - Junior Agent' },
+    { agencyCode: 'AG002', subAgencyCode: 'SA001', agentCode: 'AGT003', agentDescription: 'Bob Johnson - Senior Agent' },
+    { agencyCode: 'AG002', subAgencyCode: 'SA003', agentCode: 'AGT004', agentDescription: 'Alice Williams - Junior Agent' },
+    { agencyCode: 'AG003', subAgencyCode: 'SA002', agentCode: 'AGT005', agentDescription: 'Charlie Brown - Senior Agent' },
+  ];
+
+  // Sample data for Joint Agent Agency dropdown table (2 columns: Code, Description)
+  const jointAgencyData = [
+    { code: 'AG001', description: 'Main Street Agency' },
+    { code: 'AG002', description: 'Central Agency' },
+    { code: 'AG003', description: 'Downtown Agency' },
+    { code: 'AG004', description: 'Uptown Agency' },
+  ];
+
+  // Sample data for Joint Agent Sub Agency dropdown table (4 columns: Agency_Code, Code, Description, Agency_description)
+  const jointSubAgencyData = [
+    { agencyCode: 'AG001', code: 'SA001', description: 'Downtown Branch', agencyDescription: 'Main Street Agency' },
+    { agencyCode: 'AG001', code: 'SA002', description: 'Uptown Branch', agencyDescription: 'Main Street Agency' },
+    { agencyCode: 'AG002', code: 'SA001', description: 'Central Branch', agencyDescription: 'Central Agency' },
+    { agencyCode: 'AG002', code: 'SA003', description: 'North Branch', agencyDescription: 'Central Agency' },
+    { agencyCode: 'AG003', code: 'SA002', description: 'South Branch', agencyDescription: 'Downtown Agency' },
+  ];
+
+  // Close dropdown tables when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (showInstituteAgentTable && !target.closest('[data-table="institute-agent"]')) {
+        setShowInstituteAgentTable(false);
+      }
+      if (showNormalAgentTable && !target.closest('[data-table="normal-agent"]')) {
+        setShowNormalAgentTable(false);
+      }
+      if (showJointAgencyTable && !target.closest('[data-table="joint-agency"]')) {
+        setShowJointAgencyTable(false);
+      }
+      if (showJointSubAgencyTable && !target.closest('[data-table="joint-subagency"]')) {
+        setShowJointSubAgencyTable(false);
+      }
+    };
+    
+    if (showInstituteAgentTable || showNormalAgentTable || showJointAgencyTable || showJointSubAgencyTable) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showInstituteAgentTable, showNormalAgentTable, showJointAgencyTable, showJointSubAgencyTable]);
+
   return (
     <div style={{ 
       display: 'grid', 
@@ -4943,14 +4987,58 @@ function JointSaleAgentModalContent({
 
           <div className="setup-input-group">
             <label className="setup-input-label">Agent Code</label>
-            <input
-              type="text"
-              value={formData.agentCode || ''}
-              onChange={e => handleInputChange('agentCode', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-input-field"
-              placeholder="Enter agent code"
-            />
+            <div style={{ position: 'relative' }} data-table="institute-agent">
+              <div
+                onClick={() => isFormEditable && setShowInstituteAgentTable(!showInstituteAgentTable)}
+                style={{
+                  padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff',
+                  cursor: isFormEditable ? 'pointer' : 'default', color: formData.agentCode ? '#0f172a' : '#64748b',
+                  minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px'
+                }}
+              >
+                {formData.agentCode || 'Select agent code'}
+              </div>
+              {showInstituteAgentTable && isFormEditable && (
+                <div data-table="institute-agent" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '300px', overflowY: 'auto', minWidth: '600px' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Agency_code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Sub_Agency_code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Agent_Code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Agent_Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {agentCodeData.map((agent, i) => (
+                        <tr 
+                          key={i} 
+                          onClick={() => { 
+                            handleInputChange('agentCode', agent.agentCode); 
+                            setShowInstituteAgentTable(false); 
+                          }} 
+                          style={{ 
+                            cursor: 'pointer', 
+                            backgroundColor: formData.agentCode === agent.agentCode ? '#f3e8ff' : '#ffffff' 
+                          }} 
+                          onMouseEnter={e => { 
+                            if (formData.agentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#f8fafc'; 
+                          }} 
+                          onMouseLeave={e => { 
+                            if (formData.agentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                          }}
+                        >
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.agencyCode}</td>
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.subAgencyCode}</td>
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.agentCode}</td>
+                          <td style={{ padding: '8px 12px', color: '#000000' }}>{agent.agentDescription}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -4998,14 +5086,58 @@ function JointSaleAgentModalContent({
 
           <div className="setup-input-group">
             <label className="setup-input-label">Agent Code</label>
-            <input
-              type="text"
-              value={formData.nameAgentCode || ''}
-              onChange={e => handleInputChange('nameAgentCode', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-input-field"
-              placeholder="Enter agent code"
-            />
+            <div style={{ position: 'relative' }} data-table="normal-agent">
+              <div
+                onClick={() => isFormEditable && setShowNormalAgentTable(!showNormalAgentTable)}
+                style={{
+                  padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff',
+                  cursor: isFormEditable ? 'pointer' : 'default', color: formData.nameAgentCode ? '#0f172a' : '#64748b',
+                  minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px'
+                }}
+              >
+                {formData.nameAgentCode || 'Select agent code'}
+              </div>
+              {showNormalAgentTable && isFormEditable && (
+                <div data-table="normal-agent" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '300px', overflowY: 'auto', minWidth: '600px' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Agency_code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Sub_Agency_code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Agent_Code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Agent_Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {agentCodeData.map((agent, i) => (
+                        <tr 
+                          key={i} 
+                          onClick={() => { 
+                            handleInputChange('nameAgentCode', agent.agentCode); 
+                            setShowNormalAgentTable(false); 
+                          }} 
+                          style={{ 
+                            cursor: 'pointer', 
+                            backgroundColor: formData.nameAgentCode === agent.agentCode ? '#f3e8ff' : '#ffffff' 
+                          }} 
+                          onMouseEnter={e => { 
+                            if (formData.nameAgentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#f8fafc'; 
+                          }} 
+                          onMouseLeave={e => { 
+                            if (formData.nameAgentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                          }}
+                        >
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.agencyCode}</td>
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.subAgencyCode}</td>
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.agentCode}</td>
+                          <td style={{ padding: '8px 12px', color: '#000000' }}>{agent.agentDescription}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -5017,34 +5149,110 @@ function JointSaleAgentModalContent({
 
           <div className="setup-input-group">
             <label className="setup-input-label">Agency</label>
-            <select
-              value={formData.jointAgency || ''}
-              onChange={e => handleInputChange('jointAgency', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-dropdown-select"
-              style={{ color: '#000000' }}
-            >
-              <option value="">Select Agency</option>
-              <option value="AG001">AG001 - Main Street Agency</option>
-              <option value="AG002">AG002 - Central Agency</option>
-              <option value="AG003">AG003 - Downtown Agency</option>
-            </select>
+            <div style={{ position: 'relative' }} data-table="joint-agency">
+              <div
+                onClick={() => isFormEditable && setShowJointAgencyTable(!showJointAgencyTable)}
+                style={{
+                  padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff',
+                  cursor: isFormEditable ? 'pointer' : 'default', color: formData.jointAgency ? '#0f172a' : '#64748b',
+                  minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px'
+                }}
+              >
+                {formData.jointAgency || 'Select agency'}
+              </div>
+              {showJointAgencyTable && isFormEditable && (
+                <div data-table="joint-agency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {jointAgencyData.map((agency, i) => (
+                        <tr 
+                          key={i} 
+                          onClick={() => { 
+                            handleInputChange('jointAgency', agency.code); 
+                            setShowJointAgencyTable(false); 
+                          }} 
+                          style={{ 
+                            cursor: 'pointer', 
+                            backgroundColor: formData.jointAgency === agency.code ? '#f3e8ff' : '#ffffff' 
+                          }} 
+                          onMouseEnter={e => { 
+                            if (formData.jointAgency !== agency.code) e.currentTarget.style.backgroundColor = '#f8fafc'; 
+                          }} 
+                          onMouseLeave={e => { 
+                            if (formData.jointAgency !== agency.code) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                          }}
+                        >
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agency.code}</td>
+                          <td style={{ padding: '8px 12px', color: '#000000' }}>{agency.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="setup-input-group">
             <label className="setup-input-label">Sub Agency</label>
-            <select
-              value={formData.jointSubAgency || ''}
-              onChange={e => handleInputChange('jointSubAgency', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-dropdown-select"
-              style={{ color: '#000000' }}
-            >
-              <option value="">Select Sub Agency</option>
-              <option value="SA001">SA001 - Downtown Branch</option>
-              <option value="SA002">SA002 - Uptown Branch</option>
-              <option value="SA003">SA003 - Central Branch</option>
-            </select>
+            <div style={{ position: 'relative' }} data-table="joint-subagency">
+              <div
+                onClick={() => isFormEditable && setShowJointSubAgencyTable(!showJointSubAgencyTable)}
+                style={{
+                  padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff',
+                  cursor: isFormEditable ? 'pointer' : 'default', color: formData.jointSubAgency ? '#0f172a' : '#64748b',
+                  minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px'
+                }}
+              >
+                {formData.jointSubAgency || 'Select sub agency'}
+              </div>
+              {showJointSubAgencyTable && isFormEditable && (
+                <div data-table="joint-subagency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '300px', overflowY: 'auto', minWidth: '600px' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Agency_Code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Description</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Agency_description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {jointSubAgencyData.map((subAgency, i) => (
+                        <tr 
+                          key={i} 
+                          onClick={() => { 
+                            handleInputChange('jointSubAgency', subAgency.code); 
+                            setShowJointSubAgencyTable(false); 
+                          }} 
+                          style={{ 
+                            cursor: 'pointer', 
+                            backgroundColor: formData.jointSubAgency === subAgency.code ? '#f3e8ff' : '#ffffff' 
+                          }} 
+                          onMouseEnter={e => { 
+                            if (formData.jointSubAgency !== subAgency.code) e.currentTarget.style.backgroundColor = '#f8fafc'; 
+                          }} 
+                          onMouseLeave={e => { 
+                            if (formData.jointSubAgency !== subAgency.code) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                          }}
+                        >
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{subAgency.agencyCode}</td>
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{subAgency.code}</td>
+                          <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{subAgency.description}</td>
+                          <td style={{ padding: '8px 12px', color: '#000000' }}>{subAgency.agencyDescription}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="setup-input-group">

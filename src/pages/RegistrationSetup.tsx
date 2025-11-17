@@ -4121,6 +4121,75 @@ function FourCardsWithModal() {
                         <span className="setup-btn-icon">🗑️</span>
                         Clear
                       </button>
+                      
+                      {/* Conditional buttons based on modal title */}
+                      {modules[modalIdx]?.title === 'Application Entry' && (
+                        <>
+                          <button
+                            onClick={() => {
+                              // Handle CSV Upload
+                              console.log('CSV Upload clicked');
+                            }}
+                            className="setup-btn setup-btn-new"
+                            disabled={!isFormEditable}
+                          >
+                            <span className="setup-btn-icon">📄</span>
+                            CSV Upload
+                          </button>
+                          <button
+                            onClick={() => {
+                              // Handle Pension Fund Upload
+                              console.log('Pension Fund Upload clicked');
+                            }}
+                            className="setup-btn setup-btn-new"
+                            disabled={!isFormEditable}
+                          >
+                            <span className="setup-btn-icon">💼</span>
+                            Pension Fund Upload
+                          </button>
+                        </>
+                      )}
+                      
+                      {modules[modalIdx]?.title === 'Registration Unit Holders Profiles' && (
+                        <button
+                          onClick={() => {
+                            // Handle Uniformize Name
+                            console.log('Uniformize Name clicked');
+                          }}
+                          className="setup-btn setup-btn-new"
+                          disabled={!isFormEditable}
+                        >
+                          <span className="setup-btn-icon">✏️</span>
+                          Uniformize Name
+                        </button>
+                      )}
+                      
+                      {modules[modalIdx]?.title === 'Unit Holders Accounts' && (
+                        <>
+                          <button
+                            onClick={() => {
+                              // Handle Check Digit
+                              console.log('Check Digit clicked');
+                            }}
+                            className="setup-btn setup-btn-new"
+                            disabled={!isFormEditable}
+                          >
+                            <span className="setup-btn-icon">✓</span>
+                            Check Digit
+                          </button>
+                          <button
+                            onClick={() => {
+                              // Handle UHAData Upload
+                              console.log('UHAData Upload clicked');
+                            }}
+                            className="setup-btn setup-btn-new"
+                            disabled={!isFormEditable}
+                          >
+                            <span className="setup-btn-icon">📤</span>
+                            UHAData Upload
+                          </button>
+                        </>
+                      )}
                     </div>
                     )}
 

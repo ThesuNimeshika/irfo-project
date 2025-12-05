@@ -231,6 +231,10 @@ interface FormData {
     nameAgency: string;
     nameSubAgency: string;
     nameAgentCode: string;
+    // Product Type fields
+    productType: string;
+    productTypeActive: boolean;
+    productTypeDescription: string;
     
 }
 
@@ -950,6 +954,10 @@ function Setup() {
         nameAgency: '',
         nameSubAgency: '',
         nameAgentCode: '',
+        // Product Type fields
+        productType: '',
+        productTypeActive: false,
+        productTypeDescription: '',
   });
 
   // Reset form data function
@@ -1175,6 +1183,10 @@ function Setup() {
     nameAgency: '',
     nameSubAgency: '',
     nameAgentCode: '',
+    // Product Type fields
+    productType: '',
+    productTypeActive: false,
+    productTypeDescription: '',
     });
   };
 
@@ -1893,14 +1905,45 @@ function FundsDetailsTabs() {
     { fundCode: 'F003', fundName: 'Balanced Fund', fundManager: 'Mike Wilson', launch: '2023-06-10', minNo: '75', minNA: '7500' },
   ];
   return (
-    <div className="setup-tabbed-table-section">
-      <div className="setup-tab-navigation">
-        <button className={`setup-tab-button ${activeTab === 'funds' ? 'active' : ''}`} onClick={() => setActiveTab('funds')}>Funds</button>
-        <button className={`setup-tab-button ${activeTab === 'partly-redemptions' ? 'active' : ''}`} onClick={() => setActiveTab('partly-redemptions')}>Partly Redemptions</button>
-        <button className={`setup-tab-button ${activeTab === 'fund-accounts' ? 'active' : ''}`} onClick={() => setActiveTab('fund-accounts')}>Fund Accounts</button>
-        <button className={`setup-tab-button ${activeTab === 'gl-account' ? 'active' : ''}`} onClick={() => setActiveTab('gl-account')}>GL Account</button>
-      </div>
-      <div className="setup-tab-content">
+    <div className="setup-input-section" style={{ marginTop: '0' }}>
+      <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+        {/* Tab headers - Using Unit Holders Accounts Details style */}
+        <div role="tablist" aria-label="Funds Details Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          {['Funds', 'Partly Redemptions', 'Fund Accounts', 'GL Account'].map(tab => {
+            const tabKey = tab === 'Funds' ? 'funds' : 
+                          tab === 'Partly Redemptions' ? 'partly-redemptions' :
+                          tab === 'Fund Accounts' ? 'fund-accounts' : 'gl-account';
+            return (
+              <div
+                key={tabKey}
+                role="tab"
+                aria-selected={activeTab === tabKey}
+                tabIndex={0}
+                onClick={() => setActiveTab(tabKey)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveTab(tabKey); }}
+                style={{
+                  padding: '10px 14px',
+                  background: activeTab === tabKey ? '#ffffff' : '#e2e8f0',
+                  color: '#0f172a',
+                  border: activeTab === tabKey ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
+                  borderBottom: activeTab === tabKey ? '2px solid #ffffff' : '1px solid #cbd5e1',
+                  borderRadius: '6px 6px 0 0',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  minHeight: '36px',
+                  lineHeight: 1.25,
+                  fontSize: '12px',
+                  flex: '0 0 auto'
+                }}
+              >
+                {tab}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Tab content */}
+        <div>
         {activeTab === 'funds' && (
           <CustomDataTable data={fundsData} columns={fundsColumns} />
         )}
@@ -1995,6 +2038,7 @@ function FundsDetailsTabs() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
@@ -2005,12 +2049,45 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
   
   return (
     <>
-      <div className="setup-tab-navigation">
-        <button className={`setup-tab-button ${activeTab === 'company' ? 'active' : ''}`} onClick={() => setActiveTab('company')}>Company</button>
-        <button className={`setup-tab-button ${activeTab === 'administrator' ? 'active' : ''}`} onClick={() => setActiveTab('administrator')}>Administrator</button>
-        <button className={`setup-tab-button ${activeTab === 'email-sms' ? 'active' : ''}`} onClick={() => setActiveTab('email-sms')}>Email and SMS</button>
-      </div>
-      <div className="setup-tab-content">
+      {/* Tab Navigation - Using Unit Holders Accounts Details style */}
+      <div className="setup-input-section" style={{ marginTop: '0' }}>
+        <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+          {/* Tab headers */}
+          <div role="tablist" aria-label="Company Details Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+            {['Company', 'Administrator', 'Email and SMS'].map(tab => {
+              const tabKey = tab === 'Company' ? 'company' : 
+                            tab === 'Administrator' ? 'administrator' : 'email-sms';
+              return (
+                <div
+                  key={tabKey}
+                  role="tab"
+                  aria-selected={activeTab === tabKey}
+                  tabIndex={0}
+                  onClick={() => setActiveTab(tabKey)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveTab(tabKey); }}
+                  style={{
+                    padding: '10px 14px',
+                    background: activeTab === tabKey ? '#ffffff' : '#e2e8f0',
+                    color: '#0f172a',
+                    border: activeTab === tabKey ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
+                    borderBottom: activeTab === tabKey ? '2px solid #ffffff' : '1px solid #cbd5e1',
+                    borderRadius: '6px 6px 0 0',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    minHeight: '36px',
+                    lineHeight: 1.25,
+                    fontSize: '12px',
+                    flex: '0 0 auto'
+                  }}
+                >
+                  {tab}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Tab content */}
+          <div>
         {activeTab === 'company' && (
           <div className="setup-company-tab">
             <div className="setup-company-form">
@@ -2741,6 +2818,8 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
             </div>
           </div>
         )}
+          </div>
+        </div>
       </div>
     </>
   );
@@ -2800,10 +2879,31 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
           className="setup-select-field"
         >
           <option value="">Select district</option>
-          <option value="north">North District</option>
-          <option value="south">South District</option>
-          <option value="east">East District</option>
-          <option value="west">West District</option>
+          <option value="Ampara">Ampara</option>
+          <option value="Anuradhapura">Anuradhapura</option>
+          <option value="Badulla">Badulla</option>
+          <option value="Batticaloa">Batticaloa</option>
+          <option value="Colombo">Colombo</option>
+          <option value="Galle">Galle</option>
+          <option value="Gampaha">Gampaha</option>
+          <option value="Hambantota">Hambantota</option>
+          <option value="Jaffna">Jaffna</option>
+          <option value="Kalutara">Kalutara</option>
+          <option value="Kandy">Kandy</option>
+          <option value="Kegalle">Kegalle</option>
+          <option value="Kilinochchi">Kilinochchi</option>
+          <option value="Kurunegala">Kurunegala</option>
+          <option value="Mannar">Mannar</option>
+          <option value="Matale">Matale</option>
+          <option value="Matara">Matara</option>
+          <option value="Monaragala">Monaragala</option>
+          <option value="Mullaitivu">Mullaitivu</option>
+          <option value="Nuwara Eliya">Nuwara Eliya</option>
+          <option value="Polonnaruwa">Polonnaruwa</option>
+          <option value="Puttalam">Puttalam</option>
+          <option value="Ratnapura">Ratnapura</option>
+          <option value="Trincomalee">Trincomalee</option>
+          <option value="Vavuniya">Vavuniya</option>
         </select>
       </div>
       <div className="setup-input-group">
@@ -5345,11 +5445,13 @@ function ProductTypeModalContent({
   handleInputChange: (field: string, value: string | string[] | boolean) => void, 
   isFormEditable: boolean 
 }) {
+  // Product Type - Applicable Funds data
   const applicableFunds = [
     { code: 'F001', name: 'Growth Fund' },
     { code: 'F002', name: 'Income Fund' },
     { code: 'F003', name: 'Balanced Fund' }
   ];
+  
   return (
     <div style={{ 
       display: 'grid', 
@@ -5368,13 +5470,13 @@ function ProductTypeModalContent({
         {/* Product Type Form Section */}
         <div className="setup-ash-box">
           
-          {/* Product Type Input */}
+          {/* Product Type Input - Product Type field */}
           <div className="setup-input-group" style={{ marginBottom: '24px' }}>
             <label className="setup-input-label">Product Type</label>
             <input
               type="text"
-              value={formData.fundType || ''}
-              onChange={e => handleInputChange('fundType', e.target.value)}
+              value={formData.productType || ''}
+              onChange={e => handleInputChange('productType', e.target.value)}
               disabled={!isFormEditable}
               className="setup-input-field"
               placeholder="Enter product type"
@@ -5382,13 +5484,13 @@ function ProductTypeModalContent({
             />
           </div>
 
-          {/* Active Checkbox */}
+          {/* Active Checkbox - Product Type Active field */}
           <div className="setup-input-group">
             <label className="setup-checkbox-label">
               <input
                 type="checkbox"
-                checked={formData.active || false}
-                onChange={e => handleInputChange('active', e.target.checked)}
+                checked={formData.productTypeActive || false}
+                onChange={e => handleInputChange('productTypeActive', e.target.checked)}
                 disabled={!isFormEditable}
                 className="setup-checkbox-input"
               />
@@ -5396,12 +5498,12 @@ function ProductTypeModalContent({
             </label>
           </div>
 
-          {/* Description Textarea */}
+          {/* Description Textarea - Product Type Description field */}
           <div className="setup-input-group">
             <label className="setup-input-label">Description</label>
             <textarea
-              value={formData.description || ''}
-              onChange={e => handleInputChange('description', e.target.value)}
+              value={formData.productTypeDescription || ''}
+              onChange={e => handleInputChange('productTypeDescription', e.target.value)}
               disabled={!isFormEditable}
               className="setup-input-field"
               placeholder="Enter product type description"

@@ -410,6 +410,11 @@ html, body {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  color: #000000;
+}
+
+.setup-select-field option {
+  color: #000000;
 }
 
 /* Date Picker Styles */

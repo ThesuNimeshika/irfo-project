@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import '../Setup.css';
 
@@ -32,11 +32,9 @@ const AccountSearchModal: React.FC<AccountSearchModalProps> = ({
 }) => {
   // State management
   const [searchCriteria, setSearchCriteria] = useState<Record<string, string>>({});
-  const [orderBy, setOrderBy] = useState<'Holder Name' | 'Holder ID'>('Holder Name');
   const [ignoreCase, setIgnoreCase] = useState<boolean>(true);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [selectedResult, setSelectedResult] = useState<SearchResult | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>('Please Wait..................');
   
   // Dropdown data
@@ -63,7 +61,6 @@ const AccountSearchModal: React.FC<AccountSearchModalProps> = ({
   };
 
   const handleSearch = async () => {
-    setIsLoading(true);
     setStatusMessage('Searching...');
     
     try {
@@ -88,8 +85,6 @@ const AccountSearchModal: React.FC<AccountSearchModalProps> = ({
     } catch (error) {
       setStatusMessage('Search failed');
       console.error('Search error:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

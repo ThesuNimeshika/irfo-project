@@ -159,9 +159,9 @@ function UnitOperations() {
       <>
         {/* Tab Navigation - Using Unit Holders Accounts Details style */}
         <div className="setup-input-section" style={{ marginTop: '0' }}>
-          <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+          <div className="setup-ash-box" style={{ padding: '8px', width: '100%' }}>
             {/* Tab headers */}
-            <div role="tablist" aria-label="Unit Fees Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+            <div role="tablist" aria-label="Unit Fees Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '6px', marginBottom: '6px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
               {['Unit Price', 'Creation Charges', 'Redemption Charges'].map(tab => (
                 <div
                   key={tab}
@@ -171,7 +171,7 @@ function UnitOperations() {
                   onClick={() => setActiveTab(tab as 'Unit Price' | 'Creation Charges' | 'Redemption Charges')}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveTab(tab as 'Unit Price' | 'Creation Charges' | 'Redemption Charges'); }}
                   style={{
-                    padding: '10px 14px',
+                    padding: '6px 10px',
                     background: activeTab === tab ? '#ffffff' : '#e2e8f0',
                     color: '#0f172a',
                     border: activeTab === tab ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
@@ -179,9 +179,9 @@ function UnitOperations() {
                     borderRadius: '6px 6px 0 0',
                     cursor: 'pointer',
                     fontWeight: 600,
-                    minHeight: '36px',
+                    minHeight: '28px',
                     lineHeight: 1.25,
-                    fontSize: '12px',
+                    fontSize: '11px',
                     flex: '0 0 auto'
                   }}
                 >
@@ -195,26 +195,26 @@ function UnitOperations() {
           {activeTab === 'Unit Price' && (
             <>
               {/* Top Card: Fund and Price Date */}
-              <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
+              <div className="setup-ash-box" style={{ padding: '8px', marginBottom: '6px' }}>
                 {/* Row 1: Fund and Price Date */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                   {/* Left Column: Fund */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Fund</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '50%', flex: '1 1 50%' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px', fontSize: '12px' }}>Fund</label>
                     <div style={{ position: 'relative', flex: 1 }} data-table="fund">
                       <div
                         onClick={() => setShowFundTable(!showFundTable)}
                         style={{
-                          padding: '8px 12px',
+                          padding: '6px 8px',
                           border: '1px solid #cbd5e1',
                           borderRadius: '4px',
                           backgroundColor: '#ffffff',
                           cursor: 'pointer',
                           color: unitFeesFormData.fundName ? '#0f172a' : '#64748b',
-                          minHeight: '38px',
+                          minHeight: '30px',
                           display: 'flex',
                           alignItems: 'center',
-                          fontSize: '14px'
+                          fontSize: '12px'
                         }}
                       >
                         {unitFeesFormData.fundName || 'Select fund'}
@@ -280,8 +280,8 @@ function UnitOperations() {
                     </div>
                   </div>
                   {/* Right Column: Price Date */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Price Date</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '50%', flex: '1 1 50%' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px', fontSize: '12px' }}>Price Date</label>
                     <div style={{ position: 'relative', flex: 1 }}>
                     <DatePicker
                       selected={priceDate}
@@ -299,7 +299,17 @@ function UnitOperations() {
               </div>
 
               {/* Button Palette - Between top and bottom cards for Unit Price tab */}
-              <div className="setup-action-buttons" style={{ marginBottom: '12px' }}>
+              <div className="setup-action-buttons" style={{ marginBottom: '6px', marginTop: '4px', gap: '6px' }}>
+                <style>{`
+                  .setup-action-buttons .setup-btn {
+                    padding: 4px 10px !important;
+                    font-size: 11px !important;
+                    min-height: 28px !important;
+                  }
+                  .setup-action-buttons .setup-btn-icon {
+                    font-size: 12px !important;
+                  }
+                `}</style>
                 <button className="setup-btn setup-btn-new" onClick={() => handleModalClose()}>
                   <span className="setup-btn-icon">+</span>
                   New
@@ -345,40 +355,42 @@ function UnitOperations() {
               {/* Before Brokerage */}
                 <div style={{ 
                   background: '#f8fafc', 
-                  padding: '16px', 
-                  borderRadius: '8px', 
+                  padding: '8px', 
+                  borderRadius: '6px', 
                   border: '1px solid #e2e8f0',
-                  marginBottom: '12px'
+                  marginBottom: '6px'
                 }}>
                   <div style={{ 
-                    background: '#3b82f6', 
-                    color: 'white', 
-                    padding: '8px 12px', 
+                    background: '#e2e8f0', 
+                    color: '#0f172a', 
+                    padding: '4px 8px', 
                     borderRadius: '4px',
-                    marginBottom: '12px',
+                    marginBottom: '6px',
                     fontWeight: 'bold',
-                    fontSize: '14px'
+                    fontSize: '11px'
                   }}>
                     Before Brokerage
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                     <div className="setup-input-group">
-                      <label className="setup-input-label">NAV</label>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV</label>
                       <input
                         type="number"
                         className="setup-input-field"
                         value={unitFeesFormData.beforeBrokerageNAV}
                         onChange={(e) => handleInputChange('beforeBrokerageNAV', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                     <div className="setup-input-group">
-                      <label className="setup-input-label">NAV Amount</label>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV Amount</label>
                       <input
                         type="number"
                         step="0.01"
                         className="setup-input-field"
                         value={unitFeesFormData.beforeBrokerageNAVAmount}
                         onChange={(e) => handleInputChange('beforeBrokerageNAVAmount', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                   </div>
@@ -387,40 +399,42 @@ function UnitOperations() {
                 {/* After Brokerage */}
                 <div style={{ 
                   background: '#f8fafc', 
-                  padding: '16px', 
-                  borderRadius: '8px', 
+                  padding: '8px', 
+                  borderRadius: '6px', 
                   border: '1px solid #e2e8f0',
-                  marginBottom: '12px'
+                  marginBottom: '6px'
                 }}>
                   <div style={{ 
-                    background: '#3b82f6', 
-                    color: 'white', 
-                    padding: '8px 12px', 
+                    background: '#e2e8f0', 
+                    color: '#0f172a', 
+                    padding: '4px 8px', 
                     borderRadius: '4px',
-                    marginBottom: '12px',
+                    marginBottom: '6px',
                     fontWeight: 'bold',
-                    fontSize: '14px'
+                    fontSize: '11px'
                   }}>
                     After Brokerage
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                     <div className="setup-input-group">
-                      <label className="setup-input-label">NAV</label>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV</label>
                       <input
                         type="number"
                         className="setup-input-field"
                         value={unitFeesFormData.afterBrokerageNAV}
                         onChange={(e) => handleInputChange('afterBrokerageNAV', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                     <div className="setup-input-group">
-                      <label className="setup-input-label">NAV Amount</label>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV Amount</label>
                       <input
                         type="number"
                         step="0.01"
                         className="setup-input-field"
                         value={unitFeesFormData.afterBrokerageNAVAmount}
                         onChange={(e) => handleInputChange('afterBrokerageNAVAmount', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                   </div>
@@ -429,72 +443,75 @@ function UnitOperations() {
                 {/* WHT Rate per Unit */}
                 <div style={{ 
                   background: '#f8fafc', 
-                  padding: '16px', 
-                  borderRadius: '8px', 
+                  padding: '8px', 
+                  borderRadius: '6px', 
                   border: '1px solid #e2e8f0',
-                  marginBottom: '12px'
+                  marginBottom: '6px'
                 }}>
                   <div style={{ 
-                    background: '#3b82f6', 
-                    color: 'white', 
-                    padding: '8px 12px', 
+                    background: '#e2e8f0', 
+                    color: '#0f172a', 
+                    padding: '4px 8px', 
                     borderRadius: '4px',
-                    marginBottom: '12px',
+                    marginBottom: '6px',
                     fontWeight: 'bold',
-                    fontSize: '14px'
+                    fontSize: '11px'
                   }}>
                     WHT Rate per Unit
                   </div>
                   <div className="setup-input-group">
-                    <label className="setup-input-label">WHT</label>
+                    <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>WHT</label>
                     <input
                       type="number"
                       step="0.01"
                       className="setup-input-field"
                       value={unitFeesFormData.whtRate}
                       onChange={(e) => handleInputChange('whtRate', e.target.value)}
+                      style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                     />
                   </div>
                 </div>
 
                 {/* Creation Price and Redeem Price */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '6px' }}>
                   {/* Creation Price */}
                   <div style={{ 
                     background: '#f8fafc', 
-                    padding: '16px', 
-                    borderRadius: '8px', 
+                    padding: '8px', 
+                    borderRadius: '6px', 
                     border: '1px solid #e2e8f0' 
                   }}>
                     <div style={{ 
-                      background: '#3b82f6', 
-                      color: 'white', 
-                      padding: '8px 12px', 
+                      background: '#e2e8f0', 
+                      color: '#0f172a', 
+                      padding: '4px 8px', 
                       borderRadius: '4px',
-                      marginBottom: '12px',
+                      marginBottom: '6px',
                       fontWeight: 'bold',
-                      fontSize: '14px'
+                      fontSize: '11px'
                     }}>
                       Creation Price
                     </div>
-                    <div className="setup-input-group" style={{ marginBottom: '12px' }}>
-                      <label className="setup-input-label">Without Front End Fee</label>
+                    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>Without Front End Fee</label>
                       <input
                         type="number"
                         step="0.000001"
                         className="setup-input-field"
                         value={unitFeesFormData.creationPriceWithoutFee}
                         onChange={(e) => handleInputChange('creationPriceWithoutFee', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                     <div className="setup-input-group">
-                      <label className="setup-input-label">With Front End Fee</label>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>With Front End Fee</label>
                       <input
                         type="number"
                         step="0.000001"
                         className="setup-input-field"
                         value={unitFeesFormData.creationPriceWithFee}
                         onChange={(e) => handleInputChange('creationPriceWithFee', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                   </div>
@@ -502,39 +519,41 @@ function UnitOperations() {
                   {/* Redeem Price */}
                   <div style={{ 
                     background: '#f8fafc', 
-                    padding: '16px', 
-                    borderRadius: '8px', 
+                    padding: '8px', 
+                    borderRadius: '6px', 
                     border: '1px solid #e2e8f0' 
                   }}>
                     <div style={{ 
-                      background: '#3b82f6', 
-                      color: 'white', 
-                      padding: '8px 12px', 
+                      background: '#e2e8f0', 
+                      color: '#0f172a', 
+                      padding: '4px 8px', 
                       borderRadius: '4px',
-                      marginBottom: '12px',
+                      marginBottom: '6px',
                       fontWeight: 'bold',
-                      fontSize: '14px'
+                      fontSize: '11px'
                     }}>
                       Redeem Price
                     </div>
-                    <div className="setup-input-group" style={{ marginBottom: '12px' }}>
-                      <label className="setup-input-label">Without Exit Fee</label>
+                    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>Without Exit Fee</label>
                       <input
                         type="number"
                         step="0.000001"
                         className="setup-input-field"
                         value={unitFeesFormData.redeemPriceWithoutFee}
                         onChange={(e) => handleInputChange('redeemPriceWithoutFee', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                     <div className="setup-input-group">
-                      <label className="setup-input-label">With Exit Fee</label>
+                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>With Exit Fee</label>
                       <input
                         type="number"
                         step="0.000001"
                         className="setup-input-field"
                         value={unitFeesFormData.redeemPriceWithFee}
                         onChange={(e) => handleInputChange('redeemPriceWithFee', e.target.value)}
+                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
                       />
                     </div>
                   </div>
@@ -543,29 +562,29 @@ function UnitOperations() {
                 {/* Fund Details */}
                 <div style={{ 
                   background: '#f8fafc', 
-                  padding: '16px', 
-                  borderRadius: '8px', 
+                  padding: '8px', 
+                  borderRadius: '6px', 
                   border: '1px solid #e2e8f0' 
                 }}>
                   <div style={{ 
-                    background: '#3b82f6', 
-                    color: 'white', 
-                    padding: '8px 12px', 
+                    background: '#e2e8f0', 
+                    color: '#0f172a', 
+                    padding: '4px 8px', 
                     borderRadius: '4px',
-                    marginBottom: '12px',
+                    marginBottom: '6px',
                     fontWeight: 'bold',
-                    fontSize: '14px'
+                    fontSize: '11px'
                   }}>
                     Fund Details
                   </div>
                   <div className="setup-input-group">
                     <textarea
                       className="setup-input-field"
-                      rows={4}
+                      rows={2}
                       value={unitFeesFormData.fundDetails}
                       onChange={(e) => handleInputChange('fundDetails', e.target.value)}
                       placeholder="Enter fund details..."
-                      style={{ width: '100%', resize: 'vertical' }}
+                      style={{ width: '100%', resize: 'vertical', fontSize: '12px', padding: '6px' }}
                     />
                   </div>
                 </div>
@@ -573,7 +592,7 @@ function UnitOperations() {
           )}
 
           {activeTab === 'Creation Charges' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', color: '#000000' }}>
               <div className="setup-input-group">
                 <textarea
                   className="setup-input-field"
@@ -581,7 +600,7 @@ function UnitOperations() {
                   value={unitFeesFormData.creationCharges}
                   onChange={(e) => handleInputChange('creationCharges', e.target.value)}
                   placeholder="Enter creation charges details..."
-                  style={{ width: '100%', resize: 'vertical', minHeight: '400px', color: '#000000' }}
+                  style={{ width: '100%', resize: 'vertical', minHeight: '400px', color: '#000000', padding: '6px', fontSize: '12px' }}
                 />
               </div>
             </div>
@@ -605,7 +624,17 @@ function UnitOperations() {
 
             {/* Button Palette - For Creation Charges and Redemption Charges tabs */}
             {activeTab !== 'Unit Price' && (
-              <div className="setup-action-buttons" style={{ marginTop: '12px' }}>
+              <div className="setup-action-buttons" style={{ marginTop: '6px', gap: '6px' }}>
+                <style>{`
+                  .setup-action-buttons .setup-btn {
+                    padding: 4px 10px !important;
+                    font-size: 11px !important;
+                    min-height: 28px !important;
+                  }
+                  .setup-action-buttons .setup-btn-icon {
+                    font-size: 12px !important;
+                  }
+                `}</style>
               <button className="setup-btn setup-btn-new" onClick={() => handleModalClose()}>
                 <span className="setup-btn-icon">+</span>
                 New
@@ -713,7 +742,7 @@ function UnitOperations() {
                   </div>
                   
                   {/* Content */}
-                  <div className="setup-modal-content">
+                  <div className="setup-modal-content" style={{ overflow: 'auto', padding: '8px' }}>
                     {modalIdx === 0 && modules[modalIdx].title === 'Unit Fees' ? (
                       renderUnitFeesModal()
                     ) : (

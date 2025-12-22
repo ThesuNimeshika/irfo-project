@@ -132,6 +132,8 @@ interface FormData {
   unitFeePriceOne: string;
   unitFeePriceTwo: string;
   unitFee: string;
+  redemptionAgeFrom: string;
+  redemptionAgeTo: string;
   // Documents Setup fields
   documentType: string;
   documentHolderType: string;
@@ -159,6 +161,7 @@ interface FormData {
   agentType: string;
   joinedDate: string;
   territory: string;
+  reportOrderBy: string;
   // Additional fields used in resetFormData
   dividendCode: string;
   activityCode: string;
@@ -567,9 +570,10 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const initialPageSize = Math.min(50, data.length > 0 ? data.length : 50);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 3,
+    pageSize: initialPageSize,
   });
 
   const columnHelper = createColumnHelper<Record<string, string | undefined>>();
@@ -603,6 +607,24 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
                 column === 'ageTo' ? 'Age To' : 
                 column === 'unitFee' ? 'Unit Fee' : 
                 column === 'holderType' ? 'Holder Type' : 
+                column === 'fundCode' ? 'Fund_Code' :
+                column === 'fundName' ? 'Fund_Name' :
+                column === 'fundManager' ? 'Fund_Manager' :
+                column === 'launch' ? 'Launch' :
+                column === 'minNoOfUnitInvest' ? 'Min No Of unit invest' :
+                column === 'minValueInvest' ? 'Min value invest' :
+                column === 'ipoStartingDate' ? 'IPO Starting date' :
+                column === 'ipoEndingDate' ? 'IPO Ending date' :
+                column === 'fundType' ? 'Fund Type' :
+                column === 'trusteeCode' ? 'Trustee code' :
+                column === 'maturityDate' ? 'Maturity date' :
+                column === 'certificateType' ? 'Certificate type' :
+                column === 'custodianCode' ? 'Custodian Code' :
+                column === 'suspendAccount' ? 'Suspend account' :
+                column === 'managementAccount' ? 'Management account' :
+                column === 'registrarAccount' ? 'Registrar account' :
+                column === 'trustyAccount' ? 'Trusty account' :
+                column === 'tinNo' ? 'Tin_no' :
                 column.replace(/([A-Z])/g, ' $1').trim(),
         cell: (info) => (
           <span className="text-gray-900">{info.getValue()}</span>
@@ -656,11 +678,12 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
             className="setup-table-shortlist"
             style={{ color: '#000000' }}
           >
-            {[3, 5, 10, 15].map(pageSize => (
+            {[5, 10, 20, 50, 100].map(pageSize => (
               <option key={pageSize} value={pageSize}>
                 Show {pageSize}
               </option>
             ))}
+            <option value={data.length || 1000}>Show All</option>
           </select>
           <span className="setup-table-records" style={{ color: '#000000' }}>
             {data.length} Records
@@ -855,6 +878,8 @@ function Setup() {
     unitFeePriceOne: '',
     unitFeePriceTwo: '',
     unitFee: '',
+    redemptionAgeFrom: '',
+    redemptionAgeTo: '',
     // Documents Setup fields
     documentType: '',
     documentHolderType: '',
@@ -882,6 +907,7 @@ function Setup() {
     agentType: '',
     joinedDate: '',
     territory: '',
+    reportOrderBy: '',
     // Additional fields
     dividendCode: '',
     activityCode: '',
@@ -1044,6 +1070,8 @@ function Setup() {
       unitFeePriceOne: '',
       unitFeePriceTwo: '',
       unitFee: '',
+      redemptionAgeFrom: '',
+      redemptionAgeTo: '',
       // Documents Setup fields
       documentType: '',
       documentHolderType: '',
@@ -1071,6 +1099,7 @@ function Setup() {
       agentType: '',
       joinedDate: '',
       territory: '',
+      reportOrderBy: '',
       // Additional fields
       // Boolean fields
       dividendActive: false,
@@ -1299,21 +1328,7 @@ function Setup() {
 
     const modalTitle = modules[modalIdx].title;
 
-    // Company modal has special tabbed layout
-    if (modalTitle === 'Company') {
-      return (
-        <div className="setup-company-modal-content">
-          <CompanyDetailsTabs 
-            formData={formData}
-            handleInputChange={handleInputChange}
-            isFormEditable={isFormEditable}
-            isMobile={isMobile}
-          />
-        </div>
-      );
-    }
-
-    // Other modals use input grid layout
+    // All modals use input grid layout
     return (
       <div className="setup-input-section">
         <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
@@ -1355,6 +1370,21 @@ function Setup() {
               formData={formData} 
               handleInputChange={handleInputChange} 
             />
+          )}
+          {modalTitle === 'Company' && (
+            <div style={{ width: '100%', maxWidth: '100%', gridColumn: '1 / -1' }}>
+              <CompanyDetailsTabs 
+                formData={formData} 
+                handleInputChange={handleInputChange} 
+                isFormEditable={isFormEditable} 
+                isMobile={isMobile}
+                handleNewButtonClick={handleNewButtonClick}
+                handleSave={handleSave}
+                handleDelete={handleDelete}
+                handlePrint={handlePrint}
+                resetFormData={resetFormData}
+              />
+            </div>
           )}
           {modalTitle === 'Funds' && (
             <FundsModalContent 
@@ -1633,7 +1663,7 @@ function Setup() {
                   <div className="setup-modal-content">
                     {renderModalContent()}
 
-                    {/* Action Buttons */}
+                    {/* Action Buttons - Common button palette for all modals */}
                     <div className="setup-action-buttons">
                       <button
                         onClick={handleNewButtonClick}
@@ -1895,17 +1925,142 @@ function Setup() {
 
 function FundsDetailsTabs() {
   const [activeTab, setActiveTab] = React.useState('funds');
+  const [startingDate, setStartingDate] = React.useState<Date | null>(null);
+  const [endingDate, setEndingDate] = React.useState<Date | null>(null);
   // Define the columns and data for the Funds tab
   const fundsColumns = [
-    'fundCode', 'fundName', 'fundManager', 'launch', 'minNo', 'minNA'
+    'fundCode', 'fundName', 'fundManager', 'launch', 'minNoOfUnitInvest', 'minValueInvest', 
+    'ipoStartingDate', 'ipoEndingDate', 'fundType', 'trusteeCode', 'maturityDate', 
+    'certificateType', 'custodianCode', 'suspendAccount', 'managementAccount', 
+    'registrarAccount', 'trustyAccount', 'tinNo'
   ];
   const fundsData = [
-    { fundCode: 'F001', fundName: 'Growth Fund', fundManager: 'John Smith', launch: '2023-01-15', minNo: '100', minNA: '10000' },
-    { fundCode: 'F002', fundName: 'Income Fund', fundManager: 'Sarah Johnson', launch: '2023-03-20', minNo: '50', minNA: '5000' },
-    { fundCode: 'F003', fundName: 'Balanced Fund', fundManager: 'Mike Wilson', launch: '2023-06-10', minNo: '75', minNA: '7500' },
+    { 
+      fundCode: 'F001', 
+      fundName: 'Growth Fund', 
+      fundManager: 'John Smith', 
+      launch: '2023-01-15', 
+      minNoOfUnitInvest: '100', 
+      minValueInvest: '10000',
+      ipoStartingDate: '2023-01-01',
+      ipoEndingDate: '2023-01-31',
+      fundType: 'Open Ended',
+      trusteeCode: 'TR001',
+      maturityDate: '',
+      certificateType: 'Digital',
+      custodianCode: 'CU001',
+      suspendAccount: 'SUS001',
+      managementAccount: 'MG001',
+      registrarAccount: 'RG001',
+      trustyAccount: 'TY001',
+      tinNo: 'TIN001'
+    },
+    { 
+      fundCode: 'F002', 
+      fundName: 'Income Fund', 
+      fundManager: 'Sarah Johnson', 
+      launch: '2023-03-20', 
+      minNoOfUnitInvest: '50', 
+      minValueInvest: '5000',
+      ipoStartingDate: '2023-03-01',
+      ipoEndingDate: '2023-03-31',
+      fundType: 'Close Ended',
+      trusteeCode: 'TR002',
+      maturityDate: '2025-03-20',
+      certificateType: 'Physical',
+      custodianCode: 'CU002',
+      suspendAccount: 'SUS002',
+      managementAccount: 'MG002',
+      registrarAccount: 'RG002',
+      trustyAccount: 'TY002',
+      tinNo: 'TIN002'
+    },
+    { 
+      fundCode: 'F003', 
+      fundName: 'Balanced Fund', 
+      fundManager: 'Mike Wilson', 
+      launch: '2023-06-10', 
+      minNoOfUnitInvest: '75', 
+      minValueInvest: '7500',
+      ipoStartingDate: '2023-06-01',
+      ipoEndingDate: '2023-06-30',
+      fundType: 'Open Ended',
+      trusteeCode: 'TR003',
+      maturityDate: '',
+      certificateType: 'Digital',
+      custodianCode: 'CU003',
+      suspendAccount: 'SUS003',
+      managementAccount: 'MG003',
+      registrarAccount: 'RG003',
+      trustyAccount: 'TY003',
+      tinNo: 'TIN003'
+    },
+    { 
+      fundCode: 'F003', 
+      fundName: 'Balanced Fund', 
+      fundManager: 'Mike Wilson', 
+      launch: '2023-06-10', 
+      minNoOfUnitInvest: '75', 
+      minValueInvest: '7500',
+      ipoStartingDate: '2023-06-01',
+      ipoEndingDate: '2023-06-30',
+      fundType: 'Open Ended',
+      trusteeCode: 'TR003',
+      maturityDate: '',
+      certificateType: 'Digital',
+      custodianCode: 'CU003',
+      suspendAccount: 'SUS003',
+      managementAccount: 'MG003',
+      registrarAccount: 'RG003',
+      trustyAccount: 'TY003',
+      tinNo: 'TIN003'
+    },
+    { 
+      fundCode: 'F004', 
+      fundName: 'Income Plus Fund', 
+      fundManager: 'Emily Davis', 
+      launch: '2024-02-12', 
+      minNoOfUnitInvest: '80', 
+      minValueInvest: '8000',
+      ipoStartingDate: '2024-02-01',
+      ipoEndingDate: '2024-02-28',
+      fundType: 'Open Ended',
+      trusteeCode: 'TR004',
+      maturityDate: '2027-02-12',
+      certificateType: 'Digital',
+      custodianCode: 'CU004',
+      suspendAccount: 'SUS004',
+      managementAccount: 'MG004',
+      registrarAccount: 'RG004',
+      trustyAccount: 'TY004',
+      tinNo: 'TIN004'
+    },
+    { 
+      fundCode: 'F005', 
+      fundName: 'Fixed Income Fund', 
+      fundManager: 'Daniel Lee', 
+      launch: '2024-05-05', 
+      minNoOfUnitInvest: '60', 
+      minValueInvest: '6000',
+      ipoStartingDate: '2024-05-01',
+      ipoEndingDate: '2024-05-31',
+      fundType: 'Close Ended',
+      trusteeCode: 'TR005',
+      maturityDate: '',
+      certificateType: 'Physical',
+      custodianCode: 'CU005',
+      suspendAccount: 'SUS005',
+      managementAccount: 'MG005',
+      registrarAccount: 'RG005',
+      trustyAccount: 'TY005',
+      tinNo: 'TIN005'
+    },
   ];
   return (
-    <div className="setup-input-section" style={{ marginTop: '0' }}>
+    <div
+      className="setup-input-section"
+      style={{ marginTop: '0' }}
+    >
       <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
         {/* Tab headers - Using Unit Holders Accounts Details style */}
         <div role="tablist" aria-label="Funds Details Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
@@ -1942,26 +2097,61 @@ function FundsDetailsTabs() {
           })}
         </div>
 
-        {/* Tab content */}
+        {/* Tab content (no scroll here; scroll handled inside the table) */}
         <div>
         {activeTab === 'funds' && (
-          <CustomDataTable data={fundsData} columns={fundsColumns} />
+          <div
+            style={{
+              maxHeight: '35vh', // show roughly 3 rows, rest via table scroll
+              overflowY: 'auto',
+              overflowX: 'auto',
+              width: '100%',
+              paddingRight: '4px'
+            }}
+          >
+            <div style={{ minWidth: '1100px' }}>
+              <CustomDataTable data={fundsData} columns={fundsColumns} />
+            </div>
+          </div>
         )}
         {activeTab === 'partly-redemptions' && (
           <div className="setup-partly-redemptions-tab">
             <div className="setup-redemptions-form">
               <div className="setup-redemptions-inputs">
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Starting Date</label>
-                  <input type="date" className="setup-input-field" placeholder="dd/mm/yyyy" />
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Starting Date</label>
+                  <DatePicker
+                    selected={startingDate}
+                    onChange={(date: Date | null) => setStartingDate(date)}
+                    dateFormat="dd/MM/yyyy"
+                    className="date-picker-input"
+                    placeholderText="dd/mm/yyyy"
+                    showYearDropdown
+                    showMonthDropdown
+                    dropdownMode="select"
+                  />
                 </div>
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Ending Date</label>
-                  <input type="date" className="setup-input-field" placeholder="dd/mm/yyyy" />
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Ending Date</label>
+                  <DatePicker
+                    selected={endingDate}
+                    onChange={(date: Date | null) => setEndingDate(date)}
+                    dateFormat="dd/MM/yyyy"
+                    className="date-picker-input"
+                    placeholderText="dd/mm/yyyy"
+                    showYearDropdown
+                    showMonthDropdown
+                    dropdownMode="select"
+                  />
                 </div>
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Redeem Percentage</label>
-                  <input type="number" className="setup-input-field" placeholder="%" />
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Redeem Percentage</label>
+                  <input 
+                    type="number" 
+                    className="setup-input-field" 
+                    placeholder="%" 
+                    style={{ color: '#000000' }}
+                  />
                 </div>
               </div>
               <div className="setup-redemptions-buttons">
@@ -1981,7 +2171,7 @@ function FundsDetailsTabs() {
             <div className="setup-fund-accounts-form">
               <div className="setup-fund-accounts-inputs">
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Account Type</label>
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Account Type</label>
                   <select className="setup-dropdown-select">
                     <option value="">Select Account Type</option>
                     <option value="savings">Savings</option>
@@ -1991,7 +2181,7 @@ function FundsDetailsTabs() {
                   </select>
                 </div>
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Bank Code</label>
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Bank Code</label>
                   <select className="setup-dropdown-select">
                     <option value="">Select Bank</option>
                     <option value="BOC">BOC - Bank of Ceylon</option>
@@ -2002,8 +2192,8 @@ function FundsDetailsTabs() {
                   </select>
                 </div>
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Acc No</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter Account Number" />
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Acc No</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter Account Number" style={{ color: '#000000' }} />
                 </div>
               </div>
               <div className="setup-fund-accounts-buttons">
@@ -2023,16 +2213,16 @@ function FundsDetailsTabs() {
             <div className="setup-gl-account-form">
               <div className="setup-gl-account-inputs">
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Management Fee Account No (GL)</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" />
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Management Fee Account No (GL)</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
                 </div>
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Registrar Fee Account No (GL)</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" />
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Registrar Fee Account No (GL)</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
                 </div>
                 <div className="setup-input-group">
-                  <label className="setup-input-label">Trustee Fee Account No (GL)</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" />
+                  <label className="setup-input-label" style={{ color: '#000000' }}>Trustee Fee Account No (GL)</label>
+                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
                 </div>
               </div>
             </div>
@@ -2044,16 +2234,32 @@ function FundsDetailsTabs() {
   );
 }
 
-function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMobile }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean, isMobile: boolean }) {
+function CompanyDetailsTabs({ 
+  formData, 
+  handleInputChange, 
+  isFormEditable, 
+  isMobile,
+
+}: { 
+  formData: FormData, 
+  handleInputChange: (field: string, value: string | string[] | boolean) => void, 
+  isFormEditable: boolean, 
+  isMobile: boolean,
+  handleNewButtonClick: () => void,
+  handleSave: () => void,
+  handleDelete: () => void,
+  handlePrint: () => void,
+  resetFormData: () => void
+}) {
   const [activeTab, setActiveTab] = React.useState('company');
   
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', margin: '0', padding: '0' }}>
       {/* Tab Navigation - Using Unit Holders Accounts Details style */}
-      <div className="setup-input-section" style={{ marginTop: '0' }}>
-        <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+      <div className="setup-input-section" style={{ marginTop: '0', marginBottom: '0', width: '100%', maxWidth: '100%', padding: '0', background: 'transparent', boxShadow: 'none' }}>
+        <div className="setup-ash-box" style={{ padding: '16px', width: '100%', maxWidth: '100%', margin: '0' }}>
           {/* Tab headers */}
-          <div role="tablist" aria-label="Company Details Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          <div role="tablist" aria-label="Company Details Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap', width: '100%' }}>
             {['Company', 'Administrator', 'Email and SMS'].map(tab => {
               const tabKey = tab === 'Company' ? 'company' : 
                             tab === 'Administrator' ? 'administrator' : 'email-sms';
@@ -2077,7 +2283,8 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
                     minHeight: '36px',
                     lineHeight: 1.25,
                     fontSize: '12px',
-                    flex: '0 0 auto'
+                    flex: '1 1 0',
+                    textAlign: 'center'
                   }}
                 >
                   {tab}
@@ -2087,10 +2294,10 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
           </div>
 
           {/* Tab content */}
-          <div>
+          <div style={{ width: '100%', maxWidth: '100%' }}>
         {activeTab === 'company' && (
-          <div className="setup-company-tab">
-            <div className="setup-company-form">
+          <div className="setup-company-tab" style={{ width: '100%', maxWidth: '100%' }}>
+            <div className="setup-company-form" style={{ width: '100%', maxWidth: '100%' }}>
               <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
                                                          <div className="setup-input-group">
                   <label className="setup-input-label">Code</label>
@@ -2213,8 +2420,8 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
           </div>
         )}
         {activeTab === 'administrator' && (
-          <div className="setup-administrator-tab">
-            <div className="setup-administrator-form">
+          <div className="setup-administrator-tab" style={{ width: '100%', maxWidth: '100%' }}>
+            <div className="setup-administrator-form" style={{ width: '100%', maxWidth: '100%' }}>
               
               {/* ========================================
                  PATH CONFIGURATION SECTION (FULL WIDTH)
@@ -2245,7 +2452,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
               {/* ========================================
                  TWO COLUMN LAYOUT SECTION
                  ======================================== */}
-              <div className="setup-administrator-two-column">
+              <div className="setup-administrator-two-column" style={{ width: '100%', maxWidth: '100%' }}>
                 
                 {/* LEFT COLUMN - 3 ROWS WITH ASH BACKGROUND */}
                 <div className="setup-administrator-left-column">
@@ -2475,7 +2682,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
               {/* ========================================
                  FULL WIDTH THREE COLUMN SECTION
                  ======================================== */}
-              <div className="setup-administrator-full-width">
+              <div className="setup-administrator-full-width" style={{ width: '100%', maxWidth: '100%' }}>
                 
                 {/* Column 1: Email Sending Options */}
                 <div className="setup-ash-box">
@@ -2592,7 +2799,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
               {/* ========================================
                  BOTTOM SECTION - TABLE NAME, CREATE FILE, CERTIFICATE
                  ======================================== */}
-              <div className="setup-three-column-row" style={{ marginBottom: '48px' }}>
+              <div className="setup-three-column-row" style={{ marginBottom: '12px', width: '100%', maxWidth: '100%' }}>
                 <div className="setup-column" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', alignItems: 'center' }}>
                   <label className="setup-input-label" style={{ marginBottom: '0' }}>Table Name</label>
                   <input
@@ -2642,7 +2849,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
           </div>
         )}
         {activeTab === 'email-sms' && (
-          <div className="setup-email-sms-tab">
+          <div className="setup-email-sms-tab" style={{ width: '100%', maxWidth: '100%' }}>
             {/* Email Parameter Setting Box */}
             <div className="setup-ash-box" style={{ marginBottom: '24px' }}>
               <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Email Parameter Setting</div>
@@ -2821,7 +3028,7 @@ function CompanyDetailsTabs({ formData, handleInputChange, isFormEditable, isMob
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -3969,6 +4176,61 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           <option value="Northern Province">Northern Province</option>
         </select>
       </div>
+
+      {/* Report Order By - ash box group (full width) */}
+      <div className="setup-ash-box" style={{ marginTop: '8px', width: '100%', gridColumn: '1 / -1' }}>
+        <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+          Report Order By
+        </div>
+        <div
+          className="setup-radio-group"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+            columnGap: '16px',
+            rowGap: '8px',
+            justifyItems: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <label className="setup-radio-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
+            <input
+              type="radio"
+              name="reportOrderBy"
+              value="agencyCode"
+              checked={formData.reportOrderBy === 'agencyCode'}
+              onChange={(e) => handleInputChange('reportOrderBy', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-radio-input"
+            />
+            Agency Code
+          </label>
+          <label className="setup-radio-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
+            <input
+              type="radio"
+              name="reportOrderBy"
+              value="agentCode"
+              checked={formData.reportOrderBy === 'agentCode'}
+              onChange={(e) => handleInputChange('reportOrderBy', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-radio-input"
+            />
+            Agent Code
+          </label>
+          <label className="setup-radio-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
+            <input
+              type="radio"
+              name="reportOrderBy"
+              value="agentDescription"
+              checked={formData.reportOrderBy === 'agentDescription'}
+              onChange={(e) => handleInputChange('reportOrderBy', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-radio-input"
+            />
+            Agent Description
+          </label>
+        </div>
+      </div>
     </>
   );
 }
@@ -4293,17 +4555,39 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
               placeholder="Price One (%)"
                           />
                         </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr auto', alignItems: 'center', gap: '8px' }}>
             <label className="setup-input-label" style={{ marginBottom: 0 }}>Price Two (%)</label>
-                          <input
-                            type="text"
+            <input
+              type="text"
               value={formData.unitFeePriceTwo || ''}
               onChange={e => handleInputChange('unitFeePriceTwo', e.target.value)}
               disabled={!isFormEditable}
-                            className="setup-input-field"
+              className="setup-input-field"
               placeholder="Price Two (%)"
-                          />
-                        </div>
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const priceOne = parseFloat(formData.unitFeePriceOne || '0');
+                const priceTwo = parseFloat(formData.unitFeePriceTwo || '0');
+                if (!isNaN(priceOne) && !isNaN(priceTwo) && priceOne !== 0) {
+                  const calculatedPercentage = ((priceTwo / priceOne) * 100).toFixed(2);
+                  handleInputChange('unitFeePercentage', calculatedPercentage);
+                }
+              }}
+              disabled={!isFormEditable}
+              className="setup-btn setup-btn-primary"
+              style={{ 
+                padding: '8px 12px', 
+                minWidth: '40px',
+                height: '40px',
+                fontSize: '14px',
+                fontWeight: 600
+              }}
+            >
+              %
+            </button>
+          </div>
                         </div>
         {/* Unit Fee */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
@@ -4317,6 +4601,43 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             placeholder="Enter unit fee"
           />
                           </div>
+
+        {/* Redemption Age Section - Only visible when Redemption is selected */}
+        {formData.unitFeeTxnType === 'redemption' && (
+          <div className="setup-ash-box" style={{ marginTop: '8px' }}>
+            {/* Redemption Age Title */}
+            <label className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px', display: 'block' }}>Redemption Age</label>
+            
+            {/* NO of Days From and To in 2 columns */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              {/* Left Column: NO of Days From */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                <label className="setup-input-label" style={{ marginBottom: 0 }}>NO of Days From</label>
+                <input
+                  type="text"
+                  value={formData.redemptionAgeFrom || ''}
+                  onChange={e => handleInputChange('redemptionAgeFrom', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter days from"
+                />
+              </div>
+              
+              {/* Right Column: To */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                <label className="setup-input-label" style={{ marginBottom: 0 }}>To</label>
+                <input
+                  type="text"
+                  value={formData.redemptionAgeTo || ''}
+                  onChange={e => handleInputChange('redemptionAgeTo', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter days to"
+                />
+              </div>
+            </div>
+          </div>
+        )}
                         </div>
       {/* Right Column: Card with scrollable table */}
       <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>

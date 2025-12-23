@@ -817,126 +817,138 @@ function FourCardsWithModal() {
     if (modalTitle === 'Application Entry') {
       return (
         <div className="setup-input-section">
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', alignItems: 'start' }}>
-            {/* Left: Application No + Search */}
+          <div style={{ display: 'grid', gridTemplateColumns: '70% 30%', gap: '16px', alignItems: 'start' }}>
+            {/* Left: Application No Card (70%) */}
             <div className="setup-ash-box" style={{ padding: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <label className="setup-input-label" style={{ minWidth: '140px' }}>Application No</label>
-                <input
-                  type="text"
-                  value={formData.applicationNo}
-                  onChange={(e) => handleInputChange('applicationNo', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter application number"
-                  style={{ color: '#000000', flex: 1 }}
-                />
-                <div style={{ position: 'relative' }}>
-                  <button
-                    className="setup-btn setup-btn-new"
-                    title="Select Application"
-                    style={{ padding: '8px 12px' }}
-                    onClick={() => isFormEditable && setShowApplicationNoTable(!showApplicationNoTable)}
+              {/* One row: Application No + input + button | Compulsory Data Fields | Auto Number */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '16px', alignItems: 'center' }}>
+                {/* Column 1: Application No + Input + Button */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <label className="setup-input-label" style={{ minWidth: '120px' }}>Application No</label>
+                  <input
+                    type="text"
+                    value={formData.applicationNo}
+                    onChange={(e) => handleInputChange('applicationNo', e.target.value)}
                     disabled={!isFormEditable}
-                  >
-                    +
-                  </button>
-                  {showApplicationNoTable && isFormEditable && (
-                    <div 
-                      data-table="applicationNo"
-                      style={{ 
-                        position: 'absolute', 
-                        top: '100%', 
-                        right: 0,
-                        backgroundColor: '#ffffff', 
-                        border: '1px solid #cbd5e1', 
-                        borderRadius: '4px', 
-                        marginTop: '4px', 
-                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
-                        zIndex: 1000, 
-                        maxHeight: '400px',
-                        height: '400px',
-                        overflowY: 'auto', 
-                        overflowX: 'hidden',
-                        minWidth: '800px'
-                      }}
+                    className="setup-input-field"
+                    placeholder="Enter application number"
+                    style={{ color: '#000000', width: '33%', minWidth: '140px' }}
+                  />
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      className="setup-btn setup-btn-new"
+                      title="Select Application"
+                      style={{ padding: '8px 12px' }}
+                      onClick={() => isFormEditable && setShowApplicationNoTable(!showApplicationNoTable)}
+                      disabled={!isFormEditable}
                     >
-                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
-                          <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Application No</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Approved</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Registration_No</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Street</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Town</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>City</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {Array.from({ length: 50 }).map((_, i) => ({
-                            appNo: `APP${String(i + 1).padStart(3, '0')}`,
-                            approved: i % 2 === 0 ? 'Yes' : 'No',
-                            name: ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown', 'Charlie Wilson'][i % 5],
-                            regNo: `REG${String(i + 1).padStart(3, '0')}`,
-                            street: ['Main Street', 'Park Avenue', 'Ocean Drive', 'First Street', 'Second Street'][i % 5],
-                            town: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
-                            city: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
-                            status: i % 3 === 0 ? 'Active' : i % 3 === 1 ? 'Pending' : 'Inactive',
-                          })).map((item, idx) => (
-                            <tr
-                              key={idx}
-                              onClick={() => {
-                                handleInputChange('applicationNo', item.appNo);
-                                setShowApplicationNoTable(false);
-                              }}
-                              style={{
-                                cursor: 'pointer',
-                                borderBottom: '1px solid #e2e8f0',
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#f8fafc';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = '#ffffff';
-                              }}
-                            >
-                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.appNo}</td>
-                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.approved}</td>
-                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.name}</td>
-                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.regNo}</td>
-                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.street}</td>
-                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.town}</td>
-                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.city}</td>
-                              <td style={{ padding: '8px 12px', color: '#000000' }}>{item.status}</td>
+                      +
+                    </button>
+                    {showApplicationNoTable && isFormEditable && (
+                      <div 
+                        data-table="applicationNo"
+                        style={{ 
+                          position: 'absolute', 
+                          top: '100%', 
+                          left: 0,
+                          right: 0,
+                          backgroundColor: '#ffffff', 
+                          border: '1px solid #cbd5e1', 
+                          borderRadius: '4px', 
+                          marginTop: '4px', 
+                          boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+                          zIndex: 1000, 
+                          maxHeight: '400px',
+                          height: '400px',
+                          overflowY: 'auto', 
+                          overflowX: 'auto',
+                          minWidth: '50vw',
+                          width: '50vw',
+                          maxWidth: '50vw'
+                        }}
+                      >
+                        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                          <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
+                            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Application No</th>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Approved</th>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Registration_No</th>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Street</th>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Town</th>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>City</th>
+                              <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Status</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                          </thead>
+                          <tbody>
+                            {Array.from({ length: 50 }).map((_, i) => ({
+                              appNo: `APP${String(i + 1).padStart(3, '0')}`,
+                              approved: i % 2 === 0 ? 'Yes' : 'No',
+                              name: ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown', 'Charlie Wilson'][i % 5],
+                              regNo: `REG${String(i + 1).padStart(3, '0')}`,
+                              street: ['Main Street', 'Park Avenue', 'Ocean Drive', 'First Street', 'Second Street'][i % 5],
+                              town: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
+                              city: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
+                              status: i % 3 === 0 ? 'Active' : i % 3 === 1 ? 'Pending' : 'Inactive',
+                            })).map((item, idx) => (
+                              <tr
+                                key={idx}
+                                onClick={() => {
+                                  handleInputChange('applicationNo', item.appNo);
+                                  setShowApplicationNoTable(false);
+                                }}
+                                style={{
+                                  cursor: 'pointer',
+                                  borderBottom: '1px solid #e2e8f0',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = '#f8fafc';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = '#ffffff';
+                                }}
+                              >
+                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.appNo}</td>
+                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.approved}</td>
+                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.name}</td>
+                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.regNo}</td>
+                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.street}</td>
+                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.town}</td>
+                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.city}</td>
+                                <td style={{ padding: '8px 12px', color: '#000000' }}>{item.status}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {/* Compulsory Data Fields + Auto Number */}
-              <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div className="setup-input-label" style={{ fontWeight: 600 }}>Compulsory Data Fields</div>
-                <button
-                  className="setup-btn setup-btn-save"
-                  disabled={!isFormEditable}
-                  style={{ padding: '6px 12px' }}
-                >
-                  Auto Number
-                </button>
+                {/* Column 2: Compulsory Data Fields */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, margin: 0, whiteSpace: 'nowrap' }}>Compulsory Data Fields</div>
+                </div>
+
+                {/* Column 3: Auto Number Button */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                  <button
+                    className="setup-btn setup-btn-save"
+                    disabled={!isFormEditable}
+                    style={{ padding: '6px 12px', whiteSpace: 'nowrap' }}
+                  >
+                    Auto Number
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Right: Status Radio Card */}
+            {/* Right: Status Radio Card (30%) */}
             <div className="setup-ash-box" style={{ padding: '16px' }}>
               <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '8px' }}>Status</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+              {/* Status radios in 1 row */}
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
                   <input
                     type="radio"
                     name="applicationStatus"
@@ -946,7 +958,7 @@ function FourCardsWithModal() {
                   />
                   <span style={{ color: '#d97706' }}>Pending</span>
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
                   <input
                     type="radio"
                     name="applicationStatus"
@@ -956,7 +968,7 @@ function FourCardsWithModal() {
                   />
                   <span style={{ color: '#16a34a' }}>Approved</span>
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
                   <input
                     type="radio"
                     name="applicationStatus"
@@ -1552,26 +1564,28 @@ function FourCardsWithModal() {
     switch (activeTab) {
       case 'Personal Details':
         return (
-          <div>
-            <div style={{ width: '100%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', width: '100%' }}>
+            <div style={{ width: '100%', gridColumn: '1 / -1' }}>
               {/* Full Name of Applicant Section */}
               <div style={{ marginBottom: '24px' }}>
                 <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Full Name of Applicant</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
-                    <input
-                      type="radio"
-                      name="applicantType"
-                      checked={formData.applicantType === 'Individual'}
-                      onChange={() => handleInputChange('applicantType', 'Individual')}
-                      disabled={!isFormEditable}
-                      style={{
-                        accentColor: '#9333ea',
-                        cursor: isFormEditable ? 'pointer' : 'default'
-                      }}
-                    />
-                    Individual
-                  </label>
+                  {(formData.applicantType !== 'Corporate') && (
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                      <input
+                        type="radio"
+                        name="applicantType"
+                        checked={formData.applicantType === 'Individual'}
+                        onChange={() => handleInputChange('applicantType', 'Individual')}
+                        disabled={!isFormEditable}
+                        style={{
+                          accentColor: '#9333ea',
+                          cursor: isFormEditable ? 'pointer' : 'default'
+                        }}
+                      />
+                      Individual
+                    </label>
+                  )}
                   {formData.applicantType === 'Individual' && (
                     <>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -1607,20 +1621,22 @@ function FourCardsWithModal() {
                     </>
                   )}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
-                    <input
-                      type="radio"
-                      name="applicantType"
-                      checked={formData.applicantType === 'Corporate'}
-                      onChange={() => handleInputChange('applicantType', 'Corporate')}
-                      disabled={!isFormEditable}
-                        style={{
-                          accentColor: '#9333ea',
-                          cursor: isFormEditable ? 'pointer' : 'default'
-                        }}
-                    />
-                    Corporate
-                  </label>
+                  {(formData.applicantType !== 'Individual') && (
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                      <input
+                        type="radio"
+                        name="applicantType"
+                        checked={formData.applicantType === 'Corporate'}
+                        onChange={() => handleInputChange('applicantType', 'Corporate')}
+                        disabled={!isFormEditable}
+                          style={{
+                            accentColor: '#9333ea',
+                            cursor: isFormEditable ? 'pointer' : 'default'
+                          }}
+                      />
+                      Corporate
+                    </label>
+                  )}
                     {formData.applicantType === 'Corporate' && (
                       <div style={{ position: 'relative', width: '100%', minWidth: '600px' }} data-company-table>
                         <div
@@ -1776,9 +1792,9 @@ function FourCardsWithModal() {
               </div>
 
               {/* Identification and Contact Information Section */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
-                {/* Left Column - Identification */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+                {/* Column 1 - Identification */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', gridColumn: '1 / 2' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <label className="setup-input-label" style={{ minWidth: '140px' }}>
                       {formData.applicantType === 'Corporate' ? 'Commence' : 'Date of Birth'}
@@ -1852,8 +1868,8 @@ function FourCardsWithModal() {
                   </div>
                 </div>
 
-                {/* Right Column - Contact */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {/* Column 2 - Contact */}
+                <div style={{ gridColumn: '2 / 3', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <label className="setup-input-label" style={{ minWidth: '100px' }}>Telephone</label>
                   <select
@@ -1951,78 +1967,64 @@ function FourCardsWithModal() {
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Nationality and Related Party Status Section */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                <div>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Nationality</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input
-                        type="radio"
-                        name="nationality"
-                        checked={formData.nationality === 'Foreign'}
-                        onChange={() => handleInputChange('nationality', 'Foreign')}
-                        disabled={!isFormEditable}
-                        style={{
-                          accentColor: '#9333ea',
-                          cursor: isFormEditable ? 'pointer' : 'default'
-                        }}
-                      />
-                      Foreign
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                {/* Nationality - placed in 3rd column */}
+                <div style={{ gridColumn: '3 / 4', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Nationality</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
                       <input
                         type="radio"
                         name="nationality"
                         checked={formData.nationality === 'Local'}
                         onChange={() => handleInputChange('nationality', 'Local')}
                         disabled={!isFormEditable}
-                        style={{
-                          accentColor: '#9333ea',
-                          cursor: isFormEditable ? 'pointer' : 'default'
-                        }}
                       />
                       Local
                     </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                      <input
+                        type="radio"
+                        name="nationality"
+                        checked={formData.nationality === 'Foreign'}
+                        onChange={() => handleInputChange('nationality', 'Foreign')}
+                        disabled={!isFormEditable}
+                      />
+                      Foreign
+                    </label>
                   </div>
                 </div>
-                <div>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Related Party Status</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+
+                {/* Related Party Status - placed in 4th column */}
+                <div style={{ gridColumn: '4 / 5', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Related Party Status</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
                       <input
                         type="radio"
                         name="relatedPartyStatus"
                         checked={formData.relatedPartyStatus === 'None Related'}
                         onChange={() => handleInputChange('relatedPartyStatus', 'None Related')}
                         disabled={!isFormEditable}
-                        style={{
-                          accentColor: '#9333ea',
-                          cursor: isFormEditable ? 'pointer' : 'default'
-                        }}
                       />
                       None Related
                     </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
                       <input
                         type="radio"
                         name="relatedPartyStatus"
                         checked={formData.relatedPartyStatus === 'Related party'}
                         onChange={() => handleInputChange('relatedPartyStatus', 'Related party')}
                         disabled={!isFormEditable}
-                        style={{
-                          accentColor: '#9333ea',
-                          cursor: isFormEditable ? 'pointer' : 'default'
-                        }}
                       />
                       Related party
                     </label>
                   </div>
                 </div>
-              </div>
-            </div>
+
+                  </div>
+                </div>
+
           </div>
         );
       case 'Address/Bank Details':

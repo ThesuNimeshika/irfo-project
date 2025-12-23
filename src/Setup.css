@@ -176,100 +176,103 @@ html, body {
   background: rgba(0,0,0,0.5);
   z-index: 99999999;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
-  padding: 32px;
-  padding-top: 20px;
+  padding: 8px;
+  padding-top: 8px;
   isolation: isolate;
 }
 
 .setup-modal-overlay.mobile {
-  padding: 16px;
+  padding: 4px;
 }
 
-/* Responsive modal overlay padding */
+/* Responsive modal overlay padding - minimal for full width */
 @media (min-width: 1600px) {
   .setup-modal-overlay {
-    padding: 40px;
-    padding-top: 24px;
+    padding: 10px;
+    padding-top: 10px;
   }
 }
 
 @media (min-width: 1200px) and (max-width: 1599px) {
   .setup-modal-overlay {
-    padding: 32px;
-    padding-top: 20px;
+    padding: 8px;
+    padding-top: 8px;
   }
 }
 
 @media (min-width: 900px) and (max-width: 1199px) {
   .setup-modal-overlay {
-    padding: 24px;
-    padding-top: 16px;
+    padding: 6px;
+    padding-top: 6px;
   }
 }
 
 @media (min-width: 768px) and (max-width: 899px) {
   .setup-modal-overlay {
-    padding: 16px;
-    padding-top: 12px;
+    padding: 4px;
+    padding-top: 4px;
   }
 }
 
-/* Modal Container */
+/* Modal Container - Full width responsive */
 .setup-modal-container {
   background: #f5f5f5;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 4px 32px #0003;
-  width: 90vw;
-  max-width: 1400px;
-  max-height: 98vh;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-top: 0px;
+  margin: 0;
   z-index: 99999999;
 }
 
 .setup-modal-container.mobile {
-  width: 95vw;
-  max-height: 98vh;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
 }
 
-/* Responsive modal width adjustments */
+/* Responsive modal width adjustments - full width */
 @media (min-width: 1600px) {
   .setup-modal-container {
-    width: 85vw;
-    max-width: 1600px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
 @media (min-width: 1400px) and (max-width: 1599px) {
   .setup-modal-container {
-    width: 88vw;
-    max-width: 1400px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
 @media (min-width: 1200px) and (max-width: 1399px) {
   .setup-modal-container {
-    width: 90vw;
-    max-width: 1200px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
 @media (min-width: 900px) and (max-width: 1199px) {
   .setup-modal-container {
-    width: 92vw;
-    max-width: 1000px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
 @media (min-width: 768px) and (max-width: 899px) {
   .setup-modal-container {
-    width: 95vw;
-    max-width: 900px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
@@ -293,23 +296,30 @@ html, body {
 }
 
 .setup-modal-header-icon {
-  font-size: 18px;
+  font-size: 12px;
 }
 
 .setup-modal-header-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
 }
 
 .setup-modal-close-btn {
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   color: white;
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 4px 8px;
   border-radius: 4px;
   transition: background-color 0.2s;
+  font-weight: bold;
+  line-height: 1;
+  min-width: 28px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .setup-modal-close-btn:hover {
@@ -323,7 +333,102 @@ html, body {
   flex-direction: column;
   padding: 20px;
   overflow: auto;
-  max-height: calc(98vh - 120px);
+  font-size: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+/* Responsive modal content padding */
+@media (max-width: 767px) {
+  .setup-modal-content {
+    padding: 12px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-modal-content {
+    padding: 16px;
+  }
+}
+
+/* All text inside modals should be 12px - override inline styles */
+.setup-modal-content .setup-input-label,
+.setup-modal-content .setup-input-field,
+.setup-modal-content textarea,
+.setup-modal-content select,
+.setup-modal-content .setup-ash-box,
+.setup-modal-content p,
+.setup-modal-content span:not(.setup-btn-icon):not(.setup-modal-header-icon),
+.setup-modal-content div,
+.setup-modal-content th,
+.setup-modal-content td,
+.setup-modal-content label {
+  font-size: 12px !important;
+}
+
+/* Ensure all grid layouts in modals use 4-column responsive layout */
+.setup-modal-content [style*="grid-template-columns"] {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Override inline grid styles to be responsive */
+@media (max-width: 414px) {
+  .setup-modal-content [style*="grid-template-columns: repeat(2"] {
+    grid-template-columns: 1fr !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: 1fr !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: 1fr !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: 1fr 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 415px) and (max-width: 767px) {
+  .setup-modal-content [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: 1fr 1fr 1fr"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-modal-content [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-modal-content [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (min-width: 1281px) {
+  .setup-modal-content [style*="grid-template-columns: repeat(2"] {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: 1fr 1fr 1fr"] {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
 }
 
 /* Modal Footer */
@@ -347,12 +452,77 @@ html, body {
   border-radius: 8px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive padding for input sections */
+@media (max-width: 767px) {
+  .setup-input-section {
+    padding: 12px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-input-section {
+    padding: 16px;
+  }
 }
 
 .setup-input-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
+  width: 100%;
+}
+
+/* Responsive 4-column grid layout */
+/* Mobile: 360-414px - 1 column */
+@media (max-width: 414px) {
+  .setup-input-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* Small tablets: 415px - 767px - 2 columns */
+@media (min-width: 415px) and (max-width: 767px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+/* Tablets: 768px - 1023px - 2 columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Laptop: 1024px - 1280px - 3 columns */
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Desktop: 1281px - 1920px - 4 columns */
+@media (min-width: 1281px) and (max-width: 1920px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Large Desktop: above 1920px - 4 columns with larger gap */
+@media (min-width: 1921px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
 }
 
 .setup-input-grid.mobile {
@@ -360,7 +530,39 @@ html, body {
 }
 
 .setup-input-grid.funds {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+}
+
+/* Responsive funds grid */
+@media (max-width: 414px) {
+  .setup-input-grid.funds {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 415px) and (max-width: 767px) {
+  .setup-input-grid.funds {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-input-grid.funds {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-input-grid.funds {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1281px) {
+  .setup-input-grid.funds {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .setup-input-grid.funds.mobile {
@@ -376,19 +578,20 @@ html, body {
 .setup-input-label {
   display: block;
   margin-bottom: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #000000;
 }
 
 .setup-input-field {
   width: 100%;
-  padding: 8px 12px;
+  padding: 4px 6px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 12px;
   margin-bottom: 0;
   color: #000000;
+  min-height: 28px;
 }
 
 .setup-input-field::placeholder {
@@ -406,13 +609,29 @@ html, body {
   background-color: #f5f5f5;
 }
 
-.setup-select-field {
+/* Textarea styles */
+.setup-modal-content textarea,
+textarea.setup-input-field {
   width: 100%;
-  padding: 8px 12px;
+  padding: 4px 6px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 12px;
+  margin-bottom: 0;
   color: #000000;
+  min-height: 28px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.setup-select-field {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #000000;
+  min-height: 28px;
 }
 
 .setup-select-field option {
@@ -422,11 +641,12 @@ html, body {
 /* Date Picker Styles */
 .date-picker-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 4px 6px;
   border: 1px solid #ddd;
   color: #000000;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 12px;
+  min-height: 28px;
 }
 
 .date-picker-input::placeholder {
@@ -943,9 +1163,41 @@ html, body {
 /* Two Column Layout */
 .setup-administrator-two-column {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin: 0;
+  width: 100%;
+}
+
+/* Responsive administrator two-column (now 4-column) */
+@media (max-width: 414px) {
+  .setup-administrator-two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 415px) and (max-width: 767px) {
+  .setup-administrator-two-column {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-administrator-two-column {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-administrator-two-column {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1281px) {
+  .setup-administrator-two-column {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Left Column */
@@ -964,9 +1216,41 @@ html, body {
 /* Full Width Three Column Layout */
 .setup-administrator-full-width {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin: 0;
+  width: 100%;
+}
+
+/* Responsive administrator full-width (now 4-column) */
+@media (max-width: 414px) {
+  .setup-administrator-full-width {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 415px) and (max-width: 767px) {
+  .setup-administrator-full-width {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-administrator-full-width {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-administrator-full-width {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1281px) {
+  .setup-administrator-full-width {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Ash Background Box */
@@ -981,9 +1265,41 @@ html, body {
 /* Three Column Row */
 .setup-three-column-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-top: 8px;
+  width: 100%;
+}
+
+/* Responsive three-column-row (now 4-column) */
+@media (max-width: 414px) {
+  .setup-three-column-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 415px) and (max-width: 767px) {
+  .setup-three-column-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-three-column-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-three-column-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1281px) {
+  .setup-three-column-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Column */
@@ -995,20 +1311,7 @@ html, body {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .setup-administrator-two-column {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  
-  .setup-administrator-full-width {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  
-  .setup-three-column-row {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
+  /* Responsive breakpoints already handled above with specific media queries */
 }
 
 /* Company Modal Layout */
@@ -1164,9 +1467,9 @@ html, body {
   background: #f5f5f5;
   border-radius: 8px;
   box-shadow: 0 4px 32px #0003;
-  width: 70vw;
-  max-width: 800px;
-  max-height: 80vh;
+  width: 98vw;
+  max-width: 98vw;
+  max-height: 98vh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1176,43 +1479,43 @@ html, body {
 }
 
 .setup-suspense-modal-container.mobile {
-  width: 95vw;
-  max-width: 95vw;
-  max-height: 90vh;
+  width: 98vw;
+  max-width: 98vw;
+  max-height: 98vh;
 }
 
-/* Responsive suspense modal width adjustments */
+/* Responsive suspense modal width adjustments - full width */
 @media (min-width: 1200px) {
   .setup-suspense-modal-container {
-    width: 65vw;
-    max-width: 800px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
 @media (min-width: 900px) and (max-width: 1199px) {
   .setup-suspense-modal-container {
-    width: 75vw;
-    max-width: 700px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
 @media (min-width: 768px) and (max-width: 899px) {
   .setup-suspense-modal-container {
-    width: 85vw;
-    max-width: 600px;
+    width: 98vw;
+    max-width: 98vw;
   }
 }
 
 @media (max-width: 767px) {
   .setup-suspense-modal-container {
-    width: 95vw !important;
-    max-width: 95vw !important;
+    width: 98vw !important;
+    max-width: 98vw !important;
   }
   
   .setup-suspense-modal-container.mobile {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    max-height: 100vh;
+    width: 98vw !important;
+    max-width: 98vw !important;
+    max-height: 98vh;
     border-radius: 0;
   }
 }
@@ -1235,11 +1538,11 @@ html, body {
 }
 
 .setup-suspense-modal-header-icon {
-  font-size: 20px;
+  font-size: 12px;
 }
 
 .setup-suspense-modal-header-title {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
 }
 
@@ -1252,6 +1555,13 @@ html, body {
   padding: 4px 8px;
   border-radius: 4px;
   transition: background-color 0.2s;
+  font-weight: bold;
+  line-height: 1;
+  min-width: 28px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .setup-suspense-modal-close-btn:hover {
@@ -1264,12 +1574,79 @@ html, body {
   flex-direction: column;
   padding: 20px;
   overflow: auto;
+  font-size: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive suspense modal content padding */
+@media (max-width: 767px) {
+  .setup-suspense-modal-content {
+    padding: 12px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-suspense-modal-content {
+    padding: 16px;
+  }
+}
+
+/* All text inside suspense modals should be 12px - override inline styles */
+.setup-suspense-modal-content .setup-input-label,
+.setup-suspense-modal-content .setup-input-field,
+.setup-suspense-modal-content textarea,
+.setup-suspense-modal-content select,
+.setup-suspense-modal-content p,
+.setup-suspense-modal-content span:not(.setup-btn-icon):not(.setup-suspense-modal-header-icon),
+.setup-suspense-modal-content div,
+.setup-suspense-modal-content th,
+.setup-suspense-modal-content td,
+.setup-suspense-modal-content label {
+  font-size: 12px !important;
 }
 
 .setup-suspense-input-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  width: 100%;
+}
+
+/* Responsive suspense input grid */
+@media (max-width: 414px) {
+  .setup-suspense-input-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (min-width: 415px) and (max-width: 767px) {
+  .setup-suspense-input-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-suspense-input-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-suspense-input-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1281px) {
+  .setup-suspense-input-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
 }
 
 .setup-suspense-input-grid.mobile {
@@ -1833,7 +2210,7 @@ input[type="radio"]:disabled,
 
 @media (max-width: 768px) {
   .setup-modal-overlay {
-    padding: 8px;
+    padding: 4px;
   }
   
   .setup-modal-container {
@@ -2081,28 +2458,28 @@ input[type="radio"]:disabled,
 /* Modal responsive improvements */
 @media (max-width: 768px) {
   .setup-modal-overlay {
-    padding: 0 !important;
+    padding: 4px !important;
     align-items: stretch;
   }
   
   .setup-modal-overlay.mobile {
-    padding: 0;
+    padding: 4px;
     align-items: stretch;
   }
   
   .setup-modal-container {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    max-height: 100vh !important;
+    width: 98vw !important;
+    max-width: 98vw !important;
+    max-height: 98vh !important;
     border-radius: 0 !important;
     margin: 0 !important;
   }
   
   .setup-modal-container.mobile {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    height: 100vh;
-    max-height: 100vh;
+    width: 98vw !important;
+    max-width: 98vw !important;
+    height: 98vh;
+    max-height: 98vh;
     border-radius: 0;
     margin: 0;
   }

@@ -3519,11 +3519,11 @@ function FourCardsWithModal() {
                 </label>
               </div>
 
-              {/* Cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              {/* Cards - 2 cards side by side, 50% each */}
+              <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '24px', width: '100%' }}>
                 {/* E-Mail Card */}
-                <div className="setup-ash-box" style={{ padding: '16px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '8px' }}>
+                <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '12px' }}>
                     <input
                       type="checkbox"
                       checked={formData.emailNotifyEnabled}
@@ -3533,29 +3533,35 @@ function FourCardsWithModal() {
                     />
                     Send me E-Mail on
                   </label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '18px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.emailConfirmInvestment} onChange={(e) => handleInputChange('emailConfirmInvestment', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Confirmation of Investment
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.emailConfirmRedemption} onChange={(e) => handleInputChange('emailConfirmRedemption', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Confirmation of Redemption
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.emailUnitBalance} onChange={(e) => handleInputChange('emailUnitBalance', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Unit Balance - Confirmation
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.emailDailyUnitPrice} onChange={(e) => handleInputChange('emailDailyUnitPrice', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Daily Unit Price
-                    </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
+                    {/* Column 1: Confirmation of Investment, Confirmation of Redemption */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.emailConfirmInvestment} onChange={(e) => handleInputChange('emailConfirmInvestment', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Confirmation of Investment
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.emailConfirmRedemption} onChange={(e) => handleInputChange('emailConfirmRedemption', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Confirmation of Redemption
+                      </label>
+                    </div>
+                    {/* Column 2: Unit Balance, Daily Unit Price */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.emailUnitBalance} onChange={(e) => handleInputChange('emailUnitBalance', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Unit Balance - Confirmation
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.emailDailyUnitPrice} onChange={(e) => handleInputChange('emailDailyUnitPrice', e.target.checked.toString())} disabled={!isFormEditable || !formData.emailNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Daily Unit Price
+                      </label>
+                    </div>
                   </div>
                 </div>
 
                 {/* SMS Card */}
-                <div className="setup-ash-box" style={{ padding: '16px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '8px' }}>
+                <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '12px' }}>
                     <input
                       type="checkbox"
                       checked={formData.smsNotifyEnabled}
@@ -3565,23 +3571,29 @@ function FourCardsWithModal() {
                     />
                     Send me SMS on
                   </label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '18px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.smsConfirmInvestment} onChange={(e) => handleInputChange('smsConfirmInvestment', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Confirmation of Investment
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.smsConfirmRedemption} onChange={(e) => handleInputChange('smsConfirmRedemption', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Confirmation of Redemption
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.smsUnitBalance} onChange={(e) => handleInputChange('smsUnitBalance', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Unit Balance - Confirmation
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                      <input type="checkbox" checked={formData.smsDailyUnitPrice} onChange={(e) => handleInputChange('smsDailyUnitPrice', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
-                      Daily Unit Price
-                    </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
+                    {/* Column 1: Confirmation of Investment, Confirmation of Redemption */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.smsConfirmInvestment} onChange={(e) => handleInputChange('smsConfirmInvestment', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Confirmation of Investment
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.smsConfirmRedemption} onChange={(e) => handleInputChange('smsConfirmRedemption', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Confirmation of Redemption
+                      </label>
+                    </div>
+                    {/* Column 2: Unit Balance, Daily Unit Price */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.smsUnitBalance} onChange={(e) => handleInputChange('smsUnitBalance', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Unit Balance - Confirmation
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                        <input type="checkbox" checked={formData.smsDailyUnitPrice} onChange={(e) => handleInputChange('smsDailyUnitPrice', e.target.checked.toString())} disabled={!isFormEditable || !formData.smsNotifyEnabled} style={{ accentColor: '#9333ea' }} />
+                        Daily Unit Price
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>

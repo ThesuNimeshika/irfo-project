@@ -3213,20 +3213,28 @@ function FourCardsWithModal() {
             <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
               {/* Finance Details Section */}
               <div style={{ marginBottom: '24px' }}>
-                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
-                  Finance Details
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Header Row with Current Year and Previous Year */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
-                    <div></div>
-                    <div className="setup-input-label" style={{ fontWeight: 600, textAlign: 'center' }}>Current Year</div>
-                    <div className="setup-input-label" style={{ fontWeight: 600, textAlign: 'center' }}>Previous Year</div>
+                {/* Header Row: Finance Details, Current Year, Previous Year */}
+                <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%', marginBottom: '12px' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, color: '#0ea5e9', margin: 0 }}>
+                    Finance Details
                   </div>
-
-                  {/* Annual Sales Turnover */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
-                    <label className="setup-input-label" style={{ minWidth: '200px' }}>Annual Sales Turnover</label>
+                  <div className="setup-input-label" style={{ fontWeight: 600, textAlign: 'center', margin: 0 }}>
+                    Current Year
+                  </div>
+                  <div className="setup-input-label" style={{ fontWeight: 600, textAlign: 'center', margin: 0 }}>
+                    Previous Year
+                  </div>
+                  <div></div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
+                  {/* Column 1: Labels */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <label className="setup-input-label" style={{ minWidth: 'auto' }}>Annual Sales Turnover</label>
+                    <label className="setup-input-label" style={{ minWidth: 'auto' }}>Net Profit/Loss</label>
+                    <label className="setup-input-label" style={{ minWidth: 'auto' }}>Paid-Up Capital + Accumulated Profit</label>
+                  </div>
+                  {/* Column 2: Current Year Inputs */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <input
                       type="text"
                       value={formData.annualSalesTurnoverCurrent}
@@ -3238,20 +3246,6 @@ function FourCardsWithModal() {
                     />
                     <input
                       type="text"
-                      value={formData.annualSalesTurnoverPrevious}
-                      onChange={(e) => handleInputChange('annualSalesTurnoverPrevious', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="0"
-                      style={{ color: '#000000', textAlign: 'center' }}
-                    />
-                  </div>
-
-                  {/* Net Profit/Loss */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
-                    <label className="setup-input-label" style={{ minWidth: '200px' }}>Net Profit/Loss</label>
-                    <input
-                      type="text"
                       value={formData.netProfitLossCurrent}
                       onChange={(e) => handleInputChange('netProfitLossCurrent', e.target.value)}
                       disabled={!isFormEditable}
@@ -3261,22 +3255,29 @@ function FourCardsWithModal() {
                     />
                     <input
                       type="text"
-                      value={formData.netProfitLossPrevious}
-                      onChange={(e) => handleInputChange('netProfitLossPrevious', e.target.value)}
+                      value={formData.paidUpCapitalAccumulatedProfitCurrent}
+                      onChange={(e) => handleInputChange('paidUpCapitalAccumulatedProfitCurrent', e.target.value)}
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="0"
                       style={{ color: '#000000', textAlign: 'center' }}
                     />
                   </div>
-
-                  {/* Paid-Up Capital + Accumulated Profit */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 1fr', gap: '12px', alignItems: 'center' }}>
-                    <label className="setup-input-label" style={{ minWidth: '200px' }}>Paid-Up Capital + Accumulated Profit</label>
+                  {/* Column 3: Previous Year Inputs */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <input
                       type="text"
-                      value={formData.paidUpCapitalAccumulatedProfitCurrent}
-                      onChange={(e) => handleInputChange('paidUpCapitalAccumulatedProfitCurrent', e.target.value)}
+                      value={formData.annualSalesTurnoverPrevious}
+                      onChange={(e) => handleInputChange('annualSalesTurnoverPrevious', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="0"
+                      style={{ color: '#000000', textAlign: 'center' }}
+                    />
+                    <input
+                      type="text"
+                      value={formData.netProfitLossPrevious}
+                      onChange={(e) => handleInputChange('netProfitLossPrevious', e.target.value)}
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="0"
@@ -3292,13 +3293,12 @@ function FourCardsWithModal() {
                       style={{ color: '#000000', textAlign: 'center' }}
                     />
                   </div>
-
-                  {/* Financial Statements Question */}
-                  <div style={{ marginTop: '16px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: '8px', display: 'block' }}>
+                  {/* Column 4: Financial Statements Question */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <label className="setup-input-label" style={{ marginBottom: '4px' }}>
                       Are the Financial statements for the last two years available ?
                     </label>
-                    <div style={{ display: 'flex', gap: '16px' }}>
+                    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
                         <input
                           type="radio"

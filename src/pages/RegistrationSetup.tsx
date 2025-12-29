@@ -945,9 +945,9 @@ function FourCardsWithModal() {
 
             {/* Right: Status Radio Card (30%) */}
             <div className="setup-ash-box" style={{ padding: '16px' }}>
-              <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '8px' }}>Status</div>
-              {/* Status radios in 1 row */}
-              <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+              {/* Status title and radios in same row with gap */}
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="setup-input-label" style={{ fontWeight: 600, margin: 0 }}>Status</div>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
                   <input
                     type="radio"
@@ -1720,72 +1720,64 @@ function FourCardsWithModal() {
                 
                 {/* Name Denoted by Initials and Surname (for Individual) */}
                 {formData.applicantType === 'Individual' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '140px' }}>Name Denoted by Initials</label>
-                        <input
-                          type="text"
-                          value={formData.nameByInitials}
-                          onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter full name"
-                          style={{ color: '#000000', flex: 1 }}
-                        />
-                      </div>
-                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '148px' }}>Example: Kankanamge Lakshan Chathuranga.</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginTop: '16px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: '140px' }}>Name Denoted by Initials</label>
+                      <input
+                        type="text"
+                        value={formData.nameByInitials}
+                        onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter full name"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Kankanamge Lakshan Chathuranga.</span>
                     </div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Surname</label>
-                        <input
-                          type="text"
-                          value={formData.surname}
-                          onChange={(e) => handleInputChange('surname', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter surname"
-                          style={{ color: '#000000', flex: 1 }}
-                        />
-                      </div>
-                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '88px' }}>Example: Fernando.</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Surname</label>
+                      <input
+                        type="text"
+                        value={formData.surname}
+                        onChange={(e) => handleInputChange('surname', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter surname"
+                        style={{ color: '#000000', flex: 1, maxWidth: '200px' }}
+                      />
+                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Fernando.</span>
                     </div>
                   </div>
                 )}
                 
                 {/* Company Name and Business (for Corporate) */}
                 {formData.applicantType === 'Corporate' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '120px' }}>Company Name</label>
-                        <input
-                          type="text"
-                          value={formData.nameByInitials}
-                          onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter company name"
-                          style={{ color: '#000000', flex: 1 }}
-                        />
-                      </div>
-                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '128px' }}>Example: Management System (PVT) LTD</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginTop: '16px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: '120px' }}>Company Name</label>
+                      <input
+                        type="text"
+                        value={formData.nameByInitials}
+                        onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter company name"
+                        style={{ color: '#000000', flex: 1 }}
+                      />
+                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Management System (PVT) LTD</span>
                     </div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Business</label>
-                        <input
-                          type="text"
-                          value={formData.surname}
-                          onChange={(e) => handleInputChange('surname', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter business"
-                          style={{ color: '#000000', flex: 1 }}
-                        />
-                      </div>
-                      <div style={{ color: '#64748b', fontSize: '12px', marginLeft: '88px' }}>Example: Unit Trust</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Business</label>
+                      <input
+                        type="text"
+                        value={formData.surname}
+                        onChange={(e) => handleInputChange('surname', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter business"
+                        style={{ color: '#000000', flex: 1, maxWidth: '200px' }}
+                      />
+                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Unit Trust</span>
                     </div>
                   </div>
                 )}
@@ -1839,30 +1831,6 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       className="setup-input-field"
                       placeholder="Enter passport number"
-                      style={{ color: '#000000', flex: 1 }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Other No.</label>
-                    <input
-                      type="text"
-                      value={formData.otherNo}
-                      onChange={(e) => handleInputChange('otherNo', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter other number"
-                      style={{ color: '#000000', flex: 1 }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Comp Reg. No</label>
-                    <input
-                      type="text"
-                      value={formData.compRegNo}
-                      onChange={(e) => handleInputChange('compRegNo', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter company registration number"
                       style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
@@ -1942,6 +1910,63 @@ function FourCardsWithModal() {
                       maxLength={10}
                     />
                   </div>
+                </div>
+
+                {/* Column 3 - Other No., Comp Reg. No., and Nationality */}
+                <div style={{ gridColumn: '3 / 4', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Other No.</label>
+                    <input
+                      type="text"
+                      value={formData.otherNo}
+                      onChange={(e) => handleInputChange('otherNo', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter other number"
+                      style={{ color: '#000000', flex: 1 }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Comp Reg. No</label>
+                    <input
+                      type="text"
+                      value={formData.compRegNo}
+                      onChange={(e) => handleInputChange('compRegNo', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter company registration number"
+                      style={{ color: '#000000', flex: 1 }}
+                    />
+                  </div>
+                  <div style={{ marginTop: '8px' }}>
+                    <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Nationality</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="nationality"
+                          checked={formData.nationality === 'Local'}
+                          onChange={() => handleInputChange('nationality', 'Local')}
+                          disabled={!isFormEditable}
+                        />
+                        Local
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="nationality"
+                          checked={formData.nationality === 'Foreign'}
+                          onChange={() => handleInputChange('nationality', 'Foreign')}
+                          disabled={!isFormEditable}
+                        />
+                        Foreign
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Column 4 - E-mail, Tin No., and Related Party Status */}
+                <div style={{ gridColumn: '4 / 5', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <label className="setup-input-label" style={{ minWidth: '100px' }}>E-mail</label>
                     <input
@@ -1966,59 +1991,30 @@ function FourCardsWithModal() {
                       style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                </div>
-
-                {/* Nationality - placed in 3rd column */}
-                <div style={{ gridColumn: '3 / 4', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Nationality</div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
-                      <input
-                        type="radio"
-                        name="nationality"
-                        checked={formData.nationality === 'Local'}
-                        onChange={() => handleInputChange('nationality', 'Local')}
-                        disabled={!isFormEditable}
-                      />
-                      Local
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
-                      <input
-                        type="radio"
-                        name="nationality"
-                        checked={formData.nationality === 'Foreign'}
-                        onChange={() => handleInputChange('nationality', 'Foreign')}
-                        disabled={!isFormEditable}
-                      />
-                      Foreign
-                    </label>
-                  </div>
-                </div>
-
-                {/* Related Party Status - placed in 4th column */}
-                <div style={{ gridColumn: '4 / 5', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Related Party Status</div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
-                      <input
-                        type="radio"
-                        name="relatedPartyStatus"
-                        checked={formData.relatedPartyStatus === 'None Related'}
-                        onChange={() => handleInputChange('relatedPartyStatus', 'None Related')}
-                        disabled={!isFormEditable}
-                      />
-                      None Related
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
-                      <input
-                        type="radio"
-                        name="relatedPartyStatus"
-                        checked={formData.relatedPartyStatus === 'Related party'}
-                        onChange={() => handleInputChange('relatedPartyStatus', 'Related party')}
-                        disabled={!isFormEditable}
-                      />
-                      Related party
-                    </label>
+                  <div style={{ marginTop: '8px' }}>
+                    <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Related Party Status</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="relatedPartyStatus"
+                          checked={formData.relatedPartyStatus === 'None Related'}
+                          onChange={() => handleInputChange('relatedPartyStatus', 'None Related')}
+                          disabled={!isFormEditable}
+                        />
+                        None Related
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                        <input
+                          type="radio"
+                          name="relatedPartyStatus"
+                          checked={formData.relatedPartyStatus === 'Related party'}
+                          onChange={() => handleInputChange('relatedPartyStatus', 'Related party')}
+                          disabled={!isFormEditable}
+                        />
+                        Related party
+                      </label>
+                    </div>
                   </div>
                 </div>
 

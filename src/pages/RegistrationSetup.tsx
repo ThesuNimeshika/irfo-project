@@ -81,6 +81,7 @@ interface FormData {
   officeTele: string;
   officeFaxNo: string;
   officeEmail: string;
+  webRegistration: string;
   signature: string;
   // Other Details fields
   married: boolean;
@@ -324,6 +325,7 @@ function FourCardsWithModal() {
     officeTele: '',
     officeFaxNo: '',
     officeEmail: '',
+    webRegistration: '',
     signature: '',
     married: false,
     spouseName: '',
@@ -692,6 +694,7 @@ function FourCardsWithModal() {
       officeTele: '',
       officeFaxNo: '',
       officeEmail: '',
+      webRegistration: '',
       signature: '',
       married: false,
       spouseName: '',
@@ -1288,6 +1291,7 @@ function FourCardsWithModal() {
                   officeTele: '',
                   officeFaxNo: '',
                   officeEmail: '',
+                  webRegistration: '',
                   signature: '',
                   married: false,
                   spouseName: '',
@@ -2494,9 +2498,9 @@ function FourCardsWithModal() {
                   Office Details
               </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {/* Row 1: Occupation | Office Name */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* Row 1: Occupation, Office Name, Street, Town */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Occupation</label>
                       <input
                         type="text"
@@ -2508,7 +2512,7 @@ function FourCardsWithModal() {
                         style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Office Name</label>
                       <input
                         type="text"
@@ -2520,10 +2524,7 @@ function FourCardsWithModal() {
                         style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                  </div>
-                  {/* Row 2: Street | Town */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
                       <input
                         type="text"
@@ -2535,7 +2536,7 @@ function FourCardsWithModal() {
                         style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
                       <input
                         type="text"
@@ -2548,9 +2549,9 @@ function FourCardsWithModal() {
                       />
                     </div>
                   </div>
-                  {/* Row 3: City | Postal Code */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* Row 2: City, Postal Code, Country, Tele. */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
                       <input
                         type="text"
@@ -2562,7 +2563,7 @@ function FourCardsWithModal() {
                         style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Postal Code</label>
                       <input
                         type="text"
@@ -2574,10 +2575,7 @@ function FourCardsWithModal() {
                         style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                  </div>
-                  {/* Row 4: Country | Tele. */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Country</label>
                       <select
                         className="setup-dropdown-select"
@@ -2591,7 +2589,7 @@ function FourCardsWithModal() {
                         <option value="UK">UK</option>
                       </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Tele.</label>
                       <input
                         type="text"
@@ -2604,9 +2602,9 @@ function FourCardsWithModal() {
                       />
                     </div>
                   </div>
-                  {/* Row 5: Fax No. | E-mail */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* Row 3: Fax No., E-mail, Web Registration? */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Fax No.</label>
                       <input
                         type="text"
@@ -2618,7 +2616,7 @@ function FourCardsWithModal() {
                         style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>E-mail</label>
                       <input
                         type="email"
@@ -2629,6 +2627,20 @@ function FourCardsWithModal() {
                         placeholder="Enter email"
                         style={{ color: '#000000', flex: 1 }}
                       />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Web Registerd?</label>
+                      <select
+                        className="setup-dropdown-select"
+                        style={{ color: '#000000', flex: 1 }}
+                        value={formData.webRegistration || ''}
+                        onChange={e => handleInputChange('webRegistration', e.target.value)}
+                        disabled={!isFormEditable}
+                      >
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -4033,6 +4045,7 @@ function FourCardsWithModal() {
                             officeTele: '',
                             officeFaxNo: '',
                             officeEmail: '',
+                            webRegistration: '',
                             signature: '',
                             married: false,
                             spouseName: '',

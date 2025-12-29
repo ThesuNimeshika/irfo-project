@@ -2035,44 +2035,48 @@ function FourCardsWithModal() {
                     Correspondence Address
               </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
-                      <input
-                        type="text"
-                        value={formData.correspondenceStreet}
-                        onChange={(e) => handleInputChange('correspondenceStreet', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter street"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-              </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
-                      <input
-                        type="text"
-                        value={formData.correspondenceTown}
-                        onChange={(e) => handleInputChange('correspondenceTown', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter town"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
+                    {/* Row 1: Street and Town */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                        <input
+                          type="text"
+                          value={formData.correspondenceStreet}
+                          onChange={(e) => handleInputChange('correspondenceStreet', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter street"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                        <input
+                          type="text"
+                          value={formData.correspondenceTown}
+                          onChange={(e) => handleInputChange('correspondenceTown', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter town"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
-                      <input
-                        type="text"
-                        value={formData.correspondenceCity}
-                        onChange={(e) => handleInputChange('correspondenceCity', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter city"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {/* Row 2: City and District */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                        <input
+                          type="text"
+                          value={formData.correspondenceCity}
+                          onChange={(e) => handleInputChange('correspondenceCity', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter city"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                         <label className="setup-input-label" style={{ minWidth: '80px' }}>District</label>
                         <select
                           className="setup-dropdown-select"
@@ -2087,8 +2091,11 @@ function FourCardsWithModal() {
                           <option value="KALUTARA">KALUTARA</option>
                         </select>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Country</label>
+                    </div>
+                    {/* Row 3: Country, Postal Code, and Postal Area */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '33.33% 33.33% 33.33%', gap: '12px', width: '100%' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Country</label>
                         <select
                           className="setup-dropdown-select"
                           style={{ color: '#000000', flex: 1 }}
@@ -2101,10 +2108,8 @@ function FourCardsWithModal() {
                           <option value="UK">UK</option>
                         </select>
                       </div>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Code</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Postal Code</label>
                         <input
                           type="text"
                           value={formData.correspondencePostalCode}
@@ -2115,8 +2120,8 @@ function FourCardsWithModal() {
                           style={{ color: '#000000', flex: 1 }}
                         />
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Area</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Postal Area</label>
                         <select
                           className="setup-dropdown-select"
                           style={{ color: '#000000', flex: 1 }}
@@ -2124,7 +2129,7 @@ function FourCardsWithModal() {
                           onChange={e => handleInputChange('correspondencePostalArea', e.target.value)}
                           disabled={!isFormEditable}
                         >
-                          <option value="">Select Postal Area</option>
+                          <option value="">Postal Area</option>
                           <option value="Colombo">Colombo</option>
                           <option value="Kandy">Kandy</option>
                           <option value="Galle">Galle</option>
@@ -2164,44 +2169,48 @@ function FourCardsWithModal() {
                     Personal / Permanent Address
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
-                      <input
-                        type="text"
-                        value={formData.permanentStreet}
-                        onChange={(e) => handleInputChange('permanentStreet', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter street"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
+                    {/* Row 1: Street and Town */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                        <input
+                          type="text"
+                          value={formData.permanentStreet}
+                          onChange={(e) => handleInputChange('permanentStreet', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter street"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                        <input
+                          type="text"
+                          value={formData.permanentTown}
+                          onChange={(e) => handleInputChange('permanentTown', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter town"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
-                      <input
-                        type="text"
-                        value={formData.permanentTown}
-                        onChange={(e) => handleInputChange('permanentTown', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter town"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
-                      <input
-                        type="text"
-                        value={formData.permanentCity}
-                        onChange={(e) => handleInputChange('permanentCity', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter city"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {/* Row 2: City and District */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                        <input
+                          type="text"
+                          value={formData.permanentCity}
+                          onChange={(e) => handleInputChange('permanentCity', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter city"
+                          style={{ color: '#000000', flex: 1 }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                         <label className="setup-input-label" style={{ minWidth: '80px' }}>District</label>
                         <select
                           className="setup-dropdown-select"
@@ -2216,8 +2225,11 @@ function FourCardsWithModal() {
                           <option value="KALUTARA">KALUTARA</option>
                         </select>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Country</label>
+                    </div>
+                    {/* Row 3: Country, Postal Code, and Postal Area */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '33.33% 33.33% 33.33%', gap: '12px', width: '100%' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Country</label>
                         <select
                           className="setup-dropdown-select"
                           style={{ color: '#000000', flex: 1 }}
@@ -2230,10 +2242,8 @@ function FourCardsWithModal() {
                           <option value="UK">UK</option>
                         </select>
                       </div>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Code</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Postal Code</label>
                         <input
                           type="text"
                           value={formData.permanentPostalCode}
@@ -2244,8 +2254,8 @@ function FourCardsWithModal() {
                           style={{ color: '#000000', flex: 1 }}
                         />
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Postal Area</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
+                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Postal Area</label>
                         <select
                           className="setup-dropdown-select"
                           style={{ color: '#000000', flex: 1 }}
@@ -2253,7 +2263,7 @@ function FourCardsWithModal() {
                           onChange={e => handleInputChange('permanentPostalArea', e.target.value)}
                           disabled={!isFormEditable}
                         >
-                          <option value="">Select Postal Area</option>
+                          <option value="">Postal Area</option>
                           <option value="Colombo">Colombo</option>
                           <option value="Kandy">Kandy</option>
                           <option value="Galle">Galle</option>
@@ -2264,212 +2274,212 @@ function FourCardsWithModal() {
                 </div>
               </div>
 
-              {/* Lower Section */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                {/* Left - Additional Details */}
-                <div>
-                  <div style={{ marginBottom: '16px' }}>
-                    <label className="setup-input-label" style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>
-                      Additional Details
-                    </label>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                        <input
-                          type="radio"
-                          name="addressType"
-                          checked={formData.addressType === 'Office'}
-                          onChange={() => handleInputChange('addressType', 'Office')}
-                          disabled={!isFormEditable}
-                          style={{
-                            accentColor: '#9333ea',
-                            cursor: isFormEditable ? 'pointer' : 'default'
-                          }}
-                        />
-                        Office
-                      </label>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                        <input
-                          type="radio"
-                          name="addressType"
-                          checked={formData.addressType === 'Lease / Rent'}
-                          onChange={() => handleInputChange('addressType', 'Lease / Rent')}
-                          disabled={!isFormEditable}
-                          style={{
-                            accentColor: '#9333ea',
-                            cursor: isFormEditable ? 'pointer' : 'default'
-                          }}
-                        />
-                        Lease / Rent
-                      </label>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
-                        <input
-                          type="radio"
-                          name="addressType"
-                          checked={formData.addressType === 'Owner'}
-                          onChange={() => handleInputChange('addressType', 'Owner')}
-                          disabled={!isFormEditable}
-                          style={{
-                            accentColor: '#9333ea',
-                            cursor: isFormEditable ? 'pointer' : 'default'
-                          }}
-                        />
-                        Owner
-                      </label>
-                    </div>
-                    <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Other</label>
+              {/* Lower Section - 3 Column 2 Row Layout */}
+              <div style={{ display: 'grid', gridTemplateColumns: '32% 32% 32%', gap: '24px', width: '100%', marginBottom: '24px' }}>
+                {/* Column 1: Radio Buttons and Other */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Row 1: 3 Radio Buttons */}
+                  <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', flexWrap: 'wrap' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
                       <input
-                        type="text"
-                        value={formData.otherAddress}
-                        onChange={(e) => handleInputChange('otherAddress', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter other"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Zone</label>
-                      <select
-                        className="setup-dropdown-select"
-                        style={{ color: '#000000', flex: 1 }}
-                        value={formData.zone}
-                        onChange={e => handleInputChange('zone', e.target.value)}
-                        disabled={!isFormEditable}
-                      >
-                        <option value="">Select Zone</option>
-                        <option value="Zone 1">Zone 1</option>
-                        <option value="Zone 2">Zone 2</option>
-                        <option value="Zone 3">Zone 3</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right - Bank Details */}
-                <div>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
-                    Bank Details
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Bank</label>
-                      <select
-                        className="setup-dropdown-select"
-                        style={{ color: '#000000', flex: 1 }}
-                        value={formData.bank}
-                        onChange={e => handleInputChange('bank', e.target.value)}
-                        disabled={!isFormEditable}
-                      >
-                        <option value="">Select Bank</option>
-                        <option value="Amana Bank Anuradhapura">Amana Bank Anuradhapura</option>
-                        <option value="Commercial Bank">Commercial Bank</option>
-                        <option value="People's Bank">People's Bank</option>
-                      </select>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account No</label>
-                      <input
-                        type="text"
-                        value={formData.accountNo}
-                        onChange={(e) => handleInputChange('accountNo', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter account number"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                      <button
-                        onClick={handleAddBankAccount}
+                        type="radio"
+                        name="addressType"
+                        checked={formData.addressType === 'Office'}
+                        onChange={() => handleInputChange('addressType', 'Office')}
                         disabled={!isFormEditable}
                         style={{
-                          backgroundColor: '#a16207',
-                          color: '#ffffff',
-                          border: 'none',
-                          padding: '8px 12px',
-                          borderRadius: '4px',
-                          cursor: isFormEditable ? 'pointer' : 'default',
-                          fontSize: '16px',
-                          minWidth: '40px',
-                          height: '38px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
+                          accentColor: '#9333ea',
+                          cursor: isFormEditable ? 'pointer' : 'default'
                         }}
-                        title="Add Bank Account"
-                      >
-                        ↓
-                      </button>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account Type</label>
-                      <select
-                        className="setup-dropdown-select"
-                        style={{ color: '#000000', flex: 1 }}
-                        value={formData.accountType}
-                        onChange={e => handleInputChange('accountType', e.target.value)}
+                      />
+                      Office
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input
+                        type="radio"
+                        name="addressType"
+                        checked={formData.addressType === 'Lease / Rent'}
+                        onChange={() => handleInputChange('addressType', 'Lease / Rent')}
                         disabled={!isFormEditable}
-                      >
-                        <option value="">Select Account Type</option>
-                        <option value="Savings">Savings</option>
-                        <option value="Current">Current</option>
-                        <option value="Fixed Deposit">Fixed Deposit</option>
-                      </select>
-                    </div>
+                        style={{
+                          accentColor: '#9333ea',
+                          cursor: isFormEditable ? 'pointer' : 'default'
+                        }}
+                      />
+                      Lease / Rent
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                      <input
+                        type="radio"
+                        name="addressType"
+                        checked={formData.addressType === 'Owner'}
+                        onChange={() => handleInputChange('addressType', 'Owner')}
+                        disabled={!isFormEditable}
+                        style={{
+                          accentColor: '#9333ea',
+                          cursor: isFormEditable ? 'pointer' : 'default'
+                        }}
+                      />
+                      Owner
+                    </label>
                   </div>
-
-                  {/* Bank Accounts Table */}
-                  <div style={{ marginTop: '16px' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cbd5e1', marginBottom: '12px' }}>
-                      <thead>
-                        <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Bank Code</th>
-                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account No.</th>
-                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account Type</th>
-                          <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a' }}>Bank Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {bankAccounts.length === 0 ? (
-                          <tr>
-                            <td colSpan={4} style={{ padding: '16px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
-                              No bank accounts added
-                            </td>
-                          </tr>
-                        ) : (
-                          bankAccounts.map((account, index) => (
-                            <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.bankCode}</td>
-                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountNo}</td>
-                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountType}</td>
-                              <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a' }}>{account.bankName}</td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                    <button
-                      onClick={() => {
-                        const selectedIndex = bankAccounts.length > 0 ? bankAccounts.length - 1 : -1;
-                        if (selectedIndex >= 0) {
-                          handleRemoveBankAccount(selectedIndex);
-                        }
-                      }}
-                      disabled={!isFormEditable || bankAccounts.length === 0}
-                      style={{
-                        backgroundColor: '#ffffff',
-                        color: '#dc2626',
-                        border: '1px solid #cbd5e1',
-                        padding: '8px 16px',
-                        borderRadius: '4px',
-                        cursor: isFormEditable && bankAccounts.length > 0 ? 'pointer' : 'default',
-                        fontSize: '13px',
-                        fontWeight: 500
-                      }}
-                    >
-                      Remove From List
-                    </button>
+                  {/* Row 2: Other */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '80px' }}>Other</label>
+                    <input
+                      type="text"
+                      value={formData.otherAddress}
+                      onChange={(e) => handleInputChange('otherAddress', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter other"
+                      style={{ color: '#000000', flex: 1 }}
+                    />
                   </div>
                 </div>
+
+                {/* Column 2: Bank and Zone */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Row 1: Bank */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '60px' }}>Bank</label>
+                    <select
+                      className="setup-dropdown-select"
+                      style={{ color: '#000000', flex: 1 }}
+                      value={formData.bank}
+                      onChange={e => handleInputChange('bank', e.target.value)}
+                      disabled={!isFormEditable}
+                    >
+                      <option value="">Select Bank</option>
+                      <option value="Amana Bank Anuradhapura">Amana Bank Anuradhapura</option>
+                      <option value="Commercial Bank">Commercial Bank</option>
+                      <option value="People's Bank">People's Bank</option>
+                    </select>
+                  </div>
+                  {/* Row 2: Zone */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '60px' }}>Zone</label>
+                    <select
+                      className="setup-dropdown-select"
+                      style={{ color: '#000000', flex: 1 }}
+                      value={formData.zone}
+                      onChange={e => handleInputChange('zone', e.target.value)}
+                      disabled={!isFormEditable}
+                    >
+                      <option value="">Select Zone</option>
+                      <option value="Zone 1">Zone 1</option>
+                      <option value="Zone 2">Zone 2</option>
+                      <option value="Zone 3">Zone 3</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Column 3: Account No and Account Type */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Row 1: Account No + Button */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px' }}>Account No</label>
+                    <input
+                      type="text"
+                      value={formData.accountNo}
+                      onChange={(e) => handleInputChange('accountNo', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter account number"
+                      style={{ color: '#000000', flex: 1 }}
+                    />
+                    <button
+                      onClick={handleAddBankAccount}
+                      disabled={!isFormEditable}
+                      style={{
+                        backgroundColor: '#a16207',
+                        color: '#ffffff',
+                        border: 'none',
+                        padding: '8px 12px',
+                        borderRadius: '4px',
+                        cursor: isFormEditable ? 'pointer' : 'default',
+                        fontSize: '16px',
+                        minWidth: '40px',
+                        height: '38px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      title="Add Bank Account"
+                    >
+                      ↓
+                    </button>
+                  </div>
+                  {/* Row 2: Account Type */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <label className="setup-input-label" style={{ minWidth: '100px' }}>Account Type</label>
+                    <select
+                      className="setup-dropdown-select"
+                      style={{ color: '#000000', flex: 1 }}
+                      value={formData.accountType}
+                      onChange={e => handleInputChange('accountType', e.target.value)}
+                      disabled={!isFormEditable}
+                    >
+                      <option value="">Select Account Type</option>
+                      <option value="Savings">Savings</option>
+                      <option value="Current">Current</option>
+                      <option value="Fixed Deposit">Fixed Deposit</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bank Accounts Table - Full Width */}
+              <div style={{ width: '100%', marginTop: '16px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cbd5e1', marginBottom: '12px' }}>
+                  <thead>
+                    <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                      <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Bank Code</th>
+                      <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account No.</th>
+                      <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account Type</th>
+                      <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a' }}>Bank Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bankAccounts.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} style={{ padding: '16px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                          No bank accounts added
+                        </td>
+                      </tr>
+                    ) : (
+                      bankAccounts.map((account, index) => (
+                        <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                          <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.bankCode}</td>
+                          <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountNo}</td>
+                          <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountType}</td>
+                          <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a' }}>{account.bankName}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+                <button
+                  onClick={() => {
+                    const selectedIndex = bankAccounts.length > 0 ? bankAccounts.length - 1 : -1;
+                    if (selectedIndex >= 0) {
+                      handleRemoveBankAccount(selectedIndex);
+                    }
+                  }}
+                  disabled={!isFormEditable || bankAccounts.length === 0}
+                  style={{
+                    backgroundColor: '#ffffff',
+                    color: '#dc2626',
+                    border: '1px solid #cbd5e1',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    cursor: isFormEditable && bankAccounts.length > 0 ? 'pointer' : 'default',
+                    fontSize: '13px',
+                    fontWeight: 500
+                  }}
+                >
+                  Remove From List
+                </button>
               </div>
             </div>
           </div>

@@ -3698,110 +3698,118 @@ function FourCardsWithModal() {
         return (
           <div>
             <div style={{ width: '100%' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                {/* Left column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Investment Type at Registration */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '220px' }}>Investment Type at Registration</label>
-                    <select
-                      className="setup-dropdown-select"
-                      style={{ color: '#000000', flex: 1 }}
-                      value={formData.investmentTypeAtRegistration}
-                      onChange={e => handleInputChange('investmentTypeAtRegistration', e.target.value)}
-                      disabled={!isFormEditable}
-                    >
-                      <option value="">Agent</option>
-                      <option value="Direct">Direct</option>
-                    </select>
-                  </div>
+              {/* First Row: Investment Type and Investor Category - 2 columns 50% each */}
+              <div style={{ display: 'grid', gridTemplateColumns: '46% 46%', gap: '24px', width: '100%', marginBottom: '24px' }}>
+                {/* Left Column: Investment Type at Registration */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                  <label className="setup-input-label" style={{ minWidth: '220px' }}>Investment Type at Registration</label>
+                  <select
+                    className="setup-dropdown-select"
+                    style={{ color: '#000000', flex: 1 }}
+                    value={formData.investmentTypeAtRegistration}
+                    onChange={e => handleInputChange('investmentTypeAtRegistration', e.target.value)}
+                    disabled={!isFormEditable}
+                  >
+                    <option value="">Agent</option>
+                    <option value="Direct">Direct</option>
+                  </select>
+                </div>
+                {/* Right Column: Investor Category */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                  <label className="setup-input-label" style={{ minWidth: '160px' }}>Investor Category</label>
+                  <select className="setup-dropdown-select" style={{ color: '#000000', flex: 1 }} value={formData.investorCategory} onChange={e => handleInputChange('investorCategory', e.target.value)} disabled={!isFormEditable}>
+                    <option value="">Corporate</option>
+                    <option value="Individual">Individual</option>
+                  </select>
+                </div>
+              </div>
 
-                  {/* Agents Card */}
-                  <div className="setup-ash-box" style={{ padding: '16px' }}>
-                    <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Agents</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {/* Agency */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '120px' }}>Agency</label>
-                        <div style={{ position: 'relative', flex: 1 }} data-table="agency">
-                          <div onClick={() => isFormEditable && setShowAgencyTable(!showAgencyTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.officeAgency ? '#0f172a' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                            {formData.officeAgency || 'Select agency (Code - Name)'}
-                          </div>
-                          {showAgencyTable && isFormEditable && (
-                            <div data-table="agency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                  <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                    <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
-                                    <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {agencyData.map((a, i) => (
-                                    <tr key={i} onClick={() => { handleInputChange('officeAgency', `${a.code} - ${a.name}`); setShowAgencyTable(false); }} style={{ cursor: 'pointer', backgroundColor: formData.officeAgency === `${a.code} - ${a.name}` ? '#f3e8ff' : '#ffffff' }} onMouseEnter={e => { if (formData.officeAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#f8fafc'; }} onMouseLeave={e => { if (formData.officeAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#ffffff'; }}>
-                                      <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{a.code}</td>
-                                      <td style={{ padding: '8px 12px', color: '#000000' }}>{a.name}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
+              {/* Second Row: Agents Card (left) and Officers Card (right) - 2 columns 50% each */}
+              <div style={{ display: 'grid', gridTemplateColumns: '48% 48%', gap: '24px', width: '100%' }}>
+                {/* Left: Agents Card - 3 columns */}
+                <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Agents</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '32% 32% 32%', gap: '12px', width: '100%' }}>
+                    {/* Column 1: Agency */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Agency</label>
+                      <div style={{ position: 'relative', width: '100%' }} data-table="agency">
+                        <div onClick={() => isFormEditable && setShowAgencyTable(!showAgencyTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.officeAgency ? '#0f172a' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '12px', width: '100%' }}>
+                          {formData.officeAgency || 'Select agency'}
                         </div>
-                      </div>
-
-                      {/* Sub Agency */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '120px' }}>Sub Agency</label>
-                        <div style={{ position: 'relative', flex: 1 }} data-table="subagency">
-                          <div
-                            onClick={() => isFormEditable && setShowSubAgencyTable(!showSubAgencyTable)}
-                            style={{
-                              padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff',
-                              cursor: isFormEditable ? 'pointer' : 'default', color: formData.officeSubAgency ? '#0f172a' : '#64748b',
-                              minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px'
-                            }}
-                          >
-                            {formData.officeSubAgency || 'Select sub agency (Code - Name)'}
-                          </div>
-                          {showSubAgencyTable && isFormEditable && (
-                            <div data-table="subagency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                  <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                    <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
-                                    <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                        {showAgencyTable && isFormEditable && (
+                          <div data-table="agency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                              <thead>
+                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {agencyData.map((a, i) => (
+                                  <tr key={i} onClick={() => { handleInputChange('officeAgency', `${a.code} - ${a.name}`); setShowAgencyTable(false); }} style={{ cursor: 'pointer', backgroundColor: formData.officeAgency === `${a.code} - ${a.name}` ? '#f3e8ff' : '#ffffff' }} onMouseEnter={e => { if (formData.officeAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#f8fafc'; }} onMouseLeave={e => { if (formData.officeAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#ffffff'; }}>
+                                    <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{a.code}</td>
+                                    <td style={{ padding: '8px 12px', color: '#000000' }}>{a.name}</td>
                                   </tr>
-                                </thead>
-                                <tbody>
-                                  {subAgencyData.map((a, i) => (
-                                    <tr key={i} onClick={() => { handleInputChange('officeSubAgency', `${a.code} - ${a.name}`); setShowSubAgencyTable(false); }} style={{ cursor: 'pointer', backgroundColor: formData.officeSubAgency === `${a.code} - ${a.name}` ? '#f3e8ff' : '#ffffff' }} onMouseEnter={e => { if (formData.officeSubAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#f8fafc'; }} onMouseLeave={e => { if (formData.officeSubAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#ffffff'; }}>
-                                       <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{a.code}</td>
-                                       <td style={{ padding: '8px 12px', color: '#000000' }}>{a.name}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Agent */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '120px' }}>Agent</label>
-                        <div style={{ position: 'relative', flex: 1 }} data-table="agent">
-                          <div
-                            onClick={() => isFormEditable && setShowAgentTable(!showAgentTable)}
-                            style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.officeAgent ? '#0f172a' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}
-                          >
-                            {formData.officeAgent || 'Select agent (Code - Name)'}
+                                ))}
+                              </tbody>
+                            </table>
                           </div>
-                          {showAgentTable && isFormEditable && (
-                            <div data-table="agent" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                  <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                        )}
+                      </div>
+                    </div>
+                    {/* Column 2: Sub Agency */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Sub Agency</label>
+                      <div style={{ position: 'relative', width: '100%' }} data-table="subagency">
+                        <div
+                          onClick={() => isFormEditable && setShowSubAgencyTable(!showSubAgencyTable)}
+                          style={{
+                            padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff',
+                            cursor: isFormEditable ? 'pointer' : 'default', color: formData.officeSubAgency ? '#0f172a' : '#64748b',
+                            minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '12px', width: '100%'
+                          }}
+                        >
+                          {formData.officeSubAgency || 'Select sub agency'}
+                        </div>
+                        {showSubAgencyTable && isFormEditable && (
+                          <div data-table="subagency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                              <thead>
+                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
+                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {subAgencyData.map((a, i) => (
+                                  <tr key={i} onClick={() => { handleInputChange('officeSubAgency', `${a.code} - ${a.name}`); setShowSubAgencyTable(false); }} style={{ cursor: 'pointer', backgroundColor: formData.officeSubAgency === `${a.code} - ${a.name}` ? '#f3e8ff' : '#ffffff' }} onMouseEnter={e => { if (formData.officeSubAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#f8fafc'; }} onMouseLeave={e => { if (formData.officeSubAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#ffffff'; }}>
+                                     <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{a.code}</td>
+                                     <td style={{ padding: '8px 12px', color: '#000000' }}>{a.name}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {/* Column 3: Agent */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Agent</label>
+                      <div style={{ position: 'relative', width: '100%' }} data-table="agent">
+                        <div
+                          onClick={() => isFormEditable && setShowAgentTable(!showAgentTable)}
+                          style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.officeAgent ? '#0f172a' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '12px', width: '100%' }}
+                        >
+                          {formData.officeAgent || 'Select agent'}
+                        </div>
+                        {showAgentTable && isFormEditable && (
+                          <div data-table="agent" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                              <thead>
+                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
                                     <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
                                     <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
                                   </tr>
@@ -3817,35 +3825,28 @@ function FourCardsWithModal() {
                               </table>
                             </div>
                           )}
-                        </div>
                       </div>
                     </div>
                   </div>
-
-                  {/* Investor Category */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '160px' }}>Investor Category</label>
-                    <select className="setup-dropdown-select" style={{ color: '#000000', flex: 1 }} value={formData.investorCategory} onChange={e => handleInputChange('investorCategory', e.target.value)} disabled={!isFormEditable}>
-                      <option value="">Corporate</option>
-                      <option value="Individual">Individual</option>
-                    </select>
-                  </div>
                 </div>
 
-                {/* Right column - officers */}
-                <div className="setup-ash-box" style={{ padding: '16px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '150px' }}>Verifying officer</label>
-                      <input type="text" value={formData.verifyingOfficer} onChange={e => handleInputChange('verifyingOfficer', e.target.value)} disabled={!isFormEditable} className="setup-input-field" style={{ color: '#000000', flex: 1 }} />
+                {/* Right: Officers Card - 3 columns */}
+                <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '32% 32% 32%', gap: '12px', width: '100%' }}>
+                    {/* Column 1: Verifying officer */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Verifying officer</label>
+                      <input type="text" value={formData.verifyingOfficer} onChange={e => handleInputChange('verifyingOfficer', e.target.value)} disabled={!isFormEditable} className="setup-input-field" style={{ color: '#000000', width: '100%' }} />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '150px' }}>Input Officer</label>
-                      <input type="text" value={formData.inputOfficer} onChange={e => handleInputChange('inputOfficer', e.target.value)} disabled={!isFormEditable} className="setup-input-field" style={{ color: '#000000', flex: 1 }} />
+                    {/* Column 2: Input Officer */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Input Officer</label>
+                      <input type="text" value={formData.inputOfficer} onChange={e => handleInputChange('inputOfficer', e.target.value)} disabled={!isFormEditable} className="setup-input-field" style={{ color: '#000000', width: '100%' }} />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '150px' }}>Authorized Officer</label>
-                      <input type="text" value={formData.authorizedOfficer} onChange={e => handleInputChange('authorizedOfficer', e.target.value)} disabled={!isFormEditable} className="setup-input-field" style={{ color: '#000000', flex: 1 }} />
+                    {/* Column 3: Authorized Officer */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Authorized Officer</label>
+                      <input type="text" value={formData.authorizedOfficer} onChange={e => handleInputChange('authorizedOfficer', e.target.value)} disabled={!isFormEditable} className="setup-input-field" style={{ color: '#000000', width: '100%' }} />
                     </div>
                   </div>
                 </div>

@@ -5150,151 +5150,160 @@ function FourCardsWithModal() {
 
                             {accountsActiveTab === 'Bank Details' && (
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
-                                {/* Payment Type */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Payment Type</label>
-                                  <div style={{ position: 'relative', flex: 1 }}>
-                                    <div onClick={() => isFormEditable && setShowBankDetailsPaymentTypeTable(!showBankDetailsPaymentTypeTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsPaymentType ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                      {formData.bankDetailsPaymentType || 'Select payment type (Code - Name)'}
-                                </div>
-                                    {showBankDetailsPaymentTypeTable && isFormEditable && (
-                                      <div data-table="bankDetailsPaymentType" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                          <thead>
-                                            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                              <th 
-                                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
-                                                onClick={() => handleTableSort('bankDetailsPaymentType', 'code')}
-                                              >
-                                                Code{renderSortIndicator('bankDetailsPaymentType', 'code')}
-                                              </th>
-                                              <th 
-                                                style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
-                                                onClick={() => handleTableSort('bankDetailsPaymentType', 'name')}
-                                              >
-                                                Name{renderSortIndicator('bankDetailsPaymentType', 'name')}
-                                              </th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {getSortedData('bankDetailsPaymentType', paymentTypeData).map((pt, idx) => (
-                                              <tr
-                                                key={idx}
-                                                onClick={() => {
-                                                  handleInputChange('bankDetailsPaymentType', `${pt.name} - ${pt.code}`);
-                                                  setShowBankDetailsPaymentTypeTable(false);
-                                                }}
-                                                style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                              >
-                                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{pt.code}</td>
-                                                <td style={{ padding: '8px 12px', color: '#000000' }}>{pt.name}</td>
-                                              </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
-                                </div>
-                                    )}
-                                  </div>
-                                </div>
-
-                                {/* Bank */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Bank</label>
-                                  <div style={{ position: 'relative', flex: 1 }}>
-                                    <div onClick={() => isFormEditable && setShowBankDetailsBankTable(!showBankDetailsBankTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsBank ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                                      {formData.bankDetailsBank || 'Select bank (Name - Code)'}
-                                    </div>
-                                    {showBankDetailsBankTable && isFormEditable && (
-                                      <div data-table="bankDetailsBank" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                          <thead>
-                                            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                              <th 
-                                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
-                                                onClick={() => handleTableSort('bankDetailsBank', 'name')}
-                                              >
-                                                Name{renderSortIndicator('bankDetailsBank', 'name')}
-                                              </th>
-                                              <th 
-                                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
-                                                onClick={() => handleTableSort('bankDetailsBank', 'code')}
-                                              >
-                                                Code{renderSortIndicator('bankDetailsBank', 'code')}
-                                              </th>
-                                              <th 
-                                                style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
-                                                onClick={() => handleTableSort('bankDetailsBank', 'district')}
-                                              >
-                                                District{renderSortIndicator('bankDetailsBank', 'district')}
-                                              </th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {getSortedData('bankDetailsBank', bankData).map((bank, idx) => (
-                                              <tr
-                                                key={idx}
-                                                onClick={() => {
-                                                  handleInputChange('bankDetailsBank', `${bank.name} - ${bank.code}`);
-                                                  setShowBankDetailsBankTable(false);
-                                                }}
-                                                style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                              >
-                                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.name}</td>
-                                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.code}</td>
-                                                <td style={{ padding: '8px 12px', color: '#000000' }}>{bank.district}</td>
-                                              </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
+                                {/* First Row: Payment Type | Bank | Account No | Account Name (4 columns) */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                  {/* Column 1: Payment Type */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Payment Type</label>
+                                    <div style={{ position: 'relative', flex: 1 }}>
+                                      <div onClick={() => isFormEditable && setShowBankDetailsPaymentTypeTable(!showBankDetailsPaymentTypeTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsPaymentType ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                        {formData.bankDetailsPaymentType || 'Select payment type (Code - Name)'}
                                       </div>
-                                    )}
+                                      {showBankDetailsPaymentTypeTable && isFormEditable && (
+                                        <div data-table="bankDetailsPaymentType" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <thead>
+                                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                <th 
+                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  onClick={() => handleTableSort('bankDetailsPaymentType', 'code')}
+                                                >
+                                                  Code{renderSortIndicator('bankDetailsPaymentType', 'code')}
+                                                </th>
+                                                <th 
+                                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  onClick={() => handleTableSort('bankDetailsPaymentType', 'name')}
+                                                >
+                                                  Name{renderSortIndicator('bankDetailsPaymentType', 'name')}
+                                                </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {getSortedData('bankDetailsPaymentType', paymentTypeData).map((pt, idx) => (
+                                                <tr
+                                                  key={idx}
+                                                  onClick={() => {
+                                                    handleInputChange('bankDetailsPaymentType', `${pt.name} - ${pt.code}`);
+                                                    setShowBankDetailsPaymentTypeTable(false);
+                                                  }}
+                                                  style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{pt.code}</td>
+                                                  <td style={{ padding: '8px 12px', color: '#000000' }}>{pt.name}</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {/* Column 2: Bank */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Bank</label>
+                                    <div style={{ position: 'relative', flex: 1 }}>
+                                      <div onClick={() => isFormEditable && setShowBankDetailsBankTable(!showBankDetailsBankTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsBank ? '#000000' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                        {formData.bankDetailsBank || 'Select bank (Name - Code)'}
+                                      </div>
+                                      {showBankDetailsBankTable && isFormEditable && (
+                                        <div data-table="bankDetailsBank" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                                          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <thead>
+                                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                <th 
+                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  onClick={() => handleTableSort('bankDetailsBank', 'name')}
+                                                >
+                                                  Name{renderSortIndicator('bankDetailsBank', 'name')}
+                                                </th>
+                                                <th 
+                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  onClick={() => handleTableSort('bankDetailsBank', 'code')}
+                                                >
+                                                  Code{renderSortIndicator('bankDetailsBank', 'code')}
+                                                </th>
+                                                <th 
+                                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  onClick={() => handleTableSort('bankDetailsBank', 'district')}
+                                                >
+                                                  District{renderSortIndicator('bankDetailsBank', 'district')}
+                                                </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {getSortedData('bankDetailsBank', bankData).map((bank, idx) => (
+                                                <tr
+                                                  key={idx}
+                                                  onClick={() => {
+                                                    handleInputChange('bankDetailsBank', `${bank.name} - ${bank.code}`);
+                                                    setShowBankDetailsBankTable(false);
+                                                  }}
+                                                  style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
+                                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.name}</td>
+                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.code}</td>
+                                                  <td style={{ padding: '8px 12px', color: '#000000' }}>{bank.district}</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {/* Column 3: Account No */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Account No</label>
+                                    <input
+                                      type="text"
+                                      value={formData.bankDetailsAccountNo}
+                                      onChange={(e) => handleInputChange('bankDetailsAccountNo', e.target.value)}
+                                      disabled={!isFormEditable}
+                                      className="setup-input-field"
+                                      placeholder="Enter account number"
+                                      style={{ color: '#000000', flex: 1 }}
+                                    />
+                                  </div>
+                                  {/* Column 4: Account Name */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Account Name</label>
+                                    <input
+                                      type="text"
+                                      value={formData.bankDetailsAccountName}
+                                      onChange={(e) => handleInputChange('bankDetailsAccountName', e.target.value)}
+                                      disabled={!isFormEditable}
+                                      className="setup-input-field"
+                                      placeholder="Enter account name"
+                                      style={{ color: '#000000', flex: 1 }}
+                                    />
                                   </div>
                                 </div>
 
-                                {/* Account No */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Account No</label>
-                                  <input
-                                    type="text"
-                                    value={formData.bankDetailsAccountNo}
-                                    onChange={(e) => handleInputChange('bankDetailsAccountNo', e.target.value)}
-                                    disabled={!isFormEditable}
-                                    className="setup-input-field"
-                                    placeholder="Enter account number"
-                                    style={{ color: '#000000', flex: 1 }}
-                                  />
-                                </div>
-
-                                {/* Account Name */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Account Name</label>
-                                  <input
-                                    type="text"
-                                    value={formData.bankDetailsAccountName}
-                                    onChange={(e) => handleInputChange('bankDetailsAccountName', e.target.value)}
-                                    disabled={!isFormEditable}
-                                    className="setup-input-field"
-                                    placeholder="Enter account name"
-                                    style={{ color: '#000000', flex: 1 }}
-                                  />
-                                </div>
-
-                                {/* Payee */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                  <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Payee</label>
-                                  <input
-                                    type="text"
-                                    value={formData.bankDetailsPayee}
-                                    onChange={(e) => handleInputChange('bankDetailsPayee', e.target.value)}
-                                    disabled={!isFormEditable}
-                                    className="setup-input-field"
-                                    placeholder="Enter payee"
-                                    style={{ color: '#000000', flex: 1 }}
-                                  />
+                                {/* Second Row: Payee | Empty | Empty | Empty (4 columns) */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                  {/* Column 1: Payee */}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Payee</label>
+                                    <input
+                                      type="text"
+                                      value={formData.bankDetailsPayee}
+                                      onChange={(e) => handleInputChange('bankDetailsPayee', e.target.value)}
+                                      disabled={!isFormEditable}
+                                      className="setup-input-field"
+                                      placeholder="Enter payee"
+                                      style={{ color: '#000000', flex: 1 }}
+                                    />
+                                  </div>
+                                  {/* Column 2: Empty */}
+                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  {/* Column 3: Empty */}
+                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  {/* Column 4: Empty */}
+                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
                                 </div>
 
                                 {/* Bank Accounts Table */}

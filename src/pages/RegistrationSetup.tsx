@@ -1002,7 +1002,7 @@ function FourCardsWithModal() {
                 disabled={!isFormEditable}
                 className="setup-input-field"
                 placeholder="Enter registration number"
-                style={{ color: '#000000', flex: 1 }}
+                style={{ color: '#000000', flex: 0.375 }}
               />
               <button 
                 className="setup-btn setup-btn-new" 
@@ -1034,12 +1034,12 @@ function FourCardsWithModal() {
     if (modalTitle === 'Unit Holders Accounts') {
       return (
         <div className="setup-input-section">
-          {/* Top card: Registration No + Search + ACKNO */}
-          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
+          {/* Top card: Registration No + Search + ACKNO - Fixed */}
+          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '2px', position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#ffffff' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
-              {/* Left Column: 50% width - Registration No label + input */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-              <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
+              {/* Left Column: Reduced width - Registration No label + input */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: 'auto', flex: '0 0 auto' }}>
+              <label className="setup-input-label" style={{ minWidth: '120px' }}>Registration No</label>
               <input
                 type="text"
                 value={formData.applicationNo}
@@ -1047,19 +1047,19 @@ function FourCardsWithModal() {
                 disabled={!isFormEditable}
                 className="setup-input-field"
                 placeholder="Enter registration number"
-                style={{ color: '#000000', flex: 1 }}
+                style={{ color: '#000000', width: '200px', minWidth: '200px' }}
               />
               </div>
-              {/* Right Column: 50% width - Search button + ACKNO label + input */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '50%', flex: '1 1 50%' }}>
+              {/* Right Column: Reduced width - Search button + ACKNO label + input */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: 'auto', flex: '0 0 auto' }}>
                 <button 
                   className="setup-btn setup-btn-new" 
                   title="Search" 
-                  style={{ padding: '8px 20px', minWidth: '60px' }}
+                  style={{ padding: '8px 16px', minWidth: '50px', width: 'auto' }}
                   onClick={() => setIsUnitHoldersSearchModalOpen(true)}
                   disabled={!isFormEditable}
                 >🔍</button>
-                <label className="setup-input-label" style={{ minWidth: '80px' }}>ACKNO</label>
+                <label className="setup-input-label" style={{ minWidth: '70px' }}>ACKNO</label>
               <input
                 type="text"
                 value={formData.ackNo}
@@ -1067,7 +1067,7 @@ function FourCardsWithModal() {
                 disabled={!isFormEditable}
                 className="setup-input-field"
                 placeholder="ACKNO"
-                  style={{ color: '#000000', flex: 1 }}
+                  style={{ color: '#000000', width: '220px', minWidth: '220px' }}
               />
             </div>
           </div>
@@ -4266,7 +4266,7 @@ function FourCardsWithModal() {
 
                     {/* Unit Holders Accounts: bottom full-width 3 tabs card */}
                     {modules[modalIdx].title === 'Unit Holders Accounts' && (
-                      <div className="setup-input-section" style={{ marginTop: '12px' }}>
+                      <div className="setup-input-section" style={{ marginTop: '12px', height: '100%', overflowY: 'auto' }}>
                         <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
                           {/* Tab headers */}
                           <div role="tablist" aria-label="Unit Holders Accounts Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>

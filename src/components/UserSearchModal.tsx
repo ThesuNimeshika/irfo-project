@@ -57,6 +57,7 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
       { label: 'NIC', field: 'nic' },
       { label: 'Passport', field: 'passport' },
       { label: 'Other No', field: 'otherNo' },
+      { label: 'Fund', field: 'fund', hasDropdown: true },
     ],
   };
 
@@ -77,6 +78,8 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
   const townOptions = ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'];
   
   const cityOptions = ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'];
+  
+  const fundOptions = ['Equity Fund', 'Bond Fund', 'Mixed Fund', 'Growth Fund', 'Income Fund'];
 
   const handleInputChange = (field: string, value: string) => {
     setSearchCriteria((prev) => ({
@@ -190,7 +193,9 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
                             <option value="">Select {field.label.toLowerCase()}</option>
                             {(field.field === 'title' ? titleOptions :
                               field.field === 'street' ? streetOptions :
-                              field.field === 'town' ? townOptions : cityOptions).map((option, i) => (
+                              field.field === 'town' ? townOptions :
+                              field.field === 'city' ? cityOptions :
+                              field.field === 'fund' ? fundOptions : []).map((option, i) => (
                               <option key={i} value={option}>
                                 {option}
                               </option>

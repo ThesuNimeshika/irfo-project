@@ -124,188 +124,199 @@ const AccountSearchModal: React.FC<AccountSearchModalProps> = ({
         <div className="setup-modal-content" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {/* Top Section: Search Criteria */}
           <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '0' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-              {/* Left Column */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Name:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.name || ''}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', flex: 1 }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Title:
-                  </label>
-                  <select
-                    value={searchCriteria.title || ''}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
-                    className="setup-dropdown-select"
-                    style={{ color: '#000000', flex: 1 }}
-                  >
-                    <option value="">Select title</option>
-                    {titleOptions.map((option, i) => (
-                      <option key={i} value={option}>{option}</option>
-                    ))}
-                  </select>
-                  <label className="setup-input-label" style={{ minWidth: '60px', color: '#000000', fontWeight: 600, marginLeft: '8px' }}>
-                    Initials:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.initials || ''}
-                    onChange={(e) => handleInputChange('initials', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', width: '120px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Surname:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.surname || ''}
-                    onChange={(e) => handleInputChange('surname', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', flex: 1 }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    First Name:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.firstName || ''}
-                    onChange={(e) => handleInputChange('firstName', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', flex: 1 }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Street:
-                  </label>
-                  <select
-                    value={searchCriteria.street || ''}
-                    onChange={(e) => handleInputChange('street', e.target.value)}
-                    className="setup-dropdown-select"
-                    style={{ color: '#000000', flex: 1 }}
-                  >
-                    <option value="">Select street</option>
-                    {streetOptions.map((option, i) => (
-                      <option key={i} value={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Town:
-                  </label>
-                  <select
-                    value={searchCriteria.town || ''}
-                    onChange={(e) => handleInputChange('town', e.target.value)}
-                    className="setup-dropdown-select"
-                    style={{ color: '#000000', flex: 1 }}
-                  >
-                    <option value="">Select town</option>
-                    {townOptions.map((option, i) => (
-                      <option key={i} value={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    City:
-                  </label>
-                  <select
-                    value={searchCriteria.city || ''}
-                    onChange={(e) => handleInputChange('city', e.target.value)}
-                    className="setup-dropdown-select"
-                    style={{ color: '#000000', flex: 1 }}
-                  >
-                    <option value="">Select city</option>
-                    {cityOptions.map((option, i) => (
-                      <option key={i} value={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '33.33% 33.33% 33.33%', gap: '16px', width: '100%' }}>
+              {/* Row 1, Column 1: Name */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Name:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.name || ''}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
               </div>
-
-              {/* Right Column */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Holder ID:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.holderId || ''}
-                    onChange={(e) => handleInputChange('holderId', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', flex: 1 }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    NIC:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.nic || ''}
-                    onChange={(e) => handleInputChange('nic', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', flex: 1 }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Passport:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.passport || ''}
-                    onChange={(e) => handleInputChange('passport', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', flex: 1 }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Other No:
-                  </label>
-                  <input
-                    type="text"
-                    value={searchCriteria.otherNo || ''}
-                    onChange={(e) => handleInputChange('otherNo', e.target.value)}
-                    className="setup-input-field"
-                    style={{ color: '#000000', flex: 1 }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>
-                    Fund:
-                  </label>
-                  <select
-                    value={searchCriteria.fund || ''}
-                    onChange={(e) => handleInputChange('fund', e.target.value)}
-                    className="setup-dropdown-select"
-                    style={{ color: '#000000', flex: 1 }}
-                  >
-                    <option value="">Select fund</option>
-                    {fundOptions.map((option, i) => (
-                      <option key={i} value={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
+              {/* Row 1, Column 2: Title */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Title:
+                </label>
+                <select
+                  value={searchCriteria.title || ''}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                >
+                  <option value="">Select title</option>
+                  {titleOptions.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
               </div>
+              {/* Row 1, Column 3: Initials */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Initials:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.initials || ''}
+                  onChange={(e) => handleInputChange('initials', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
+              </div>
+              {/* Row 2, Column 1: Surname */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Surname:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.surname || ''}
+                  onChange={(e) => handleInputChange('surname', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
+              </div>
+              {/* Row 2, Column 2: First Name */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  First Name:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.firstName || ''}
+                  onChange={(e) => handleInputChange('firstName', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
+              </div>
+              {/* Row 2, Column 3: Street */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Street:
+                </label>
+                <select
+                  value={searchCriteria.street || ''}
+                  onChange={(e) => handleInputChange('street', e.target.value)}
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                >
+                  <option value="">Select street</option>
+                  {streetOptions.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              {/* Row 3, Column 1: Town */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Town:
+                </label>
+                <select
+                  value={searchCriteria.town || ''}
+                  onChange={(e) => handleInputChange('town', e.target.value)}
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                >
+                  <option value="">Select town</option>
+                  {townOptions.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              {/* Row 3, Column 2: City */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  City:
+                </label>
+                <select
+                  value={searchCriteria.city || ''}
+                  onChange={(e) => handleInputChange('city', e.target.value)}
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                >
+                  <option value="">Select city</option>
+                  {cityOptions.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              {/* Row 3, Column 3: Holder ID */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Holder ID:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.holderId || ''}
+                  onChange={(e) => handleInputChange('holderId', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
+              </div>
+              {/* Row 4, Column 1: NIC */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  NIC:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.nic || ''}
+                  onChange={(e) => handleInputChange('nic', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
+              </div>
+              {/* Row 4, Column 2: Passport */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Passport:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.passport || ''}
+                  onChange={(e) => handleInputChange('passport', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
+              </div>
+              {/* Row 4, Column 3: Other No */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Other No:
+                </label>
+                <input
+                  type="text"
+                  value={searchCriteria.otherNo || ''}
+                  onChange={(e) => handleInputChange('otherNo', e.target.value)}
+                  className="setup-input-field"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                />
+              </div>
+              {/* Row 5, Column 1: Fund */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
+                  Fund:
+                </label>
+                <select
+                  value={searchCriteria.fund || ''}
+                  onChange={(e) => handleInputChange('fund', e.target.value)}
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', flex: 1, minWidth: '120px' }}
+                >
+                  <option value="">Select fund</option>
+                  {fundOptions.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              {/* Row 5, Columns 2-3: Empty */}
+              <div style={{ width: '100%' }}></div>
+              <div style={{ width: '100%' }}></div>
             </div>
           </div>
 

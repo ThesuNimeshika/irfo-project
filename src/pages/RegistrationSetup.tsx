@@ -475,6 +475,41 @@ function FourCardsWithModal() {
   const [isRegistrationProfilesSearchModalOpen, setIsRegistrationProfilesSearchModalOpen] = useState<boolean>(false);
   const [isAccountSearchModalOpen, setIsAccountSearchModalOpen] = useState<boolean>(false);
   const [showApplicationNoTable, setShowApplicationNoTable] = useState<boolean>(false);
+  
+  // Sorting state for all dropdown tables
+  const [tableSorting, setTableSorting] = useState<Record<string, { column: string; direction: 'asc' | 'desc' }>>({});
+  
+  // Helper function to handle table sorting
+  const handleTableSort = (tableName: string, column: string) => {
+    const currentSort = tableSorting[tableName];
+    const direction = currentSort?.column === column && currentSort?.direction === 'asc' ? 'desc' : 'asc';
+    
+    setTableSorting(prev => ({
+      ...prev,
+      [tableName]: { column, direction }
+    }));
+  };
+  
+  // Helper function to get sorted data
+  const getSortedData = <T extends Record<string, unknown>>(tableName: string, data: T[]): T[] => {
+    const sort = tableSorting[tableName];
+    if (!sort) return data;
+    
+    return [...data].sort((a, b) => {
+      const aVal = a[sort.column] || '';
+      const bVal = b[sort.column] || '';
+      const comparison = String(aVal).localeCompare(String(bVal), undefined, { numeric: true, sensitivity: 'base' });
+      return sort.direction === 'asc' ? comparison : -comparison;
+    });
+  };
+  
+  // Helper function to render sort indicator
+  const renderSortIndicator = (tableName: string, column: string) => {
+    const sort = tableSorting[tableName];
+    if (sort?.column !== column) return ' ↕️';
+    return sort.direction === 'asc' ? ' ↑' : ' ↓';
+  };
+  
   const applicationTabs = [
     'Personal Details',
     'Address/Bank Details',
@@ -873,18 +908,58 @@ function FourCardsWithModal() {
                         <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                           <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
                             <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Application No</th>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Approved</th>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Registration_No</th>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Street</th>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Town</th>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>City</th>
-                              <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Status</th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'appNo')}
+                              >
+                                Application No{renderSortIndicator('applicationNo', 'appNo')}
+                              </th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'approved')}
+                              >
+                                Approved{renderSortIndicator('applicationNo', 'approved')}
+                              </th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'name')}
+                              >
+                                Name{renderSortIndicator('applicationNo', 'name')}
+                              </th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'regNo')}
+                              >
+                                Registration_No{renderSortIndicator('applicationNo', 'regNo')}
+                              </th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'street')}
+                              >
+                                Street{renderSortIndicator('applicationNo', 'street')}
+                              </th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'town')}
+                              >
+                                Town{renderSortIndicator('applicationNo', 'town')}
+                              </th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'city')}
+                              >
+                                City{renderSortIndicator('applicationNo', 'city')}
+                              </th>
+                              <th 
+                                style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                onClick={() => handleTableSort('applicationNo', 'status')}
+                              >
+                                Status{renderSortIndicator('applicationNo', 'status')}
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
-                            {Array.from({ length: 50 }).map((_, i) => ({
+                            {getSortedData('applicationNo', Array.from({ length: 50 }).map((_, i) => ({
                               appNo: `APP${String(i + 1).padStart(3, '0')}`,
                               approved: i % 2 === 0 ? 'Yes' : 'No',
                               name: ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown', 'Charlie Wilson'][i % 5],
@@ -893,7 +968,7 @@ function FourCardsWithModal() {
                               town: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
                               city: ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'][i % 5],
                               status: i % 3 === 0 ? 'Active' : i % 3 === 1 ? 'Pending' : 'Inactive',
-                            })).map((item, idx) => (
+                            }))).map((item, idx) => (
                               <tr
                                 key={idx}
                                 onClick={() => {
@@ -1681,12 +1756,22 @@ function FourCardsWithModal() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                               <thead>
                                 <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Code</th>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a' }}>Description</th>
+                                  <th 
+                                    style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1', cursor: 'pointer', userSelect: 'none' }}
+                                    onClick={() => handleTableSort('company', 'code')}
+                                  >
+                                    Code{renderSortIndicator('company', 'code')}
+                                  </th>
+                                  <th 
+                                    style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', cursor: 'pointer', userSelect: 'none' }}
+                                    onClick={() => handleTableSort('company', 'description')}
+                                  >
+                                    Description{renderSortIndicator('company', 'description')}
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
-                                {companyData.map((company, idx) => (
+                                {getSortedData('company', companyData).map((company, idx) => (
                                   <tr
                                     key={idx}
                                     onClick={() => {
@@ -3742,12 +3827,22 @@ function FourCardsWithModal() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                               <thead>
                                 <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                  <th 
+                                    style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                    onClick={() => handleTableSort('agency', 'code')}
+                                  >
+                                    Code{renderSortIndicator('agency', 'code')}
+                                  </th>
+                                  <th 
+                                    style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                    onClick={() => handleTableSort('agency', 'name')}
+                                  >
+                                    Name{renderSortIndicator('agency', 'name')}
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
-                                {agencyData.map((a, i) => (
+                                {getSortedData('agency', agencyData).map((a, i) => (
                                   <tr key={i} onClick={() => { handleInputChange('officeAgency', `${a.code} - ${a.name}`); setShowAgencyTable(false); }} style={{ cursor: 'pointer', backgroundColor: formData.officeAgency === `${a.code} - ${a.name}` ? '#f3e8ff' : '#ffffff' }} onMouseEnter={e => { if (formData.officeAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#f8fafc'; }} onMouseLeave={e => { if (formData.officeAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#ffffff'; }}>
                                     <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{a.code}</td>
                                     <td style={{ padding: '8px 12px', color: '#000000' }}>{a.name}</td>
@@ -3778,12 +3873,22 @@ function FourCardsWithModal() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                               <thead>
                                 <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                  <th 
+                                    style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                    onClick={() => handleTableSort('subAgency', 'code')}
+                                  >
+                                    Code{renderSortIndicator('subAgency', 'code')}
+                                  </th>
+                                  <th 
+                                    style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                    onClick={() => handleTableSort('subAgency', 'name')}
+                                  >
+                                    Name{renderSortIndicator('subAgency', 'name')}
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
-                                {subAgencyData.map((a, i) => (
+                                {getSortedData('subAgency', subAgencyData).map((a, i) => (
                                   <tr key={i} onClick={() => { handleInputChange('officeSubAgency', `${a.code} - ${a.name}`); setShowSubAgencyTable(false); }} style={{ cursor: 'pointer', backgroundColor: formData.officeSubAgency === `${a.code} - ${a.name}` ? '#f3e8ff' : '#ffffff' }} onMouseEnter={e => { if (formData.officeSubAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#f8fafc'; }} onMouseLeave={e => { if (formData.officeSubAgency !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#ffffff'; }}>
                                      <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{a.code}</td>
                                      <td style={{ padding: '8px 12px', color: '#000000' }}>{a.name}</td>
@@ -3807,15 +3912,25 @@ function FourCardsWithModal() {
                         </div>
                         {showAgentTable && isFormEditable && (
                           <div data-table="agent" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                               <thead>
                                 <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                    <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
-                                    <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                    <th 
+                                      style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                      onClick={() => handleTableSort('agent', 'code')}
+                                    >
+                                      Code{renderSortIndicator('agent', 'code')}
+                                    </th>
+                                    <th 
+                                      style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                      onClick={() => handleTableSort('agent', 'name')}
+                                    >
+                                      Name{renderSortIndicator('agent', 'name')}
+                                    </th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {agentData.map((a, i) => (
+                                  {getSortedData('agent', agentData).map((a, i) => (
                                     <tr key={i} onClick={() => { handleInputChange('officeAgent', `${a.code} - ${a.name}`); setShowAgentTable(false); }} style={{ cursor: 'pointer', backgroundColor: formData.officeAgent === `${a.code} - ${a.name}` ? '#f3e8ff' : '#ffffff' }} onMouseEnter={e => { if (formData.officeAgent !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#f8fafc'; }} onMouseLeave={e => { if (formData.officeAgent !== `${a.code} - ${a.name}`) e.currentTarget.style.backgroundColor = '#ffffff'; }}>
                                        <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{a.code}</td>
                                        <td style={{ padding: '8px 12px', color: '#000000' }}>{a.name}</td>
@@ -4316,12 +4431,22 @@ function FourCardsWithModal() {
                                           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                             <thead>
                                               <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                                <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Name</th>
-                                                <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Code</th>
+                                                <th 
+                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  onClick={() => handleTableSort('fund', 'name')}
+                                                >
+                                                  Name{renderSortIndicator('fund', 'name')}
+                                                </th>
+                                                <th 
+                                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  onClick={() => handleTableSort('fund', 'code')}
+                                                >
+                                                  Code{renderSortIndicator('fund', 'code')}
+                                                </th>
                                               </tr>
                                             </thead>
                                             <tbody>
-                                              {fundData.map((fund, idx) => (
+                                              {getSortedData('fund', fundData).map((fund, idx) => (
                                                 <tr
                                                   key={idx}
                                                   onClick={() => {

@@ -9,7 +9,7 @@ import { createPortal } from 'react-dom';
  
 
 // ========================================
-// TYPE DEFINITIONS
+// TYPE DEFINITIONS,m,
 // ========================================
 
 interface BankAccount {
@@ -1222,71 +1222,82 @@ function FourCardsWithModal() {
 
     if (modalTitle === 'Holder Document Handling') {
       return (
-        <div className="setup-input-section" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-          {/* Top Control Bar */}
-          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-              {/* Registration No */}
-              <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Registration No</label>
-              <input
-                type="text"
-                value={formData.applicationNo}
-                onChange={(e) => handleInputChange('applicationNo', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-input-field"
-                placeholder="Enter registration number"
-                style={{ color: '#000000', flex: 1, minWidth: '250px' }}
-              />
-              {/* Search button */}
-              <button
-                className="setup-btn"
-                title="Search"
-                onClick={() => setIsSearchModalOpen(true)}
-                style={{
-                  padding: '8px 12px',
-                  backgroundColor: '#ffffff',
-                  color: '#000000',
-                  border: '1px solid #cbd5e1',
-                  borderRadius: '4px',
-                  cursor: isFormEditable ? 'pointer' : 'default',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  minWidth: '40px'
-                }}
-                disabled={!isFormEditable}
-              >
-                <span style={{ color: '#000000', fontSize: '16px' }}>🔍</span>
-              </button>
-              {/* Another input field */}
-              <input
-                type="text"
-                disabled={!isFormEditable}
-                className="setup-input-field"
-                placeholder=""
-                style={{ color: '#000000', flex: 1, minWidth: '250px' }}
-              />
-              {/* Zoom Level */}
-              <label className="setup-input-label" style={{ minWidth: '100px', marginLeft: 'auto', color: '#000000', fontWeight: 600 }}>Zoom Level</label>
-              <select
-                value={documentZoomLevel}
-                onChange={(e) => setDocumentZoomLevel(e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-dropdown-select"
-                style={{ color: '#000000', width: '85px', minWidth: '85px' }}
-              >
-                <option value="50%">50%</option>
-                <option value="75%">75%</option>
-                <option value="100%">100%</option>
-                <option value="125%">125%</option>
-                <option value="150%">150%</option>
-                <option value="200%">200%</option>
-              </select>
+        <div className="setup-input-section" style={{ height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'transparent', boxShadow: 'none', padding: 0 }}>
+          {/* White Background Wrapper - Contains all content */}
+          <div style={{ backgroundColor: '#ffffff', padding: '16px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+            {/* Top Control Bar */}
+            <div className="setup-ash-box" style={{ marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                {/* Column 1: Registration No */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Registration No</label>
+                  <input
+                    type="text"
+                    value={formData.applicationNo}
+                    onChange={(e) => handleInputChange('applicationNo', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter registration number"
+                    style={{ color: '#000000', flex: 1 }}
+                  />
+                </div>
+                {/* Column 2: Search button */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <button
+                    className="setup-btn"
+                    title="Search"
+                    onClick={() => setIsSearchModalOpen(true)}
+                    style={{
+                      padding: '8px 12px',
+                      backgroundColor: '#ffffff',
+                      color: '#000000',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '4px',
+                      cursor: isFormEditable ? 'pointer' : 'default',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: '40px'
+                    }}
+                    disabled={!isFormEditable}
+                  >
+                    <span style={{ color: '#000000', fontSize: '16px' }}>🔍</span>
+                  </button>
+                </div>
+                {/* Column 3: Another input field */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <input
+                    type="text"
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder=""
+                    style={{ color: '#000000', flex: 1 }}
+                  />
+                </div>
+                {/* Column 4: Zoom Level */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Zoom Level</label>
+                  <select
+                    value={documentZoomLevel}
+                    onChange={(e) => setDocumentZoomLevel(e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-dropdown-select"
+                    style={{ color: '#000000', flex: 1 }}
+                  >
+                    <option value="50%">50%</option>
+                    <option value="75%">75%</option>
+                    <option value="100%">100%</option>
+                    <option value="125%">125%</option>
+                    <option value="150%">150%</option>
+                    <option value="200%">200%</option>
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
+            {/* End of Top Control Bar ash-box */}
 
-          {/* Button Palette */}
-          <div className="setup-action-buttons" style={{ marginBottom: '12px' }}>
+            {/* Button Palette */}
+            <div className="setup-action-buttons" style={{ marginBottom: '12px' }}>
             <button
               onClick={handleNewButtonClick}
               className="setup-btn setup-btn-new"
@@ -1480,125 +1491,136 @@ function FourCardsWithModal() {
           {/* Bottom Card: Main Content Area (Left Panel + Right Panel) + Input Rows */}
           <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
             {/* Main Content Area: Left Panel + Right Panel */}
-          <div style={{ display: 'flex', gap: '12px', flex: 1, minHeight: '500px', height: '100%' }}>
-            {/* Left Panel (List/Preview Area) */}
-            <div style={{
-              width: '33.33%',
-              backgroundColor: '#ffffff',
-              border: '1px solid #cbd5e1',
-              borderRadius: '4px',
-              padding: '0',
-              overflowY: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0'
-            }}>
-              {/* Horizontal lines to simulate list/preview */}
-              {Array.from({ length: 20 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    height: '28px',
-                    borderBottom: '1px solid #e2e8f0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '4px 8px',
-                    color: '#64748b'
-                  }}
-                >
-                  {/* Empty row - can be filled with document list items */}
+            <div style={{ display: 'flex', gap: '12px', flex: 1, minHeight: '500px', height: '100%', marginBottom: '12px' }}>
+              {/* Left Panel (List/Preview Area) */}
+              <div style={{
+                width: '33.33%',
+                backgroundColor: '#ffffff',
+                border: '1px solid #cbd5e1',
+                borderRadius: '4px',
+                padding: '0',
+                overflowY: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0'
+              }}>
+                {/* Horizontal lines to simulate list/preview */}
+                {Array.from({ length: 20 }).map((_, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      height: '28px',
+                      borderBottom: '1px solid #e2e8f0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '4px 8px',
+                      color: '#64748b'
+                    }}
+                  >
+                    {/* Empty row - can be filled with document list items */}
+                  </div>
+                ))}
+              </div>
+
+              {/* Right Panel (Content Display Area) */}
+              <div style={{
+                width: '66.67%',
+                backgroundColor: '#f1f5f9',
+                border: '1px solid #cbd5e1',
+                borderRadius: '4px',
+                padding: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#94a3b8',
+                fontSize: '14px'
+              }}>
+                {/* Empty content area for displaying documents */}
+              </div>
+            </div>
+
+            {/* Input Rows Inside Card */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* First Row: 4 columns - Document Code | Document | Browse button | Document Type */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                {/* Column 1: Document Code */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Document Code</label>
+                  <input
+                    type="text"
+                    value={formData.documentCode}
+                    onChange={(e) => handleInputChange('documentCode', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter document code"
+                    style={{ color: '#000000', flex: 1 }}
+                  />
                 </div>
-              ))}
-            </div>
-
-            {/* Right Panel (Content Display Area) */}
-            <div style={{
-              width: '66.67%',
-              backgroundColor: '#f1f5f9',
-              border: '1px solid #cbd5e1',
-              borderRadius: '4px',
-              padding: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#94a3b8',
-              fontSize: '14px'
-            }}>
-              {/* Empty content area for displaying documents */}
-            </div>
-          </div>
-
-          {/* Input Rows Below Panels */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
-            {/* First Row: 2 columns - Document Code + Document */}
-            <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
-              {/* Left Column: Document Code */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-                <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Document Code</label>
-                <input
-                  type="text"
-                  value={formData.documentCode}
-                  onChange={(e) => handleInputChange('documentCode', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter document code"
-                  style={{ color: '#000000', flex: 1 }}
-                />
+                {/* Column 2: Document */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Document</label>
+                  <input
+                    type="text"
+                    value={formData.document}
+                    onChange={(e) => handleInputChange('document', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter document"
+                    style={{ color: '#000000', flex: 1 }}
+                  />
+                </div>
+                {/* Column 3: Browse button */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <button
+                    className="setup-btn setup-btn-new"
+                    disabled={!isFormEditable}
+                    style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}
+                  >
+                    Browse
+                  </button>
+                </div>
+                {/* Column 4: Document Type */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Document Type</label>
+                  <select
+                    value={formData.documentType}
+                    onChange={(e) => handleInputChange('documentType', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-dropdown-select"
+                    style={{ color: '#000000', flex: 1 }}
+                  >
+                    <option value="">Select document type</option>
+                    <option value="Image">Image</option>
+                    <option value="PDF">PDF</option>
+                  </select>
+                </div>
               </div>
-              {/* Right Column: Document */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-                <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Document</label>
-                <input
-                  type="text"
-                  value={formData.document}
-                  onChange={(e) => handleInputChange('document', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter document"
-                  style={{ color: '#000000', flex: 1 }}
-                />
-              </div>
-            </div>
 
-            {/* Second Row: 2 columns - Input + Browse button | Document Type + dropdown */}
-            <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
-              {/* Left Column: Input + Browse button */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-                <input
-                  type="text"
-                  value={formData.documentInput}
-                  onChange={(e) => handleInputChange('documentInput', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter document"
-                  style={{ color: '#000000', flex: 1 }}
-                />
-                <button
-                  className="setup-btn setup-btn-new"
-                  disabled={!isFormEditable}
-                  style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}
-                >
-                  Browse
-                </button>
-              </div>
-              {/* Right Column: Document Type + dropdown */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '50%', flex: '1 1 50%' }}>
-                <label className="setup-input-label" style={{ minWidth: '140px', color: '#000000', fontWeight: 600 }}>Document Type</label>
-                <select
-                  value={formData.documentType}
-                  onChange={(e) => handleInputChange('documentType', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-dropdown-select"
-                  style={{ color: '#000000', flex: 1 }}
-                >
-                  <option value="">Select document type</option>
-                  <option value="Image">Image</option>
-                  <option value="PDF">PDF</option>
-                </select>
+              {/* Second Row: 4 columns - documentInput | Empty | Empty | Empty */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                {/* Column 1: documentInput */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <input
+                    type="text"
+                    value={formData.documentInput}
+                    onChange={(e) => handleInputChange('documentInput', e.target.value)}
+                    disabled={!isFormEditable}
+                    className="setup-input-field"
+                    placeholder="Enter document"
+                    style={{ color: '#000000', flex: 1 }}
+                  />
+                </div>
+                {/* Column 2: Empty */}
+                <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                {/* Column 3: Empty */}
+                <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                {/* Column 4: Empty */}
+                <div style={{ width: '25%', flex: '1 1 25%' }}></div>
               </div>
             </div>
           </div>
           </div>
+          {/* End of White Background Wrapper */}
 
           {/* Search Modal */}
           <UserSearchModal
@@ -4221,15 +4243,15 @@ function FourCardsWithModal() {
                             smsConfirmRedemption: false,
                             smsUnitBalance: false,
                             smsDailyUnitPrice: false,
-      investmentTypeAtRegistration: '',
-      officeAgency: '',
-      officeSubAgency: '',
-      officeAgent: '',
-      investorCategory: '',
-      verifyingOfficer: '',
-      inputOfficer: '',
-      authorizedOfficer: '',
-      ackNo: '',
+                            investmentTypeAtRegistration: '',
+                            officeAgency: '',
+                            officeSubAgency: '',
+                            officeAgent: '',
+                            investorCategory: '',
+                            verifyingOfficer: '',
+                            inputOfficer: '',
+                            authorizedOfficer: '',
+                            ackNo: '',
                               // Unit Holders Accounts Details tab
                               fund: '',
                               lastInvestmentNo: '',
@@ -4264,13 +4286,13 @@ function FourCardsWithModal() {
                               document: '',
                               documentInput: '',
                               documentType: '',
-                          });
-                          setBankAccounts([]);
-                          setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
-                          setSupportingDocs(defaultSupportingDocs);
-                            setBankDetailsAccounts([]);
-                            setExistingAccounts([]);
-                        }}
+                                });
+                                setBankAccounts([]);
+                                setDirectors([{ name: '', designation: '', nic: '', shares: '', contactNo: '', address: '' }]);
+                                setSupportingDocs(defaultSupportingDocs);
+                                  setBankDetailsAccounts([]);
+                                  setExistingAccounts([]);
+                              }}
                         className="setup-btn setup-btn-clear"
                         disabled={!isFormEditable}
                       >

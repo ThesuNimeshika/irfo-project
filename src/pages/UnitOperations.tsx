@@ -58,6 +58,7 @@ function UnitOperations() {
   // Unit Fees modal state
   const [activeTab, setActiveTab] = useState<'Unit Price' | 'Creation Charges' | 'Redemption Charges'>('Unit Price');
   const [showFundTable, setShowFundTable] = useState(false);
+  
   const [priceDate, setPriceDate] = useState<Date | null>(null);
   const [unitFeesFormData, setUnitFeesFormData] = useState({
     fund: '',
@@ -75,6 +76,8 @@ function UnitOperations() {
     fundDetails: '',
     creationCharges: '',
     redemptionCharges: '',
+    totalUnits:'',
+    totalHolders:'',
   });
 
   // ========================================
@@ -135,6 +138,8 @@ function UnitOperations() {
       fundDetails: '',
       creationCharges: '',
       redemptionCharges: '',
+      totalHolders:'',
+      totalUnits: '',
     });
   };
 
@@ -144,7 +149,28 @@ function UnitOperations() {
       [field]: value,
     }));
   };
-
+  type CreationChargeRow = {
+    feeCode: string;
+    description: string;
+    percentage: number;
+    amount: number;
+  };
+  type ChargeRow = {
+    feeCode: string;
+    description: string;
+    percentage: number;
+    amount: number;
+  };
+  
+  const [creationChargesTable, setCreationChargesTable] = useState<CreationChargeRow[]>([
+    { feeCode: 'FC001', description: 'Initial Setup Fee', percentage: 2.5, amount: 15000 },
+    { feeCode: 'FC002', description: 'Admin Charges', percentage: 1.2, amount: 8000 },
+  ]);
+  const [redemptionChargesTable, setRedemptionChargesTable] = useState<ChargeRow[]>([
+    { feeCode: 'RC001', description: 'Early Redemption Fee', percentage: 1.5, amount: 5000 },
+    { feeCode: 'RC002', description: 'Processing Fee', percentage: 0.8, amount: 3000 },
+  ]);
+  
   // Fund data for dropdown table
   const fundData = [
     { code: 'F001', name: 'Equity Fund' },
@@ -153,7 +179,55 @@ function UnitOperations() {
     { code: 'F004', name: 'Growth Fund' },
     { code: 'F005', name: 'Income Fund' },
   ];
-
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof CreationChargeRow;
+    direction: 'asc' | 'desc';
+  } | null>(null);
+  const [redemptionSortConfig, setRedemptionSortConfig] = useState<{
+    key: keyof ChargeRow;
+    direction: 'asc' | 'desc';
+  } | null>(null);
+  
+  const handleSort = (key: keyof CreationChargeRow) => {
+    let direction: 'asc' | 'desc' = 'asc';
+  
+    if (sortConfig?.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+  
+    setSortConfig({ key, direction });
+  
+    setCreationChargesTable(prev =>
+      [...prev].sort((a, b) => {
+        if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+        if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+        return 0;
+      })
+    );
+  };
+  const cellStyle: React.CSSProperties = {
+    padding: '6px 8px',
+    border: '1px solid #e5e7eb',
+  };
+  
+  const handleRedemptionSort = (key: keyof ChargeRow) => {
+    let direction: 'asc' | 'desc' = 'asc';
+  
+    if (redemptionSortConfig?.key === key && redemptionSortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+  
+    setRedemptionSortConfig({ key, direction });
+  
+    setRedemptionChargesTable(prev =>
+      [...prev].sort((a, b) => {
+        if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+        if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+        return 0;
+      })
+    );
+  };
+  
   const renderUnitFeesModal = () => {
     return (
       <>
@@ -300,16 +374,7 @@ function UnitOperations() {
 
               {/* Button Palette - Between top and bottom cards for Unit Price tab */}
               <div className="setup-action-buttons" style={{ marginBottom: '6px', marginTop: '4px', gap: '6px' }}>
-                <style>{`
-                  .setup-action-buttons .setup-btn {
-                    padding: 4px 10px !important;
-                    font-size: 11px !important;
-                    min-height: 28px !important;
-                  }
-                  .setup-action-buttons .setup-btn-icon {
-                    font-size: 12px !important;
-                  }
-                `}</style>
+
                 <button className="setup-btn setup-btn-new" onClick={() => handleModalClose()}>
                   <span className="setup-btn-icon">+</span>
                   New
@@ -344,297 +409,497 @@ function UnitOperations() {
                     fundDetails: '',
                     creationCharges: '',
                     redemptionCharges: '',
+                    totalUnits: '',
+                    totalHolders: '',
+
                   });
                 }}>
                   <span className="setup-btn-icon">🗑️</span>
                   Clear
                 </button>
               </div>
+{/* Modal Body */}
+<div         
+style={{
+display: 'grid',
+gridTemplateColumns: '2fr 2fr',
+gap: '8px'
+}}
+>
+  
+    {/* BEFORE BROKERAGE */}
+    <div
+      style={{
+        background: '#f8fafc',
+        padding: '10px',
+        borderRadius: '6px',
+        border: '1px solid #e2e8f0',
+        width: '100%'
+      }}
+    >
+      <div
+        style={{
+          background: '#e2e8f0',
+          color: '#0f172a',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          marginBottom: '8px',
+          fontWeight: 600,
+          fontSize: '11px'
+        }}
+      >
+        Before Brokerage
+      </div>
 
-              {/* Bottom Card: All other content */}
-              {/* Before Brokerage */}
-                <div style={{ 
-                  background: '#f8fafc', 
-                  padding: '8px', 
-                  borderRadius: '6px', 
-                  border: '1px solid #e2e8f0',
-                  marginBottom: '6px'
-                }}>
-                  <div style={{ 
-                    background: '#e2e8f0', 
-                    color: '#0f172a', 
-                    padding: '4px 8px', 
-                    borderRadius: '4px',
-                    marginBottom: '6px',
-                    fontWeight: 'bold',
-                    fontSize: '11px'
-                  }}>
-                    Before Brokerage
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV</label>
-                      <input
-                        type="number"
-                        className="setup-input-field"
-                        value={unitFeesFormData.beforeBrokerageNAV}
-                        onChange={(e) => handleInputChange('beforeBrokerageNAV', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV Amount</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        className="setup-input-field"
-                        value={unitFeesFormData.beforeBrokerageNAVAmount}
-                        onChange={(e) => handleInputChange('beforeBrokerageNAVAmount', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                  </div>
-                </div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '2fr 2fr',
+          gap: '8px'
+        }}
+      >
+        <div className="setup-input-group">
+          <label className="setup-input-label" style={{ fontSize: '11px' }}>
+            NAV
+          </label>
+          <input
+            type="number"
+            className="setup-input-field"
+            value={unitFeesFormData.beforeBrokerageNAV}
+            onChange={(e) =>
+              handleInputChange('beforeBrokerageNAV', e.target.value)
+            }
+            style={{
+              padding: '4px 6px',
+              fontSize: '12px',
+              minHeight: '28px'
+            }}
+          />
+        </div>
 
-                {/* After Brokerage */}
-                <div style={{ 
-                  background: '#f8fafc', 
-                  padding: '8px', 
-                  borderRadius: '6px', 
-                  border: '1px solid #e2e8f0',
-                  marginBottom: '6px'
-                }}>
-                  <div style={{ 
-                    background: '#e2e8f0', 
-                    color: '#0f172a', 
-                    padding: '4px 8px', 
-                    borderRadius: '4px',
-                    marginBottom: '6px',
-                    fontWeight: 'bold',
-                    fontSize: '11px'
-                  }}>
-                    After Brokerage
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV</label>
-                      <input
-                        type="number"
-                        className="setup-input-field"
-                        value={unitFeesFormData.afterBrokerageNAV}
-                        onChange={(e) => handleInputChange('afterBrokerageNAV', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>NAV Amount</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        className="setup-input-field"
-                        value={unitFeesFormData.afterBrokerageNAVAmount}
-                        onChange={(e) => handleInputChange('afterBrokerageNAVAmount', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                  </div>
-                </div>
+        <div className="setup-input-group">
+          <label className="setup-input-label" style={{ fontSize: '11px' }}>
+            NAV Amount
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            className="setup-input-field"
+            value={unitFeesFormData.beforeBrokerageNAVAmount}
+            onChange={(e) =>
+              handleInputChange('beforeBrokerageNAVAmount', e.target.value)
+            }
+            style={{
+              padding: '4px 6px',
+              fontSize: '12px',
+              minHeight: '28px'
+            }}
+          />
+        </div>
+      </div>
+    </div>
 
-                {/* WHT Rate per Unit */}
-                <div style={{ 
-                  background: '#f8fafc', 
-                  padding: '8px', 
-                  borderRadius: '6px', 
-                  border: '1px solid #e2e8f0',
-                  marginBottom: '6px'
-                }}>
-                  <div style={{ 
-                    background: '#e2e8f0', 
-                    color: '#0f172a', 
-                    padding: '4px 8px', 
-                    borderRadius: '4px',
-                    marginBottom: '6px',
-                    fontWeight: 'bold',
-                    fontSize: '11px'
-                  }}>
-                    WHT Rate per Unit
-                  </div>
-                  <div className="setup-input-group">
-                    <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>WHT</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      className="setup-input-field"
-                      value={unitFeesFormData.whtRate}
-                      onChange={(e) => handleInputChange('whtRate', e.target.value)}
-                      style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                    />
-                  </div>
-                </div>
+    {/* AFTER BROKERAGE */}
+    <div
+      style={{
+        background: '#f8fafc',
+        padding: '10px',
+        borderRadius: '6px',
+        border: '1px solid #e2e8f0',
+        width: '100%'
+      }}
+    >
+      <div
+        style={{
+          background: '#e2e8f0',
+          color: '#0f172a',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          marginBottom: '8px',
+          fontWeight: 600,
+          fontSize: '11px'
+        }}
+      >
+        After Brokerage
+      </div>
 
-                {/* Creation Price and Redeem Price */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '6px' }}>
-                  {/* Creation Price */}
-                  <div style={{ 
-                    background: '#f8fafc', 
-                    padding: '8px', 
-                    borderRadius: '6px', 
-                    border: '1px solid #e2e8f0' 
-                  }}>
-                    <div style={{ 
-                      background: '#e2e8f0', 
-                      color: '#0f172a', 
-                      padding: '4px 8px', 
-                      borderRadius: '4px',
-                      marginBottom: '6px',
-                      fontWeight: 'bold',
-                      fontSize: '11px'
-                    }}>
-                      Creation Price
-                    </div>
-                    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>Without Front End Fee</label>
-                      <input
-                        type="number"
-                        step="0.000001"
-                        className="setup-input-field"
-                        value={unitFeesFormData.creationPriceWithoutFee}
-                        onChange={(e) => handleInputChange('creationPriceWithoutFee', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>With Front End Fee</label>
-                      <input
-                        type="number"
-                        step="0.000001"
-                        className="setup-input-field"
-                        value={unitFeesFormData.creationPriceWithFee}
-                        onChange={(e) => handleInputChange('creationPriceWithFee', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                  </div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '2fr 2fr',
+          gap: '8px'
+        }}
+      >
+        <div className="setup-input-group">
+          <label className="setup-input-label" style={{ fontSize: '11px' }}>
+            NAV
+          </label>
+          <input
+            type="number"
+            className="setup-input-field"
+            value={unitFeesFormData.afterBrokerageNAV}
+            onChange={(e) =>
+              handleInputChange('afterBrokerageNAV', e.target.value)
+            }
+            style={{
+              padding: '4px 6px',
+              fontSize: '12px',
+              minHeight: '28px'
+            }}
+          />
+        </div>
 
-                  {/* Redeem Price */}
-                  <div style={{ 
-                    background: '#f8fafc', 
-                    padding: '8px', 
-                    borderRadius: '6px', 
-                    border: '1px solid #e2e8f0' 
-                  }}>
-                    <div style={{ 
-                      background: '#e2e8f0', 
-                      color: '#0f172a', 
-                      padding: '4px 8px', 
-                      borderRadius: '4px',
-                      marginBottom: '6px',
-                      fontWeight: 'bold',
-                      fontSize: '11px'
-                    }}>
-                      Redeem Price
-                    </div>
-                    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>Without Exit Fee</label>
-                      <input
-                        type="number"
-                        step="0.000001"
-                        className="setup-input-field"
-                        value={unitFeesFormData.redeemPriceWithoutFee}
-                        onChange={(e) => handleInputChange('redeemPriceWithoutFee', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px', marginBottom: '2px' }}>With Exit Fee</label>
-                      <input
-                        type="number"
-                        step="0.000001"
-                        className="setup-input-field"
-                        value={unitFeesFormData.redeemPriceWithFee}
-                        onChange={(e) => handleInputChange('redeemPriceWithFee', e.target.value)}
-                        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
-                      />
-                    </div>
-                  </div>
-                </div>
+        <div className="setup-input-group">
+          <label className="setup-input-label" style={{ fontSize: '11px' }}>
+            NAV Amount
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            className="setup-input-field"
+            value={unitFeesFormData.afterBrokerageNAVAmount}
+            onChange={(e) =>
+              handleInputChange('afterBrokerageNAVAmount', e.target.value)
+            }
+            style={{
+              padding: '4px 6px',
+              fontSize: '12px',
+              minHeight: '28px'
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+{/* WHT + Creation + Redeem +Fund Details- 4 Column Row */}
+<div
+  style={{
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr 1fr',
+    gap: '8px',
+    width: '100%'
+  }}
+>
+  {/* WHT Rate per Unit - LEFT */}
+  <div
+    style={{
+      background: '#f8fafc',
+      padding: '8px',
+      borderRadius: '6px',
+      border: '1px solid #e2e8f0'
+    }}
+  >
+    <div
+      style={{
+        background: '#e2e8f0',
+        color: '#0f172a',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        marginBottom: '6px',
+        fontWeight: 'bold',
+        fontSize: '11px'
+      }}
+    >
+      WHT Rate per Unit
+    </div>
 
-                {/* Fund Details */}
-                <div style={{ 
-                  background: '#f8fafc', 
-                  padding: '8px', 
-                  borderRadius: '6px', 
-                  border: '1px solid #e2e8f0' 
-                }}>
-                  <div style={{ 
-                    background: '#e2e8f0', 
-                    color: '#0f172a', 
-                    padding: '4px 8px', 
-                    borderRadius: '4px',
-                    marginBottom: '6px',
-                    fontWeight: 'bold',
-                    fontSize: '11px'
-                  }}>
-                    Fund Details
-                  </div>
-                  <div className="setup-input-group">
-                    <textarea
-                      className="setup-input-field"
-                      rows={2}
-                      value={unitFeesFormData.fundDetails}
-                      onChange={(e) => handleInputChange('fundDetails', e.target.value)}
-                      placeholder="Enter fund details..."
-                      style={{ width: '100%', resize: 'vertical', fontSize: '12px', padding: '6px' }}
-                    />
-                  </div>
-                </div>
+    <div className="setup-input-group">
+      <label className="setup-input-label" style={{ fontSize: '11px' }}>
+        WHT
+      </label>
+      <input
+        type="number"
+        step="0.01"
+        className="setup-input-field"
+        value={unitFeesFormData.whtRate}
+        onChange={(e) => handleInputChange('whtRate', e.target.value)}
+        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
+      />
+    </div>
+  </div>
+
+  {/* Creation Price - CENTER */}
+  <div
+    style={{
+      background: '#f8fafc',
+      padding: '8px',
+      borderRadius: '6px',
+      border: '1px solid #e2e8f0'
+    }}
+  >
+    <div
+      style={{
+        background: '#e2e8f0',
+        color: '#0f172a',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        marginBottom: '6px',
+        fontWeight: 'bold',
+        fontSize: '11px'
+      }}
+    >
+      Creation Price
+    </div>
+
+    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
+      <label className="setup-input-label" style={{ fontSize: '11px' }}>
+        Without Front End Fee
+      </label>
+      <input
+        type="number"
+        step="0.000001"
+        className="setup-input-field"
+        value={unitFeesFormData.creationPriceWithoutFee}
+        onChange={(e) =>
+          handleInputChange('creationPriceWithoutFee', e.target.value)
+        }
+        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
+      />
+    </div>
+
+    <div className="setup-input-group">
+      <label className="setup-input-label" style={{ fontSize: '11px' }}>
+        With Front End Fee
+      </label>
+      <input
+        type="number"
+        step="0.000001"
+        className="setup-input-field"
+        value={unitFeesFormData.creationPriceWithFee}
+        onChange={(e) =>
+          handleInputChange('creationPriceWithFee', e.target.value)
+        }
+        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
+      />
+    </div>
+  </div>
+
+  {/* Redeem Price - RIGHT */}
+  <div
+    style={{
+      background: '#f8fafc',
+      padding: '8px',
+      borderRadius: '6px',
+      border: '1px solid #e2e8f0'
+    }}
+  >
+    <div
+      style={{
+        background: '#e2e8f0',
+        color: '#0f172a',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        marginBottom: '6px',
+        fontWeight: 'bold',
+        fontSize: '11px'
+      }}
+    >
+      Redeem Price
+    </div>
+
+    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
+      <label className="setup-input-label" style={{ fontSize: '11px' }}>
+        Without Exit Fee
+      </label>
+      <input
+        type="number"
+        step="0.000001"
+        className="setup-input-field"
+        value={unitFeesFormData.redeemPriceWithoutFee}
+        onChange={(e) =>
+          handleInputChange('redeemPriceWithoutFee', e.target.value)
+        }
+        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
+      />
+    </div>
+
+    <div className="setup-input-group">
+      <label className="setup-input-label" style={{ fontSize: '11px' }}>
+        With Exit Fee
+      </label>
+      <input
+        type="number"
+        step="0.000001"
+        className="setup-input-field"
+        value={unitFeesFormData.redeemPriceWithFee}
+        onChange={(e) =>
+          handleInputChange('redeemPriceWithFee', e.target.value)
+        }
+        style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }}
+      />
+    </div>    
+  </div>
+<div
+  style={{
+    background: '#f8fafc',
+    padding: '8px',
+    borderRadius: '6px',
+    border: '1px solid #e2e8f0',
+    gridColumn: '4 / 5',
+    height: '100%'
+  }}
+>
+  <div
+    style={{
+      background: '#e2e8f0',
+      color: '#0f172a',
+      padding: '4px 8px',
+      borderRadius: '4px',
+      marginBottom: '6px',
+      fontWeight: 'bold',
+      fontSize: '11px'
+    }}
+  >
+    Fund Details
+  </div>
+
+  {/* Total No of Units */}
+  <div className="setup-input-group" style={{ marginBottom: '6px' }}>
+    <label className="setup-input-label" style={{ fontSize: '11px' }}>
+      Total No of Units
+    </label>
+    <input
+      type="number"
+      className="setup-input-field"
+      value={unitFeesFormData.totalUnits}
+      onChange={(e) =>
+        handleInputChange('totalUnits', e.target.value)
+      }
+      style={{
+        padding: '4px 6px',
+        fontSize: '12px',
+        minHeight: '28px'
+      }}
+    />
+  </div>
+
+  {/* Total No of Holders */}
+  <div className="setup-input-group">
+    <label className="setup-input-label" style={{ fontSize: '11px' }}>
+      Total No of Holders
+    </label>
+    <input
+      type="number"
+      className="setup-input-field"
+      value={unitFeesFormData.totalHolders}
+      onChange={(e) =>
+        handleInputChange('totalHolders', e.target.value)
+      }
+      style={{
+        padding: '4px 6px',
+        fontSize: '12px',
+        minHeight: '28px'
+      }}
+    />
+  </div>
+</div>
+
+
+</div>
             </>
           )}
 
-          {activeTab === 'Creation Charges' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', color: '#000000' }}>
-              <div className="setup-input-group">
-                <textarea
-                  className="setup-input-field"
-                  rows={15}
-                  value={unitFeesFormData.creationCharges}
-                  onChange={(e) => handleInputChange('creationCharges', e.target.value)}
-                  placeholder="Enter creation charges details..."
-                  style={{ width: '100%', resize: 'vertical', minHeight: '400px', color: '#000000', padding: '6px', fontSize: '12px' }}
-                />
-              </div>
-            </div>
-          )}
+{activeTab === 'Creation Charges' && (
+  <div style={{ overflowX: 'auto' }}>
+    <table
+      style={{
+        width: '100%',
+        borderCollapse: 'collapse',
+        fontSize: '12px',
+        color: '#000000',
+      }}
+    >
+      <thead>
+        <tr style={{ background: '#f3f4f6' }}>
+          {['feeCode', 'description', 'percentage', 'amount'].map(col => (
+            <th
+              key={col}
+              onClick={() => handleSort(col as keyof CreationChargeRow)}
+              style={{
+                padding: '8px',
+                border: '1px solid #e5e7eb',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontWeight: 600,
+              }}
+            >
+              {col === 'feeCode' && 'Fee Code'}
+              {col === 'description' && 'Description'}
+              {col === 'percentage' && 'Percentage (%)'}
+              {col === 'amount' && 'Amount'}
+              {sortConfig?.key === col && (sortConfig.direction === 'asc' ? ' ▲' : ' ▼')}
+            </th>
+          ))}
+        </tr>
+      </thead>
 
-          {activeTab === 'Redemption Charges' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
-              <div className="setup-input-group">
-                <textarea
-                  className="setup-input-field"
-                  rows={15}
-                  value={unitFeesFormData.redemptionCharges}
-                  onChange={(e) => handleInputChange('redemptionCharges', e.target.value)}
-                  placeholder="Enter redemption charges details..."
-                  style={{ width: '100%', resize: 'vertical', minHeight: '400px', color: '#000000' }}
-                />
-              </div>
-            </div>
-          )}
+      <tbody>
+        {creationChargesTable.map((row, index) => (
+          <tr key={index}>
+            <td style={cellStyle}>{row.feeCode}</td>
+            <td style={cellStyle}>{row.description}</td>
+            <td style={cellStyle}>{row.percentage}</td>
+            <td style={cellStyle}>{row.amount.toLocaleString()}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
+{activeTab === 'Redemption Charges' && (
+  <div style={{ overflowX: 'auto', color: '#000000' }}>
+    <table
+      style={{
+        width: '100%',
+        borderCollapse: 'collapse',
+        fontSize: '12px',
+      }}
+    >
+      <thead>
+        <tr style={{ background: '#f3f4f6' }}>
+          {['feeCode', 'description', 'percentage', 'amount'].map(col => (
+            <th
+              key={col}
+              onClick={() => handleRedemptionSort(col as keyof ChargeRow)}
+              style={{
+                padding: '8px',
+                border: '1px solid #e5e7eb',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontWeight: 600,
+              }}
+            >
+              {col === 'feeCode' && 'Fee Code'}
+              {col === 'description' && 'Description'}
+              {col === 'percentage' && 'Percentage (%)'}
+              {col === 'amount' && 'Amount'}
+              {redemptionSortConfig?.key === col &&
+                (redemptionSortConfig.direction === 'asc' ? ' ▲' : ' ▼')}
+            </th>
+          ))}
+        </tr>
+      </thead>
+
+      <tbody>
+        {redemptionChargesTable.map((row, index) => (
+          <tr key={index}>
+            <td style={cellStyle}>{row.feeCode}</td>
+            <td style={cellStyle}>{row.description}</td>
+            <td style={cellStyle}>{row.percentage}</td>
+            <td style={cellStyle}>{row.amount.toLocaleString()}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
             </div>
 
             {/* Button Palette - For Creation Charges and Redemption Charges tabs */}
             {activeTab !== 'Unit Price' && (
               <div className="setup-action-buttons" style={{ marginTop: '6px', gap: '6px' }}>
-                <style>{`
-                  .setup-action-buttons .setup-btn {
-                    padding: 4px 10px !important;
-                    font-size: 11px !important;
-                    min-height: 28px !important;
-                  }
-                  .setup-action-buttons .setup-btn-icon {
-                    font-size: 12px !important;
-                  }
-                `}</style>
               <button className="setup-btn setup-btn-new" onClick={() => handleModalClose()}>
                 <span className="setup-btn-icon">+</span>
                 New
@@ -669,6 +934,8 @@ function UnitOperations() {
                   fundDetails: '',
                   creationCharges: '',
                   redemptionCharges: '',
+                  totalHolders: '',
+                  totalUnits: '',
                 });
               }}>
                 <span className="setup-btn-icon">🗑️</span>

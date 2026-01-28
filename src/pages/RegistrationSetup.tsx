@@ -222,7 +222,11 @@ const modules = moduleData.map(m => ({
   icon: m.icon,
 
 }));
-
+const branchData = [
+  { code: 'BR001', description: 'Colombo Main Branch' },
+  { code: 'BR002', description: 'Kandy Branch' },
+  { code: 'BR003', description: 'Galle Branch' }
+];
 // Company data for Corporate selection
 const companyData = [
   { code: 'C001', description: 'ABC Holdings' },
@@ -410,7 +414,7 @@ function FourCardsWithModal() {
     documentInput: '',
     documentType: '',
   });
-
+  const [showBranchTable, setShowBranchTable] = useState(false);
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isFormEditable, setIsFormEditable] = useState(false);
@@ -1067,7 +1071,7 @@ function FourCardsWithModal() {
     if (modalTitle === 'Registration Unit Holders Profiles') {
       return (
         <div className="setup-input-section">
-          {/* Top: Registration No + Search + Compulsory Data Fields */}
+          {/* Top: Registration No + Search + Compulsory Data Fields remark */}
           <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <label className="setup-input-label" style={{ minWidth: '140px' }}>Registration No</label>
@@ -1087,7 +1091,17 @@ function FourCardsWithModal() {
                 onClick={() => setIsRegistrationProfilesSearchModalOpen(true)}
                 disabled={!isFormEditable}
               >🔍</button>
-              <button className="setup-btn setup-btn-save" disabled={!isFormEditable} style={{ marginLeft: '12px' }}>Compulsory Data Fields</button>
+              <span
+                className="setup-input-label"
+                style={{
+                  marginLeft: '12px',
+                  fontWeight: 600,
+                  color: '#64748b',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Compulsory Data Fields
+              </span>
             </div>
           </div>
 
@@ -1726,10 +1740,9 @@ function FourCardsWithModal() {
                           onChange={(e) => handleInputChange('initials', e.target.value)}
                           disabled={!isFormEditable}
                           className="setup-input-field"
-                          placeholder="Enter initials"
+                          placeholder="K. L. C."
                           style={{ color: '#000000', minWidth: '150px' }}
                         />
-                        <span style={{ color: '#64748b', fontSize: '12px' }}>Example: K. L. C.</span>
                       </div>
                     </>
                   )}
@@ -1843,8 +1856,8 @@ function FourCardsWithModal() {
                 
                 {/* Name Denoted by Initials and Surname (for Individual) */}
                 {formData.applicantType === 'Individual' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginTop: '16px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr', gap: '16px', marginTop: '16px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
                         <label className="setup-input-label" style={{ minWidth: '140px' }}>Name Denoted by Initials</label>
                         <input
                           type="text"
@@ -1852,31 +1865,29 @@ function FourCardsWithModal() {
                           onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
                           disabled={!isFormEditable}
                           className="setup-input-field"
-                          placeholder="Enter full name"
-                          style={{ color: '#000000', flex: 1 }}
+                          placeholder="Kankanamge Lakshan Chathuranga."
+                          style={{ color: '#000000', flex: 1, minWidth: '400px' }}
                         />
-                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Kankanamge Lakshan Chathuranga.</span>
                       </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Surname</label>
+                        <label className="setup-input-label" style={{ minWidth: '140px' }}>Surname</label>
                         <input
                           type="text"
                           value={formData.surname}
                           onChange={(e) => handleInputChange('surname', e.target.value)}
                           disabled={!isFormEditable}
                           className="setup-input-field"
-                          placeholder="Enter surname"
-                        style={{ color: '#000000', flex: 1, maxWidth: '200px' }}
+                          placeholder="Fernando."
+                        style={{ color: '#000000', flex: 0.5 }}
                         />
-                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Fernando.</span>
                     </div>
                   </div>
                 )}
                 
                 {/* Company Name and Business (for Corporate) */}
                 {formData.applicantType === 'Corporate' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginTop: '16px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '24px', marginTop: '16px', width: '100%' }}>
+                    <div style={{ gridColumn: '1 / 3', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <label className="setup-input-label" style={{ minWidth: '120px' }}>Company Name</label>
                         <input
                           type="text"
@@ -1884,23 +1895,21 @@ function FourCardsWithModal() {
                           onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
                           disabled={!isFormEditable}
                           className="setup-input-field"
-                          placeholder="Enter company name"
+                          placeholder="Management System (PVT) LTD"
                           style={{ color: '#000000', flex: 1 }}
                         />
-                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Management System (PVT) LTD</span>
-                      </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Business</label>
+                    </div>
+                    <div style={{ gridColumn: '3 / 4', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ minWidth: '140px' }}>Business</label>
                         <input
                           type="text"
                           value={formData.surname}
                           onChange={(e) => handleInputChange('surname', e.target.value)}
                           disabled={!isFormEditable}
                           className="setup-input-field"
-                          placeholder="Enter business"
-                        style={{ color: '#000000', flex: 1, maxWidth: '200px' }}
+                          placeholder="Unit Trust"
+                        style={{ color: '#000000', flex: 1 }}
                         />
-                      <span style={{ color: '#64748b', fontSize: '12px', whiteSpace: 'nowrap' }}>Example: Unit Trust</span>
                     </div>
                   </div>
                 )}
@@ -2461,45 +2470,149 @@ function FourCardsWithModal() {
                   </div>
                 </div>
 
-                {/* Column 2: Bank and Zone */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Row 1: Bank */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '60px' }}>Bank</label>
+                {/* Column 2: Bank and Branch */}
+                {/* Row 1: Bank */}
+<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+  <label className="setup-input-label" style={{ minWidth: '60px' }}>
+    Bank
+  </label>
+
+  <select
+    className="setup-dropdown-select"
+    style={{ flex: 1, color: '#000000' }}
+    value={formData.bank}
+    onChange={e => handleInputChange('bank', e.target.value)}
+    disabled={!isFormEditable}
+  >
+    <option value="">Select Bank</option>
+    <option value="BOC">Bank of Ceylon</option>
+    <option value="PB">People’s Bank</option>
+    <option value="HNB">Hatton National Bank</option>
+  </select>
+</div>
+{/* Row 2: Branch */}
+<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+  <label className="setup-input-label" style={{ minWidth: '60px' }}>
+    Branch
+  </label>
+
+  <div style={{ position: 'relative', flex: 1 }} data-branch-table>
+    {/* Click Field */}
+    <div
+      onClick={() => isFormEditable && setShowBranchTable(!showBranchTable)}
+      style={{
+        padding: '8px 12px',
+        border: '1px solid #cbd5e1',
+        borderRadius: '4px',
+        backgroundColor: '#ffffff',
+        cursor: isFormEditable ? 'pointer' : 'default',
+        color: '#000000',
+        minHeight: '38px',
+        display: 'flex',
+        alignItems: 'center',
+        fontSize: '14px'
+      }}
+    >
+{formData.branchNo || 'Select Branch'}
+    </div>
+
+    {/* Dropdown Table */}
+    {showBranchTable && isFormEditable && (
+      <div
+        style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          backgroundColor: '#ffffff',
+          border: '1px solid #cbd5e1',
+          borderRadius: '4px',
+          marginTop: '4px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          zIndex: 1000,
+          maxHeight: '200px',
+          overflowY: 'auto'
+        }}
+      >
+        <table style={{ width: '100%', borderCollapse: 'collapse', color: '#000000' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+              <th
+                style={{
+                  padding: '8px 12px',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  borderRight: '1px solid #cbd5e1'
+                }}
+                onClick={() => handleTableSort('branch', 'code')}
+              >
+                Code {renderSortIndicator('branch', 'code')}
+              </th>
+              <th
+                style={{
+                  padding: '8px 12px',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+                onClick={() => handleTableSort('branch', 'description')}
+              >
+                Description {renderSortIndicator('branch', 'description')}
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {getSortedData('branch', branchData).map((branch, idx) => {
+              const value = `${branch.code} - ${branch.description}`;
+              return (
+                <tr
+                  key={idx}
+                  onClick={() => {
+                    handleInputChange('branch', value);
+                    setShowBranchTable(false);
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                    borderBottom: '1px solid #e2e8f0',
+                    backgroundColor:
+                      formData.branchNo === value ? '#f3e8ff' : '#ffffff'
+                  }}
+                >
+                  <td style={{ padding: '8px 12px', fontSize: '13px' }}>
+                    {branch.code}
+                  </td>
+                  <td style={{ padding: '8px 12px', fontSize: '13px' }}>
+                    {branch.description}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+</div>
+
+
+                  {/* Row 2: Account Type */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account Type</label>
                       <select
                         className="setup-dropdown-select"
                         style={{ color: '#000000', flex: 1 }}
-                        value={formData.bank}
-                        onChange={e => handleInputChange('bank', e.target.value)}
+                        value={formData.accountType}
+                        onChange={e => handleInputChange('accountType', e.target.value)}
                         disabled={!isFormEditable}
                       >
-                        <option value="">Select Bank</option>
-                        <option value="Amana Bank Anuradhapura">Amana Bank Anuradhapura</option>
-                        <option value="Commercial Bank">Commercial Bank</option>
-                        <option value="People's Bank">People's Bank</option>
+                        <option value="">Select Account Type</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Current">Current</option>
+                        <option value="Fixed Deposit">Fixed Deposit</option>
                       </select>
-                    </div>
-                  {/* Row 2: Zone */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '60px' }}>Zone</label>
-                    <select
-                      className="setup-dropdown-select"
-                      style={{ color: '#000000', flex: 1 }}
-                      value={formData.zone}
-                      onChange={e => handleInputChange('zone', e.target.value)}
-                      disabled={!isFormEditable}
-                    >
-                      <option value="">Select Zone</option>
-                      <option value="Zone 1">Zone 1</option>
-                      <option value="Zone 2">Zone 2</option>
-                      <option value="Zone 3">Zone 3</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Column 3: Account No and Account Type */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Row 1: Account No + Button */}
+                  </div>                  {/* Row 1: Account No + Button */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Account No</label>
                       <input
@@ -2533,22 +2646,7 @@ function FourCardsWithModal() {
                         ↓
                       </button>
                     </div>
-                  {/* Row 2: Account Type */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account Type</label>
-                      <select
-                        className="setup-dropdown-select"
-                        style={{ color: '#000000', flex: 1 }}
-                        value={formData.accountType}
-                        onChange={e => handleInputChange('accountType', e.target.value)}
-                        disabled={!isFormEditable}
-                      >
-                        <option value="">Select Account Type</option>
-                        <option value="Savings">Savings</option>
-                        <option value="Current">Current</option>
-                        <option value="Fixed Deposit">Fixed Deposit</option>
-                      </select>
-                  </div>
+
                     </div>
                   </div>
 
@@ -2605,7 +2703,7 @@ function FourCardsWithModal() {
                     </button>
               </div>
             </div>
-          </div>
+
         );
       case 'Office/ Employee details':
     return (
@@ -4678,7 +4776,7 @@ function FourCardsWithModal() {
                                               onChange={(e) => handleInputChange(formData.accountHolderType === 'Joint' ? 'jointHolderInput' : 'guardianInput', e.target.value)}
                                               disabled={!isFormEditable}
                                               className="setup-input-field"
-                                              placeholder="Enter"
+                                              placeholder="Enter Holder ID"
                                               style={{ color: '#000000', flex: 1 }}
                                             />
                                             <button 
@@ -4703,7 +4801,7 @@ function FourCardsWithModal() {
                                               onChange={(e) => handleInputChange('rightInput', e.target.value)}
                                               disabled={!isFormEditable}
                                               className="setup-input-field"
-                                              placeholder="Enter"
+                                              placeholder="Enter Name"
                                               style={{ color: '#000000', flex: 1 }}
                                             />
                                             <button 
@@ -4792,8 +4890,7 @@ function FourCardsWithModal() {
                                               onClick={() => {
                                                 setJointHolders(jointHolders.filter((_, idx) => !jointHolders[idx].selected));
                                               }}
-                                              disabled={!isFormEditable || jointHolders.filter(h => h.selected).length === 0}
-                                            >
+ >
                                               Remove selected Item
                                             </button>
                                           </div>
@@ -4814,7 +4911,7 @@ function FourCardsWithModal() {
                                             onChange={(e) => handleInputChange('nomineeInput', e.target.value)}
                                             disabled={!isFormEditable}
                                             className="setup-input-field"
-                                            placeholder="Enter nominee"
+                                            placeholder="Enter Holder ID"
                                             style={{ color: '#000000', flex: 1 }}
                                           />
                                           <button 
@@ -4833,7 +4930,7 @@ function FourCardsWithModal() {
                                             onChange={(e) => handleInputChange('nomineeRightInput', e.target.value)}
                                             disabled={!isFormEditable}
                                             className="setup-input-field"
-                                            placeholder="Enter"
+                                            placeholder="Enter Name"
                                             style={{ color: '#000000', flex: 1 }}
                                           />
                                           <button 
@@ -4889,7 +4986,7 @@ function FourCardsWithModal() {
                                           onClick={() => {
                                             setNomineeHolders(nomineeHolders.filter((_, idx) => !nomineeHolders[idx].selected));
                                           }}
-                                          disabled={!isFormEditable || nomineeHolders.filter(h => h.selected).length === 0}
+                                        
                                         >
                                           Remove selected Item
                                         </button>

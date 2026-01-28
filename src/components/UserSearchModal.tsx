@@ -45,20 +45,19 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
     leftColumn: [
       { label: 'Name', field: 'name' },
       { label: 'Title', field: 'title', hasDropdown: true },
+      { label: 'Holder ID', field: 'holderId' },
       { label: 'Initials', field: 'initials' },
       { label: 'First Name', field: 'firstName' },
-      { label: 'Surname', field: 'surname' },
-      { label: 'Street', field: 'street', hasDropdown: true },
-      { label: 'Town', field: 'town', hasDropdown: true },
-      { label: 'City', field: 'city', hasDropdown: true },
-    ],
-    rightColumn: [
-      { label: 'Holder ID', field: 'holderId' },
       { label: 'NIC', field: 'nic' },
+      { label: 'Surname', field: 'surname' },
+      { label: 'City', field: 'city', hasDropdown: true },
       { label: 'Passport', field: 'passport' },
+      { label: 'Town', field: 'town', hasDropdown: true },
+      { label: 'Street', field: 'street', hasDropdown: true },
       { label: 'Other No', field: 'otherNo' },
       { label: 'Fund', field: 'fund', hasDropdown: true },
     ],
+    rightColumn: [],
   };
 
   const fields = searchFields || defaultSearchFields;
@@ -217,34 +216,34 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
                   return (
                     <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
-                        {field.label}:
-                      </label>
-                      {field.hasDropdown ? (
-                        <select
-                          value={searchCriteria[field.field] || ''}
-                          onChange={(e) => handleInputChange(field.field, e.target.value)}
-                          className="setup-dropdown-select"
+                      {field.label}:
+                    </label>
+                    {field.hasDropdown ? (
+                      <select
+                        value={searchCriteria[field.field] || ''}
+                        onChange={(e) => handleInputChange(field.field, e.target.value)}
+                        className="setup-dropdown-select"
                           style={{ color: '#000000', flex: 1, minWidth: '120px' }}
-                        >
-                          <option value="">Select {field.label.toLowerCase()}</option>
-                          {(field.field === 'title' ? titleOptions :
-                            field.field === 'street' ? streetOptions :
-                            field.field === 'town' ? townOptions : cityOptions).map((option, i) => (
-                            <option key={i} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          type="text"
-                          value={searchCriteria[field.field] || ''}
-                          onChange={(e) => handleInputChange(field.field, e.target.value)}
-                          className="setup-input-field"
+                      >
+                        <option value="">Select {field.label.toLowerCase()}</option>
+                        {(field.field === 'title' ? titleOptions :
+                          field.field === 'street' ? streetOptions :
+                          field.field === 'town' ? townOptions : cityOptions).map((option, i) => (
+                          <option key={i} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        value={searchCriteria[field.field] || ''}
+                        onChange={(e) => handleInputChange(field.field, e.target.value)}
+                        className="setup-input-field"
                           style={{ color: '#000000', flex: 1, minWidth: '120px' }}
                         />
-                      )}
-                    </div>
+                    )}
+                  </div>
                   );
                 });
               })()}

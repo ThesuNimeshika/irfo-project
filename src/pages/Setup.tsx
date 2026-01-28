@@ -3350,12 +3350,12 @@ function CustodianModalContent({ formData, handleInputChange }: { formData: Form
                               />
                             </div>
                             <div>
-        <label className="setup-input-label">Telephone Number</label>
+                            <label className="setup-input-label">Telephone Number</label>
                               <input
                                 type="text"
                                 value={formData.custodianTelephoneNumber}
                                 onChange={(e) => handleInputChange('custodianTelephoneNumber', e.target.value)}
-          className="setup-input-field"
+                  className="setup-input-field"
                                 placeholder="Enter telephone number"
                               />
                             </div>
@@ -3430,40 +3430,41 @@ function PostalAreaModalContent({ formData, handleInputChange }: { formData: For
 // ========================================
 function DividendTypeModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
   return (
-                          <>
-                            <div>
+          <>
+        <div>
         <label className="setup-input-label">Dividend Type</label>
-                              <input
-                                type="text"
-                                value={formData.dividendType}
-                                onChange={(e) => handleInputChange('dividendType', e.target.value)}
-          className="setup-input-field"
-                                placeholder="Enter dividend type"
-                              />
-                            </div>
-                            <div>
+          <input
+            type="text"
+            value={formData.dividendType}
+            onChange={(e) => handleInputChange('dividendType', e.target.value)}
+            className="setup-input-field"
+            placeholder="Enter dividend type"
+           />
+        </div>
+        <div>
+
         <label className="setup-input-label">Active</label>
         <div className="setup-checkbox-group">
-                                <input
-                                  type="checkbox"
-                                  checked={formData.dividendActive}
-                                  onChange={(e) => handleInputChange('dividendActive', e.target.checked.toString())}
+          <input
+            type="checkbox"
+            checked={formData.dividendActive}
+            onChange={(e) => handleInputChange('dividendActive', e.target.checked.toString())}
             className="setup-checkbox"
           />
           <span className="setup-checkbox-label">Active</span>
-                              </div>
-                            </div>
-                            <div>
+        </div>
+        </div>
+      <div>
         <label className="setup-input-label">Description</label>
-                              <input
-                                type="text"
-                                value={formData.dividendDescription}
-                                onChange={(e) => handleInputChange('dividendDescription', e.target.value)}
+          <input
+          type="text"
+          value={formData.dividendDescription}
+          onChange={(e) => handleInputChange('dividendDescription', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter description"
-                              />
-                            </div>
-                          </>
+          placeholder="Enter description"
+          />
+        </div>
+        </>
   );
 }
 
@@ -3554,23 +3555,24 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
                             <div>
         <label className="setup-input-label">Fund Suspense Account</label>
         <div className="setup-suspense-input-container">
-                                <button
-                                  type="button"
+          <button
+            type="button"
             onClick={() => setSuspenseModalOpen?.(true)}
             className="setup-suspense-account-button"
-                                >
-                                  A
-                                </button>
-                                <input
-                                  type="text"
-                                  value={formData.suspenseAccount}
-                                  onChange={(e) => handleInputChange('suspenseAccount', e.target.value)}
+            >
+            A
+            </button>
+            <input
+            type="text"
+            value={formData.suspenseAccount}
+            onChange={(e) => handleInputChange('suspenseAccount', e.target.value)}
             className="setup-suspense-input-field"
-                                  placeholder="Enter Suspense Account"
-                                />
-                              </div>
-                            </div>
-                                                           <div>
+            placeholder="Enter Suspense Account"
+           />
+         </div>
+        </div>
+       <div>
+
         <label className="setup-input-label">Launch Date</label>
                                  <DatePicker
                                    selected={formData.launchDate}
@@ -3585,109 +3587,116 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
         <label className="setup-input-label">Fund Type</label>
         <div className="setup-radio-group">
           <label className="setup-radio-item">
-                                  <input
-                                    type="radio"
-                                    name="fundType"
-                                    value="Open Ended"
-                                    checked={formData.fundType === 'Open Ended'}
-                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
-                                    disabled={!isFormEditable}
+            <input
+              type="radio"
+              name="fundType"
+              value="Open Ended"
+              checked={formData.fundType === 'Open Ended'}
+              onChange={(e) => handleInputChange('fundType', e.target.value)}
+              disabled={!isFormEditable}
               className="setup-radio-input"
-                                  />
-                                  Open Ended
-                                </label>
+            />
+            Open Ended
+          </label>
           <label className="setup-radio-item">
-                                  <input
-                                    type="radio"
-                                    name="fundType"
-                                    value="Close Ended"
-                                    checked={formData.fundType === 'Close Ended'}
-                                    onChange={(e) => handleInputChange('fundType', e.target.value)}
-                                    disabled={!isFormEditable}
+            <input
+              type="radio"
+              name="fundType"
+              value="Close Ended"
+              checked={formData.fundType === 'Close Ended'}
+              onChange={(e) => handleInputChange('fundType', e.target.value)}
+              disabled={!isFormEditable}
               className="setup-radio-input"
-                                  />
-                                  Close Ended
-                                </label>
-                              </div>
-                            </div>
-                                                           <div>
+            />
+            Close Ended
+          </label>
+          </div>
+        </div>
+      <div>
+
         <label className="setup-input-label">IPO Starting Date</label>
-                                 <DatePicker
-                                   selected={formData.ipoStartDate}
+          <DatePicker
+          selected={formData.ipoStartDate}
           onChange={(date) => handleDateChange?.('ipoStartDate', date)}
-                                   dateFormat="dd/MM/yyyy"
-                                   placeholderText="dd/mm/yyyy"
-                                   className="date-picker-input"
-                                 />
-                               </div>
-                                                           <div>
+          dateFormat="dd/MM/yyyy"
+          placeholderText="dd/mm/yyyy"
+          className="date-picker-input"
+          />
+        </div>
+      <div>
+
         <label className="setup-input-label">IPO Ending Date</label>
-                                 <DatePicker
-                                   selected={formData.ipoEndDate}
+          <DatePicker
+          selected={formData.ipoEndDate}
           onChange={(date) => handleDateChange?.('ipoEndDate', date)}
-                                   dateFormat="dd/MM/yyyy"
-                                   placeholderText="dd/mm/yyyy"
-                                   className="date-picker-input"
-                                 />
-                               </div>
-                            {formData.fundType === 'Close Ended' ? (
-                              <>
-                                <div>
+          dateFormat="dd/MM/yyyy"
+          placeholderText="dd/mm/yyyy"
+          className="date-picker-input"
+          />
+          </div>
+          {formData.fundType === 'Close Ended' ? (
+          <>
+         <div>
+
             <label className="setup-input-label">Maturity Date</label>
-                                  <DatePicker
-                                    selected={formData.maturityDate}
+              <DatePicker
+              selected={formData.maturityDate}
               onChange={(date) => handleDateChange?.('maturityDate', date)}
-                                    dateFormat="dd/MM/yyyy"
-                                    placeholderText="dd/mm/yyyy"
-                                    className="date-picker-input"
-                                  />
-                                </div>
-                                <div>
+              dateFormat="dd/MM/yyyy"
+              placeholderText="dd/mm/yyyy"
+              className="date-picker-input"
+              />
+            </div>
+            <div>
+
             <label className="setup-input-label">Certificate Type</label>
-                                  <input
-                                    type="text"
-                                    value={formData.certificateType}
-                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
+            <input
+              type="text"
+              value={formData.certificateType}
+              onChange={(e) => handleInputChange('certificateType', e.target.value)}
               className="setup-input-field"
-                                    placeholder="Enter Certificate Type"
-                                  />
-                                </div>
-                                <div>
+              placeholder="Enter Certificate Type"
+              />
+            </div>
+          <div>
+
             <label className="setup-input-label">Portfolio Code</label>
-                                  <input
-                                    type="text"
-                                    value={formData.portfolioCode}
-                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
+              <input
+              type="text"
+              value={formData.portfolioCode}
+              onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
               className="setup-input-field"
-                                    placeholder="Enter PF Code"
-                                  />
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div>
+              placeholder="Enter PF Code"
+              />
+              </div>
+              </>
+              ) : (
+              <>
+            <div>
+
             <label className="setup-input-label">Certificate Type</label>
-                                  <input
-                                    type="text"
-                                    value={formData.certificateType}
-                                    onChange={(e) => handleInputChange('certificateType', e.target.value)}
+              <input
+              type="text"
+              value={formData.certificateType}
+              onChange={(e) => handleInputChange('certificateType', e.target.value)}
               className="setup-input-field"
-                                    placeholder="Enter Certificate Type"
-                                  />
-                                </div>
-                                <div>
+              placeholder="Enter Certificate Type"
+              />
+              </div>
+            <div>
+
             <label className="setup-input-label">Portfolio Code</label>
-                                  <input
-                                    type="text"
-                                    value={formData.portfolioCode}
-                                    onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
+              <input
+              type="text"
+              value={formData.portfolioCode}
+              onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
               className="setup-input-field"
-                                    placeholder="Enter PF Code"
-                                  />
-                                </div>
-                              </>
-                            )}
-                          </>
+              placeholder="Enter PF Code"
+              />
+            </div>
+              </>
+            )}
+              </>
   );
 }
 
@@ -3696,30 +3705,31 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
 // ========================================
 function PromotionalActivityModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
-                          <>
-                            <div className="setup-input-group">
+         <>
+      <div className="setup-input-group">
         <label className="setup-input-label">Promotion Code</label>
-                              <input
-                                type="text"
+          <input
+          type="text"
           value={formData.promotionCode}
           onChange={(e) => handleInputChange('promotionCode', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter promotion code"
-                              />
-          </div>
-                            <div className="setup-input-group">
+          />
+      </div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Promotion Name</label>
-                              <input
-                                type="text"
+         <input
+          type="text"
           value={formData.promotionName}
           onChange={(e) => handleInputChange('promotionName', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter promotion name"
-                              />
-                            </div>
-                            <div className="setup-input-group">
+          />
+      </div>
+
+      <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
         <textarea
           value={formData.promotionDescription}
@@ -3730,7 +3740,7 @@ function PromotionalActivityModalContent({ formData, handleInputChange, isFormEd
           rows={3}
           style={{ resize: 'vertical', minHeight: '80px' }}
         />
-                        </div>
+      </div>
     </>
   );
 }
@@ -4481,17 +4491,17 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
           <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Txn. Type</div>
           <div style={{ display: 'flex', gap: '24px' }}>
             <label className="setup-radio-label">
-                              <input
+                <input
                 type="radio"
                 name="unitFeeTxnType"
                 value="creation"
                 checked={formData.unitFeeTxnType === 'creation'}
                 onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
-                                disabled={!isFormEditable}
+                disabled={!isFormEditable}
                 className="setup-radio-input"
               />
               Creation
-                              </label>
+              </label>
             <label className="setup-radio-label">
               <input
                 type="radio"
@@ -4499,37 +4509,37 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                 value="redemption"
                 checked={formData.unitFeeTxnType === 'redemption'}
                 onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
-                                disabled={!isFormEditable}
+                disabled={!isFormEditable}
                 className="setup-radio-input"
               />
               Redemption
-                              </label>
+              </label>
           </div>
         </div>
         {/* Code */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
           <label className="setup-input-label" style={{ marginBottom: 0 }}>Code</label>
-                              <input
-                                type="text"
+            <input
+            type="text"
             value={formData.unitFeeCode || ''}
             onChange={e => handleInputChange('unitFeeCode', e.target.value)}
             disabled={!isFormEditable}
             className="setup-input-field"
             placeholder="Enter code"
-                              />
-                            </div>
+            />
+        </div>
         {/* Percentage */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
           <label className="setup-input-label" style={{ marginBottom: 0 }}>Percentage</label>
-                              <input
-                                type="text"
+            <input
+            type="text"
             value={formData.unitFeePercentage || ''}
             onChange={e => handleInputChange('unitFeePercentage', e.target.value)}
-                                disabled={!isFormEditable}
+            disabled={!isFormEditable}
             className="setup-input-field"
             placeholder="Enter percentage"
-                              />
-                            </div>
+            />
+         </div>
         {/* Description */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
           <label className="setup-input-label" style={{ marginBottom: 0 }}>Description</label>
@@ -4540,21 +4550,21 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                         disabled={!isFormEditable}
             className="setup-input-field"
             placeholder="Enter description"
-                        />
-                      </div>
+          />
+        </div>
         {/* Price One (%) and Price Two (%) in one row */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
             <label className="setup-input-label" style={{ marginBottom: 0 }}>Price One (%)</label>
-                          <input
-                            type="text"
+            <input
+              type="text"
               value={formData.unitFeePriceOne || ''}
               onChange={e => handleInputChange('unitFeePriceOne', e.target.value)}
               disabled={!isFormEditable}
-                            className="setup-input-field"
+              className="setup-input-field"
               placeholder="Price One (%)"
-                          />
-                        </div>
+            />
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr auto', alignItems: 'center', gap: '8px' }}>
             <label className="setup-input-label" style={{ marginBottom: 0 }}>Price Two (%)</label>
             <input
@@ -4588,11 +4598,12 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
               %
             </button>
           </div>
-                        </div>
+        </div>
+
         {/* Unit Fee */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
           <label className="setup-input-label" style={{ marginBottom: 0 }}>Unit Fee</label>
-                            <input
+          <input
             type="text"
             value={formData.unitFee || ''}
             onChange={e => handleInputChange('unitFee', e.target.value)}
@@ -4600,7 +4611,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             className="setup-input-field"
             placeholder="Enter unit fee"
           />
-                          </div>
+        </div>
 
         {/* Redemption Age Section - Only visible when Redemption is selected */}
         {formData.unitFeeTxnType === 'redemption' && (
@@ -4638,7 +4649,8 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             </div>
           </div>
         )}
-                        </div>
+    </div>
+
       {/* Right Column: Card with scrollable table */}
       <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>
         <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#000000' }}>Applicable Funds</div>
@@ -4667,9 +4679,9 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
               ))}
             </tbody>
           </table>
-                      </div>
-                    </div>
-                  </div>
+          </div>
+        </div>
+      </div>
   );
 }
 
@@ -5462,7 +5474,6 @@ function JointSaleAgentModalContent({
             </div>
           </div>
         </div>
-
         
       </div>
 

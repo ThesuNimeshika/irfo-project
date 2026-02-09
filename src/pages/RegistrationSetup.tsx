@@ -1,15 +1,16 @@
+/* eslint-disable max-lines -- Single-page form; length is intentional */
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import UserSearchModal from '../components/UserSearchModal';
 import AccountSearchModal from '../components/AccountSearchModal';
 import '../App.css';
 import '../Setup.css';
+import '../RegistrationSetup.css';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
- 
 
 // ========================================
-// TYPE DEFINITIONS,m,
+// TYPE DEFINITIONS
 // ========================================
 
 interface BankAccount {
@@ -1010,7 +1011,7 @@ function FourCardsWithModal() {
 
                 {/* Column 2: Compulsory Data Fields */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div className="setup-input-label" style={{ fontWeight: 600, margin: 0, whiteSpace: 'nowrap' }}>Compulsory Data Fields</div>
+                  <div className="registration-setup-compulsory-data-fields-note">Compulsory Data Fields</div>
                 </div>
 
                 {/* Column 3: Auto Number Button */}
@@ -1091,15 +1092,7 @@ function FourCardsWithModal() {
                 onClick={() => setIsRegistrationProfilesSearchModalOpen(true)}
                 disabled={!isFormEditable}
               >🔍</button>
-              <span
-                className="setup-input-label"
-                style={{
-                  marginLeft: '12px',
-                  fontWeight: 600,
-                  color: '#64748b',
-                  whiteSpace: 'nowrap'
-                }}
-              >
+              <span className="registration-setup-compulsory-data-fields-note" style={{ marginLeft: '12px' }}>
                 Compulsory Data Fields
               </span>
             </div>
@@ -1695,10 +1688,10 @@ function FourCardsWithModal() {
             <div style={{ width: '100%', gridColumn: '1 / -1' }}>
               {/* Full Name of Applicant Section */}
               <div style={{ marginBottom: '24px' }}>
-                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Full Name of Applicant</div>
+                <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Full Name of Applicant</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
                   {(formData.applicantType !== 'Corporate') && (
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                  <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <input
                       type="radio"
                       name="applicantType"
@@ -1716,7 +1709,7 @@ function FourCardsWithModal() {
                   {formData.applicantType === 'Individual' && (
                     <>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Title</label>
+                        <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>Title</label>
                         <select
                           className="setup-dropdown-select"
                           style={{ color: '#000000', minWidth: '150px' }}
@@ -1733,7 +1726,7 @@ function FourCardsWithModal() {
                         </select>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Initials</label>
+                        <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>Initials</label>
                         <input
                           type="text"
                           value={formData.initials}
@@ -1748,7 +1741,7 @@ function FourCardsWithModal() {
                   )}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   {(formData.applicantType !== 'Individual') && (
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                  <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <input
                       type="radio"
                       name="applicantType"
@@ -1858,7 +1851,7 @@ function FourCardsWithModal() {
                 {formData.applicantType === 'Individual' && (
                   <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr', gap: '16px', marginTop: '16px', width: '100%' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-                        <label className="setup-input-label" style={{ minWidth: '140px' }}>Name Denoted by Initials</label>
+                        <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>Name Denoted by Initials</label>
                         <input
                           type="text"
                           value={formData.nameByInitials}
@@ -1870,7 +1863,7 @@ function FourCardsWithModal() {
                         />
                       </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                        <label className="setup-input-label" style={{ minWidth: '140px' }}>Surname</label>
+                        <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>Surname</label>
                         <input
                           type="text"
                           value={formData.surname}
@@ -1920,7 +1913,7 @@ function FourCardsWithModal() {
                 {/* Column 1 - Identification */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', gridColumn: '1 / 2' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>
+                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>
                       {formData.applicantType === 'Corporate' ? 'Commence' : 'Date of Birth'}
                     </label>
                     <input
@@ -1943,7 +1936,7 @@ function FourCardsWithModal() {
                     />
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>NIC</label>
+                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>NIC</label>
                     <input
                       type="text"
                       value={formData.nic}
@@ -2059,7 +2052,7 @@ function FourCardsWithModal() {
                     />
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Comp Reg. No</label>
+                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>Comp Reg. No</label>
                     <input
                       type="text"
                       value={formData.compRegNo}
@@ -2071,9 +2064,9 @@ function FourCardsWithModal() {
                     />
                   </div>
                   <div style={{ marginTop: '8px' }}>
-                    <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Nationality</div>
+                    <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Nationality</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <input
                         type="radio"
                         name="nationality"
@@ -2083,7 +2076,7 @@ function FourCardsWithModal() {
                       />
                         Local
                     </label>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <input
                         type="radio"
                         name="nationality"
@@ -2124,9 +2117,9 @@ function FourCardsWithModal() {
                     />
                   </div>
                   <div style={{ marginTop: '8px' }}>
-                    <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Related Party Status</div>
+                    <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Related Party Status</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <input
                         type="radio"
                         name="relatedPartyStatus"
@@ -2136,7 +2129,7 @@ function FourCardsWithModal() {
                       />
                       None Related
                     </label>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <input
                         type="radio"
                         name="relatedPartyStatus"
@@ -2163,7 +2156,7 @@ function FourCardsWithModal() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '16px', marginBottom: '24px', alignItems: 'start' }}>
                 {/* Correspondence Address Card */}
                 <div className="setup-ash-box" style={{ padding: '16px' }}>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                  <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
                     Correspondence Address
               </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -2253,7 +2246,7 @@ function FourCardsWithModal() {
                         />
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
-                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Postal Area</label>
+                        <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>Postal Area</label>
                         <select
                           className="setup-dropdown-select"
                           style={{ color: '#000000', flex: 1 }}
@@ -2297,7 +2290,7 @@ function FourCardsWithModal() {
 
                 {/* Personal / Permanent Address Card */}
                 <div className="setup-ash-box" style={{ padding: '16px' }}>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                  <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
                     Personal / Permanent Address
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -2387,7 +2380,7 @@ function FourCardsWithModal() {
                         />
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '100%' }}>
-                        <label className="setup-input-label" style={{ minWidth: '60px' }}>Postal Area</label>
+                        <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>Postal Area</label>
                         <select
                           className="setup-dropdown-select"
                           style={{ color: '#000000', flex: 1 }}
@@ -2473,7 +2466,7 @@ function FourCardsWithModal() {
                 {/* Column 2: Bank and Branch */}
                 {/* Row 1: Bank */}
 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-  <label className="setup-input-label" style={{ minWidth: '60px' }}>
+  <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>
     Bank
   </label>
 
@@ -2599,7 +2592,7 @@ function FourCardsWithModal() {
 
                   {/* Row 2: Account Type */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account Type</label>
+                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '100px' }}>Account Type</label>
                       <select
                         className="setup-dropdown-select"
                         style={{ color: '#000000', flex: 1 }}
@@ -2614,7 +2607,7 @@ function FourCardsWithModal() {
                       </select>
                   </div>                  {/* Row 1: Account No + Button */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Account No</label>
+                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '100px' }}>Account No</label>
                       <input
                         type="text"
                         value={formData.accountNo}
@@ -2711,7 +2704,7 @@ function FourCardsWithModal() {
             <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
               {/* Office Details Section */}
               <div style={{ marginBottom: '24px' }}>
-                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
                   Office Details
               </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -2975,7 +2968,7 @@ function FourCardsWithModal() {
                 <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%', marginBottom: '16px' }}>
                   {/* Column 1: If Personal Customer Applicant label + checkbox */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                    <label className="setup-input-label" style={{ fontWeight: 600, marginBottom: '4px' }}>
+                    <label className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '4px' }}>
                         If Personal Customer Applicant
                     </label>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
@@ -3091,7 +3084,7 @@ function FourCardsWithModal() {
                   {/* If Corporate Applicant */}
                   {formData.applicantType === 'Corporate' && (
               <div className="setup-ash-box" style={{ padding: '16px', marginTop: '24px' }}>
-                      <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+                      <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
                         If Corporate Applicant
                       </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '38% 28% 30%', gap: '12px', width: '100%' }}>
@@ -3183,7 +3176,7 @@ function FourCardsWithModal() {
                   {/* Contact Person - Only for Corporate */}
                   {formData.applicantType === 'Corporate' && (
               <div className="setup-ash-box" style={{ padding: '16px', marginTop: '24px' }}>
-                      <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
+                      <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
                         Contact Person
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -3432,7 +3425,7 @@ function FourCardsWithModal() {
               <div style={{ marginBottom: '24px' }}>
                 {/* Header Row: Finance Details, Current Year, Previous Year */}
                 <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%', marginBottom: '12px' }}>
-                  <div className="setup-input-label" style={{ fontWeight: 600, color: '#0ea5e9', margin: 0 }}>
+                  <div className="setup-input-label" style={{ fontWeight: 400, color: '#000000', margin: 0 }}>
                   Finance Details
                 </div>
                   <div className="setup-input-label" style={{ fontWeight: 600, textAlign: 'center', margin: 0 }}>
@@ -3551,7 +3544,7 @@ function FourCardsWithModal() {
 
               {/* Director/Committee/Governing Body Information Section */}
               <div style={{ borderTop: '1px solid #cbd5e1', paddingTop: '16px' }}>
-                <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#0ea5e9' }}>
+                <div className="setup-input-label" style={{ fontWeight: 400, marginBottom: '16px', color: '#000000' }}>
                   Director/Committee/Governing Body Information
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -3919,7 +3912,7 @@ function FourCardsWithModal() {
               <div style={{ display: 'grid', gridTemplateColumns: '46% 46%', gap: '24px', width: '100%', marginBottom: '24px' }}>
                 {/* Left Column: Investment Type at Registration */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '220px' }}>Investment Type at Registration</label>
+                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '220px' }}>Investment Type at Registration</label>
                     <select
                       className="setup-dropdown-select"
                       style={{ color: '#000000', flex: 1 }}
@@ -3933,7 +3926,7 @@ function FourCardsWithModal() {
                 </div>
                 {/* Right Column: Investor Category */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                  <label className="setup-input-label" style={{ minWidth: '160px' }}>Investor Category</label>
+                  <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '160px' }}>Investor Category</label>
                   <select className="setup-dropdown-select" style={{ color: '#000000', flex: 1 }} value={formData.investorCategory} onChange={e => handleInputChange('investorCategory', e.target.value)} disabled={!isFormEditable}>
                     <option value="">Corporate</option>
                     <option value="Individual">Individual</option>
@@ -3945,11 +3938,11 @@ function FourCardsWithModal() {
               <div style={{ display: 'grid', gridTemplateColumns: '48% 48%', gap: '24px', width: '100%' }}>
                 {/* Left: Agents Card - 3 columns */}
                 <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
-                    <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Agents</div>
+                    <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Agents</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '32% 32% 32%', gap: '12px', width: '100%' }}>
                     {/* Column 1: Agency */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Agency</label>
+                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Agency</label>
                       <div style={{ position: 'relative', width: '100%' }} data-table="agency">
                         <div onClick={() => isFormEditable && setShowAgencyTable(!showAgencyTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.officeAgency ? '#0f172a' : '#64748b', minHeight: '38px', display: 'flex', alignItems: 'center', fontSize: '12px', width: '100%' }}>
                           {formData.officeAgency || 'Select agency'}
@@ -3988,7 +3981,7 @@ function FourCardsWithModal() {
                       </div>
                     {/* Column 2: Sub Agency */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Sub Agency</label>
+                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Sub Agency</label>
                       <div style={{ position: 'relative', width: '100%' }} data-table="subagency">
                           <div
                             onClick={() => isFormEditable && setShowSubAgencyTable(!showSubAgencyTable)}
@@ -4034,7 +4027,7 @@ function FourCardsWithModal() {
                       </div>
                     {/* Column 3: Agent */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Agent</label>
+                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: 'auto', marginBottom: '4px' }}>Agent</label>
                       <div style={{ position: 'relative', width: '100%' }} data-table="agent">
                           <div
                             onClick={() => isFormEditable && setShowAgentTable(!showAgentTable)}
@@ -5551,3 +5544,5 @@ function FourCardsWithModal() {
 }
 
 export default FourCardsWithModal;
+
+

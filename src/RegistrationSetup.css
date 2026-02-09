@@ -1,5 +1,22 @@
 /* FourCardsWithModal.css */
 
+/* Personal tab compulsory labels - same blue as "Compulsory Data Fields" */
+.registration-setup-compulsory-label {
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+/* Compulsory Data Fields - blue text and highlighted as note */
+.registration-setup-compulsory-data-fields-note {
+  color: #2563eb !important;
+  font-weight: 600;
+  background-color: #dbeafe;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 4px solid #2563eb;
+  white-space: nowrap;
+}
+
 .four-cards-container {
     padding: 20px;
     max-width: 1200px;

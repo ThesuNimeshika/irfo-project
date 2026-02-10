@@ -10,7 +10,7 @@ interface SearchResult {
   passport?: string;
   otherNo?: string;
   fund?: string;
-  [key: string]: any;
+  [key: string]: string | undefined;
 }
 
 interface AccountSearchModalProps {

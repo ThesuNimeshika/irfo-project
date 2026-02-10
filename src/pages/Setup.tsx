@@ -1,3 +1,4 @@
+/* disable-too-many-lines */
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';

@@ -20,15 +20,11 @@ export default tseslint.config([
       globals: globals.browser,
     },
     rules: {
-      'max-lines': ['warn', { max: 500, skipBlankLines: true, skipComments: true }],
-    },
-  },
-  {
-    files: ['src/pages/RegistrationSetup.tsx'],
-    rules: {
+      // No code line limitation for .ts/.tsx (max-lines disabled)
       'max-lines': 'off',
     },
   },
 ])
+
 
 

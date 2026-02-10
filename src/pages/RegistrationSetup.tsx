@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Single-page form; length is intentional */
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import UserSearchModal from '../components/UserSearchModal';
@@ -5544,5 +5543,3 @@ function FourCardsWithModal() {
 }
 
 export default FourCardsWithModal;
-
-

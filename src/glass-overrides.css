@@ -1,0 +1,615 @@
+/* =============================================
+   GLASS-OVERRIDES.CSS — Professional White Theme
+   Targets inline styles across all TSX files.
+   Import this AFTER App.css and Setup.css.
+   ============================================= */
+
+/* ══════════════════════════════════════════
+   1. NAVBAR  (Navbar.tsx)
+   ══════════════════════════════════════════ */
+
+nav[data-navbar] {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 1px 8px rgba(0,0,0,0.06) !important;
+  border-bottom: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+footer[data-footer] {
+  background: #f9fafb !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.07) !important;
+  border-top: 1px solid rgba(0,0,0,0.07) !important;
+  color: #4b5563 !important;
+}
+
+footer[data-footer] span b {
+  color: #1e3a8a !important;
+  font-weight: 700 !important;
+}
+
+/* User icon */
+nav[data-navbar] svg {
+  background: #eef2fb !important;
+}
+
+/* Navbar title text */
+nav[data-navbar] span {
+  color: #0d1117 !important;
+  text-shadow: none !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+/* User dropdown panel */
+nav[data-navbar] ~ div div[style*="position: fixed"][style*="top: 72"] {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.09) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10) !important;
+  border-radius: 10px !important;
+}
+
+/* ══════════════════════════════════════════
+   2. SIDEBAR  (Sidebar.tsx)
+   ══════════════════════════════════════════ */
+
+div.sidebar-desktop nav,
+.sidebar-desktop nav[style] {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 1px 0 0 rgba(0,0,0,0.07), 2px 0 12px rgba(0,0,0,0.04) !important;
+  border-right: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+/* Sidebar icons / labels */
+.sidebar-btn,
+.sidebar-report-btn {
+  color: #4b5563 !important;
+}
+
+/* Sidebar FAB button */
+button.sidebar-fab {
+  background: #1e3a8a !important;
+  box-shadow: 0 4px 16px rgba(30,58,138,0.28) !important;
+}
+
+/* Sidebar drawer (mobile) */
+div.sidebar-drawer {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.10) !important;
+}
+
+/* Active states */
+.sidebar-btn.active {
+  background: rgba(30,58,138,0.08) !important;
+  border: 1.5px solid rgba(30,58,138,0.22) !important;
+  color: #1e3a8a !important;
+}
+
+.sidebar-btn:hover {
+  background: rgba(30,58,138,0.05) !important;
+}
+
+.sidebar-report-btn.active {
+  background: rgba(30,58,138,0.08) !important;
+  border: 1.5px solid rgba(30,58,138,0.22) !important;
+  color: #1e3a8a !important;
+  box-shadow: none !important;
+}
+
+/* Report dropdown */
+.dropdown-menu.show {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  border: 1px solid rgba(0,0,0,0.09) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10) !important;
+  border-radius: 10px !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:active {
+  background: rgba(30,58,138,0.06) !important;
+  color: #1e3a8a !important;
+}
+
+/* ══════════════════════════════════════════
+   3. HOME PAGE  (Home.tsx / Home1.tsx)
+   ══════════════════════════════════════════ */
+
+.home-main-layout[style] {
+  background: #f9fafb !important;
+}
+
+.home-main-layout > div[style*="flex: 1"],
+.home-main-layout > div[style*="flex"][style*="column"] {
+  background: transparent !important;
+}
+
+/* Dashboard main card */
+.home-card.magical-bg.animated-bg.dashboard-main-card[style] {
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+/* DataTable section card */
+.home-card.magical-bg.animated-bg.dashboard-table-section[style] {
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  border: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+/* Date selection widget */
+.dashboard-main-card > div[style*="linear-gradient"] {
+  background: #f9fafb !important;
+  border: 1px solid rgba(0,0,0,0.09) !important;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06) !important;
+}
+
+/* Date input */
+.dashboard-main-card input[type="date"][style],
+.dashboard-date-section input[type="date"][style] {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
+  color: #1f2937 !important;
+  border-radius: 8px !important;
+}
+
+/* Toggle switch */
+.dashboard-pie-section div[style*="linear-gradient(145deg, #f8fafc"] {
+  background: #f1f4f9 !important;
+  border: 1px solid rgba(0,0,0,0.09) !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+
+/* Pie tooltip */
+.dashboard-pie-tooltip {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.10) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.09) !important;
+  border-radius: 8px !important;
+}
+
+/* Toggle tooltip portal */
+div[style*="position: fixed"][style*="background: rgba(0, 0, 0, 0.9)"][style*="zIndex: 99999999999"] {
+  background: rgba(13,17,23,0.90) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 6px !important;
+}
+
+/* ══════════════════════════════════════════
+   4. UNIT OPERATIONS
+   ══════════════════════════════════════════ */
+
+.setup-data-table tr[style*="background: '#f3f4f6'"],
+.setup-data-table tr[style*="background: #f3f4f6"],
+tr[style*="background: '#f3f4f6'"],
+tr[style*="background: #f3f4f6"] {
+  background: #f9fafb !important;
+}
+
+.setup-modal-content div[style*="background: white"],
+.setup-modal-content div[style*="background: '#fff'"],
+.setup-modal-content div[style*="background: '#ffffff'"],
+.setup-modal-content div[style*="backgroundColor: '#ffffff'"],
+.setup-modal-content div[style*="backgroundColor: white"] {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+/* ══════════════════════════════════════════
+   5. ACCOUNT SEARCH MODAL
+   ══════════════════════════════════════════ */
+
+.setup-modal-content button[style*="backgroundColor: '#60a5fa'"] {
+  background: #2563eb !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.20) !important;
+}
+
+.setup-modal-content button[style*="backgroundColor: '#2563eb'"] {
+  background: #1e3a8a !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px rgba(30,58,138,0.20) !important;
+}
+
+.setup-modal-content table[style*="backgroundColor: '#ffffff'"],
+.setup-modal-content div[style*="backgroundColor: '#ffffff'"] {
+  background: #ffffff !important;
+}
+
+/* ══════════════════════════════════════════
+   6. USER SEARCH MODAL
+   ══════════════════════════════════════════ */
+
+.setup-modal-content tr[style*="backgroundColor: '#f1f5f9'"],
+tr[style*="backgroundColor: '#f1f5f9'"] {
+  background: #f1f4f9 !important;
+}
+
+tr[style*="backgroundColor: '#e0e7ff'"] {
+  background: rgba(30,58,138,0.07) !important;
+}
+
+.setup-modal-content button[style*="backgroundColor: '#10b981'"] {
+  background: #0d7f5a !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px rgba(13,127,90,0.20) !important;
+}
+
+.setup-modal-content button[style*="backgroundColor: '#e5e7eb'"] {
+  background: #e5e7eb !important;
+  border-radius: 6px !important;
+  color: #374151 !important;
+}
+
+/* ══════════════════════════════════════════
+   7. SYSTEM CALENDAR
+   ══════════════════════════════════════════ */
+
+div[style*="background: 'rgba(0,0,0,0.6)'"],
+div[style*="background: rgba(0,0,0,0.6)"] {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+div[style*="linear-gradient(135deg, #e3f2fd"],
+div[style*="linear-gradient(135deg, #e3f2fd 0%, #bbdefb"] {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.09) !important;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.12) !important;
+  border-radius: 16px !important;
+}
+
+div[style*="background: 'rgba(255,255,255,0.1)'"][style*="padding: '20px'"] {
+  background: #f9fafb !important;
+  border-bottom: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+div[style*="color: '#1565c0'"],
+span[style*="color: '#1565c0'"],
+div[style*="color: '#1976d2'"] {
+  color: #1e3a8a !important;
+}
+
+button[style*="background: 'rgba(21,101,192,0.2)'"],
+button[style*="background: rgba(21,101,192,0.2)"] {
+  background: #eef2fb !important;
+  color: #1e3a8a !important;
+  border: 1px solid rgba(30,58,138,0.18) !important;
+  border-radius: 8px !important;
+}
+
+div[style*="padding: '20px'"][style*="background: 'rgba(255,255,255,0.05)'"] {
+  background: #f9fafb !important;
+  border-radius: 8px !important;
+}
+
+button[style*="background: 'rgba(255,255,255,0.2)'"],
+button[style*="background: rgba(255,255,255,0.2)"] {
+  background: #eef2fb !important;
+  color: #1f2937 !important;
+  border: 1px solid rgba(30,58,138,0.14) !important;
+  border-radius: 8px !important;
+  transition: background 0.18s !important;
+}
+
+button[style*="background: 'rgba(255,255,255,0.3)'"],
+button[style*="background: rgba(255,255,255,0.3)"] {
+  background: #e8eef8 !important;
+}
+
+/* ══════════════════════════════════════════
+   8. SETUP.TSX — Inline section backgrounds
+   ══════════════════════════════════════════ */
+
+.setup-modal-content > div[style*="background: 'white'"],
+.setup-modal-content > div[style*="background: white"],
+.setup-modal-content > div[style*="background:'white'"] {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.07) !important;
+  border-radius: 8px !important;
+}
+
+div[style*="background: '#f8fafc'"],
+div[style*="background: #f8fafc"],
+div[style*="backgroundColor: '#f8fafc'"] {
+  background: #f9fafb !important;
+}
+
+div[style*="background: '#f5f5f5'"],
+div[style*="backgroundColor: '#f5f5f5'"] {
+  background: #f3f4f6 !important;
+}
+
+.setup-modal-content th[style*="background"],
+.setup-modal-content th[style*="backgroundColor: '#f1f5f9'"],
+th[style*="background: '#f1f5f9'"],
+th[style*="background: #f1f5f9"] {
+  background: #f1f4f9 !important;
+}
+
+.setup-modal-content div[style*="border: '1px solid #e5e7eb'"],
+.setup-modal-content div[style*="border: 1px solid #e5e7eb"],
+.setup-modal-content div[style*="borderColor: '#e5e7eb'"] {
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+/* ══════════════════════════════════════════
+   9. REGISTRATION SETUP
+   ══════════════════════════════════════════ */
+
+.modal-body div[style*="background: 'white'"],
+.modal-body div[style*="background: white"],
+.modal-body div[style*="background: '#ffffff'"],
+.modal-body div[style*="backgroundColor: '#ffffff'"] {
+  background: #ffffff !important;
+}
+
+.modal-body div[style*="background: '#f8fafc'"],
+.modal-body div[style*="background: '#f9fafb'"],
+.modal-body div[style*="background: #f8fafc"],
+.modal-body div[style*="backgroundColor: '#f8fafc'"] {
+  background: #f9fafb !important;
+  border-color: rgba(0,0,0,0.07) !important;
+}
+
+.modal-body th[style*="background"],
+.modal-body th[style*="backgroundColor"] {
+  background: #f1f4f9 !important;
+  color: #4b5563 !important;
+}
+
+.modal-body tr[style*="borderBottom"],
+.modal-body td[style*="borderBottom: '1px solid #e2e8f0'"] {
+  border-bottom: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+.modal-body tr[style*="backgroundColor: '#e0e7ff'"],
+.modal-body tr[style*="backgroundColor: 'rgba(59, 130, 246"] {
+  background: rgba(30,58,138,0.07) !important;
+}
+
+/* ══════════════════════════════════════════
+   10. GLOBAL TABLE OVERRIDES
+   ══════════════════════════════════════════ */
+
+td[style*="backgroundColor: '#ffffff'"],
+td[style*="backgroundColor: white"],
+td[style*="background: white"],
+td[style*="background: '#ffffff'"] {
+  background: transparent !important;
+}
+
+th[style*="background: '#f1f5f9'"],
+th[style*="backgroundColor: '#f1f5f9'"] {
+  background: #f1f4f9 !important;
+}
+
+/* ══════════════════════════════════════════
+   11. FORM INPUTS — text color harmonize
+   ══════════════════════════════════════════ */
+
+input[style*="color: '#000000'"],
+input[style*="color: #000000"],
+select[style*="color: '#000000'"],
+select[style*="color: #000000"],
+textarea[style*="color: '#000000'"],
+label[style*="color: '#000000'"],
+span[style*="color: '#000000'"],
+td[style*="color: '#000000'"],
+th[style*="color: '#000000'"] {
+  color: #1f2937 !important;
+}
+
+/* ══════════════════════════════════════════
+   12. RECHARTS OVERRIDES
+   ══════════════════════════════════════════ */
+
+.recharts-tooltip-wrapper .dashboard-pie-tooltip {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.10) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.09) !important;
+}
+
+/* ══════════════════════════════════════════
+   13. DATATABLE COMPONENT
+   ══════════════════════════════════════════ */
+
+div[style*="justifyContent: 'space-between'"] input[type="text"],
+div[style*="justify-content: space-between"] input[type="text"] {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 6px !important;
+  color: #1f2937 !important;
+  font-family: 'Lato', system-ui, sans-serif !important;
+  transition: all 0.18s !important;
+}
+
+div[style*="justifyContent: 'space-between'"] input[type="text"]:focus,
+div[style*="justify-content: space-between"] input[type="text"]:focus {
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.10) !important;
+}
+
+div[style*="justifyContent: 'space-between'"] select,
+div[style*="justify-content: space-between"] select {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 6px !important;
+  color: #1f2937 !important;
+  font-family: 'Lato', system-ui, sans-serif !important;
+}
+
+div[style*="overflowY: 'auto'"] thead tr th {
+  background: #f1f4f9 !important;
+}
+
+div[style*="overflowY: 'auto'"] tbody tr:nth-child(even) td {
+  background: #f9fafb !important;
+}
+
+div[style*="overflowY: 'auto'"] tbody tr:hover td {
+  background: rgba(30,58,138,0.04) !important;
+}
+
+/* ══════════════════════════════════════════
+   14. REACT DATEPICKER
+   ══════════════════════════════════════════ */
+
+.react-datepicker {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.10) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10) !important;
+  border-radius: 12px !important;
+  font-family: 'Lato', system-ui, sans-serif !important;
+}
+
+.react-datepicker__header {
+  background: #f1f4f9 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.08) !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: #1e3a8a !important;
+  border-radius: 6px !important;
+}
+
+.react-datepicker__day:hover {
+  background: rgba(30,58,138,0.09) !important;
+  border-radius: 6px !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: #1f2937 !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #1e3a8a !important;
+}
+
+/* ══════════════════════════════════════════
+   15. PORTAL / FIXED OVERLAYS
+   ══════════════════════════════════════════ */
+
+body > div[style*="position: fixed"][style*="background: rgba(0,0,0,0.5)"],
+body > div[style*="position: fixed"][style*="background: rgba(0, 0, 0, 0.5)"] {
+  background: rgba(0, 0, 0, 0.30) !important;
+  backdrop-filter: none !important;
+}
+
+/* ══════════════════════════════════════════
+   16. SCROLLBAR — GLOBAL
+   ══════════════════════════════════════════ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.14) transparent;
+}
+
+*::-webkit-scrollbar { width: 5px; height: 5px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.12);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.22);
+}
+
+/* ══════════════════════════════════════════
+   17. REGISTRATION SETUP CARDS  (RegistrationSetup.css overrides)
+   ══════════════════════════════════════════ */
+
+.card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.07) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04) !important;
+  border-radius: 12px !important;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.05) !important;
+  border-color: rgba(30,58,138,0.18) !important;
+}
+
+.modal-container {
+  background: #ffffff !important;
+}
+
+.modal-header {
+  background: #1e3a8a !important;
+}
+
+.modal-body {
+  background: #f9fafb !important;
+}
+
+.modal-footer {
+  background: #f1f4f9 !important;
+  border-top: 1px solid rgba(0,0,0,0.07) !important;
+}
+
+/* RegistrationSetup compulsory note */
+.registration-setup-compulsory-data-fields-note {
+  color: #1e3a8a !important;
+  background: rgba(30,58,138,0.06) !important;
+  border-left: 3px solid #1e3a8a !important;
+  box-shadow: none !important;
+}
+
+.registration-setup-compulsory-label {
+  color: #1e3a8a !important;
+}
+
+/* ══════════════════════════════════════════
+   18. GENERAL TYPOGRAPHY OVERHAUL
+   ══════════════════════════════════════════ */
+
+body, input, select, textarea, button {
+  font-family: 'Lato', system-ui, sans-serif;
+}
+
+/* Soften all purple/gradient accents to navy */
+[style*="linear-gradient(100deg, #3b82f6 0%, #2563eb 100%)"],
+[style*="linear-gradient(100deg, #3b82f6"] {
+  background: #1e3a8a !important;
+}
+
+[style*="linear-gradient(135deg, #2d3fb0 0%, #5b21b6 100%)"],
+[style*="linear-gradient(100deg, #2d3fb0 0%, #5b21b6"] {
+  background: #1e3a8a !important;
+}
+
+/* Ensure body bg stays neutral white */
+body {
+  background: #f9fafb !important;
+}
+
+/* Override dark purple sidebar bg */
+nav[style*="linear-gradient(135deg, #e0e7ff"],
+nav[style*="background: linear-gradient"] {
+  background: #ffffff !important;
+}
+
+/* Sidebar button label colors */
+.sidebar-btn span,
+.sidebar-report-btn span {
+  color: #374151 !important;
+}
+
+/* ══════════════════════════════════════════
+   19. HEADER DIVIDER LINES
+   ══════════════════════════════════════════ */
+
+hr, [style*="borderBottom: '1px solid"],
+[style*="border-bottom: 1px solid #e5e7eb"] {
+  border-color: rgba(0,0,0,0.07) !important;
+}

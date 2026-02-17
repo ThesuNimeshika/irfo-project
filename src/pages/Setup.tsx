@@ -654,106 +654,90 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
 
   return (
     <div className="setup-custom-table">
+      {/* Controls bar */}
       <div className="setup-table-header">
         <div className="setup-table-controls">
-          {/* Search */}
           <input
             type="text"
             placeholder="Search..."
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="setup-table-search"
-            style={{ color: '#000000' }}
           />
-          {/* Shortlist Dropdown */}
           <select
             value={pagination.pageSize}
             onChange={e => {
-              const newPageSize = Number(e.target.value);
               setPagination(prev => ({
                 ...prev,
-                pageSize: newPageSize,
-                pageIndex: 0, // Reset to first page when changing page size
+                pageSize: Number(e.target.value),
+                pageIndex: 0,
               }));
             }}
             className="setup-table-shortlist"
-            style={{ color: '#000000' }}
           >
             {[5, 10, 20, 50, 100].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
+              <option key={pageSize} value={pageSize}>Show {pageSize}</option>
             ))}
             <option value={data.length || 1000}>Show All</option>
           </select>
-          <span className="setup-table-records" style={{ color: '#000000' }}>
+          <span className="setup-table-records">
             {data.length} Records
           </span>
         </div>
       </div>
-      <div className="setup-table-wrapper">
-        <div className="setup-table-inner">
-                      {/* Fixed Header */}
-            <div className="setup-table-fixed-header">
-              <div className="setup-table-header-wrapper">
-                <table className="setup-table-header-table">
-                <thead>
-                  {table.getHeaderGroups().map(headerGroup => (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map(header => (
-                        <th
-                          key={header.id}
-                          className="setup-table-header-th"
-                          onClick={header.column.getToggleSortingHandler()}
-                          style={{ color: '#000000' }}
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {{
-                            asc: ' 🔼',
-                            desc: ' 🔽',
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </th>
-                      ))}
-                    </tr>
+
+      {/* Single scrollable container — ONE table, sticky thead */}
+      <div className="setup-table-scroll">
+        <table className="setup-single-table">
+          <thead className="setup-single-thead">
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th
+                    key={header.id}
+                    className="setup-single-th"
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.column.getIsSorted() === 'asc' ? ' ▲' :
+                     header.column.getIsSorted() === 'desc' ? ' ▼' : ''}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length} className="setup-single-empty">
+                  No records found
+                </td>
+              </tr>
+            ) : (
+              table.getRowModel().rows.map((row, i) => (
+                <tr
+                  key={row.id}
+                  className={`setup-single-tr${i % 2 === 1 ? ' setup-single-tr-alt' : ''}`}
+                  onClick={() => {
+                    console.log('Selected row:', row.original);
+                    alert(`Selected: ${JSON.stringify(row.original)}`);
+                  }}
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <td key={cell.id} className="setup-single-td">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
                   ))}
-                </thead>
-              </table>
-            </div>
-          </div>
-          
-                      {/* Scrollable Body */}
-            <div className="setup-table-scrollable-body">
-              <div className="setup-table-body-wrapper">
-                <table className="setup-table-body-table">
-                <tbody>
-                  {table.getRowModel().rows.map(row => (
-                    <tr
-                      key={row.id}
-                      className="setup-table-body-tr"
-                      onClick={() => {
-                        console.log('Selected row:', row.original);
-                        alert(`Selected: ${JSON.stringify(row.original)}`);
-                      }}
-                    >
-                      {row.getVisibleCells().map(cell => (
-                        <td 
-                          key={cell.id} 
-                          className="setup-table-body-td"
-                          style={{ color: '#000000' }}
-                        >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Hint */}
+      <div className="setup-table-hint">
+        Double click to get the selected value
       </div>
     </div>
   );

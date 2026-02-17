@@ -51,67 +51,65 @@ nav[data-navbar] ~ div div[style*="position: fixed"][style*="top: 72"] {
 }
 
 /* ══════════════════════════════════════════
-   2. SIDEBAR  (Sidebar.tsx)
+   2. SIDEBAR  (Sidebar.tsx) — White Glass Design
+   New class system: .sb-shell, .sb-pill, .sb-icon-wrap
+   Route-aware active via .is-active (not .sb-active)
    ══════════════════════════════════════════ */
 
+/* ── Shell: frosted white glass ── */
+.sb-shell,
 div.sidebar-desktop nav,
-.sidebar-desktop nav[style] {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: 1px 0 0 rgba(0,0,0,0.07), 2px 0 12px rgba(0,0,0,0.04) !important;
-  border-right: 1px solid rgba(0,0,0,0.07) !important;
+.sidebar-desktop nav[style],
+nav[style*="linear-gradient"] {
+  background: rgba(255,255,255,0.78) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border-right: 1px solid rgba(255,255,255,0.92) !important;
+  box-shadow: 2px 0 24px rgba(30,58,138,0.07), 1px 0 0 rgba(0,0,0,0.04) !important;
 }
 
-/* Sidebar icons / labels */
-.sidebar-btn,
-.sidebar-report-btn {
-  color: #4b5563 !important;
-}
+/* ── Pills — safety overrides ── */
+.sb-pill { color: #6b7280 !important; }
+.sb-pill:hover { background: rgba(255,255,255,0.82) !important; color: #1e3a8a !important; }
+.sb-pill.is-active { background: rgba(255,255,255,0.94) !important; color: #1e3a8a !important; }
 
-/* Sidebar FAB button */
+/* ── Mobile FAB ── */
 button.sidebar-fab {
-  background: #1e3a8a !important;
-  box-shadow: 0 4px 16px rgba(30,58,138,0.28) !important;
+  background: rgba(255,255,255,0.90) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1.5px solid rgba(200,213,255,0.70) !important;
+  box-shadow: 0 4px 20px rgba(30,58,138,0.14) !important;
+  color: #1e3a8a !important;
+}
+button.sidebar-fab:hover {
+  background: rgba(255,255,255,0.97) !important;
+  box-shadow: 0 6px 24px rgba(30,58,138,0.20) !important;
 }
 
-/* Sidebar drawer (mobile) */
+/* ── Mobile drawer ── */
 div.sidebar-drawer {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.10) !important;
+  background: rgba(248,250,253,0.92) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+  border-left: 1px solid rgba(200,213,255,0.60) !important;
+  box-shadow: -6px 0 40px rgba(30,58,138,0.10) !important;
 }
 
-/* Active states */
-.sidebar-btn.active {
-  background: rgba(30,58,138,0.08) !important;
-  border: 1.5px solid rgba(30,58,138,0.22) !important;
-  color: #1e3a8a !important;
+/* ── Catch old inline gradient strings ── */
+nav[style*="linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)"],
+nav[style*="linear-gradient(180deg, #1e3a8a"] {
+  background: rgba(255,255,255,0.78) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
 }
-
-.sidebar-btn:hover {
-  background: rgba(30,58,138,0.05) !important;
+div[style*="linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)"] {
+  background: rgba(248,250,253,0.92) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
 }
-
-.sidebar-report-btn.active {
-  background: rgba(30,58,138,0.08) !important;
-  border: 1.5px solid rgba(30,58,138,0.22) !important;
-  color: #1e3a8a !important;
-  box-shadow: none !important;
-}
-
-/* Report dropdown */
-.dropdown-menu.show {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  border: 1px solid rgba(0,0,0,0.09) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.10) !important;
-  border-radius: 10px !important;
-}
-
-.dropdown-item:hover,
-.dropdown-item:active {
-  background: rgba(30,58,138,0.06) !important;
+button[style*="linear-gradient(135deg, #a5b4fc 0%, #f0abfc 100%)"] {
+  background: rgba(255,255,255,0.90) !important;
   color: #1e3a8a !important;
 }
 
@@ -159,11 +157,163 @@ div.sidebar-drawer {
   border-radius: 8px !important;
 }
 
-/* Toggle switch */
-.dashboard-pie-section div[style*="linear-gradient(145deg, #f8fafc"] {
-  background: #f1f4f9 !important;
-  border: 1px solid rgba(0,0,0,0.09) !important;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06) !important;
+/* ══ TOGGLE SWITCH — Full navy blue theme ══ */
+
+/* Toggle container (catches old green version & new navy version) */
+.dashboard-pie-section div[style*="linear-gradient(145deg, #f8fafc"],
+.dashboard-pie-section div[style*="linear-gradient(145deg, #eef2fb"] {
+  background: linear-gradient(145deg, #eef2fb 0%, #e0e7ff 100%) !important;
+  border: 1.5px solid rgba(30,58,138,0.22) !important;
+  box-shadow: inset 0 2px 4px rgba(30,58,138,0.10), 0 4px 14px rgba(30,58,138,0.12) !important;
+}
+
+/* Toggle slider knob */
+.dashboard-pie-section div[style*="linear-gradient(145deg, #ffffff 0%, #f1f5f9"],
+.dashboard-pie-section div[style*="linear-gradient(145deg, #ffffff 0%, #eef2fb"] {
+  background: linear-gradient(145deg, #ffffff 0%, #f0f4fb 100%) !important;
+  box-shadow: 0 3px 10px rgba(30,58,138,0.22), inset 0 1px 2px rgba(255,255,255,0.95) !important;
+  border: 1px solid rgba(30,58,138,0.15) !important;
+}
+
+/* Toggle green bg overlay → navy */
+.dashboard-pie-section div[style*="linear-gradient(135deg, rgba(34, 197, 94"] {
+  background: linear-gradient(135deg, rgba(30,58,138,0.06) 0%, rgba(46,79,173,0.06) 100%) !important;
+}
+
+/* Toggle glow → navy */
+.dashboard-pie-section div[style*="radial-gradient(circle, rgba(34, 197, 94"] {
+  background: radial-gradient(circle, rgba(30,58,138,0.15) 0%, transparent 70%) !important;
+}
+
+/* Toggle green borders → navy */
+.dashboard-pie-section div[style*="rgba(34, 197, 94"] {
+  border-color: rgba(30,58,138,0.20) !important;
+}
+
+/* "View Mode" label */
+.dashboard-pie-section div[style*="color: '#166534'"],
+.dashboard-pie-section div[style*="color: #166534"] {
+  color: #1e3a8a !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  letter-spacing: 0.07em !important;
+}
+
+/* Toggle labels — active */
+.dashboard-pie-section span[style*="color: '#166534'"],
+.dashboard-pie-section span[style*="color: #166534"] {
+  color: #1e3a8a !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* Toggle labels — inactive */
+.dashboard-pie-section span[style*="color: '#64748b'"],
+.dashboard-pie-section span[style*="color: #64748b"] {
+  color: #9ca3af !important;
+}
+
+/* ══ DATE SELECTION CARD — glassy white professional ══ */
+
+/* Outer container: new glassy white design */
+.dashboard-main-card > div[style*="rgba(255, 255, 255, 0.72)"],
+.dashboard-main-card > div[style*="rgba(255,255,255,0.72)"] {
+  /* Passthrough — already correct in updated Home.tsx */
+  background: rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(30,58,138,0.14) !important;
+  box-shadow: 0 4px 24px rgba(30,58,138,0.10), 0 1px 4px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.85) !important;
+}
+
+/* Catch old purple date container */
+.dashboard-main-card > div[style*="linear-gradient"] {
+  background: rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(30,58,138,0.14) !important;
+  box-shadow: 0 4px 24px rgba(30,58,138,0.10), 0 1px 4px rgba(0,0,0,0.06) !important;
+  border-radius: 18px !important;
+}
+
+/* "Date Selection" heading text */
+.dashboard-main-card span[style*="color: '#1e3a8a'"],
+.dashboard-main-card span[style*="color: #1e3a8a"] {
+  color: #1e3a8a !important;
+}
+
+/* Old color: '#000000' title → navy */
+.dashboard-main-card div[style*="fontWeight: '800'"][style*="color: '#000000'"],
+.dashboard-main-card div[style*="fontWeight: '800'"][style*="color: #000000"] {
+  color: #1e3a8a !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  text-shadow: none !important;
+}
+
+/* Date input */
+.dashboard-main-card input[type="date"][style],
+.dashboard-date-section input[type="date"][style] {
+  background: #ffffff !important;
+  border: 1.5px solid rgba(30,58,138,0.22) !important;
+  box-shadow: 0 1px 4px rgba(30,58,138,0.08) !important;
+  color: #1f2937 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+/* Date display formatted text pill */
+.dashboard-main-card div[style*="background: rgba(30,58,138,0.06)"],
+.dashboard-main-card div[style*="background: 'rgba(30,58,138,0.06)'"] {
+  background: rgba(30,58,138,0.06) !important;
+  border: 1px solid rgba(30,58,138,0.10) !important;
+  color: #1e3a8a !important;
+}
+
+/* Old white pill → navy tint */
+.dashboard-main-card div[style*="background: 'rgba(255, 255, 255, 0.3)'"],
+.dashboard-main-card div[style*="background: rgba(255, 255, 255, 0.3)"] {
+  background: rgba(30,58,138,0.06) !important;
+  border: 1px solid rgba(30,58,138,0.10) !important;
+  color: #1e3a8a !important;
+  box-shadow: none !important;
+}
+
+/* Date display text: old black → navy */
+.dashboard-main-card div[style*="color: '#000000'"][style*="fontWeight: '700'"],
+.dashboard-main-card div[style*="color: #000000"][style*="fontWeight"] {
+  color: #1e3a8a !important;
+}
+
+/* Shimmer/glow overlay inside date card */
+.dashboard-main-card div[style*="linear-gradient(180deg, rgba(255,255,255,0.55)"] {
+  pointer-events: none;
+}
+
+/* Remove old purple radial glow animation */
+.dashboard-main-card div[style*="radial-gradient(circle, rgba(99, 102, 241"] {
+  background: none !important;
+  animation: none !important;
+}
+
+/* Remove old decorative dots */
+.dashboard-main-card div[style*="linear-gradient(45deg, #4f46e5"],
+.dashboard-main-card div[style*="linear-gradient(45deg, #8b5cf6"] {
+  display: none !important;
+}
+
+/* Glass shimmer inner highlight */
+.dashboard-main-card div[style*="linear-gradient(180deg, rgba(255,255,255"] {
+  pointer-events: none !important;
+}
+
+/* Corner accent radial */
+.dashboard-main-card div[style*="radial-gradient(circle, rgba(30,58,138,0.08)"] {
+  pointer-events: none !important;
 }
 
 /* Pie tooltip */
@@ -593,18 +743,6 @@ body {
   background: #f9fafb !important;
 }
 
-/* Override dark purple sidebar bg */
-nav[style*="linear-gradient(135deg, #e0e7ff"],
-nav[style*="background: linear-gradient"] {
-  background: #ffffff !important;
-}
-
-/* Sidebar button label colors */
-.sidebar-btn span,
-.sidebar-report-btn span {
-  color: #374151 !important;
-}
-
 /* ══════════════════════════════════════════
    19. HEADER DIVIDER LINES
    ══════════════════════════════════════════ */
@@ -612,4 +750,420 @@ nav[style*="background: linear-gradient"] {
 hr, [style*="borderBottom: '1px solid"],
 [style*="border-bottom: 1px solid #e5e7eb"] {
   border-color: rgba(0,0,0,0.07) !important;
+}
+
+/* ══════════════════════════════════════════
+   20. MODAL TABLE AREA — Better styling
+   ══════════════════════════════════════════ */
+
+/* Modal content background */
+.setup-modal-content {
+  background: #f9fafb !important;
+}
+
+/* All inline white section boxes inside modals */
+.setup-modal-content > div,
+.setup-modal-content .setup-input-section {
+  background: #ffffff;
+}
+
+/* Table inside modal — clean lines */
+.setup-modal-content .setup-data-table th {
+  background: #f1f4f9 !important;
+  color: #9ca3af !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid rgba(0,0,0,0.08) !important;
+}
+
+.setup-modal-content .setup-data-table td {
+  font-size: 12px !important;
+  border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+  color: #1f2937 !important;
+}
+
+.setup-modal-content .setup-data-table tbody tr:hover td {
+  background: #f8faff !important;
+}
+
+.setup-modal-content .setup-data-table tbody tr:nth-child(even) td {
+  background: #fafbfd !important;
+}
+
+/* "Double click to get selected value" hint text */
+.setup-modal-content > div > div[style*="text-align: 'center'"],
+.setup-modal-content > div > p,
+div[style*="Double click"] {
+  font-size: 11px !important;
+  color: #9ca3af !important;
+  font-style: italic;
+}
+
+/* Search input inside modals */
+.setup-modal-content input[type="text"],
+.setup-modal-content input[type="search"] {
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #1f2937 !important;
+  font-size: 12px !important;
+  padding: 5px 9px !important;
+  height: 28px !important;
+}
+
+.setup-modal-content input[type="text"]:focus,
+.setup-modal-content input[type="search"]:focus {
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.10) !important;
+  outline: none !important;
+}
+
+/* Show All / filter dropdowns inside modals */
+.setup-modal-content select {
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #1f2937 !important;
+  font-size: 12px !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+}
+
+/* ══════════════════════════════════════════
+   21. NAVBAR OVERRIDES (new Navbar.tsx)
+   ══════════════════════════════════════════ */
+
+/* Override any remaining inline gradient on navbar */
+nav[data-navbar][style*="linear-gradient"],
+nav[data-navbar][style*="background"] {
+  background: #ffffff !important;
+}
+
+/* Override title textShadow */
+nav[data-navbar] .navbar-title,
+nav[data-navbar] span[style*="textShadow"] {
+  text-shadow: none !important;
+  color: #0d1117 !important;
+}
+
+/* Override purple user SVG background */
+nav[data-navbar] svg[style*="background: '#e0e7ff'"],
+nav[data-navbar] svg[style*="background: #e0e7ff"] {
+  background: #1e3a8a !important;
+}
+nav[data-navbar] svg[style*="stroke: '#4f46e5'"],
+nav[data-navbar] svg[style*="stroke: #4f46e5"] {
+  stroke: #ffffff !important;
+}
+
+/* Footer gradient override */
+footer[data-footer][style*="linear-gradient"] {
+  background: #ffffff !important;
+}
+
+/* ══════════════════════════════════════════
+   22. SIDEBAR INLINE STYLE SAFETY CATCHES
+   Redirect any lingering old gradient strings to white glass
+   ══════════════════════════════════════════ */
+
+nav[style*="linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)"],
+nav[style*="linear-gradient(180deg, #1e3a8a 0%, #1e40af"] {
+  background: rgba(255,255,255,0.78) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+}
+
+div[style*="linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)"] {
+  background: rgba(248,250,253,0.92) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+}
+
+button[style*="linear-gradient(135deg, #a5b4fc 0%, #f0abfc 100%)"] {
+  background: rgba(255,255,255,0.90) !important;
+  color: #1e3a8a !important;
+}
+
+/* ══════════════════════════════════════════
+   23. FIX: Button hover — prevent white background override
+   The global button:hover in index.css sets background:#fff
+   which breaks colored buttons inside modals and toolbars.
+   These rules restore the correct hover colour per button type.
+   ══════════════════════════════════════════ */
+
+/* Action buttons inside modals — preserve their background color on hover */
+.setup-btn:hover,
+.setup-btn-new:hover,
+.setup-btn-save:hover,
+.setup-btn-delete:hover,
+.setup-btn-print:hover,
+.setup-btn-clear:hover,
+.setup-btn-close:hover,
+.setup-btn-add:hover,
+.setup-btn-remove:hover {
+  background: inherit !important;
+  filter: brightness(1.1) !important;
+}
+
+/* Specific colors restored on hover */
+.setup-btn-new:hover    { background: #1e3a8a !important; }
+.setup-btn-save:hover   { background: #0d7f5a !important; }
+.setup-btn-delete:hover { background: #b91c1c !important; }
+.setup-btn-print:hover  { background: #b45309 !important; }
+.setup-btn-clear:hover,
+.setup-btn-close:hover  { background: #6b7280 !important; }
+.setup-btn-add:hover    { background: #0d7f5a !important; }
+.setup-btn-remove:hover { background: #b91c1c !important; }
+
+/* RegistrationSetup btn variants */
+.btn-new:hover    { background: #1e3a8a !important; color: #fff !important; }
+.btn-save:hover   { background: #0d7f5a !important; color: #fff !important; }
+.btn-delete:hover { background: #b91c1c !important; color: #fff !important; }
+.btn-print:hover  { background: #b45309 !important; color: #fff !important; }
+.btn-clear:hover  { background: #6b7280 !important; color: #fff !important; }
+
+/* Also cover any inline-styled buttons with backgroundColor */
+button[style*="backgroundColor: '#1e3a8a'"]:hover,
+button[style*="background: '#1e3a8a'"]:hover,
+button[style*="background: #1e3a8a"]:hover { background: #1e3a8a !important; filter: brightness(1.1) !important; }
+
+button[style*="backgroundColor: '#0d7f5a'"]:hover,
+button[style*="background: '#0d7f5a'"]:hover { background: #0d7f5a !important; filter: brightness(1.1) !important; }
+
+button[style*="backgroundColor: '#b91c1c'"]:hover,
+button[style*="background: '#b91c1c'"]:hover { background: #b91c1c !important; filter: brightness(1.1) !important; }
+
+button[style*="backgroundColor: '#b45309'"]:hover,
+button[style*="background: '#b45309'"]:hover { background: #b45309 !important; filter: brightness(1.1) !important; }
+
+button[style*="backgroundColor: '#6b7280'"]:hover,
+button[style*="background: '#6b7280'"]:hover { background: #6b7280 !important; filter: brightness(1.1) !important; }
+
+/* Navbar avatar button — keep navy on hover */
+.nb-avatar:hover {
+  background: #eceef4 !important;
+  filter: brightness(1.08) !important;
+}
+/* ══════════════════════════════════════════
+   27. SPLIT-TABLE COLUMN ALIGNMENT FIX
+   Setup.tsx uses two separate <table> elements:
+   .setup-table-header-table (sticky header) and
+   .setup-table-body-table (scrollable body).
+   Without synchronized widths, headers and columns
+   never align. This fix forces both tables to use
+   table-layout:fixed with matching column widths
+   via a shared wrapper that controls overflow.
+   ══════════════════════════════════════════ */
+
+/* Wrapper: clip-overflow on the full table component */
+.setup-custom-table {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  width: 100%;
+}
+
+/* Controls bar */
+.setup-table-header {
+  padding: 10px 14px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+
+.setup-table-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.setup-table-search {
+  height: 28px !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 6px !important;
+  padding: 0 10px 0 28px !important;
+  font-size: 12px !important;
+  font-family: 'Lato', system-ui, sans-serif !important;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 8px center !important;
+  color: #1f2937 !important;
+  width: 160px;
+  outline: none;
+  transition: all 0.18s;
+}
+
+.setup-table-search:focus {
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.10) !important;
+  width: 200px;
+}
+
+.setup-table-shortlist {
+  height: 28px !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 6px !important;
+  padding: 0 8px !important;
+  font-size: 12px !important;
+  font-family: 'Lato', system-ui, sans-serif !important;
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  outline: none;
+}
+
+.setup-table-shortlist:focus {
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.10) !important;
+}
+
+.setup-table-records {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  font-family: 'Lato', system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+/* ── Core alignment fix: shared scroll container ── */
+.setup-table-wrapper {
+  overflow-x: auto !important;
+  position: relative !important;
+  width: 100% !important;
+}
+
+.setup-table-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: max-content !important; /* ensures both tables are as wide as needed */
+  width: 100% !important;
+}
+
+/* Fixed header shell */
+.setup-table-fixed-header {
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.setup-table-header-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Scrollable body shell — same width as header */
+.setup-table-scrollable-body {
+  overflow-y: auto !important;
+  max-height: 340px;
+  width: 100% !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.10) transparent;
+}
+
+.setup-table-scrollable-body::-webkit-scrollbar { width: 5px; }
+.setup-table-scrollable-body::-webkit-scrollbar-track { background: transparent; }
+.setup-table-scrollable-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.10); border-radius: 4px; }
+
+.setup-table-body-wrapper {
+  width: 100%;
+}
+
+/* ── THE KEY FIX: both tables identical layout ── */
+.setup-table-header-table,
+.setup-table-body-table {
+  width: 100% !important;
+  table-layout: auto !important;   /* auto so both measure identically */
+  border-collapse: collapse !important;
+  font-family: 'Lato', system-ui, sans-serif !important;
+  font-size: 12px !important;
+  /* Ensure both tables share the SAME column width by making them
+     fill the same container width — the wrapper controls the total */
+}
+
+/* Header row */
+.setup-table-header-table thead tr {
+  background: #f1f4f9 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.08) !important;
+}
+
+/* Header cells */
+.setup-table-header-th {
+  background: #f1f4f9 !important;
+  color: #9ca3af !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  padding: 9px 14px !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  border-right: 1px solid rgba(0,0,0,0.05) !important;
+  border-bottom: 1px solid rgba(0,0,0,0.08) !important;
+  transition: background 0.12s !important;
+}
+
+.setup-table-header-th:last-child {
+  border-right: none !important;
+}
+
+.setup-table-header-th:hover {
+  background: #e8edf5 !important;
+  color: #1e3a8a !important;
+}
+
+/* Body rows */
+.setup-table-body-tr {
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+  transition: background 0.12s !important;
+  cursor: pointer !important;
+}
+
+.setup-table-body-tr:last-child {
+  border-bottom: none !important;
+}
+
+.setup-table-body-tr:hover .setup-table-body-td {
+  background: #f8faff !important;
+}
+
+.setup-table-body-tr:nth-child(even) .setup-table-body-td {
+  background: #fafbfd !important;
+}
+
+.setup-table-body-tr:nth-child(even):hover .setup-table-body-td {
+  background: #f4f7ff !important;
+}
+
+/* Body cells */
+.setup-table-body-td {
+  padding: 9px 14px !important;
+  font-size: 12px !important;
+  color: #1f2937 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  border-right: 1px solid rgba(0,0,0,0.04) !important;
+  background: transparent !important;
+  transition: background 0.12s !important;
+}
+
+.setup-table-body-td:last-child {
+  border-right: none !important;
+}
+
+/* "Double click to get the selected value" hint */
+.setup-custom-table ~ div[style*="Double click"],
+.setup-custom-table + *,
+div[style*="Double click to get"] {
+  text-align: center !important;
+  padding: 6px 14px !important;
+  font-size: 11px !important;
+  color: #1e3a8a !important;
+  font-weight: 600 !important;
+  background: rgba(30,58,138,0.04) !important;
+  border-top: 1px solid rgba(30,58,138,0.07) !important;
 }

@@ -1,5 +1,5 @@
 /* disable-too-many-lines */
-import Navbar from '../components/Navbar';
+import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';
 import '../Setup.css';
@@ -567,11 +567,16 @@ const modules = moduleData.map(m => ({
 // ========================================
 
 // Custom DataTable Component for displaying table data
-function CustomDataTable({ data, columns }: { data: Record<string, string | undefined>[], columns: string[] }) {
+function CustomDataTable({ data, columns, onRowDoubleClick }: { 
+  data: Record<string, string | undefined>[], 
+  columns: string[],
+  onRowDoubleClick?: (row: Record<string, string | undefined>) => void
+}) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const initialPageSize = Math.min(50, data.length > 0 ? data.length : 50);
+  const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
+  const initialPageSize = 5;
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: initialPageSize,
@@ -717,10 +722,16 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
               table.getRowModel().rows.map((row, i) => (
                 <tr
                   key={row.id}
-                  className={`setup-single-tr${i % 2 === 1 ? ' setup-single-tr-alt' : ''}`}
+                  className={[
+                    'setup-single-tr',
+                    i % 2 === 1 ? 'setup-single-tr-alt' : '',
+                    selectedRowId === row.id ? 'is-selected' : '',
+                  ].join(' ')}
                   onClick={() => {
-                    console.log('Selected row:', row.original);
-                    alert(`Selected: ${JSON.stringify(row.original)}`);
+                    setSelectedRowId(prev => prev === row.id ? null : row.id);
+                  }}
+                  onDoubleClick={() => {
+                    onRowDoubleClick?.(row.original);
                   }}
                 >
                   {row.getVisibleCells().map(cell => (
@@ -734,6 +745,83 @@ function CustomDataTable({ data, columns }: { data: Record<string, string | unde
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {table.getPageCount() > 1 && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: '4px',
+          padding: '6px 14px',
+          borderTop: '1px solid rgba(0,0,0,0.06)',
+          background: '#fff',
+          flexShrink: 0,
+        }}>
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            style={{
+              display:'inline-flex', alignItems:'center', justifyContent:'center',
+              minWidth:'26px', height:'26px', padding:'0 6px',
+              border:'1.5px solid rgba(0,0,0,0.10)', borderRadius:'7px',
+              background:'#fff', fontSize:'13px', fontWeight:700,
+              color: table.getCanPreviousPage() ? '#4b5563' : '#d1d5db',
+              cursor: table.getCanPreviousPage() ? 'pointer' : 'not-allowed',
+              boxShadow:'0 1px 3px rgba(0,0,0,0.06)', transition:'all 0.15s',
+            }}
+          >&#8249;</button>
+
+          {Array.from({ length: table.getPageCount() }, (_, i) => i)
+            .filter(p => p === 0 || p === table.getPageCount() - 1 || Math.abs(p - table.getState().pagination.pageIndex) <= 1)
+            .reduce((acc, p, i, arr) => {
+              if (i > 0 && typeof arr[i-1] === 'number' && p - (arr[i-1] as number) > 1) acc.push('...');
+              acc.push(p);
+              return acc;
+            }, [] as (number|string)[])
+            .map((p, i) =>
+              p === '...'
+                ? <span key={'e'+i} style={{ padding:'0 2px', color:'#9ca3af', fontSize:11 }}>…</span>
+                : (
+                  <button
+                    key={p}
+                    onClick={() => table.setPageIndex(p as number)}
+                    style={{
+                      display:'inline-flex', alignItems:'center', justifyContent:'center',
+                      minWidth:'26px', height:'26px', padding:'0 6px',
+                      border:'1.5px solid',
+                      borderColor: table.getState().pagination.pageIndex === p ? '#1e3a8a' : 'rgba(0,0,0,0.10)',
+                      borderRadius:'7px',
+                      background: table.getState().pagination.pageIndex === p
+                        ? 'linear-gradient(135deg,#1e3a8a,#2e4fad)' : '#fff',
+                      fontSize:'11px', fontWeight:700,
+                      color: table.getState().pagination.pageIndex === p ? '#fff' : '#4b5563',
+                      cursor:'pointer',
+                      boxShadow: table.getState().pagination.pageIndex === p
+                        ? '0 3px 8px rgba(30,58,138,0.35)' : '0 1px 3px rgba(0,0,0,0.06)',
+                      transform: table.getState().pagination.pageIndex === p ? 'translateY(-1px)' : 'none',
+                      transition:'all 0.15s',
+                    }}
+                  >{(p as number) + 1}</button>
+                )
+            )
+          }
+
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            style={{
+              display:'inline-flex', alignItems:'center', justifyContent:'center',
+              minWidth:'26px', height:'26px', padding:'0 6px',
+              border:'1.5px solid rgba(0,0,0,0.10)', borderRadius:'7px',
+              background:'#fff', fontSize:'13px', fontWeight:700,
+              color: table.getCanNextPage() ? '#4b5563' : '#d1d5db',
+              cursor: table.getCanNextPage() ? 'pointer' : 'not-allowed',
+              boxShadow:'0 1px 3px rgba(0,0,0,0.06)', transition:'all 0.15s',
+            }}
+          >&#8250;</button>
+        </div>
+      )}
 
       {/* Hint */}
       <div className="setup-table-hint">
@@ -1555,13 +1643,20 @@ function Setup() {
     const modalTitle = modules[modalIdx].title;
 
     if (modalTitle === 'Funds') {
-      return <FundsDetailsTabs />;
+      return <FundsDetailsTabs onRowDoubleClick={(row) => {
+        setFormData(prev => ({ ...prev, ...row }));
+        setIsFormEditable(true);
+      }} />;
     }
 
     return (
       <CustomDataTable 
         data={getTableData(modalTitle)}
         columns={getTableColumns(modalTitle)}
+        onRowDoubleClick={(row) => {
+          setFormData(prev => ({ ...prev, ...row }));
+          setIsFormEditable(true);
+        }}
       />
     );
   };
@@ -1701,10 +1796,7 @@ function Setup() {
                     )}
                   </div>
 
-                  {/* Footer */}
-                  <div className="setup-modal-footer">
-                    Double click to get the selected value
-                  </div>
+
                 </div>
               </div>,
               document.body
@@ -1904,11 +1996,12 @@ function Setup() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
 
-function FundsDetailsTabs() {
+function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Record<string, string | undefined>) => void }) {
   const [activeTab, setActiveTab] = React.useState('funds');
   const [startingDate, setStartingDate] = React.useState<Date | null>(null);
   const [endingDate, setEndingDate] = React.useState<Date | null>(null);
@@ -2095,7 +2188,7 @@ function FundsDetailsTabs() {
             }}
           >
             <div style={{ minWidth: '1100px' }}>
-              <CustomDataTable data={fundsData} columns={fundsColumns} />
+              <CustomDataTable data={fundsData} columns={fundsColumns} onRowDoubleClick={onRowDoubleClick} />
             </div>
           </div>
         )}

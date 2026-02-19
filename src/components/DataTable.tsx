@@ -177,9 +177,9 @@ export default function DataTable({
   const endRecord = Math.min(safePage * pageSize, filteredData.length)
 
   return (
-    <div style={{ padding: isMobile ? '0 12px 16px' : '0 24px 20px', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, padding: isMobile ? '8px 12px' : '10px 20px', width: '100%', boxSizing: 'border-box' }}>
       <style>{`
-        .dt-container { width: 100%; }
+        .dt-container { width: 100%; display: flex; flex-direction: column; flex: 1; min-height: 0; }
 
         /* Controls bar */
         .dt-controls {
@@ -187,8 +187,9 @@ export default function DataTable({
           align-items: center;
           justify-content: space-between;
           gap: 12px;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
           flex-wrap: wrap;
+          flex-shrink: 0;
         }
 
         .dt-controls-left {
@@ -239,16 +240,32 @@ export default function DataTable({
           width: 220px;
         }
 
-        /* Table wrapper */
+        /* Table wrapper — flex to fill space */
         .dt-table-wrap {
           border: 1px solid rgba(0,0,0,0.08);
           border-radius: 8px;
           overflow: hidden;
           background: #fff;
           box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+          flex: 1;
+          min-height: 0;
+          display: flex;
+          flex-direction: column;
         }
 
-        .dt-scroll { overflow-x: auto; }
+        /* Scrollable area — both axes, sticky thead */
+        .dt-scroll {
+          overflow-x: auto;
+          overflow-y: auto;
+          flex: 1;
+          min-height: 0;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(30,58,138,0.30) rgba(0,0,0,0.04);
+        }
+        .dt-scroll::-webkit-scrollbar { width: 7px; height: 7px; }
+        .dt-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); border-radius: 4px; }
+        .dt-scroll::-webkit-scrollbar-thumb { background: rgba(30,58,138,0.28); border-radius: 4px; }
+        .dt-scroll::-webkit-scrollbar-thumb:hover { background: rgba(30,58,138,0.50); }
 
         .dt-table {
           width: 100%;
@@ -259,6 +276,13 @@ export default function DataTable({
         .dt-table thead tr {
           background: #f1f4f9;
           border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        /* Sticky header inside scroll container */
+        .dt-table thead {
+          position: sticky;
+          top: 0;
+          z-index: 2;
         }
 
         .dt-table th {

@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar';
+import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import UserSearchModal from '../components/UserSearchModal';
 import AccountSearchModal from '../components/AccountSearchModal';
@@ -5538,6 +5538,7 @@ function FourCardsWithModal() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

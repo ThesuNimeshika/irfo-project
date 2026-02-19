@@ -77,7 +77,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
     ?.children?.some(c => location.pathname.toLowerCase().startsWith(c.link.toLowerCase())) ?? false;
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-  const iconSize  = isMobile ? 20 : 23;
+  const iconSize  = isMobile ? 16 : 18;
 
   return (
     <>
@@ -103,7 +103,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           justify-content: center;
           width       : calc(100% - 20px);
           margin      : 1px 10px;
-          padding     : 9px 4px 7px;
+          padding     : 7px 4px 5px;
           border-radius: 10px;
           border      : 1px solid transparent;
           background  : transparent;
@@ -113,7 +113,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           color       : #6b7280;
           text-align  : center;
           box-sizing  : border-box;
-          gap         : 4px;
+          gap         : 3px;
           transition  :
             background   0.18s cubic-bezier(0.4,0,0.2,1),
             border-color 0.18s cubic-bezier(0.4,0,0.2,1),
@@ -182,15 +182,15 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           display    : flex;
           align-items: center;
           justify-content: center;
-          width      : 36px;
-          height     : 36px;
-          border-radius: 9px;
+          width      : 28px;
+          height     : 28px;
+          border-radius: 7px;
           background : rgba(241,245,255,0.70);
           border     : 1px solid rgba(200,213,255,0.30);
           margin-bottom: 2px;
           transition : transform 0.18s cubic-bezier(0.4,0,0.2,1),
                        background 0.18s, border-color 0.18s, box-shadow 0.18s;
-          font-size  : var(--sb-icon-size, 20px);
+          font-size  : var(--sb-icon-size, 18px);
           line-height: 1;
           box-shadow : 0 1px 3px rgba(30,58,138,0.06), inset 0 1px 0 rgba(255,255,255,0.90);
         }
@@ -305,13 +305,9 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           display   : block;
         }
 
-        /* ── Scrollbar inside sidebar ── */
-        .sb-shell::-webkit-scrollbar { width: 3px; }
-        .sb-shell::-webkit-scrollbar-track { background: transparent; }
-        .sb-shell::-webkit-scrollbar-thumb {
-          background   : rgba(30,58,138,0.12);
-          border-radius: 4px;
-        }
+        /* ── Scrollbar inside sidebar — hidden ── */
+        .sb-shell { scrollbar-width: none; }
+        .sb-shell::-webkit-scrollbar { display: none; width: 0; }
       `}</style>
 
       {/* ══════════════════════════════════════

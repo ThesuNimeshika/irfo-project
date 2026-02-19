@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar';
+import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import '../App.css';
 import '../Setup.css';
@@ -1033,9 +1033,9 @@ gap: '8px'
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
 
 export default UnitOperations;
-

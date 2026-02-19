@@ -180,23 +180,23 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({ isOpen, onClose, select
           transition:all 0.16s ease; position:relative;
           font-family:'Lato',system-ui,sans-serif; user-select:none;
         }
-        .sc-day:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.10) !important; filter:brightness(0.97); }
+        .sc-day:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(30,58,138,0.18) !important; background:rgba(30,58,138,0.10) !important; border-color:rgba(30,58,138,0.22) !important; }
 
         .sc-nav {
           width:32px; height:32px; border-radius:8px;
-          border:1.5px solid rgba(30,58,138,0.14);
-          background:rgba(255,255,255,0.80); color:#1e3a8a;
+          border:1.5px solid rgba(30,58,138,0.22);
+          background:rgba(30,58,138,0.07); color:#1e3a8a;
           font-size:15px; font-weight:700; cursor:pointer;
           display:flex; align-items:center; justify-content:center;
           transition:all 0.15s; backdrop-filter:blur(8px);
         }
-        .sc-nav:hover { background:#1e3a8a; color:#fff; box-shadow:0 4px 12px rgba(30,58,138,0.28); }
+        .sc-nav:hover { background:#1e3a8a; color:#fff; box-shadow:0 4px 14px rgba(30,58,138,0.35); transform:translateY(-1px); }
 
         .sc-entry {
           display:flex; align-items:center; justify-content:space-between;
           padding:9px 11px; border-radius:8px; margin-bottom:5px; transition:all 0.14s;
         }
-        .sc-entry:hover { transform:translateX(2px); }
+        .sc-entry:hover { transform:translateX(2px); background:rgba(30,58,138,0.05); }
 
         .sc-x {
           width:22px; height:22px; border-radius:50%; border:none;
@@ -204,7 +204,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({ isOpen, onClose, select
           font-size:15px; cursor:pointer; display:flex;
           align-items:center; justify-content:center; transition:all 0.14s; flex-shrink:0;
         }
-        .sc-x:hover { background:#fee2e2; color:#b91c1c; }
+        .sc-x:hover { background:#fca5a5; color:#b91c1c; transform:scale(1.15); }
 
         .sc-input {
           width:100%; padding:7px 10px;
@@ -223,26 +223,26 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({ isOpen, onClose, select
           font-family:'Lato',system-ui,sans-serif;
           box-shadow:0 2px 8px rgba(30,58,138,0.22);
         }
-        .sc-primary:hover { box-shadow:0 4px 14px rgba(30,58,138,0.36); transform:translateY(-1px); }
+        .sc-primary:hover { background:linear-gradient(135deg,#162d6e,#233d94); box-shadow:0 6px 18px rgba(30,58,138,0.45); transform:translateY(-2px); }
 
         .sc-ghost {
           padding:7px 16px; border-radius:7px;
-          border:1.5px solid rgba(0,0,0,0.10);
-          background:rgba(255,255,255,0.70); color:#4b5563;
+          border:1.5px solid rgba(0,0,0,0.14);
+          background:rgba(248,250,252,0.90); color:#4b5563;
           font-size:12px; font-weight:700; cursor:pointer;
           transition:all 0.14s; font-family:'Lato',system-ui,sans-serif;
         }
-        .sc-ghost:hover { border-color:#1e3a8a; color:#1e3a8a; }
+        .sc-ghost:hover { background:#f1f5f9; border-color:#1e3a8a; color:#1e3a8a; box-shadow:0 2px 8px rgba(30,58,138,0.12); transform:translateY(-1px); }
 
         .sc-hol-btn {
           flex:1; padding:8px 12px; border-radius:7px; cursor:pointer;
           font-size:12px; font-weight:700; transition:all 0.14s;
           font-family:'Lato',system-ui,sans-serif; display:flex;
           align-items:center; justify-content:center; gap:6px;
-          border:1.5px solid rgba(239,68,68,0.22);
-          background:rgba(239,68,68,0.07); color:#b91c1c;
+          border:1.5px solid rgba(239,68,68,0.30);
+          background:rgba(239,68,68,0.08); color:#b91c1c;
         }
-        .sc-hol-btn:hover:not(:disabled) { background:rgba(239,68,68,0.15); }
+        .sc-hol-btn:hover:not(:disabled) { background:#ef4444; color:#fff; border-color:#ef4444; box-shadow:0 4px 12px rgba(239,68,68,0.35); transform:translateY(-1px); }
         .sc-hol-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
         .sc-wkd-btn {
@@ -250,10 +250,10 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({ isOpen, onClose, select
           font-size:12px; font-weight:700; transition:all 0.14s;
           font-family:'Lato',system-ui,sans-serif; display:flex;
           align-items:center; justify-content:center; gap:6px;
-          border:1.5px solid rgba(251,191,36,0.26);
-          background:rgba(251,191,36,0.09); color:#92400e;
+          border:1.5px solid rgba(251,191,36,0.35);
+          background:rgba(251,191,36,0.10); color:#92400e;
         }
-        .sc-wkd-btn:hover:not(:disabled) { background:rgba(251,191,36,0.18); }
+        .sc-wkd-btn:hover:not(:disabled) { background:#f59e0b; color:#fff; border-color:#f59e0b; box-shadow:0 4px 12px rgba(245,158,11,0.38); transform:translateY(-1px); }
         .sc-wkd-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
         .sc-scroll { scrollbar-width:thin; scrollbar-color:rgba(0,0,0,0.08) transparent; }
@@ -337,8 +337,8 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({ isOpen, onClose, select
                 color:'#6b7280', fontSize:18, cursor:'pointer',
                 display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.14s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background='#fee2e2'; e.currentTarget.style.color='#b91c1c'; }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.80)'; e.currentTarget.style.color='#6b7280'; }}
+              onMouseEnter={e => { e.currentTarget.style.background='#ef4444'; e.currentTarget.style.color='#fff'; e.currentTarget.style.borderColor='#ef4444'; }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(239,68,68,0.08)'; e.currentTarget.style.color='#b91c1c'; e.currentTarget.style.borderColor='rgba(239,68,68,0.25)'; }}
             >×</button>
           </div>
 

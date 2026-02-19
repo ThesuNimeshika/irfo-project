@@ -1,0 +1,858 @@
+/* =============================================
+   MODAL LAYOUT FIXES
+   Fixes layout issues for:
+   - Funds Details
+   - Company Details
+   - Unit Fee Codes Details
+   - Agents Details
+   - Agent Commission Definition Details
+   - Assign Agent to Commission Definition Details
+   - Join Sale Agent Details
+   - Product Type Details
+   All modals are now scrollable and fully responsive.
+   ============================================= */
+
+/* ─────────────────────────────────────────────
+   1. MODAL CONTENT — always scrollable vertically
+   The root cause: overflow:hidden clips content.
+   ───────────────────────────────────────────── */
+.setup-modal-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  /* Thin navy scrollbar, matches table scrollbars */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 58, 138, 0.28) rgba(0, 0, 0, 0.04);
+}
+
+.setup-modal-content::-webkit-scrollbar { width: 6px; }
+.setup-modal-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.04); border-radius: 4px; }
+.setup-modal-content::-webkit-scrollbar-thumb { background: rgba(30, 58, 138, 0.28); border-radius: 4px; }
+.setup-modal-content::-webkit-scrollbar-thumb:hover { background: rgba(30, 58, 138, 0.50); }
+
+/* ─────────────────────────────────────────────
+   2. INPUT SECTION — never shrink, always fit width
+   ───────────────────────────────────────────── */
+.setup-input-section {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;   /* allow dropdowns to escape */
+}
+
+/* ─────────────────────────────────────────────
+   3. INPUT GRID — base grid: 4 cols on wide,
+   scales down sensibly. The key fix is removing
+   the aggressive large-screen override that forced
+   2-col layouts (like Agent Commission, JoinSale,
+   UnitFee, ProductType) into 4 cols.
+   ───────────────────────────────────────────── */
+.setup-input-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+/* Mobile: 1 column */
+@media (max-width: 480px) {
+  .setup-input-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Small tablet: 2 columns */
+@media (min-width: 481px) and (max-width: 767px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Medium desktop: 3 columns */
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Wide desktop: 4 columns */
+@media (min-width: 1281px) {
+  .setup-input-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   4. TWO-COLUMN MODAL LAYOUT
+   Used by: UnitFeeCodesSection, AgentCommissionDefinition,
+   AssignAgentToCommission, JointSaleAgent, ProductType.
+   These use inline style gridTemplateColumns:'1fr 1fr'
+   on a wrapper div that sits INSIDE setup-input-grid.
+   We need it to span the full grid AND stay 2 columns.
+   ───────────────────────────────────────────── */
+
+/* Force 2-col wrappers inside setup-input-grid to span full width */
+.setup-input-grid > div[style*="grid-template-columns: 1fr 1fr"],
+.setup-input-grid > div[style*="gridTemplateColumns: '1fr 1fr'"] {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* The inline-grid wrappers themselves: never override to 4 cols */
+.setup-modal-content div[style*="grid-template-columns: 1fr 1fr"]:not(.setup-input-grid) {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  /* Keep 2 cols on medium screens; allow natural override below */
+}
+
+/* On mobile, collapse 2-column modal layouts to 1 column */
+@media (max-width: 480px) {
+  .setup-modal-content div[style*="grid-template-columns: 1fr 1fr"]:not(.setup-input-grid) {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* On small tablet, keep 1 column for outer 2-col layouts */
+@media (min-width: 481px) and (max-width: 767px) {
+  .setup-modal-content div[style*="grid-template-columns: 1fr 1fr"]:not(.setup-input-grid) {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* Remove the aggressive large-screen override from Setup.css that
+   was turning "1fr 1fr" grids into "repeat(4, 1fr)" — this was
+   the main culprit causing the broken layouts */
+@media (min-width: 1281px) {
+  .setup-modal-content [style*="grid-template-columns: 1fr 1fr"]:not(.setup-input-grid) {
+    /* Let the inline style win — do NOT force 4 cols here */
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .setup-modal-content [style*="grid-template-columns: 1fr 1fr 1fr"]:not(.setup-input-grid) {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   5. FUNDS MODAL CONTENT
+   Has 11+ fields flowing in the 4-col grid.
+   The grid already handles it, but the date pickers
+   need full width within their cell.
+   ───────────────────────────────────────────── */
+.setup-input-grid .react-datepicker-wrapper,
+.setup-input-grid .react-datepicker__input-container {
+  width: 100% !important;
+  display: block !important;
+}
+
+.setup-input-grid .date-picker-input {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Fund Type radio group — span full width when in grid */
+.setup-input-grid > div:has(.setup-radio-group) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Suspense account field with inline "A" prefix and button */
+.setup-input-grid .setup-suspense-field-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+/* ─────────────────────────────────────────────
+   6. FUNDS MODAL — Tab section below form
+   The tab panel (Funds / Partly Redemptions / Fund Accounts / GL Account)
+   needs horizontal scroll when table is wide.
+   ───────────────────────────────────────────── */
+.setup-data-table-container {
+  min-height: 200px;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.setup-data-table-content {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 58, 138, 0.28) rgba(0, 0, 0, 0.04);
+}
+
+.setup-data-table-content::-webkit-scrollbar { height: 6px; }
+.setup-data-table-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.04); }
+.setup-data-table-content::-webkit-scrollbar-thumb { background: rgba(30, 58, 138, 0.28); border-radius: 4px; }
+
+/* Ensure tables inside data-table-content are always scrollable */
+.setup-data-table-content .setup-table-scroll,
+.setup-data-table-content .setup-table-wrapper {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Min-width for data tables so they never crush on mobile */
+.setup-single-table,
+.setup-data-table {
+  min-width: 560px;
+}
+
+/* ─────────────────────────────────────────────
+   7. COMPANY DETAILS MODAL
+   The 3-tab layout (Company / Administrator / Email and SMS)
+   needs the tab content area to scroll, not the outer modal.
+   ───────────────────────────────────────────── */
+.setup-company-modal-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+/* Tab content inside Company modal — scrollable */
+.setup-company-modal-content .setup-tab-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 58, 138, 0.28) rgba(0, 0, 0, 0.04);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Company tab — email & SMS two-column grids */
+@media (max-width: 767px) {
+  .setup-email-sms-tab div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .setup-administrator-tab div[style*="grid-template-columns: 1fr 2fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Administrator tab checkbox section — 3 columns collapse nicely */
+.setup-administrator-full-width,
+.setup-three-column-row {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .setup-administrator-full-width,
+  .setup-three-column-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .setup-administrator-full-width,
+  .setup-three-column-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   8. UNIT FEE CODES MODAL
+   Left: TxnType + form fields.  Right: Applicable Funds table.
+   The outer 2-col grid must stay 2-col on desktop;
+   on tablet/mobile it stacks.
+   ───────────────────────────────────────────── */
+
+/* The UnitFeeCodesSection outer wrapper */
+.setup-input-grid > div[style*="marginTop: '32px'"],
+.setup-input-grid > div[style*="margin-top: 32px"] {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
+/* Applicable Funds table inside UnitFee / ProductType:
+   add a max-height and vertical scroll so it never overflows */
+.setup-ash-box table,
+.setup-ash-box div[style*="overflow-x: auto"] {
+  max-height: 280px;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 58, 138, 0.20) rgba(0, 0, 0, 0.04);
+}
+
+/* Applicable Funds table alignment */
+.setup-applicable-funds-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important;
+}
+
+.setup-applicable-funds-table th,
+.setup-applicable-funds-table td {
+  padding: 10px 12px !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  line-height: 1.25 !important;
+}
+
+.setup-applicable-funds-table th {
+  background: #f1f5f9 !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+}
+
+/* Reserve space for the checkbox so headers align with rows */
+.setup-applicable-funds-table th:first-child {
+  padding-left: 36px !important;
+  width: 38% !important;
+}
+
+.setup-applicable-funds-table td:first-child {
+  width: 38% !important;
+  white-space: nowrap !important;
+}
+
+.setup-applicable-funds-table td:first-child input[type="checkbox"] {
+  margin: 0 8px 0 0 !important;
+  vertical-align: middle !important;
+}
+
+.setup-applicable-funds-table td:first-child span {
+  margin-left: 0 !important;
+}
+
+/* Price One / Price Two row — keep inline on wide, stack on narrow */
+@media (max-width: 480px) {
+  .setup-input-grid div[style*="grid-template-columns: 1fr 1fr"]:has(input[placeholder*="Price"]) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   9. AGENTS MODAL
+   8+ fields: Agency, SubAgency, AgentCode, RegNo,
+   Add-Reg button, CalculateCommission, Description,
+   City, District, Residence, JoinedDate, Territory,
+   Report Order By.
+   In the 4-col grid most fit perfectly; the Report
+   Order By box should span full width.
+   ───────────────────────────────────────────── */
+
+/* Report Order By ash-box — span full grid width */
+.setup-input-grid > div:has(input[name="reportOrderBy"]) {
+  grid-column: 1 / -1 !important;
+}
+
+/* Agent "Add reg No as Agent Code" button — full cell width */
+.setup-input-grid .setup-button[style*="backgroundColor: '#10b981'"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────────────────────────
+   10. AGENT COMMISSION DEFINITION &
+       ASSIGN AGENT TO COMMISSION DEFINITION
+   Both use the exact same 2-col outer grid.
+   Left col: Commission Category + Type/Level/Fund boxes.
+   Right col: Agent Type + Period/Amount/Rate box.
+   Each box needs proper scrolling if content is tall.
+   ───────────────────────────────────────────── */
+
+/* ash-box inside Commission Definition — no fixed height */
+.setup-modal-content .setup-ash-box {
+  box-sizing: border-box;
+  width: 100%;
+  overflow: visible;
+}
+
+/* On mobile: the 2-col Commission Definition grid stacks */
+@media (max-width: 767px) {
+  .setup-modal-content div[style*="gridColumn: '1 / -1'"] > div[style*="grid-template-columns: 1fr 1fr"],
+  .setup-modal-content div[style*="grid-column: 1 / -1"] > div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* Period/Amount date inputs — ensure they don't overflow their cells */
+@media (max-width: 480px) {
+  .setup-input-group input[type="date"],
+  .setup-input-group input[type="text"][style*="cursor: 'pointer'"] {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}
+
+/* Period From/To and Amount From/To inner 2-col grids on mobile */
+@media (max-width: 480px) {
+  .setup-ash-box div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   11. JOIN SALE AGENT MODAL
+   Left: Institute section (Agency, Sub Agency, AgentCode).
+   Right: Normal section (Agency, Sub Agency, AgentCode).
+   Bottom: Joint Agent section (full width).
+   The dropdown tables (minWidth: 600px) need horizontal scroll.
+   ───────────────────────────────────────────── */
+
+/* Dropdown table popups inside JoinSaleAgent — allow horizontal scroll */
+.setup-modal-content div[data-table] > div {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 58, 138, 0.20) rgba(0, 0, 0, 0.04);
+}
+
+/* On narrow screens, the popup tables should not exceed viewport */
+@media (max-width: 767px) {
+  .setup-modal-content div[data-table] > div[style*="min-width"],
+  .setup-modal-content div[data-table] > div[style*="minWidth"] {
+    min-width: unset !important;
+    width: calc(100vw - 48px) !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    right: auto !important;
+  }
+}
+
+/* JoinSale outer 2-col grid → on mobile, stack to 1 col */
+@media (max-width: 767px) {
+  .setup-modal-content div[style*="gridColumn: '1 / -1'"] > div[style*="gap: '48px'"],
+  .setup-modal-content div[style*="grid-column: 1 / -1"] > div[style*="gap: 48px"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   12. PRODUCT TYPE MODAL
+   Left: ProductType form (input, active checkbox, description).
+   Right: Applicable Funds table (scrollable).
+   ───────────────────────────────────────────── */
+
+/* Ensure Product Type ash-box doesn't overflow */
+.setup-modal-content .setup-ash-box div[style*="overflow-x: auto"] table {
+  min-width: 200px;
+}
+
+/* On mobile ProductType — stack left/right */
+@media (max-width: 767px) {
+  .setup-modal-content div[style*="gridTemplateColumns: '1fr 1fr'"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   13. ACTION BUTTONS BAR
+   Center-aligned, wraps on mobile, never clips.
+   ───────────────────────────────────────────── */
+.setup-action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .setup-action-buttons {
+    gap: 6px;
+  }
+  .setup-btn {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   14. GLOBAL INLINE-STYLE GRID OVERRIDES
+   The agents of inline styles (gap: '48px', padding: '0')
+   can make the two-col content wider than the modal.
+   This fixes that without touching TSX.
+   ───────────────────────────────────────────── */
+
+/* Any direct child of setup-modal-content that uses a 2-col inline grid */
+.setup-modal-content > .setup-input-section > .setup-input-grid > div[style] {
+  max-width: 100%;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+/* Prevent any inline-grid with gap:48px from exceeding container */
+.setup-modal-content div[style*="gap: '48px'"],
+.setup-modal-content div[style*="gap: 48px"] {
+  max-width: 100%;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+/* ─────────────────────────────────────────────
+   15. RESPONSIVE TABLE CONTAINER IN MODALS
+   Tables inside modals always get a horizontal scrollbar.
+   ───────────────────────────────────────────── */
+.setup-table-scroll {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 58, 138, 0.28) rgba(0, 0, 0, 0.04);
+  max-height: 300px;
+}
+
+@media (max-width: 767px) {
+  .setup-table-scroll {
+    max-height: 200px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   16. SELECT / DROPDOWN — prevent overflow out of grid cell
+   ───────────────────────────────────────────── */
+.setup-input-grid select,
+.setup-input-grid .setup-select-field,
+.setup-input-grid .setup-dropdown-select {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* ─────────────────────────────────────────────
+   17. MODAL CONTAINER — ensure full-screen and no
+   horizontal overflow on any screen size
+   ───────────────────────────────────────────── */
+.setup-modal-container {
+  max-width: 100vw !important;
+  width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* ─────────────────────────────────────────────
+   18. COMPANY TAB NAVIGATION — sticky on scroll
+   ───────────────────────────────────────────── */
+.setup-tab-navigation {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Company tab buttons — wrap text on very small screens */
+@media (max-width: 480px) {
+  .setup-tab-button {
+    font-size: 9px !important;
+    padding: 8px 6px !important;
+    letter-spacing: 0.04em !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   19. FUNDS MODAL — Tab labels inside the data table section
+   The Funds modal has its own inner tab: Funds /
+   Partly Redemptions / Fund Accounts / GL Account.
+   Ensure tabs wrap and table scrolls.
+   ───────────────────────────────────────────── */
+.setup-tabbed-table-section .setup-tab-navigation {
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.setup-tabbed-table-section .setup-tab-button {
+  flex: 1 1 auto;
+  min-width: 80px;
+}
+
+@media (max-width: 480px) {
+  .setup-tabbed-table-section .setup-tab-button {
+    font-size: 9px !important;
+    padding: 7px 4px !important;
+    min-width: 60px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   20. AGENTS MODAL — Registration Number + P button
+   The P button must not stretch the row height.
+   ───────────────────────────────────────────── */
+.setup-input-group > div[style*="display: 'flex'"][style*="gap: '8px'"],
+.setup-input-group > div[style*="display: flex"][style*="gap: 8px"] {
+  align-items: stretch;
+}
+
+/* ─────────────────────────────────────────────
+   21. ADDITIONAL MOBILE POLISH
+   ───────────────────────────────────────────── */
+
+/* Prevent horizontal scroll on setup-modal-overlay */
+.setup-modal-overlay {
+  overflow: hidden;
+}
+
+/* Ensure all text inputs/textareas inside modal dont overflow */
+.setup-modal-content input[type="text"],
+.setup-modal-content input[type="email"],
+.setup-modal-content input[type="date"],
+.setup-modal-content input[type="number"],
+.setup-modal-content textarea,
+.setup-modal-content select {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ash-box inside modal always full width */
+.setup-modal-content .setup-ash-box {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Checkbox label text wraps on mobile */
+@media (max-width: 480px) {
+  .setup-checkbox-label {
+    font-size: 11px;
+    white-space: normal;
+  }
+  .setup-checkbox-container {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   22. FIX: setup-modal-content height calculation
+   The modal is 100vh. Header is ~44px. Footer is ~34px.
+   Content area should fill remaining space and scroll.
+   ───────────────────────────────────────────── */
+.setup-modal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+.setup-modal-header {
+  flex-shrink: 0;
+}
+
+.setup-modal-content {
+  flex: 1;
+  min-height: 0;       /* Critical for flex+overflow-y:auto to work */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* ─────────────────────────────────────────────
+   23. APPLICABLE FUNDS TABLE — UnitFeeCodes & ProductType
+   Fixes: checkbox + code + fund name column alignment.
+   The table uses a custom structure with checkboxes
+   inside the CODE column cell. We need all 3 elements
+   to align perfectly across header and body rows.
+   ───────────────────────────────────────────── */
+
+/* Container for the Applicable Funds section */
+.setup-ash-box {
+  overflow: visible;
+}
+
+/* The table inside Applicable Funds */
+.setup-ash-box table.setup-custom-table,
+.setup-modal-content .setup-ash-box table[style*="border-collapse: 'collapse'"],
+.setup-modal-content .setup-ash-box table[style*="borderCollapse"] {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important;
+}
+
+/* ── Header row ── */
+.setup-modal-content .setup-ash-box thead tr {
+  background: #f1f5f9 !important;
+}
+
+.setup-modal-content .setup-ash-box thead th {
+  padding: 9px 12px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  color: #6b7280 !important;
+  background: #f1f5f9 !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  border-right: 1px solid #e2e8f0 !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+
+.setup-modal-content .setup-ash-box thead th:last-child {
+  border-right: none !important;
+}
+
+/* ── Body rows ── */
+.setup-modal-content .setup-ash-box tbody tr {
+  border-bottom: 1px solid #f1f5f9 !important;
+  transition: background 0.12s !important;
+}
+
+.setup-modal-content .setup-ash-box tbody tr:last-child {
+  border-bottom: none !important;
+}
+
+.setup-modal-content .setup-ash-box tbody tr:hover {
+  background: #f8faff !important;
+}
+
+/* ── Body cells ── */
+.setup-modal-content .setup-ash-box tbody td {
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  color: #1f2937 !important;
+  border-right: 1px solid #f1f5f9 !important;
+  vertical-align: middle !important;
+  text-align: left !important;
+}
+
+.setup-modal-content .setup-ash-box tbody td:last-child {
+  border-right: none !important;
+}
+
+/* ── Column widths: checkbox+code col vs fund name col ──
+   The CODE column contains: [checkbox] [code text]
+   Give it a fixed width so Fund Name gets the rest.      */
+.setup-modal-content .setup-ash-box table colgroup col:first-child,
+.setup-modal-content .setup-ash-box thead th:first-child,
+.setup-modal-content .setup-ash-box tbody td:first-child {
+  width: 42% !important;
+  min-width: 100px !important;
+}
+
+.setup-modal-content .setup-ash-box table colgroup col:last-child,
+.setup-modal-content .setup-ash-box thead th:last-child,
+.setup-modal-content .setup-ash-box tbody td:last-child {
+  width: 58% !important;
+}
+
+/* ── Checkbox + code inline in first column ──
+   The cell has: <checkbox> <span>CODE</span>
+   These must be perfectly center-aligned horizontally. */
+.setup-modal-content .setup-ash-box tbody td:first-child > div,
+.setup-modal-content .setup-ash-box tbody td div[style*="display: flex"] {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
+}
+
+/* Checkbox inside the code cell */
+.setup-modal-content .setup-ash-box tbody td input[type="checkbox"] {
+  width: 15px !important;
+  height: 15px !important;
+  min-width: 15px !important;
+  flex-shrink: 0 !important;
+  accent-color: #1e3a8a !important;
+  cursor: pointer !important;
+  border-radius: 3px !important;
+  border: 1.5px solid #94a3b8 !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* Code text next to checkbox */
+.setup-modal-content .setup-ash-box tbody td:first-child span,
+.setup-modal-content .setup-ash-box tbody td div span {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #1e3a8a !important;
+  font-family: 'Lato', system-ui, sans-serif !important;
+  white-space: nowrap !important;
+}
+
+/* Fund name text in second column */
+.setup-modal-content .setup-ash-box tbody td:last-child {
+  font-size: 12px !important;
+  color: #374151 !important;
+  font-weight: 400 !important;
+}
+
+/* ── Header alignment to match body ──
+   The header CODE column needs left padding that visually
+   aligns the "CODE" label with the code text (after checkbox). */
+.setup-modal-content .setup-ash-box thead th:first-child {
+  /* ~15px checkbox + 10px gap = 25px offset */
+  padding-left: 37px !important;
+}
+
+/* ── Scroll wrapper for the table ── */
+.setup-modal-content .setup-ash-box > div[style*="overflow"] {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  max-height: 260px !important;
+  border-radius: 6px !important;
+  border: 1px solid #e2e8f0 !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(30, 58, 138, 0.20) rgba(0, 0, 0, 0.04) !important;
+}
+
+.setup-modal-content .setup-ash-box > div[style*="overflow"]::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.setup-modal-content .setup-ash-box > div[style*="overflow"]::-webkit-scrollbar-thumb {
+  background: rgba(30, 58, 138, 0.22);
+  border-radius: 4px;
+}
+
+/* ── Label above the table ("Applicable Funds") ── */
+.setup-modal-content .setup-ash-box .setup-input-label[style*="fontWeight: 600"],
+.setup-modal-content .setup-ash-box .setup-input-label[style*="font-weight: 600"] {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: #374151 !important;
+  margin-bottom: 10px !important;
+  display: block !important;
+}
+
+/* ── Responsive: on mobile, applicable funds table scrolls horizontally ── */
+@media (max-width: 767px) {
+  .setup-modal-content .setup-ash-box > div[style*="overflow"] {
+    max-height: 200px !important;
+  }
+  .setup-modal-content .setup-ash-box thead th:first-child {
+    padding-left: 12px !important; /* reset offset on mobile */
+  }
+  .setup-modal-content .setup-ash-box table {
+    min-width: 240px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   IMPORT INSTRUCTIONS
+   Add this line at the END of your CSS import
+   list in App.tsx (after glass-overrides.css):
+
+     import './modal-layout-fixes.css';
+
+   Place this file in the same directory as Setup.css.
+   ───────────────────────────────────────────── */

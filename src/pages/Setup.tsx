@@ -227,19 +227,19 @@ interface FormData {
   agentCommissionAmountFrom: string;
   agentCommissionAmountTo: string;
   agentCommissionRate: string;
-    // Joint Sale Agent fields
-    jointAgency: string;
-    jointSubAgency: string;
-    jointAgentCode: string;
-    jointAgentDescription: string;
-    nameAgency: string;
-    nameSubAgency: string;
-    nameAgentCode: string;
-    // Product Type fields
-    productType: string;
-    productTypeActive: boolean;
-    productTypeDescription: string;
-    
+  // Joint Sale Agent fields
+  jointAgency: string;
+  jointSubAgency: string;
+  jointAgentCode: string;
+  jointAgentDescription: string;
+  nameAgency: string;
+  nameSubAgency: string;
+  nameAgentCode: string;
+  // Product Type fields
+  productType: string;
+  productTypeActive: boolean;
+  productTypeDescription: string;
+
 }
 
 // ========================================
@@ -268,13 +268,13 @@ const moduleData = [
   { title: 'Commision Type', icon: '📊' },
   { title: 'Commission Level', icon: '📈' },
   { title: 'Agent Commission Definition', icon: '💰' },
-  { title: 'Assign Agent to Commission Definition', icon: '👥' }, 
+  { title: 'Assign Agent to Commission Definition', icon: '👥' },
   { title: 'Institution Category', icon: '🏛️' },
   { title: 'Documents Setup', icon: '📄' },
   { title: 'Institution', icon: '🏫' },
   { title: 'Blocking Category', icon: '🚫' },
   { title: 'Customer Zone', icon: '🌐' },
-  { title: 'Join Sale Agent', icon: '🤝' }, 
+  { title: 'Join Sale Agent', icon: '🤝' },
   { title: 'Complience MSG Setup', icon: '💬' },
   { title: 'Product Type', icon: '📦' },
   { title: 'Title', icon: '🔔' },
@@ -360,38 +360,38 @@ const tableData = {
     { agency: 'AG002', subAgencyCode: 'SA002', subAgencyDescription: 'Uptown Branch' }
   ],
   Agents: [
-    { 
-      agency: 'AG001', 
-      subAgency: 'SA001', 
-      agentCode: 'AGT001', 
-      registrationNumber: 'REG001', 
-      description: 'John Smith', 
-      city: 'Colombo', 
-      district: 'Western', 
-      residence: 'Residence', 
-      agentType: 'Non-Institution', 
-      calculateCommission: 'Percentage', 
-      joinedDate: '2023-01-15', 
-      territory: 'Western Province' 
+    {
+      agency: 'AG001',
+      subAgency: 'SA001',
+      agentCode: 'AGT001',
+      registrationNumber: 'REG001',
+      description: 'John Smith',
+      city: 'Colombo',
+      district: 'Western',
+      residence: 'Residence',
+      agentType: 'Non-Institution',
+      calculateCommission: 'Percentage',
+      joinedDate: '2023-01-15',
+      territory: 'Western Province'
     },
-    { 
-      agency: 'AG002', 
-      subAgency: 'SA002', 
-      agentCode: 'AGT002', 
-      registrationNumber: 'REG002', 
-      description: 'Sarah Johnson', 
-      city: 'Kandy', 
-      district: 'Central', 
-      residence: 'Non-Residence', 
-      agentType: 'Institution', 
-      calculateCommission: 'Fixed Amount', 
-      joinedDate: '2023-03-20', 
-      territory: 'Central Province' 
+    {
+      agency: 'AG002',
+      subAgency: 'SA002',
+      agentCode: 'AGT002',
+      registrationNumber: 'REG002',
+      description: 'Sarah Johnson',
+      city: 'Kandy',
+      district: 'Central',
+      residence: 'Non-Residence',
+      agentType: 'Institution',
+      calculateCommission: 'Fixed Amount',
+      joinedDate: '2023-03-20',
+      territory: 'Central Province'
     }
   ],
   Territory: [
-    { code: 'T001', name: 'North Region'},
-    { code: 'T002', name: 'South Region'}
+    { code: 'T001', name: 'North Region' },
+    { code: 'T002', name: 'South Region' }
   ],
   'Commision Type': [
     { type: 'Flat Rate', description: 'Fixed commission per transaction' },
@@ -404,10 +404,10 @@ const tableData = {
     { commissionLevel: 'CL004', description: 'Executive Level Commission - Highest commission tier for elite agents' }
   ],
   'Agent Commission Definition': [
-    { 
-      commissionCategory: 'Investment Wise Commission', 
-      commissionType: 'Flat Rate', 
-      commissionLevel: 'Entry Level', 
+    {
+      commissionCategory: 'Investment Wise Commission',
+      commissionType: 'Flat Rate',
+      commissionLevel: 'Entry Level',
       fund: 'Growth Fund',
       agentType: 'Agency Wise',
       periodFrom: '2024-01-01',
@@ -416,10 +416,10 @@ const tableData = {
       amountTo: '10000',
       commissionRate: '2.5%'
     },
-    { 
-      commissionCategory: 'Trailer Fee', 
-      commissionType: 'Percentage', 
-      commissionLevel: 'Senior Level', 
+    {
+      commissionCategory: 'Trailer Fee',
+      commissionType: 'Percentage',
+      commissionLevel: 'Senior Level',
       fund: 'Income Fund',
       agentType: 'Agent Wise',
       periodFrom: '2024-01-01',
@@ -428,10 +428,10 @@ const tableData = {
       amountTo: '50000',
       commissionRate: '1.5%'
     },
-    { 
-      commissionCategory: 'Investment Wise Commission', 
-      commissionType: 'Percentage', 
-      commissionLevel: 'Executive Level', 
+    {
+      commissionCategory: 'Investment Wise Commission',
+      commissionType: 'Percentage',
+      commissionLevel: 'Executive Level',
       fund: 'Balanced Fund',
       agentType: 'Sub Agency Wise',
       periodFrom: '2024-01-01',
@@ -442,20 +442,20 @@ const tableData = {
     }
   ],
   'Assign Agent to Commission Definition': [
-    { 
-      Agency: 'Investment Wise Commission', 
-      SubAgency: 'Flat Rate', 
+    {
+      Agency: 'Investment Wise Commission',
+      SubAgency: 'Flat Rate',
       Agent: 'Entry Level'
 
     },
-    { 
-      Agency: 'Investment Wise Commission', 
-      SubAgency: 'Flat Rate', 
+    {
+      Agency: 'Investment Wise Commission',
+      SubAgency: 'Flat Rate',
       Agent: 'Entry Level'
     },
-    { 
-      Agency: 'Investment Wise Commission', 
-      SubAgency: 'Flat Rate', 
+    {
+      Agency: 'Investment Wise Commission',
+      SubAgency: 'Flat Rate',
       Agent: 'Entry Level'
     }
   ],
@@ -466,10 +466,10 @@ const tableData = {
     { institutionCategory: 'Brokerage', active: 'No', description: 'Stock brokerage firms and trading platforms' }
   ],
   'Institution': [
-    { 
-      institutionCode: 'IC001', 
-      status: 'Active', 
-      institutionCategory: 'Bank', 
+    {
+      institutionCode: 'IC001',
+      status: 'Active',
+      institutionCategory: 'Bank',
       institutionName: 'First National Bank',
       address1: '123 Main Street',
       address2: 'Suite 100',
@@ -477,10 +477,10 @@ const tableData = {
       contactPerson: 'John Smith',
       contactNo: '+1-555-0123'
     },
-    { 
-      institutionCode: 'IC002', 
-      status: 'Active', 
-      institutionCategory: 'Insurance', 
+    {
+      institutionCode: 'IC002',
+      status: 'Active',
+      institutionCategory: 'Insurance',
       institutionName: 'Metro Insurance Co.',
       address1: '456 Business Ave',
       address2: 'Floor 5',
@@ -488,10 +488,10 @@ const tableData = {
       contactPerson: 'Sarah Johnson',
       contactNo: '+1-555-0456'
     },
-    { 
-      institutionCode: 'IC003', 
-      status: 'Inactive', 
-      institutionCategory: 'Investment', 
+    {
+      institutionCode: 'IC003',
+      status: 'Inactive',
+      institutionCategory: 'Investment',
       institutionName: 'Global Investment Ltd.',
       address1: '789 Finance Blvd',
       address2: 'Tower A',
@@ -530,7 +530,7 @@ const tableData = {
       agentDescription: 'Sarah Johnson'
     },
   ],
-  
+
   'Complience MSG Setup': [
     { position: 'Manager', user: 'John Smith' },
     { position: 'Supervisor', user: 'Sarah Johnson' },
@@ -540,9 +540,9 @@ const tableData = {
     { position: 'Specialist', user: 'Lisa Anderson' }
   ],
   'Product Type': [
-    { 
-      ProductType: 'Investment Wise Commission', 
-      Description: 'Unit Trust', 
+    {
+      ProductType: 'Investment Wise Commission',
+      Description: 'Unit Trust',
       Active: 'Y'
 
     },
@@ -567,8 +567,8 @@ const modules = moduleData.map(m => ({
 // ========================================
 
 // Custom DataTable Component for displaying table data
-function CustomDataTable({ data, columns, onRowDoubleClick }: { 
-  data: Record<string, string | undefined>[], 
+function CustomDataTable({ data, columns, onRowDoubleClick }: {
+  data: Record<string, string | undefined>[],
   columns: string[],
   onRowDoubleClick?: (row: Record<string, string | undefined>) => void
 }) {
@@ -585,57 +585,57 @@ function CustomDataTable({ data, columns, onRowDoubleClick }: {
   const columnHelper = createColumnHelper<Record<string, string | undefined>>();
 
   const tableColumns = columns.map((column) =>
-      columnHelper.accessor(column, {
-        header: column === 'code' ? 'Code' : 
-                column === 'description' ? 'Description' : 
-                column === 'address' ? 'Address' : 
-                column === 'district' ? 'District' : 
-                column === 'swiftCode' ? 'Swift Code' : 
-                column === 'branchNo' ? 'Branch No' : 
-                column === 'institutionCode' ? 'Institution Code' : 
-                column === 'status' ? 'Status' : 
-                column === 'institutionCategory' ? 'Institution Category' : 
-                column === 'institutionName' ? 'Institution Name' : 
-                column === 'address1' ? 'Address 1' : 
-                column === 'address2' ? 'Address 2' : 
-                column === 'address3' ? 'Address 3' : 
-                column === 'contactPerson' ? 'Contact Person' : 
-                column === 'contactNo' ? 'Contact No' : 
-                column === 'active' ? 'Active' : 
-                column === 'blockingCategory' ? 'Blocking Category' : 
-                column === 'zoneCode' ? 'Zone Code' : 
-                column === 'position' ? 'Position' : 
-                column === 'user' ? 'User' : 
-                column === 'titleCode' ? 'Title Code' : 
-                column === 'feeCode' ? 'Fee Code' : 
-                column === 'percentage' ? 'Percentage' : 
-                column === 'ageFrom' ? 'Age From' : 
-                column === 'ageTo' ? 'Age To' : 
-                column === 'unitFee' ? 'Unit Fee' : 
-                column === 'holderType' ? 'Holder Type' : 
-                column === 'fundCode' ? 'Fund_Code' :
-                column === 'fundName' ? 'Fund_Name' :
-                column === 'fundManager' ? 'Fund_Manager' :
-                column === 'launch' ? 'Launch' :
-                column === 'minNoOfUnitInvest' ? 'Min No Of unit invest' :
-                column === 'minValueInvest' ? 'Min value invest' :
-                column === 'ipoStartingDate' ? 'IPO Starting date' :
-                column === 'ipoEndingDate' ? 'IPO Ending date' :
-                column === 'fundType' ? 'Fund Type' :
-                column === 'trusteeCode' ? 'Trustee code' :
-                column === 'maturityDate' ? 'Maturity date' :
-                column === 'certificateType' ? 'Certificate type' :
-                column === 'custodianCode' ? 'Custodian Code' :
-                column === 'suspendAccount' ? 'Suspend account' :
-                column === 'managementAccount' ? 'Management account' :
-                column === 'registrarAccount' ? 'Registrar account' :
-                column === 'trustyAccount' ? 'Trusty account' :
-                column === 'tinNo' ? 'Tin_no' :
-                column.replace(/([A-Z])/g, ' $1').trim(),
-        cell: (info) => (
-          <span className="text-gray-900">{info.getValue()}</span>
-        ),
-      })
+    columnHelper.accessor(column, {
+      header: column === 'code' ? 'Code' :
+        column === 'description' ? 'Description' :
+          column === 'address' ? 'Address' :
+            column === 'district' ? 'District' :
+              column === 'swiftCode' ? 'Swift Code' :
+                column === 'branchNo' ? 'Branch No' :
+                  column === 'institutionCode' ? 'Institution Code' :
+                    column === 'status' ? 'Status' :
+                      column === 'institutionCategory' ? 'Institution Category' :
+                        column === 'institutionName' ? 'Institution Name' :
+                          column === 'address1' ? 'Address 1' :
+                            column === 'address2' ? 'Address 2' :
+                              column === 'address3' ? 'Address 3' :
+                                column === 'contactPerson' ? 'Contact Person' :
+                                  column === 'contactNo' ? 'Contact No' :
+                                    column === 'active' ? 'Active' :
+                                      column === 'blockingCategory' ? 'Blocking Category' :
+                                        column === 'zoneCode' ? 'Zone Code' :
+                                          column === 'position' ? 'Position' :
+                                            column === 'user' ? 'User' :
+                                              column === 'titleCode' ? 'Title Code' :
+                                                column === 'feeCode' ? 'Fee Code' :
+                                                  column === 'percentage' ? 'Percentage' :
+                                                    column === 'ageFrom' ? 'Age From' :
+                                                      column === 'ageTo' ? 'Age To' :
+                                                        column === 'unitFee' ? 'Unit Fee' :
+                                                          column === 'holderType' ? 'Holder Type' :
+                                                            column === 'fundCode' ? 'Fund_Code' :
+                                                              column === 'fundName' ? 'Fund_Name' :
+                                                                column === 'fundManager' ? 'Fund_Manager' :
+                                                                  column === 'launch' ? 'Launch' :
+                                                                    column === 'minNoOfUnitInvest' ? 'Min No Of unit invest' :
+                                                                      column === 'minValueInvest' ? 'Min value invest' :
+                                                                        column === 'ipoStartingDate' ? 'IPO Starting date' :
+                                                                          column === 'ipoEndingDate' ? 'IPO Ending date' :
+                                                                            column === 'fundType' ? 'Fund Type' :
+                                                                              column === 'trusteeCode' ? 'Trustee code' :
+                                                                                column === 'maturityDate' ? 'Maturity date' :
+                                                                                  column === 'certificateType' ? 'Certificate type' :
+                                                                                    column === 'custodianCode' ? 'Custodian Code' :
+                                                                                      column === 'suspendAccount' ? 'Suspend account' :
+                                                                                        column === 'managementAccount' ? 'Management account' :
+                                                                                          column === 'registrarAccount' ? 'Registrar account' :
+                                                                                            column === 'trustyAccount' ? 'Trusty account' :
+                                                                                              column === 'tinNo' ? 'Tin_no' :
+                                                                                                column.replace(/([A-Z])/g, ' $1').trim(),
+      cell: (info) => (
+        <span className="text-gray-900">{info.getValue()}</span>
+      ),
+    })
   );
 
   const table = useReactTable({
@@ -705,7 +705,7 @@ function CustomDataTable({ data, columns, onRowDoubleClick }: {
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                     {header.column.getIsSorted() === 'asc' ? ' ▲' :
-                     header.column.getIsSorted() === 'desc' ? ' ▼' : ''}
+                      header.column.getIsSorted() === 'desc' ? ' ▼' : ''}
                   </th>
                 ))}
               </tr>
@@ -762,45 +762,45 @@ function CustomDataTable({ data, columns, onRowDoubleClick }: {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
             style={{
-              display:'inline-flex', alignItems:'center', justifyContent:'center',
-              minWidth:'26px', height:'26px', padding:'0 6px',
-              border:'1.5px solid rgba(0,0,0,0.10)', borderRadius:'7px',
-              background:'#fff', fontSize:'13px', fontWeight:700,
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              minWidth: '26px', height: '26px', padding: '0 6px',
+              border: '1.5px solid rgba(0,0,0,0.10)', borderRadius: '7px',
+              background: '#fff', fontSize: '13px', fontWeight: 700,
               color: table.getCanPreviousPage() ? '#4b5563' : '#d1d5db',
               cursor: table.getCanPreviousPage() ? 'pointer' : 'not-allowed',
-              boxShadow:'0 1px 3px rgba(0,0,0,0.06)', transition:'all 0.15s',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', transition: 'all 0.15s',
             }}
           >&#8249;</button>
 
           {Array.from({ length: table.getPageCount() }, (_, i) => i)
             .filter(p => p === 0 || p === table.getPageCount() - 1 || Math.abs(p - table.getState().pagination.pageIndex) <= 1)
             .reduce((acc, p, i, arr) => {
-              if (i > 0 && typeof arr[i-1] === 'number' && p - (arr[i-1] as number) > 1) acc.push('...');
+              if (i > 0 && typeof arr[i - 1] === 'number' && p - (arr[i - 1] as number) > 1) acc.push('...');
               acc.push(p);
               return acc;
-            }, [] as (number|string)[])
+            }, [] as (number | string)[])
             .map((p, i) =>
               p === '...'
-                ? <span key={'e'+i} style={{ padding:'0 2px', color:'#9ca3af', fontSize:11 }}>…</span>
+                ? <span key={'e' + i} style={{ padding: '0 2px', color: '#9ca3af', fontSize: 11 }}>…</span>
                 : (
                   <button
                     key={p}
                     onClick={() => table.setPageIndex(p as number)}
                     style={{
-                      display:'inline-flex', alignItems:'center', justifyContent:'center',
-                      minWidth:'26px', height:'26px', padding:'0 6px',
-                      border:'1.5px solid',
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      minWidth: '26px', height: '26px', padding: '0 6px',
+                      border: '1.5px solid',
                       borderColor: table.getState().pagination.pageIndex === p ? '#1e3a8a' : 'rgba(0,0,0,0.10)',
-                      borderRadius:'7px',
+                      borderRadius: '7px',
                       background: table.getState().pagination.pageIndex === p
                         ? 'linear-gradient(135deg,#1e3a8a,#2e4fad)' : '#fff',
-                      fontSize:'11px', fontWeight:700,
+                      fontSize: '11px', fontWeight: 700,
                       color: table.getState().pagination.pageIndex === p ? '#fff' : '#4b5563',
-                      cursor:'pointer',
+                      cursor: 'pointer',
                       boxShadow: table.getState().pagination.pageIndex === p
                         ? '0 3px 8px rgba(30,58,138,0.35)' : '0 1px 3px rgba(0,0,0,0.06)',
                       transform: table.getState().pagination.pageIndex === p ? 'translateY(-1px)' : 'none',
-                      transition:'all 0.15s',
+                      transition: 'all 0.15s',
                     }}
                   >{(p as number) + 1}</button>
                 )
@@ -811,13 +811,13 @@ function CustomDataTable({ data, columns, onRowDoubleClick }: {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             style={{
-              display:'inline-flex', alignItems:'center', justifyContent:'center',
-              minWidth:'26px', height:'26px', padding:'0 6px',
-              border:'1.5px solid rgba(0,0,0,0.10)', borderRadius:'7px',
-              background:'#fff', fontSize:'13px', fontWeight:700,
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              minWidth: '26px', height: '26px', padding: '0 6px',
+              border: '1.5px solid rgba(0,0,0,0.10)', borderRadius: '7px',
+              background: '#fff', fontSize: '13px', fontWeight: 700,
               color: table.getCanNextPage() ? '#4b5563' : '#d1d5db',
               cursor: table.getCanNextPage() ? 'pointer' : 'not-allowed',
-              boxShadow:'0 1px 3px rgba(0,0,0,0.06)', transition:'all 0.15s',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', transition: 'all 0.15s',
             }}
           >&#8250;</button>
         </div>
@@ -839,7 +839,7 @@ function Setup() {
   // ========================================
   // STATE MANAGEMENT
   // ========================================
-  
+
   // TODO: Replace with API call to fetch initial form data
   // API Endpoint: GET /api/setup/form-data/{module}
   const [formData, setFormData] = useState<FormData>({
@@ -1045,18 +1045,18 @@ function Setup() {
     agentCommissionAmountFrom: '',
     agentCommissionAmountTo: '',
     agentCommissionRate: '',
-        // Joint Sale Agent fields
-        jointAgency: '',
-        jointSubAgency: '',
-        jointAgentCode: '',
-        jointAgentDescription: '',
-        nameAgency: '',
-        nameSubAgency: '',
-        nameAgentCode: '',
-        // Product Type fields
-        productType: '',
-        productTypeActive: false,
-        productTypeDescription: '',
+    // Joint Sale Agent fields
+    jointAgency: '',
+    jointSubAgency: '',
+    jointAgentCode: '',
+    jointAgentDescription: '',
+    nameAgency: '',
+    nameSubAgency: '',
+    nameAgentCode: '',
+    // Product Type fields
+    productType: '',
+    productTypeActive: false,
+    productTypeDescription: '',
   });
 
   // Reset form data function
@@ -1277,18 +1277,18 @@ function Setup() {
       agentCommissionAmountFrom: '',
       agentCommissionAmountTo: '',
       agentCommissionRate: '',
-          // Joint Sale Agent fields
-    jointAgency: '',
-    jointSubAgency: '',
-    jointAgentCode: '',
-    jointAgentDescription: '',
-    nameAgency: '',
-    nameSubAgency: '',
-    nameAgentCode: '',
-    // Product Type fields
-    productType: '',
-    productTypeActive: false,
-    productTypeDescription: '',
+      // Joint Sale Agent fields
+      jointAgency: '',
+      jointSubAgency: '',
+      jointAgentCode: '',
+      jointAgentDescription: '',
+      nameAgency: '',
+      nameSubAgency: '',
+      nameAgentCode: '',
+      // Product Type fields
+      productType: '',
+      productTypeActive: false,
+      productTypeDescription: '',
     });
   };
 
@@ -1304,18 +1304,18 @@ function Setup() {
   // ========================================
 
   // Handle window resize for responsive design
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setIsMobile(width <= 768);
-    };
+  const handleResize = () => {
+    const width = window.innerWidth;
+    setIsMobile(width <= 768);
+  };
 
   // Handle input field changes
   // TODO: Add validation and API call for real-time validation
   // API Endpoint: POST /api/setup/validate-field
   const handleInputChange = (field: string, value: string | string[] | boolean) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      [field]: value 
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
     }));
   };
 
@@ -1406,50 +1406,53 @@ function Setup() {
       <div className="setup-input-section">
         <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
           {modalTitle === 'Bank' && (
-            <BankModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <BankModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Transaction Type' && (
-            <TransactionTypeModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <TransactionTypeModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Trustees' && (
-            <TrusteesModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <TrusteesModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Custodian' && (
-            <CustodianModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
+            <CustodianModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Postal Area' && (
-            <PostalAreaModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
+            <PostalAreaModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Dividend Type' && (
-            <DividendTypeModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
+            <DividendTypeModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Company' && (
             <div style={{ width: '100%', maxWidth: '100%', gridColumn: '1 / -1' }}>
-              <CompanyDetailsTabs 
-                formData={formData} 
-                handleInputChange={handleInputChange} 
-                isFormEditable={isFormEditable} 
+              <CompanyDetailsTabs
+                formData={formData}
+                handleInputChange={handleInputChange}
+                isFormEditable={isFormEditable}
                 isMobile={isMobile}
                 handleNewButtonClick={handleNewButtonClick}
                 handleSave={handleSave}
@@ -1460,170 +1463,170 @@ function Setup() {
             </div>
           )}
           {modalTitle === 'Funds' && (
-            <FundsModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
+            <FundsModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
               handleDateChange={handleDateChange}
-              isFormEditable={isFormEditable} 
+              isFormEditable={isFormEditable}
               setSuspenseModalOpen={setSuspenseModalOpen}
             />
           )}
           {modalTitle === 'Promotional Activity' && (
-            <PromotionalActivityModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
+            <PromotionalActivityModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
               isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Other Charges' && (
-            <OtherChargesModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
+            <OtherChargesModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
               handleDateChange={handleDateChange}
               isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Unit Fee Codes' && (
-            <UnitFeeCodesSection 
+            <UnitFeeCodesSection
               formData={formData}
               handleInputChange={handleInputChange}
               isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Documents Setup' && (
-            <DocumentsSetupModalContent 
+            <DocumentsSetupModalContent
               formData={formData}
               handleInputChange={handleInputChange}
               isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Agency Type' && (
-            <AgencyTypeModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <AgencyTypeModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Agency' && (
-            <AgencyModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <AgencyModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Sub Agency' && (
-            <SubAgencyModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <SubAgencyModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Agents' && (
-            <AgentModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <AgentModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Commision Type' && (
-            <CommissionTypeModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <CommissionTypeModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Commission Level' && (
-            <CommissionLevelModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
+            <CommissionLevelModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
               isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Agent Commission Definition' && (
-            <AgentCommissionDefinitionModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              handleDateChange={handleDateChange}
-              isFormEditable={isFormEditable}
-            />
-          )}
-          {modalTitle === 'Assign Agent to Commission Definition' && (
-            <AgentCommissionDefinitionModalContent 
-              formData={formData} 
+            <AgentCommissionDefinitionModalContent
+              formData={formData}
               handleInputChange={handleInputChange}
               handleDateChange={handleDateChange}
               isFormEditable={isFormEditable}
             />
           )}
-            {modalTitle === 'Territory' && (
-            <TerritoryModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+          {modalTitle === 'Assign Agent to Commission Definition' && (
+            <AgentCommissionDefinitionModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              handleDateChange={handleDateChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Territory' && (
+            <TerritoryModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Institution' && (
-            <InstitutionModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <InstitutionModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Institution Category' && (
-            <InstitutionCategoryModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <InstitutionCategoryModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
           {modalTitle === 'Blocking Category' && (
-            <BlockingCategoryModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <BlockingCategoryModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
-                      {modalTitle === 'Customer Zone' && (
-              <CustomerZoneModalContent 
-                formData={formData} 
-                handleInputChange={handleInputChange} 
-                isFormEditable={isFormEditable} 
-              />
-            )}
-            {modalTitle === 'Join Sale Agent' && (
-              <JointSaleAgentModalContent
-                formData={formData} 
-                handleInputChange={handleInputChange}
-                isFormEditable={isFormEditable}
-              />
-            )}
-            {modalTitle === 'Complience MSG Setup' && (
-              <ComplianceMsgSetupModalContent 
-                formData={formData} 
-                handleInputChange={handleInputChange} 
-                isFormEditable={isFormEditable} 
-              />
-            )}
-            {modalTitle === 'Title' && (
-              <TitleModalContent 
-                formData={formData} 
-                handleInputChange={handleInputChange} 
-                isFormEditable={isFormEditable} 
-              />
-            )}
-            {modalTitle === 'Product Type' && (
-  <ProductTypeModalContent 
-    formData={formData} 
-    handleInputChange={handleInputChange}
-    isFormEditable={isFormEditable}
-  />
-)}
+          {modalTitle === 'Customer Zone' && (
+            <CustomerZoneModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Join Sale Agent' && (
+            <JointSaleAgentModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Complience MSG Setup' && (
+            <ComplianceMsgSetupModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Title' && (
+            <TitleModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Product Type' && (
+            <ProductTypeModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
           {/* Default Bank modal for other modules */}
           {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title', 'Join Sale Agent', 'Product Type'].includes(modalTitle) && (
-            <BankModalContent 
-              formData={formData} 
-              handleInputChange={handleInputChange} 
-              isFormEditable={isFormEditable} 
+            <BankModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
             />
           )}
         </div>
@@ -1650,7 +1653,7 @@ function Setup() {
     }
 
     return (
-      <CustomDataTable 
+      <CustomDataTable
         data={getTableData(modalTitle)}
         columns={getTableColumns(modalTitle)}
         onRowDoubleClick={(row) => {
@@ -1701,7 +1704,7 @@ function Setup() {
                       handleModalOpen(idx);
                     }
                   }}
-                  onKeyDown={e => { 
+                  onKeyDown={e => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       if (mod.title === 'System Calendar') {
                         setSystemCalendarOpen(true);
@@ -1716,7 +1719,7 @@ function Setup() {
                 </div>
               ))}
             </div>
-            
+
             {/* Comprehensive Modal */}
             {modalIdx !== null && createPortal(
               <div className={`setup-modal-overlay ${isMobile ? 'mobile' : ''}`}
@@ -1731,13 +1734,13 @@ function Setup() {
                       <span className="setup-modal-header-icon">{modules[modalIdx].icon}</span>
                       <span className="setup-modal-header-title">{modules[modalIdx].title} Details</span>
                     </div>
-                  <button
-                    onClick={() => setModalIdx(null)}
-                    className="setup-modal-close-btn"
-                  >
-                    ×
-                  </button>
-                </div>
+                    <button
+                      onClick={() => setModalIdx(null)}
+                      className="setup-modal-close-btn"
+                    >
+                      ×
+                    </button>
+                  </div>
 
                   {/* Content */}
                   <div className="setup-modal-content">
@@ -2007,18 +2010,18 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
   const [endingDate, setEndingDate] = React.useState<Date | null>(null);
   // Define the columns and data for the Funds tab
   const fundsColumns = [
-    'fundCode', 'fundName', 'fundManager', 'launch', 'minNoOfUnitInvest', 'minValueInvest', 
-    'ipoStartingDate', 'ipoEndingDate', 'fundType', 'trusteeCode', 'maturityDate', 
-    'certificateType', 'custodianCode', 'suspendAccount', 'managementAccount', 
+    'fundCode', 'fundName', 'fundManager', 'launch', 'minNoOfUnitInvest', 'minValueInvest',
+    'ipoStartingDate', 'ipoEndingDate', 'fundType', 'trusteeCode', 'maturityDate',
+    'certificateType', 'custodianCode', 'suspendAccount', 'managementAccount',
     'registrarAccount', 'trustyAccount', 'tinNo'
   ];
   const fundsData = [
-    { 
-      fundCode: 'F001', 
-      fundName: 'Growth Fund', 
-      fundManager: 'John Smith', 
-      launch: '2023-01-15', 
-      minNoOfUnitInvest: '100', 
+    {
+      fundCode: 'F001',
+      fundName: 'Growth Fund',
+      fundManager: 'John Smith',
+      launch: '2023-01-15',
+      minNoOfUnitInvest: '100',
       minValueInvest: '10000',
       ipoStartingDate: '2023-01-01',
       ipoEndingDate: '2023-01-31',
@@ -2033,12 +2036,12 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
       trustyAccount: 'TY001',
       tinNo: 'TIN001'
     },
-    { 
-      fundCode: 'F002', 
-      fundName: 'Income Fund', 
-      fundManager: 'Sarah Johnson', 
-      launch: '2023-03-20', 
-      minNoOfUnitInvest: '50', 
+    {
+      fundCode: 'F002',
+      fundName: 'Income Fund',
+      fundManager: 'Sarah Johnson',
+      launch: '2023-03-20',
+      minNoOfUnitInvest: '50',
       minValueInvest: '5000',
       ipoStartingDate: '2023-03-01',
       ipoEndingDate: '2023-03-31',
@@ -2053,12 +2056,12 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
       trustyAccount: 'TY002',
       tinNo: 'TIN002'
     },
-    { 
-      fundCode: 'F003', 
-      fundName: 'Balanced Fund', 
-      fundManager: 'Mike Wilson', 
-      launch: '2023-06-10', 
-      minNoOfUnitInvest: '75', 
+    {
+      fundCode: 'F003',
+      fundName: 'Balanced Fund',
+      fundManager: 'Mike Wilson',
+      launch: '2023-06-10',
+      minNoOfUnitInvest: '75',
       minValueInvest: '7500',
       ipoStartingDate: '2023-06-01',
       ipoEndingDate: '2023-06-30',
@@ -2073,12 +2076,12 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
       trustyAccount: 'TY003',
       tinNo: 'TIN003'
     },
-    { 
-      fundCode: 'F003', 
-      fundName: 'Balanced Fund', 
-      fundManager: 'Mike Wilson', 
-      launch: '2023-06-10', 
-      minNoOfUnitInvest: '75', 
+    {
+      fundCode: 'F003',
+      fundName: 'Balanced Fund',
+      fundManager: 'Mike Wilson',
+      launch: '2023-06-10',
+      minNoOfUnitInvest: '75',
       minValueInvest: '7500',
       ipoStartingDate: '2023-06-01',
       ipoEndingDate: '2023-06-30',
@@ -2093,12 +2096,12 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
       trustyAccount: 'TY003',
       tinNo: 'TIN003'
     },
-    { 
-      fundCode: 'F004', 
-      fundName: 'Income Plus Fund', 
-      fundManager: 'Emily Davis', 
-      launch: '2024-02-12', 
-      minNoOfUnitInvest: '80', 
+    {
+      fundCode: 'F004',
+      fundName: 'Income Plus Fund',
+      fundManager: 'Emily Davis',
+      launch: '2024-02-12',
+      minNoOfUnitInvest: '80',
       minValueInvest: '8000',
       ipoStartingDate: '2024-02-01',
       ipoEndingDate: '2024-02-28',
@@ -2113,12 +2116,12 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
       trustyAccount: 'TY004',
       tinNo: 'TIN004'
     },
-    { 
-      fundCode: 'F005', 
-      fundName: 'Fixed Income Fund', 
-      fundManager: 'Daniel Lee', 
-      launch: '2024-05-05', 
-      minNoOfUnitInvest: '60', 
+    {
+      fundCode: 'F005',
+      fundName: 'Fixed Income Fund',
+      fundManager: 'Daniel Lee',
+      launch: '2024-05-05',
+      minNoOfUnitInvest: '60',
       minValueInvest: '6000',
       ipoStartingDate: '2024-05-01',
       ipoEndingDate: '2024-05-31',
@@ -2143,9 +2146,9 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
         {/* Tab headers - Using Unit Holders Accounts Details style */}
         <div role="tablist" aria-label="Funds Details Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
           {['Funds', 'Partly Redemptions', 'Fund Accounts', 'GL Account'].map(tab => {
-            const tabKey = tab === 'Funds' ? 'funds' : 
-                          tab === 'Partly Redemptions' ? 'partly-redemptions' :
-                          tab === 'Fund Accounts' ? 'fund-accounts' : 'gl-account';
+            const tabKey = tab === 'Funds' ? 'funds' :
+              tab === 'Partly Redemptions' ? 'partly-redemptions' :
+                tab === 'Fund Accounts' ? 'fund-accounts' : 'gl-account';
             return (
               <div
                 key={tabKey}
@@ -2177,151 +2180,151 @@ function FundsDetailsTabs({ onRowDoubleClick }: { onRowDoubleClick?: (row: Recor
 
         {/* Tab content (no scroll here; scroll handled inside the table) */}
         <div>
-        {activeTab === 'funds' && (
-          <div
-            style={{
-              maxHeight: '35vh', // show roughly 3 rows, rest via table scroll
-              overflowY: 'auto',
-              overflowX: 'auto',
-              width: '100%',
-              paddingRight: '4px'
-            }}
-          >
-            <div style={{ minWidth: '1100px' }}>
-              <CustomDataTable data={fundsData} columns={fundsColumns} onRowDoubleClick={onRowDoubleClick} />
-            </div>
-          </div>
-        )}
-        {activeTab === 'partly-redemptions' && (
-          <div className="setup-partly-redemptions-tab">
-            <div className="setup-redemptions-form">
-              <div className="setup-redemptions-inputs">
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Starting Date</label>
-                  <DatePicker
-                    selected={startingDate}
-                    onChange={(date: Date | null) => setStartingDate(date)}
-                    dateFormat="dd/MM/yyyy"
-                    className="date-picker-input"
-                    placeholderText="dd/mm/yyyy"
-                    showYearDropdown
-                    showMonthDropdown
-                    dropdownMode="select"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Ending Date</label>
-                  <DatePicker
-                    selected={endingDate}
-                    onChange={(date: Date | null) => setEndingDate(date)}
-                    dateFormat="dd/MM/yyyy"
-                    className="date-picker-input"
-                    placeholderText="dd/mm/yyyy"
-                    showYearDropdown
-                    showMonthDropdown
-                    dropdownMode="select"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Redeem Percentage</label>
-                  <input 
-                    type="number" 
-                    className="setup-input-field" 
-                    placeholder="%" 
-                    style={{ color: '#000000' }}
-                  />
-                </div>
-              </div>
-              <div className="setup-redemptions-buttons">
-                <button className="setup-btn-add">Add to List</button>
-                <button className="setup-btn-remove">Remove all from List</button>
+          {activeTab === 'funds' && (
+            <div
+              style={{
+                maxHeight: '35vh', // show roughly 3 rows, rest via table scroll
+                overflowY: 'auto',
+                overflowX: 'auto',
+                width: '100%',
+                paddingRight: '4px'
+              }}
+            >
+              <div style={{ minWidth: '1100px' }}>
+                <CustomDataTable data={fundsData} columns={fundsColumns} onRowDoubleClick={onRowDoubleClick} />
               </div>
             </div>
-            <div className="setup-redemptions-list">
-              <div className="setup-list-placeholder">
-                <p>No redemptions added yet</p>
+          )}
+          {activeTab === 'partly-redemptions' && (
+            <div className="setup-partly-redemptions-tab">
+              <div className="setup-redemptions-form">
+                <div className="setup-redemptions-inputs">
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Starting Date</label>
+                    <DatePicker
+                      selected={startingDate}
+                      onChange={(date: Date | null) => setStartingDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="date-picker-input"
+                      placeholderText="dd/mm/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                      dropdownMode="select"
+                    />
+                  </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Ending Date</label>
+                    <DatePicker
+                      selected={endingDate}
+                      onChange={(date: Date | null) => setEndingDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="date-picker-input"
+                      placeholderText="dd/mm/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                      dropdownMode="select"
+                    />
+                  </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Redeem Percentage</label>
+                    <input
+                      type="number"
+                      className="setup-input-field"
+                      placeholder="%"
+                      style={{ color: '#000000' }}
+                    />
+                  </div>
+                </div>
+                <div className="setup-redemptions-buttons">
+                  <button className="setup-btn-add">Add to List</button>
+                  <button className="setup-btn-remove">Remove all from List</button>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
-        {activeTab === 'fund-accounts' && (
-          <div className="setup-fund-accounts-tab">
-            <div className="setup-fund-accounts-form">
-              <div className="setup-fund-accounts-inputs">
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Account Type</label>
-                  <select className="setup-dropdown-select">
-                    <option value="">Select Account Type</option>
-                    <option value="savings">Savings</option>
-                    <option value="current">Current</option>
-                    <option value="fixed">Fixed Deposit</option>
-                    <option value="investment">Investment</option>
-                  </select>
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Bank Code</label>
-                  <select className="setup-dropdown-select">
-                    <option value="">Select Bank</option>
-                    <option value="BOC">BOC - Bank of Ceylon</option>
-                    <option value="PEOPLES">PEOPLES - Peoples Bank</option>
-                    <option value="HNB">HNB - Hatton National Bank</option>
-                    <option value="COMBANK">COMBANK - Commercial Bank</option>
-                    <option value="NDB">NDB - National Development Bank</option>
-                  </select>
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Acc No</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter Account Number" style={{ color: '#000000' }} />
-                </div>
-              </div>
-              <div className="setup-fund-accounts-buttons">
-                <button className="setup-btn-add">Add to List</button>
-                <button className="setup-btn-remove">Remove from List</button>
-              </div>
-            </div>
-            <div className="setup-fund-accounts-list">
-              <div className="setup-list-placeholder">
-                No fund accounts added yet
-              </div>
-            </div>
-          </div>
-        )}
-        {activeTab === 'gl-account' && (
-          <div className="setup-gl-account-tab">
-            <div className="setup-gl-account-form">
-              <div className="setup-gl-account-inputs">
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Management Fee Account No (GL)</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Registrar Fee Account No (GL)</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label" style={{ color: '#000000' }}>Trustee Fee Account No (GL)</label>
-                  <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
+              <div className="setup-redemptions-list">
+                <div className="setup-list-placeholder">
+                  <p>No redemptions added yet</p>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+          {activeTab === 'fund-accounts' && (
+            <div className="setup-fund-accounts-tab">
+              <div className="setup-fund-accounts-form">
+                <div className="setup-fund-accounts-inputs">
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Account Type</label>
+                    <select className="setup-dropdown-select">
+                      <option value="">Select Account Type</option>
+                      <option value="savings">Savings</option>
+                      <option value="current">Current</option>
+                      <option value="fixed">Fixed Deposit</option>
+                      <option value="investment">Investment</option>
+                    </select>
+                  </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Bank Code</label>
+                    <select className="setup-dropdown-select">
+                      <option value="">Select Bank</option>
+                      <option value="BOC">BOC - Bank of Ceylon</option>
+                      <option value="PEOPLES">PEOPLES - Peoples Bank</option>
+                      <option value="HNB">HNB - Hatton National Bank</option>
+                      <option value="COMBANK">COMBANK - Commercial Bank</option>
+                      <option value="NDB">NDB - National Development Bank</option>
+                    </select>
+                  </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Acc No</label>
+                    <input type="text" className="setup-input-field" placeholder="Enter Account Number" style={{ color: '#000000' }} />
+                  </div>
+                </div>
+                <div className="setup-fund-accounts-buttons">
+                  <button className="setup-btn-add">Add to List</button>
+                  <button className="setup-btn-remove">Remove from List</button>
+                </div>
+              </div>
+              <div className="setup-fund-accounts-list">
+                <div className="setup-list-placeholder">
+                  No fund accounts added yet
+                </div>
+              </div>
+            </div>
+          )}
+          {activeTab === 'gl-account' && (
+            <div className="setup-gl-account-tab">
+              <div className="setup-gl-account-form">
+                <div className="setup-gl-account-inputs">
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Management Fee Account No (GL)</label>
+                    <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
+                  </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Registrar Fee Account No (GL)</label>
+                    <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
+                  </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label" style={{ color: '#000000' }}>Trustee Fee Account No (GL)</label>
+                    <input type="text" className="setup-input-field" placeholder="Enter GL Account Number" style={{ color: '#000000' }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function CompanyDetailsTabs({ 
-  formData, 
-  handleInputChange, 
-  isFormEditable, 
+function CompanyDetailsTabs({
+  formData,
+  handleInputChange,
+  isFormEditable,
   isMobile,
 
-}: { 
-  formData: FormData, 
-  handleInputChange: (field: string, value: string | string[] | boolean) => void, 
-  isFormEditable: boolean, 
+}: {
+  formData: FormData,
+  handleInputChange: (field: string, value: string | string[] | boolean) => void,
+  isFormEditable: boolean,
   isMobile: boolean,
   handleNewButtonClick: () => void,
   handleSave: () => void,
@@ -2330,7 +2333,7 @@ function CompanyDetailsTabs({
   resetFormData: () => void
 }) {
   const [activeTab, setActiveTab] = React.useState('company');
-  
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', margin: '0', padding: '0' }}>
       {/* Tab Navigation - Using Unit Holders Accounts Details style */}
@@ -2339,8 +2342,8 @@ function CompanyDetailsTabs({
           {/* Tab headers */}
           <div role="tablist" aria-label="Company Details Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '8px', marginBottom: '12px', overflowX: 'auto', whiteSpace: 'nowrap', width: '100%' }}>
             {['Company', 'Administrator', 'Email and SMS'].map(tab => {
-              const tabKey = tab === 'Company' ? 'company' : 
-                            tab === 'Administrator' ? 'administrator' : 'email-sms';
+              const tabKey = tab === 'Company' ? 'company' :
+                tab === 'Administrator' ? 'administrator' : 'email-sms';
               return (
                 <div
                   key={tabKey}
@@ -2373,172 +2376,172 @@ function CompanyDetailsTabs({
 
           {/* Tab content */}
           <div style={{ width: '100%', maxWidth: '100%' }}>
-        {activeTab === 'company' && (
-          <div className="setup-company-tab" style={{ width: '100%', maxWidth: '100%' }}>
-            <div className="setup-company-form" style={{ width: '100%', maxWidth: '100%' }}>
-              <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
-                                                         <div className="setup-input-group">
-                  <label className="setup-input-label">Code</label>
-                  <input
-                    type="text"
-                    value={formData.companyCode}
-                    onChange={(e) => handleInputChange('companyCode', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter code"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label">Name</label>
-                  <input
-                    type="text"
-                    value={formData.companyName}
-                    onChange={(e) => handleInputChange('companyName', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter name"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label">Postal Code</label>
-                  <input
-                    type="text"
-                    value={formData.companyPostalCode}
-                    onChange={(e) => handleInputChange('companyPostalCode', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter postal code"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label">Street</label>
-                  <input
-                    type="text"
-                    value={formData.companyStreet}
-                    onChange={(e) => handleInputChange('companyStreet', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter street"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label">Town</label>
-                  <input
-                    type="text"
-                    value={formData.companyTown}
-                    onChange={(e) => handleInputChange('companyTown', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter town"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label">City</label>
-                  <input
-                    type="text"
-                    value={formData.companyCity}
-                    onChange={(e) => handleInputChange('companyCity', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter city"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label">Telephone</label>
-                  <input
-                    type="text"
-                    value={formData.companyTelephone}
-                    onChange={(e) => handleInputChange('companyTelephone', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter telephone"
-                  />
-                </div>
-                <div className="setup-input-group">
-                  <label className="setup-input-label">Fax</label>
-                  <input
-                    type="text"
-                    value={formData.companyFax}
-                    onChange={(e) => handleInputChange('companyFax', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter fax"
-                  />
-                </div>
-                <div className="setup-input-group" style={{ gridColumn: '3 / 4' }}>
-                  <div className="setup-checkbox-container">
-                    <input
-                      type="checkbox"
-                      id="applicationApproval"
-                      checked={formData.companyApplicationApproval}
-                                                  onChange={(e) => handleInputChange('companyApplicationApproval', e.target.checked)}
-                      disabled={!isFormEditable}
-                      className="setup-checkbox-input"
-                    />
-                    <label htmlFor="applicationApproval" className="setup-checkbox-label">
-                      Application approval
-                               </label>
-                  </div>
-                  <div className="setup-checkbox-container">
-                    <input
-                      type="checkbox"
-                      id="accountApproval"
-                      checked={formData.companyAccountApproval}
-                                                  onChange={(e) => handleInputChange('companyAccountApproval', e.target.checked)}
-                      disabled={!isFormEditable}
-                      className="setup-checkbox-input"
-                    />
-                    <label htmlFor="accountApproval" className="setup-checkbox-label">
-                      Account approval
-                    </label>
+            {activeTab === 'company' && (
+              <div className="setup-company-tab" style={{ width: '100%', maxWidth: '100%' }}>
+                <div className="setup-company-form" style={{ width: '100%', maxWidth: '100%' }}>
+                  <div className={`setup-input-grid ${isMobile ? 'mobile' : ''}`}>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">Code</label>
+                      <input
+                        type="text"
+                        value={formData.companyCode}
+                        onChange={(e) => handleInputChange('companyCode', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter code"
+                      />
+                    </div>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">Name</label>
+                      <input
+                        type="text"
+                        value={formData.companyName}
+                        onChange={(e) => handleInputChange('companyName', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter name"
+                      />
+                    </div>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">Postal Code</label>
+                      <input
+                        type="text"
+                        value={formData.companyPostalCode}
+                        onChange={(e) => handleInputChange('companyPostalCode', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter postal code"
+                      />
+                    </div>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">Street</label>
+                      <input
+                        type="text"
+                        value={formData.companyStreet}
+                        onChange={(e) => handleInputChange('companyStreet', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter street"
+                      />
+                    </div>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">Town</label>
+                      <input
+                        type="text"
+                        value={formData.companyTown}
+                        onChange={(e) => handleInputChange('companyTown', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter town"
+                      />
+                    </div>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">City</label>
+                      <input
+                        type="text"
+                        value={formData.companyCity}
+                        onChange={(e) => handleInputChange('companyCity', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter city"
+                      />
+                    </div>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">Telephone</label>
+                      <input
+                        type="text"
+                        value={formData.companyTelephone}
+                        onChange={(e) => handleInputChange('companyTelephone', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter telephone"
+                      />
+                    </div>
+                    <div className="setup-input-group">
+                      <label className="setup-input-label">Fax</label>
+                      <input
+                        type="text"
+                        value={formData.companyFax}
+                        onChange={(e) => handleInputChange('companyFax', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter fax"
+                      />
+                    </div>
+                    <div className="setup-input-group" style={{ gridColumn: '3 / 4' }}>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="applicationApproval"
+                          checked={formData.companyApplicationApproval}
+                          onChange={(e) => handleInputChange('companyApplicationApproval', e.target.checked)}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="applicationApproval" className="setup-checkbox-label">
+                          Application approval
+                        </label>
+                      </div>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="accountApproval"
+                          checked={formData.companyAccountApproval}
+                          onChange={(e) => handleInputChange('companyAccountApproval', e.target.checked)}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="accountApproval" className="setup-checkbox-label">
+                          Account approval
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-        {activeTab === 'administrator' && (
-          <div className="setup-administrator-tab" style={{ width: '100%', maxWidth: '100%' }}>
-            <div className="setup-administrator-form" style={{ width: '100%', maxWidth: '100%' }}>
-              
-              {/* ========================================
+            )}
+            {activeTab === 'administrator' && (
+              <div className="setup-administrator-tab" style={{ width: '100%', maxWidth: '100%' }}>
+                <div className="setup-administrator-form" style={{ width: '100%', maxWidth: '100%' }}>
+
+                  {/* ========================================
                  PATH CONFIGURATION SECTION (FULL WIDTH)
                  ======================================== */}
-              <div className="setup-input-group">
-                <label className="setup-input-label">Report Path</label>
-                <input
-                  type="text"
-                  value={formData.reportPath}
-                  onChange={(e) => handleInputChange('reportPath', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter report path"
-                />
-              </div>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Document Path</label>
-                <input
-                  type="text"
-                  value={formData.documentPath}
-                  onChange={(e) => handleInputChange('documentPath', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter document path"
-                />
-              </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label">Report Path</label>
+                    <input
+                      type="text"
+                      value={formData.reportPath}
+                      onChange={(e) => handleInputChange('reportPath', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter report path"
+                    />
+                  </div>
+                  <div className="setup-input-group">
+                    <label className="setup-input-label">Document Path</label>
+                    <input
+                      type="text"
+                      value={formData.documentPath}
+                      onChange={(e) => handleInputChange('documentPath', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-input-field"
+                      placeholder="Enter document path"
+                    />
+                  </div>
 
-              {/* ========================================
+                  {/* ========================================
                  TWO COLUMN LAYOUT SECTION
                  ======================================== */}
-              <div className="setup-administrator-two-column" style={{ width: '100%', maxWidth: '100%' }}>
-                
-                {/* LEFT COLUMN - 3 ROWS WITH ASH BACKGROUND */}
-                <div className="setup-administrator-left-column">
-                  
-                  {/* Row 1: Units */}
-                  <div className="setup-ash-box">
-                    <label className="setup-input-label">Units</label>
-                                                                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                  <div className="setup-administrator-two-column" style={{ width: '100%', maxWidth: '100%' }}>
+
+                    {/* LEFT COLUMN - 3 ROWS WITH ASH BACKGROUND */}
+                    <div className="setup-administrator-left-column">
+
+                      {/* Row 1: Units */}
+                      <div className="setup-ash-box">
+                        <label className="setup-input-label">Units</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', alignItems: 'center' }}>
                             <label className="setup-input-label" style={{ marginBottom: '0' }}>Decimal Position</label>
                             <input
@@ -2579,12 +2582,12 @@ function CompanyDetailsTabs({
                             </label>
                           </div>
                         </div>
-                  </div>
+                      </div>
 
-                  {/* Row 2: Amount */}
-                  <div className="setup-ash-box">
-                    <label className="setup-input-label">Amount</label>
-                                                                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
+                      {/* Row 2: Amount */}
+                      <div className="setup-ash-box">
+                        <label className="setup-input-label">Amount</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', alignItems: 'center' }}>
                             <label className="setup-input-label" style={{ marginBottom: '0' }}>Decimal Position</label>
                             <input
@@ -2625,484 +2628,484 @@ function CompanyDetailsTabs({
                             </label>
                           </div>
                         </div>
-                  </div>
+                      </div>
 
-                  {/* Row 3: SMTP Email Setup */}
-                  <div className="setup-ash-box">
-                    <label className="setup-input-label">SMTP Email Setup</label>
-                    <div className="setup-three-column-row">
-                      <div className="setup-column">
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="smtpInvalidLogin"
-                            checked={formData.smtpInvalidLogin}
-                            onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked)}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="smtpInvalidLogin" className="setup-checkbox-label">
-                            Invalid Login
-                          </label>
+                      {/* Row 3: SMTP Email Setup */}
+                      <div className="setup-ash-box">
+                        <label className="setup-input-label">SMTP Email Setup</label>
+                        <div className="setup-three-column-row">
+                          <div className="setup-column">
+                            <div className="setup-checkbox-container">
+                              <input
+                                type="checkbox"
+                                id="smtpInvalidLogin"
+                                checked={formData.smtpInvalidLogin}
+                                onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked)}
+                                disabled={!isFormEditable}
+                                className="setup-checkbox-input"
+                              />
+                              <label htmlFor="smtpInvalidLogin" className="setup-checkbox-label">
+                                Invalid Login
+                              </label>
+                            </div>
+                          </div>
+                          <div className="setup-column">
+                            <div className="setup-checkbox-container">
+                              <input
+                                type="checkbox"
+                                id="smtpLockedAccount"
+                                checked={formData.smtpLockedAccount}
+                                onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked)}
+                                disabled={!isFormEditable}
+                                className="setup-checkbox-input"
+                              />
+                              <label htmlFor="smtpLockedAccount" className="setup-checkbox-label">
+                                Locked Account
+                              </label>
+                            </div>
+                          </div>
+                          <div className="setup-column">
+                            <div className="setup-checkbox-container">
+                              <input
+                                type="checkbox"
+                                id="smtpRegistrationApproval"
+                                checked={formData.smtpRegistrationApproval}
+                                onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked)}
+                                disabled={!isFormEditable}
+                                className="setup-checkbox-input"
+                              />
+                              <label htmlFor="smtpRegistrationApproval" className="setup-checkbox-label">
+                                Registration Approval
+                              </label>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="setup-column">
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="smtpLockedAccount"
-                            checked={formData.smtpLockedAccount}
-                            onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked)}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="smtpLockedAccount" className="setup-checkbox-label">
-                            Locked Account
-                          </label>
-                        </div>
-                      </div>
-                      <div className="setup-column">
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="smtpRegistrationApproval"
-                            checked={formData.smtpRegistrationApproval}
-                            onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked)}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="smtpRegistrationApproval" className="setup-checkbox-label">
-                            Registration Approval
-                          </label>
+
+                    </div>
+
+                    {/* RIGHT COLUMN - DIFFERENT DATA ENTRY CONFIRM/APPROVE */}
+                    <div className="setup-administrator-right-column">
+                      <div className="setup-ash-box">
+                        <label className="setup-input-label">Different Data Entry Confirm/Approve</label>
+                        <div className="setup-checkbox-group">
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              id="applicationApprove"
+                              checked={formData.applicationApprove}
+                              onChange={(e) => handleInputChange('applicationApprove', e.target.checked)}
+                              disabled={!isFormEditable}
+                              className="setup-checkbox-input"
+                            />
+                            <label htmlFor="applicationApprove" className="setup-checkbox-label">
+                              Application Approve
+                            </label>
+                          </div>
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              id="registrationApprove"
+                              checked={formData.registrationApprove}
+                              onChange={(e) => handleInputChange('registrationApprove', e.target.checked)}
+                              disabled={!isFormEditable}
+                              className="setup-checkbox-input"
+                            />
+                            <label htmlFor="registrationApprove" className="setup-checkbox-label">
+                              Registration Approve
+                            </label>
+                          </div>
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              id="accountApprove"
+                              checked={formData.accountApprove}
+                              onChange={(e) => handleInputChange('accountApprove', e.target.checked.toString())}
+                              disabled={!isFormEditable}
+                              className="setup-checkbox-input"
+                            />
+                            <label htmlFor="accountApprove" className="setup-checkbox-label">
+                              Account Approve
+                            </label>
+                          </div>
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              id="transactionApprove"
+                              checked={formData.transactionApprove}
+                              onChange={(e) => handleInputChange('transactionApprove', e.target.checked.toString())}
+                              disabled={!isFormEditable}
+                              className="setup-checkbox-input"
+                            />
+                            <label htmlFor="transactionApprove" className="setup-checkbox-label">
+                              Transaction Approve
+                            </label>
+                          </div>
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              id="unitPriceApprove"
+                              checked={formData.unitPriceApprove}
+                              onChange={(e) => handleInputChange('unitPriceApprove', e.target.checked.toString())}
+                              disabled={!isFormEditable}
+                              className="setup-checkbox-input"
+                            />
+                            <label htmlFor="unitPriceApprove" className="setup-checkbox-label">
+                              Unit Price Approve
+                            </label>
+                          </div>
                         </div>
                       </div>
                     </div>
+
                   </div>
 
-                </div>
-
-                {/* RIGHT COLUMN - DIFFERENT DATA ENTRY CONFIRM/APPROVE */}
-                <div className="setup-administrator-right-column">
-                  <div className="setup-ash-box">
-                    <label className="setup-input-label">Different Data Entry Confirm/Approve</label>
-                    <div className="setup-checkbox-group">
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="applicationApprove"
-                          checked={formData.applicationApprove}
-                          onChange={(e) => handleInputChange('applicationApprove', e.target.checked)}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="applicationApprove" className="setup-checkbox-label">
-                          Application Approve
-                        </label>
-                      </div>
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="registrationApprove"
-                          checked={formData.registrationApprove}
-                          onChange={(e) => handleInputChange('registrationApprove', e.target.checked)}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="registrationApprove" className="setup-checkbox-label">
-                          Registration Approve
-                        </label>
-                      </div>
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="accountApprove"
-                          checked={formData.accountApprove}
-                          onChange={(e) => handleInputChange('accountApprove', e.target.checked.toString())}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="accountApprove" className="setup-checkbox-label">
-                          Account Approve
-                        </label>
-                      </div>
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="transactionApprove"
-                          checked={formData.transactionApprove}
-                          onChange={(e) => handleInputChange('transactionApprove', e.target.checked.toString())}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="transactionApprove" className="setup-checkbox-label">
-                          Transaction Approve
-                        </label>
-                      </div>
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="unitPriceApprove"
-                          checked={formData.unitPriceApprove}
-                          onChange={(e) => handleInputChange('unitPriceApprove', e.target.checked.toString())}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="unitPriceApprove" className="setup-checkbox-label">
-                          Unit Price Approve
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* ========================================
+                  {/* ========================================
                  FULL WIDTH THREE COLUMN SECTION
                  ======================================== */}
-              <div className="setup-administrator-full-width" style={{ width: '100%', maxWidth: '100%' }}>
-                
-                {/* Column 1: Email Sending Options */}
-                <div className="setup-ash-box">
-                  <label className="setup-input-label">Email Sending Options</label>
-                  <div className="setup-checkbox-group">
-                    <div className="setup-checkbox-container">
-                      <input
-                        type="checkbox"
-                        id="sendEmailsAccountApproval"
-                        checked={formData.sendEmailsAccountApproval}
-                        onChange={(e) => handleInputChange('sendEmailsAccountApproval', e.target.checked.toString())}
-                        disabled={!isFormEditable}
-                        className="setup-checkbox-input"
-                      />
-                      <label htmlFor="sendEmailsAccountApproval" className="setup-checkbox-label">
-                        Send Emails on Account Approval
-                      </label>
+                  <div className="setup-administrator-full-width" style={{ width: '100%', maxWidth: '100%' }}>
+
+                    {/* Column 1: Email Sending Options */}
+                    <div className="setup-ash-box">
+                      <label className="setup-input-label">Email Sending Options</label>
+                      <div className="setup-checkbox-group">
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="sendEmailsAccountApproval"
+                            checked={formData.sendEmailsAccountApproval}
+                            onChange={(e) => handleInputChange('sendEmailsAccountApproval', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="sendEmailsAccountApproval" className="setup-checkbox-label">
+                            Send Emails on Account Approval
+                          </label>
+                        </div>
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="sendEmailsAcknowledgment"
+                            checked={formData.sendEmailsAcknowledgment}
+                            onChange={(e) => handleInputChange('sendEmailsAcknowledgment', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="sendEmailsAcknowledgment" className="setup-checkbox-label">
+                            Send Emails on Acknowledgment
+                          </label>
+                        </div>
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="sendEmailsInvestment"
+                            checked={formData.sendEmailsInvestment}
+                            onChange={(e) => handleInputChange('sendEmailsInvestment', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="sendEmailsInvestment" className="setup-checkbox-label">
+                            Send Emails on Investment
+                          </label>
+                        </div>
+                      </div>
                     </div>
-                    <div className="setup-checkbox-container">
-                      <input
-                        type="checkbox"
-                        id="sendEmailsAcknowledgment"
-                        checked={formData.sendEmailsAcknowledgment}
-                        onChange={(e) => handleInputChange('sendEmailsAcknowledgment', e.target.checked.toString())}
-                        disabled={!isFormEditable}
-                        className="setup-checkbox-input"
-                      />
-                      <label htmlFor="sendEmailsAcknowledgment" className="setup-checkbox-label">
-                        Send Emails on Acknowledgment
-                      </label>
+
+                    {/* Column 2: Login */}
+                    <div className="setup-ash-box">
+                      <label className="setup-input-label">Login</label>
+                      <div className="setup-checkbox-group">
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="loginInvalidUser"
+                            checked={formData.loginInvalidUser}
+                            onChange={(e) => handleInputChange('loginInvalidUser', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="loginInvalidUser" className="setup-checkbox-label">
+                            Invalid User
+                          </label>
+                        </div>
+                        <div className="setup-checkbox-container">
+                          <input
+                            type="checkbox"
+                            id="loginAccountLock"
+                            checked={formData.loginAccountLock}
+                            onChange={(e) => handleInputChange('loginAccountLock', e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                            className="setup-checkbox-input"
+                          />
+                          <label htmlFor="loginAccountLock" className="setup-checkbox-label">
+                            Account Lock
+                          </label>
+                        </div>
+                      </div>
                     </div>
-                    <div className="setup-checkbox-container">
-                      <input
-                        type="checkbox"
-                        id="sendEmailsInvestment"
-                        checked={formData.sendEmailsInvestment}
-                        onChange={(e) => handleInputChange('sendEmailsInvestment', e.target.checked.toString())}
-                        disabled={!isFormEditable}
-                        className="setup-checkbox-input"
-                      />
-                      <label htmlFor="sendEmailsInvestment" className="setup-checkbox-label">
-                        Send Emails on Investment
-                      </label>
+
+                    {/* Column 3: Multiple User Access */}
+                    <div className="setup-ash-box">
+                      <label className="setup-input-label">Multiple User Access</label>
+                      <div className="setup-radio-group">
+                        <label className="setup-radio-label">
+                          <input
+                            type="radio"
+                            name="multipleUserAccess"
+                            value="yes"
+                            checked={formData.multipleUserAccess === 'yes'}
+                            onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-radio-input"
+                          />
+                          Yes
+                        </label>
+                        <label className="setup-radio-label">
+                          <input
+                            type="radio"
+                            name="multipleUserAccess"
+                            value="no"
+                            checked={formData.multipleUserAccess === 'no'}
+                            onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
+                            disabled={!isFormEditable}
+                            className="setup-radio-input"
+                          />
+                          No
+                        </label>
+                      </div>
                     </div>
+
                   </div>
-                </div>
 
-                {/* Column 2: Login */}
-                <div className="setup-ash-box">
-                  <label className="setup-input-label">Login</label>
-                  <div className="setup-checkbox-group">
-                    <div className="setup-checkbox-container">
-                      <input
-                        type="checkbox"
-                        id="loginInvalidUser"
-                        checked={formData.loginInvalidUser}
-                        onChange={(e) => handleInputChange('loginInvalidUser', e.target.checked.toString())}
-                        disabled={!isFormEditable}
-                        className="setup-checkbox-input"
-                      />
-                      <label htmlFor="loginInvalidUser" className="setup-checkbox-label">
-                        Invalid User
-                      </label>
-                    </div>
-                    <div className="setup-checkbox-container">
-                      <input
-                        type="checkbox"
-                        id="loginAccountLock"
-                        checked={formData.loginAccountLock}
-                        onChange={(e) => handleInputChange('loginAccountLock', e.target.checked.toString())}
-                        disabled={!isFormEditable}
-                        className="setup-checkbox-input"
-                      />
-                      <label htmlFor="loginAccountLock" className="setup-checkbox-label">
-                        Account Lock
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Column 3: Multiple User Access */}
-                <div className="setup-ash-box">
-                  <label className="setup-input-label">Multiple User Access</label>
-                  <div className="setup-radio-group">
-                    <label className="setup-radio-label">
-                      <input
-                        type="radio"
-                        name="multipleUserAccess"
-                        value="yes"
-                        checked={formData.multipleUserAccess === 'yes'}
-                        onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-radio-input"
-                      />
-                      Yes
-                    </label>
-                    <label className="setup-radio-label">
-                      <input
-                        type="radio"
-                        name="multipleUserAccess"
-                        value="no"
-                        checked={formData.multipleUserAccess === 'no'}
-                        onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-radio-input"
-                      />
-                      No
-                    </label>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* ========================================
+                  {/* ========================================
                  BOTTOM SECTION - TABLE NAME, CREATE FILE, CERTIFICATE
                  ======================================== */}
-              <div className="setup-three-column-row" style={{ marginBottom: '12px', width: '100%', maxWidth: '100%' }}>
-                <div className="setup-column" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', alignItems: 'center' }}>
-                  <label className="setup-input-label" style={{ marginBottom: '0' }}>Table Name</label>
-                  <input
-                    type="text"
-                    value={formData.tableName}
-                    onChange={(e) => handleInputChange('tableName', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-input-field"
-                    placeholder="Enter table name"
-                  />
-                </div>
-                
-                <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
-                  <button
-                    onClick={() => {
-                      // TODO: Add API call to create configuration file
-                      // API Endpoint: POST /api/setup/administrator/create-file
-                      console.log('Creating configuration file with data:', formData);
-                      alert('Configuration file created successfully!');
-                    }}
-                    disabled={!isFormEditable}
-                    className="setup-btn setup-btn-primary"
-                    style={{ width: '100%' }}
-                  >
-                    Create File
-                  </button>
-                </div>
-                
-                <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
-                  <div className="setup-checkbox-container">
-                    <input
-                      type="checkbox"
-                      id="certificateSeparateExitFee"
-                      checked={formData.certificateSeparateExitFee}
-                      onChange={(e) => handleInputChange('certificateSeparateExitFee', e.target.checked.toString())}
-                      disabled={!isFormEditable}
-                      className="setup-checkbox-input"
-                    />
-                    <label htmlFor="certificateSeparateExitFee" className="setup-checkbox-label">
-                      Certificate Separate with Exit Fee
-                    </label>
-                  </div>
-                </div>
-              </div>
+                  <div className="setup-three-column-row" style={{ marginBottom: '12px', width: '100%', maxWidth: '100%' }}>
+                    <div className="setup-column" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', alignItems: 'center' }}>
+                      <label className="setup-input-label" style={{ marginBottom: '0' }}>Table Name</label>
+                      <input
+                        type="text"
+                        value={formData.tableName}
+                        onChange={(e) => handleInputChange('tableName', e.target.value)}
+                        disabled={!isFormEditable}
+                        className="setup-input-field"
+                        placeholder="Enter table name"
+                      />
+                    </div>
 
-            </div>
-          </div>
-        )}
-        {activeTab === 'email-sms' && (
-          <div className="setup-email-sms-tab" style={{ width: '100%', maxWidth: '100%' }}>
-            {/* Email Parameter Setting Box */}
-            <div className="setup-ash-box" style={{ marginBottom: '24px' }}>
-              <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Email Parameter Setting</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                {/* Left Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div className="setup-checkbox-container">
-                    <input
-                      type="checkbox"
-                      id="sendEmailsOn"
-                      checked={formData.sendEmailsOn || false}
-                      onChange={e => handleInputChange('sendEmailsOn', e.target.checked.toString())}
-                      disabled={!isFormEditable}
-                      className="setup-checkbox-input"
-                    />
-                    <label htmlFor="sendEmailsOn" className="setup-checkbox-label">Send Emails On</label>
+                    <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
+                      <button
+                        onClick={() => {
+                          // TODO: Add API call to create configuration file
+                          // API Endpoint: POST /api/setup/administrator/create-file
+                          console.log('Creating configuration file with data:', formData);
+                          alert('Configuration file created successfully!');
+                        }}
+                        disabled={!isFormEditable}
+                        className="setup-btn setup-btn-primary"
+                        style={{ width: '100%' }}
+                      >
+                        Create File
+                      </button>
+                    </div>
+
+                    <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="certificateSeparateExitFee"
+                          checked={formData.certificateSeparateExitFee}
+                          onChange={(e) => handleInputChange('certificateSeparateExitFee', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="certificateSeparateExitFee" className="setup-checkbox-label">
+                          Certificate Separate with Exit Fee
+                        </label>
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Sender Address</label>
-                    <input
-                      type="text"
-                      value={formData.senderAddress || ''}
-                      onChange={e => handleInputChange('senderAddress', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter sender address"
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP Server</label>
-                    <input
-                      type="text"
-                      value={formData.smtpServer || ''}
-                      onChange={e => handleInputChange('smtpServer', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter SMTP server"
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP User</label>
-                    <input
-                      type="text"
-                      value={formData.smtpUser || ''}
-                      onChange={e => handleInputChange('smtpUser', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter SMTP user"
-                    />
+
+                </div>
+              </div>
+            )}
+            {activeTab === 'email-sms' && (
+              <div className="setup-email-sms-tab" style={{ width: '100%', maxWidth: '100%' }}>
+                {/* Email Parameter Setting Box */}
+                <div className="setup-ash-box" style={{ marginBottom: '24px' }}>
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Email Parameter Setting</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                    {/* Left Column */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="sendEmailsOn"
+                          checked={formData.sendEmailsOn || false}
+                          onChange={e => handleInputChange('sendEmailsOn', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="sendEmailsOn" className="setup-checkbox-label">Send Emails On</label>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Sender Address</label>
+                        <input
+                          type="text"
+                          value={formData.senderAddress || ''}
+                          onChange={e => handleInputChange('senderAddress', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter sender address"
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP Server</label>
+                        <input
+                          type="text"
+                          value={formData.smtpServer || ''}
+                          onChange={e => handleInputChange('smtpServer', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter SMTP server"
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP User</label>
+                        <input
+                          type="text"
+                          value={formData.smtpUser || ''}
+                          onChange={e => handleInputChange('smtpUser', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter SMTP user"
+                        />
+                      </div>
+                    </div>
+                    {/* Right Column */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Password</label>
+                        <input
+                          type="password"
+                          value={formData.smtpPassword || ''}
+                          onChange={e => handleInputChange('smtpPassword', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter password"
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Email Sending Method</label>
+                        <select
+                          value={formData.emailSendingMethod || ''}
+                          onChange={e => handleInputChange('emailSendingMethod', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                        >
+                          <option value="">Select method</option>
+                          <option value="smtp">SMTP</option>
+                          <option value="api">API</option>
+                        </select>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Port Number</label>
+                        <input
+                          type="text"
+                          value={formData.smtpPort || ''}
+                          onChange={e => handleInputChange('smtpPort', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter port number"
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Use Default Credentials</label>
+                        <select
+                          value={formData.useDefaultCredentials || ''}
+                          onChange={e => handleInputChange('useDefaultCredentials', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                        >
+                          <option value="">Select</option>
+                          <option value="true">True</option>
+                          <option value="false">False</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                {/* Right Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Password</label>
-                    <input
-                      type="password"
-                      value={formData.smtpPassword || ''}
-                      onChange={e => handleInputChange('smtpPassword', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter password"
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Email Sending Method</label>
-                    <select
-                      value={formData.emailSendingMethod || ''}
-                      onChange={e => handleInputChange('emailSendingMethod', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                    >
-                      <option value="">Select method</option>
-                      <option value="smtp">SMTP</option>
-                      <option value="api">API</option>
-                    </select>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Port Number</label>
-                    <input
-                      type="text"
-                      value={formData.smtpPort || ''}
-                      onChange={e => handleInputChange('smtpPort', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter port number"
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Use Default Credentials</label>
-                    <select
-                      value={formData.useDefaultCredentials || ''}
-                      onChange={e => handleInputChange('useDefaultCredentials', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                    >
-                      <option value="">Select</option>
-                      <option value="true">True</option>
-                      <option value="false">False</option>
-                    </select>
+                {/* SMS Provider and Parameter Setting Box */}
+                <div className="setup-ash-box">
+                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>SMS Provider and Parameter Setting</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                    {/* Left Column */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div className="setup-checkbox-container">
+                        <input
+                          type="checkbox"
+                          id="sendSmsOn"
+                          checked={formData.sendSmsOn || false}
+                          onChange={e => handleInputChange('sendSmsOn', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                          className="setup-checkbox-input"
+                        />
+                        <label htmlFor="sendSmsOn" className="setup-checkbox-label">Send SMS On</label>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>SMS Provider</label>
+                        <select
+                          value={formData.smsProvider || ''}
+                          onChange={e => handleInputChange('smsProvider', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                        >
+                          <option value="">Select provider</option>
+                          <option value="twilio">Twilio</option>
+                          <option value="nexmo">Nexmo</option>
+                        </select>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>User Name</label>
+                        <input
+                          type="text"
+                          value={formData.smsUserName || ''}
+                          onChange={e => handleInputChange('smsUserName', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter user name"
+                        />
+                      </div>
+                    </div>
+                    {/* Right Column */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Alias</label>
+                        <input
+                          type="text"
+                          value={formData.smsAlias || ''}
+                          onChange={e => handleInputChange('smsAlias', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter alias"
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                        <label className="setup-input-label" style={{ marginBottom: 0 }}>API Key</label>
+                        <input
+                          type="text"
+                          value={formData.smsApiKey || ''}
+                          onChange={e => handleInputChange('smsApiKey', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="setup-input-field"
+                          placeholder="Enter API key"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* SMS Provider and Parameter Setting Box */}
-            <div className="setup-ash-box">
-              <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>SMS Provider and Parameter Setting</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                {/* Left Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div className="setup-checkbox-container">
-                    <input
-                      type="checkbox"
-                      id="sendSmsOn"
-                      checked={formData.sendSmsOn || false}
-                      onChange={e => handleInputChange('sendSmsOn', e.target.checked.toString())}
-                      disabled={!isFormEditable}
-                      className="setup-checkbox-input"
-                    />
-                    <label htmlFor="sendSmsOn" className="setup-checkbox-label">Send SMS On</label>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>SMS Provider</label>
-                    <select
-                      value={formData.smsProvider || ''}
-                      onChange={e => handleInputChange('smsProvider', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                    >
-                      <option value="">Select provider</option>
-                      <option value="twilio">Twilio</option>
-                      <option value="nexmo">Nexmo</option>
-                    </select>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>User Name</label>
-                    <input
-                      type="text"
-                      value={formData.smsUserName || ''}
-                      onChange={e => handleInputChange('smsUserName', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter user name"
-                    />
-                  </div>
-                </div>
-                {/* Right Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>Alias</label>
-                    <input
-                      type="text"
-                      value={formData.smsAlias || ''}
-                      onChange={e => handleInputChange('smsAlias', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter alias"
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ marginBottom: 0 }}>API Key</label>
-                    <input
-                      type="text"
-                      value={formData.smsApiKey || ''}
-                      onChange={e => handleInputChange('smsApiKey', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter API key"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+            )}
           </div>
         </div>
       </div>
@@ -3222,56 +3225,56 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
 // ========================================
 function TransactionTypeModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
-                                                      <>
-                                                         <div className="setup-input-group">
+    <>
+      <div className="setup-input-group">
         <label className="setup-input-label">Transaction Code</label>
-                               <input
-                                 type="text"
-                                 value={formData.transactionCode}
-                                 onChange={(e) => handleInputChange('transactionCode', e.target.value)}
-                                 className="setup-input-field"
-                                 placeholder="Enter transaction code"
-                                 disabled={!isFormEditable}
-                               />
-              </div>
-                             <div>
+        <input
+          type="text"
+          value={formData.transactionCode}
+          onChange={(e) => handleInputChange('transactionCode', e.target.value)}
+          className="setup-input-field"
+          placeholder="Enter transaction code"
+          disabled={!isFormEditable}
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Transaction Type</label>
-                               <select
-                                 value={formData.transactionType}
-                                 onChange={(e) => handleInputChange('transactionType', e.target.value)}
-                                 disabled={!isFormEditable}
+        <select
+          value={formData.transactionType}
+          onChange={(e) => handleInputChange('transactionType', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-select-field"
-                               >
-                                 <option value="">Select transaction type</option>
-                                 <option value="Purchase">Purchase</option>
-                                 <option value="Sale">Sale</option>
-                                 <option value="Dividend">Dividend</option>
-                                 <option value="Transfer">Transfer</option>
-                               </select>
-                             </div>
-                             <div>
+        >
+          <option value="">Select transaction type</option>
+          <option value="Purchase">Purchase</option>
+          <option value="Sale">Sale</option>
+          <option value="Dividend">Dividend</option>
+          <option value="Transfer">Transfer</option>
+        </select>
+      </div>
+      <div>
         <label className="setup-input-label">Transaction Name</label>
-                               <input
-                                 type="text"
-                                 value={formData.transactionName}
-                                 onChange={(e) => handleInputChange('transactionName', e.target.value)}
-                                 disabled={!isFormEditable}
+        <input
+          type="text"
+          value={formData.transactionName}
+          onChange={(e) => handleInputChange('transactionName', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                 placeholder="Enter transaction name"
-                               />
-                             </div>
-                             <div>
+          placeholder="Enter transaction name"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Last Transaction Number</label>
-                               <input
-                                 type="text"
-                                 value={formData.lastTransactionNumber}
-                                 onChange={(e) => handleInputChange('lastTransactionNumber', e.target.value)}
-                                 disabled={!isFormEditable}
+        <input
+          type="text"
+          value={formData.lastTransactionNumber}
+          onChange={(e) => handleInputChange('lastTransactionNumber', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                 placeholder="Enter last transaction number"
-                               />
-                             </div>
-                          </>
+          placeholder="Enter last transaction number"
+        />
+      </div>
+    </>
   );
 }
 
@@ -3280,269 +3283,283 @@ function TransactionTypeModalContent({ formData, handleInputChange, isFormEditab
 // ========================================
 function TrusteesModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
-                          <>
-                            <div>
+    <>
+      <div>
         <label className="setup-input-label">Trustee Code</label>
-                              <input
-                                type="text"
-                                value={formData.trusteeCode}
-                                onChange={(e) => handleInputChange('trusteeCode', e.target.value)}
+        <input
+          type="text"
+          value={formData.trusteeCode}
+          onChange={(e) => handleInputChange('trusteeCode', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter trustee code"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter trustee code"
+        />
+      </div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Active</label>
-        <div className="setup-checkbox-group">
-                                <input
-                                  type="checkbox"
-                                  checked={formData.active}
-                                  onChange={(e) => handleInputChange('active', e.target.checked.toString())}
-                                  disabled={!isFormEditable}
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
+          <input
+            type="checkbox"
+            id="trusteeActive"
+            checked={formData.active}
+            onChange={(e) => handleInputChange('active', e.target.checked.toString())}
+            disabled={!isFormEditable}
             className="setup-checkbox"
           />
-          <span className="setup-checkbox-label">Active</span>
-                              </div>
-                            </div>
-                            <div>
+        </div>
+      </div>
+      <div>
         <label className="setup-input-label">Trustee Name</label>
-                              <input
-                                type="text"
-                                value={formData.trusteeName}
-                                onChange={(e) => handleInputChange('trusteeName', e.target.value)}
+        <input
+          type="text"
+          value={formData.trusteeName}
+          onChange={(e) => handleInputChange('trusteeName', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter trustee name"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter trustee name"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Address (No/Street/Town/City)</label>
-                              <input
-                                type="text"
-                                value={formData.trusteeAddress}
-                                onChange={(e) => handleInputChange('trusteeAddress', e.target.value)}
-                                disabled={!isFormEditable}
+        <input
+          type="text"
+          value={formData.trusteeAddress}
+          onChange={(e) => handleInputChange('trusteeAddress', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter address as: No, Street Name, Town, City"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter address as: No, Street Name, Town, City"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Telephone Number</label>
-                              <input
-                                type="text"
-                                value={formData.telephoneNumber}
-                                onChange={(e) => handleInputChange('telephoneNumber', e.target.value)}
+        <input
+          type="text"
+          value={formData.telephoneNumber}
+          onChange={(e) => handleInputChange('telephoneNumber', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter telephone number"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter telephone number"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Fax No</label>
-                              <input
-                                type="text"
-                                value={formData.faxNo}
-                                onChange={(e) => handleInputChange('faxNo', e.target.value)}
+        <input
+          type="text"
+          value={formData.faxNo}
+          onChange={(e) => handleInputChange('faxNo', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter fax number"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter fax number"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">E-mail</label>
-                              <input
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => handleInputChange('email', e.target.value)}
+        <input
+          type="email"
+          value={formData.email}
+          onChange={(e) => handleInputChange('email', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter e-mail"
-                              />
-                            </div>
-                          </>
+          placeholder="Enter e-mail"
+        />
+      </div>
+    </>
   );
 }
 
 // ========================================
 // CUSTODIAN MODAL COMPONENT
 // ========================================
-function CustodianModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+function CustodianModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
-                          <>
-                            <div>
+    <>
+      <div>
         <label className="setup-input-label">Custodian Code</label>
-                              <input
-                                type="text"
-                                value={formData.custodianCode}
-                                onChange={(e) => handleInputChange('custodianCode', e.target.value)}
+        <input
+          type="text"
+          value={formData.custodianCode}
+          onChange={(e) => handleInputChange('custodianCode', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter custodian code"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter custodian code"
+        />
+      </div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Active</label>
-        <div className="setup-checkbox-group">
-                                <input
-                                  type="checkbox"
-                                  checked={formData.custodianActive}
-                                  onChange={(e) => handleInputChange('custodianActive', e.target.checked.toString())}
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
+          <input
+            type="checkbox"
+            id="custodianActive"
+            checked={formData.custodianActive}
+            onChange={(e) => handleInputChange('custodianActive', e.target.checked.toString())}
+            disabled={!isFormEditable}
             className="setup-checkbox"
           />
-          <span className="setup-checkbox-label">Active</span>
-                              </div>
-                            </div>
-                            <div>
+        </div>
+      </div>
+      <div>
         <label className="setup-input-label">Custodian Name</label>
-                              <input
-                                type="text"
-                                value={formData.custodianName}
-                                onChange={(e) => handleInputChange('custodianName', e.target.value)}
+        <input
+          type="text"
+          value={formData.custodianName}
+          onChange={(e) => handleInputChange('custodianName', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter custodian name"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter custodian name"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Address 1</label>
-                              <input
-                                type="text"
-                                value={formData.custodianAddress1}
-                                onChange={(e) => handleInputChange('custodianAddress1', e.target.value)}
+        <input
+          type="text"
+          value={formData.custodianAddress1}
+          onChange={(e) => handleInputChange('custodianAddress1', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter address 1"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter address 1"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Address 2</label>
-                              <input
-                                type="text"
-                                value={formData.custodianAddress2}
-                                onChange={(e) => handleInputChange('custodianAddress2', e.target.value)}
+        <input
+          type="text"
+          value={formData.custodianAddress2}
+          onChange={(e) => handleInputChange('custodianAddress2', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter address 2"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter address 2"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Address 3</label>
-                              <input
-                                type="text"
-                                value={formData.custodianAddress3}
-                                onChange={(e) => handleInputChange('custodianAddress3', e.target.value)}
+        <input
+          type="text"
+          value={formData.custodianAddress3}
+          onChange={(e) => handleInputChange('custodianAddress3', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter address 3"
-                              />
-                            </div>
-                            <div>
-                            <label className="setup-input-label">Telephone Number</label>
-                              <input
-                                type="text"
-                                value={formData.custodianTelephoneNumber}
-                                onChange={(e) => handleInputChange('custodianTelephoneNumber', e.target.value)}
-                  className="setup-input-field"
-                                placeholder="Enter telephone number"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter address 3"
+        />
+      </div>
+      <div>
+        <label className="setup-input-label">Telephone Number</label>
+        <input
+          type="text"
+          value={formData.custodianTelephoneNumber}
+          onChange={(e) => handleInputChange('custodianTelephoneNumber', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter telephone number"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Fax No</label>
-                              <input
-                                type="text"
-                                value={formData.custodianFaxNo}
-                                onChange={(e) => handleInputChange('custodianFaxNo', e.target.value)}
+        <input
+          type="text"
+          value={formData.custodianFaxNo}
+          onChange={(e) => handleInputChange('custodianFaxNo', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter fax number"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter fax number"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">E-mail</label>
-                              <input
-                                type="email"
-                                value={formData.custodianEmail}
-                                onChange={(e) => handleInputChange('custodianEmail', e.target.value)}
+        <input
+          type="email"
+          value={formData.custodianEmail}
+          onChange={(e) => handleInputChange('custodianEmail', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter e-mail"
-                              />
-                            </div>
-                          </>
+          placeholder="Enter e-mail"
+        />
+      </div>
+    </>
   );
 }
 
 // ========================================
 // POSTAL AREA MODAL COMPONENT
 // ========================================
-function PostalAreaModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+function PostalAreaModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
-                          <>
-                            <div>
+    <>
+      <div>
         <label className="setup-input-label">Postal Code</label>
-                              <input
-                                type="text"
-                                value={formData.postalCode}
-                                onChange={(e) => handleInputChange('postalCode', e.target.value)}
+        <input
+          type="text"
+          value={formData.postalCode}
+          onChange={(e) => handleInputChange('postalCode', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter postal code"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter postal code"
+        />
+      </div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Active</label>
-        <div className="setup-checkbox-group">
-                                <input
-                                  type="checkbox"
-                                  checked={formData.postalActive}
-                                  onChange={(e) => handleInputChange('postalActive', e.target.checked.toString())}
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
+          <input
+            type="checkbox"
+            id="postalActive"
+            checked={formData.postalActive}
+            onChange={(e) => handleInputChange('postalActive', e.target.checked.toString())}
+            disabled={!isFormEditable}
             className="setup-checkbox"
           />
-          <span className="setup-checkbox-label">Active</span>
-                              </div>
-                            </div>
-                            <div>
+        </div>
+      </div>
+      <div>
         <label className="setup-input-label">Description</label>
-                              <input
-                                type="text"
-                                value={formData.postalDescription}
-                                onChange={(e) => handleInputChange('postalDescription', e.target.value)}
+        <input
+          type="text"
+          value={formData.postalDescription}
+          onChange={(e) => handleInputChange('postalDescription', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter description"
-                              />
-                            </div>
-                          </>
+          placeholder="Enter description"
+        />
+      </div>
+    </>
   );
 }
 
 // ========================================
 // DIVIDEND TYPE MODAL COMPONENT
 // ========================================
-function DividendTypeModalContent({ formData, handleInputChange }: { formData: FormData, handleInputChange: (field: string, value: string) => void }) {
+function DividendTypeModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
-          <>
-        <div>
+    <>
+      <div>
         <label className="setup-input-label">Dividend Type</label>
-          <input
-            type="text"
-            value={formData.dividendType}
-            onChange={(e) => handleInputChange('dividendType', e.target.value)}
-            className="setup-input-field"
-            placeholder="Enter dividend type"
-           />
-        </div>
-        <div>
-
+        <input
+          type="text"
+          value={formData.dividendType}
+          onChange={(e) => handleInputChange('dividendType', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter dividend type"
+        />
+      </div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Active</label>
-        <div className="setup-checkbox-group">
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
           <input
             type="checkbox"
+            id="dividendActive"
             checked={formData.dividendActive}
             onChange={(e) => handleInputChange('dividendActive', e.target.checked.toString())}
+            disabled={!isFormEditable}
             className="setup-checkbox"
           />
-          <span className="setup-checkbox-label">Active</span>
         </div>
-        </div>
+      </div>
       <div>
         <label className="setup-input-label">Description</label>
-          <input
+        <input
           type="text"
           value={formData.dividendDescription}
           onChange={(e) => handleInputChange('dividendDescription', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
-          />
-        </div>
-        </>
+        />
+      </div>
+    </>
   );
 }
 
@@ -3551,117 +3568,117 @@ function DividendTypeModalContent({ formData, handleInputChange }: { formData: F
 // ========================================
 function FundsModalContent({ formData, handleInputChange, handleDateChange, isFormEditable = false, setSuspenseModalOpen }: { formData: FormData, handleInputChange: (field: string, value: string) => void, handleDateChange: (field: string, date: Date | null) => void, isFormEditable: boolean, setSuspenseModalOpen: (open: boolean) => void }) {
   return (
-                          <>
-                            <div>
+    <>
+      <div>
         <label className="setup-input-label">Fund</label>
-                              <input
-                                type="text"
-                                value={formData.fund}
-                                onChange={(e) => handleInputChange('fund', e.target.value)}
-                                disabled={!isFormEditable}
+        <input
+          type="text"
+          value={formData.fund}
+          onChange={(e) => handleInputChange('fund', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-input-field"
-                                placeholder="Enter Fund"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter Fund"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Name</label>
-                              <input
-                                type="text"
-                                value={formData.fundName}
-                                onChange={(e) => handleInputChange('fundName', e.target.value)}
+        <input
+          type="text"
+          value={formData.fundName}
+          onChange={(e) => handleInputChange('fundName', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter Name"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter Name"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Manager</label>
-                              <input
-                                type="text"
-                                value={formData.manager}
-                                onChange={(e) => handleInputChange('manager', e.target.value)}
+        <input
+          type="text"
+          value={formData.manager}
+          onChange={(e) => handleInputChange('manager', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter Manager"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter Manager"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Trustee</label>
-                              <select
-                                value={formData.trustee}
-                                onChange={(e) => handleInputChange('trustee', e.target.value)}
-                                disabled={!isFormEditable}
+        <select
+          value={formData.trustee}
+          onChange={(e) => handleInputChange('trustee', e.target.value)}
+          disabled={!isFormEditable}
           className="setup-select-field"
-                              >
-                                <option value="">Select Trustee</option>
-                                <option value="Trust Corp">Trust Corp</option>
-                                <option value="Fiduciary Ltd">Fiduciary Ltd</option>
-                                <option value="Trustee Corp">Trustee Corp</option>
-                              </select>
-                            </div>
-                            <div>
+        >
+          <option value="">Select Trustee</option>
+          <option value="Trust Corp">Trust Corp</option>
+          <option value="Fiduciary Ltd">Fiduciary Ltd</option>
+          <option value="Trustee Corp">Trustee Corp</option>
+        </select>
+      </div>
+      <div>
         <label className="setup-input-label">Custodian</label>
-                              <select
-                                value={formData.custodian}
-                                onChange={(e) => handleInputChange('custodian', e.target.value)}
+        <select
+          value={formData.custodian}
+          onChange={(e) => handleInputChange('custodian', e.target.value)}
           className="setup-select-field"
-                              >
-                                <option value="">Select Custodian</option>
-                                <option value="Global Custody">Global Custody</option>
-                                <option value="Euro Custody">Euro Custody</option>
-                                <option value="Asia Custody">Asia Custody</option>
-                              </select>
-                            </div>
-                            <div>
+        >
+          <option value="">Select Custodian</option>
+          <option value="Global Custody">Global Custody</option>
+          <option value="Euro Custody">Euro Custody</option>
+          <option value="Asia Custody">Asia Custody</option>
+        </select>
+      </div>
+      <div>
         <label className="setup-input-label">Min Value of Investment</label>
-                              <input
-                                type="text"
-                                value={formData.minValue}
-                                onChange={(e) => handleInputChange('minValue', e.target.value)}
+        <input
+          type="text"
+          value={formData.minValue}
+          onChange={(e) => handleInputChange('minValue', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter Min Value"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter Min Value"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Min No of Units</label>
-                              <input
-                                type="text"
-                                value={formData.minUnits}
-                                onChange={(e) => handleInputChange('minUnits', e.target.value)}
+        <input
+          type="text"
+          value={formData.minUnits}
+          onChange={(e) => handleInputChange('minUnits', e.target.value)}
           className="setup-input-field"
-                                placeholder="Enter Units"
-                              />
-                            </div>
-                            <div>
+          placeholder="Enter Units"
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Fund Suspense Account</label>
         <div className="setup-suspense-input-container">
           <button
             type="button"
             onClick={() => setSuspenseModalOpen?.(true)}
             className="setup-suspense-account-button"
-            >
+          >
             A
-            </button>
-            <input
+          </button>
+          <input
             type="text"
             value={formData.suspenseAccount}
             onChange={(e) => handleInputChange('suspenseAccount', e.target.value)}
             className="setup-suspense-input-field"
             placeholder="Enter Suspense Account"
-           />
-         </div>
+          />
         </div>
-       <div>
+      </div>
+      <div>
 
         <label className="setup-input-label">Launch Date</label>
-                                 <DatePicker
-                                   selected={formData.launchDate}
+        <DatePicker
+          selected={formData.launchDate}
           onChange={(date) => handleDateChange?.('launchDate', date)}
-                                   dateFormat="dd/MM/yyyy"
-                                   placeholderText="dd/mm/yyyy"
-                                   className="date-picker-input"
-                                   disabled={!isFormEditable}
-                                 />
-                               </div>
-                            <div>
+          dateFormat="dd/MM/yyyy"
+          placeholderText="dd/mm/yyyy"
+          className="date-picker-input"
+          disabled={!isFormEditable}
+        />
+      </div>
+      <div>
         <label className="setup-input-label">Fund Type</label>
         <div className="setup-radio-group">
           <label className="setup-radio-item">
@@ -3688,44 +3705,44 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
             />
             Close Ended
           </label>
-          </div>
         </div>
+      </div>
       <div>
 
         <label className="setup-input-label">IPO Starting Date</label>
-          <DatePicker
+        <DatePicker
           selected={formData.ipoStartDate}
           onChange={(date) => handleDateChange?.('ipoStartDate', date)}
           dateFormat="dd/MM/yyyy"
           placeholderText="dd/mm/yyyy"
           className="date-picker-input"
-          />
-        </div>
+        />
+      </div>
       <div>
 
         <label className="setup-input-label">IPO Ending Date</label>
-          <DatePicker
+        <DatePicker
           selected={formData.ipoEndDate}
           onChange={(date) => handleDateChange?.('ipoEndDate', date)}
           dateFormat="dd/MM/yyyy"
           placeholderText="dd/mm/yyyy"
           className="date-picker-input"
-          />
-          </div>
-          {formData.fundType === 'Close Ended' ? (
-          <>
-         <div>
+        />
+      </div>
+      {formData.fundType === 'Close Ended' ? (
+        <>
+          <div>
 
             <label className="setup-input-label">Maturity Date</label>
-              <DatePicker
+            <DatePicker
               selected={formData.maturityDate}
               onChange={(date) => handleDateChange?.('maturityDate', date)}
               dateFormat="dd/MM/yyyy"
               placeholderText="dd/mm/yyyy"
               className="date-picker-input"
-              />
-            </div>
-            <div>
+            />
+          </div>
+          <div>
 
             <label className="setup-input-label">Certificate Type</label>
             <input
@@ -3734,47 +3751,47 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
               onChange={(e) => handleInputChange('certificateType', e.target.value)}
               className="setup-input-field"
               placeholder="Enter Certificate Type"
-              />
-            </div>
+            />
+          </div>
           <div>
 
             <label className="setup-input-label">Portfolio Code</label>
-              <input
+            <input
               type="text"
               value={formData.portfolioCode}
               onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
               className="setup-input-field"
               placeholder="Enter PF Code"
-              />
-              </div>
-              </>
-              ) : (
-              <>
-            <div>
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <div>
 
             <label className="setup-input-label">Certificate Type</label>
-              <input
+            <input
               type="text"
               value={formData.certificateType}
               onChange={(e) => handleInputChange('certificateType', e.target.value)}
               className="setup-input-field"
               placeholder="Enter Certificate Type"
-              />
-              </div>
-            <div>
+            />
+          </div>
+          <div>
 
             <label className="setup-input-label">Portfolio Code</label>
-              <input
+            <input
               type="text"
               value={formData.portfolioCode}
               onChange={(e) => handleInputChange('portfolioCode', e.target.value)}
               className="setup-input-field"
               placeholder="Enter PF Code"
-              />
-            </div>
-              </>
-            )}
-              </>
+            />
+          </div>
+        </>
+      )}
+    </>
   );
 }
 
@@ -3783,28 +3800,28 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
 // ========================================
 function PromotionalActivityModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
   return (
-         <>
+    <>
       <div className="setup-input-group">
         <label className="setup-input-label">Promotion Code</label>
-          <input
+        <input
           type="text"
           value={formData.promotionCode}
           onChange={(e) => handleInputChange('promotionCode', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter promotion code"
-          />
+        />
       </div>
       <div className="setup-input-group">
         <label className="setup-input-label">Promotion Name</label>
-         <input
+        <input
           type="text"
           value={formData.promotionName}
           onChange={(e) => handleInputChange('promotionName', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter promotion name"
-          />
+        />
       </div>
 
       <div className="setup-input-group">
@@ -3841,21 +3858,22 @@ function OtherChargesModalContent({ formData, handleInputChange, handleDateChang
           placeholder="Enter code"
         />
       </div>
-      
+
       {/* Active Checkbox */}
       <div className="setup-input-group">
-        <label className="setup-checkbox-label">
+        <label className="setup-input-label">Active</label>
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
           <input
             type="checkbox"
+            id="otherChargesActive"
             checked={formData.otherChargesActive || false}
             onChange={e => handleInputChange('otherChargesActive', e.target.checked)}
             disabled={!isFormEditable}
-            className="setup-checkbox-input"
+            className="setup-checkbox"
           />
-          <span className="setup-checkbox-text">Active</span>
-        </label>
+        </div>
       </div>
-      
+
       {/* Name */}
       <div className="setup-input-group">
         <label className="setup-input-label">Name</label>
@@ -3868,7 +3886,7 @@ function OtherChargesModalContent({ formData, handleInputChange, handleDateChang
           placeholder="Enter name"
         />
       </div>
-      
+
       {/* Valid From Date */}
       <div className="setup-input-group">
         <label className="setup-input-label">Valid From</label>
@@ -3880,7 +3898,7 @@ function OtherChargesModalContent({ formData, handleInputChange, handleDateChang
           className="setup-input-field"
         />
       </div>
-      
+
       {/* Valid To Date */}
       <div className="setup-input-group">
         <label className="setup-input-label">Valid To</label>
@@ -3892,7 +3910,7 @@ function OtherChargesModalContent({ formData, handleInputChange, handleDateChang
           className="setup-input-field"
         />
       </div>
-      
+
       {/* Type Radio Buttons */}
       <div className="setup-input-group">
         <label className="setup-input-label">Type</label>
@@ -3923,7 +3941,7 @@ function OtherChargesModalContent({ formData, handleInputChange, handleDateChang
           </label>
         </div>
       </div>
-      
+
       {/* Percentage Input */}
       {formData.otherChargesType === 'percentage' && (
         <div className="setup-input-group">
@@ -3938,7 +3956,7 @@ function OtherChargesModalContent({ formData, handleInputChange, handleDateChang
           />
         </div>
       )}
-      
+
       {/* Value Input */}
       {formData.otherChargesType === 'value' && (
         <div className="setup-input-group">
@@ -4091,9 +4109,9 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
             type="button"
             disabled={!isFormEditable}
             className="setup-button"
-            style={{ 
-              padding: '8px 12px', 
-              height: '40px', 
+            style={{
+              padding: '8px 12px',
+              height: '40px',
               minWidth: '40px',
               backgroundColor: '#3b82f6',
               color: 'white',
@@ -4117,7 +4135,7 @@ function AgentModalContent({ formData, handleInputChange, isFormEditable = false
           type="button"
           disabled={!isFormEditable}
           className="setup-button"
-          style={{ 
+          style={{
             width: '100%',
             padding: '10px',
             backgroundColor: '#10b981',
@@ -4412,116 +4430,116 @@ function DocumentsSetupModalContent({ formData, handleInputChange, isFormEditabl
     <>
       {/* Wrapper to force full card width */}
       <div style={{ width: '100%', gridColumn: '1 / -1' }}>
-      {/* Row 1: Title + centered two-column radios (50% each) */}
-      <div style={{ width: '100%' }}>
-        <div className="setup-input-group" style={{ marginBottom: '8px' }}>
-          <label className="setup-input-label" style={{ fontWeight: 600 }}>Select Document Type</label>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'center', width: '100%' }}>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="documentType"
-                value="remote"
-                checked={formData.documentType === 'remote'}
-                onChange={(e) => handleInputChange('documentType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              Remote Documents
-            </label>
+        {/* Row 1: Title + centered two-column radios (50% each) */}
+        <div style={{ width: '100%' }}>
+          <div className="setup-input-group" style={{ marginBottom: '8px' }}>
+            <label className="setup-input-label" style={{ fontWeight: 600 }}>Select Document Type</label>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="documentType"
-                value="checklist"
-                checked={formData.documentType === 'checklist'}
-                onChange={(e) => handleInputChange('documentType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              Checklist Documents
-            </label>
-            {formData.documentType === 'checklist' && (
-              <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', width: '100%' }}>
-                <label className="setup-radio-label">
-                  <input
-                    type="radio"
-                    name="documentHolderType"
-                    value="individual"
-                    checked={formData.documentHolderType === 'individual'}
-                    onChange={(e) => handleInputChange('documentHolderType', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-radio-input"
-                  />
-                  Individual
-                </label>
-                <label className="setup-radio-label">
-                  <input
-                    type="radio"
-                    name="documentHolderType"
-                    value="cooperate"
-                    checked={formData.documentHolderType === 'cooperate'}
-                    onChange={(e) => handleInputChange('documentHolderType', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-radio-input"
-                  />
-                  Cooperate
-                </label>
-              </div>
-            )}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'center', width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <label className="setup-radio-label">
+                <input
+                  type="radio"
+                  name="documentType"
+                  value="remote"
+                  checked={formData.documentType === 'remote'}
+                  onChange={(e) => handleInputChange('documentType', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-radio-input"
+                />
+                Remote Documents
+              </label>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <label className="setup-radio-label">
+                <input
+                  type="radio"
+                  name="documentType"
+                  value="checklist"
+                  checked={formData.documentType === 'checklist'}
+                  onChange={(e) => handleInputChange('documentType', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-radio-input"
+                />
+                Checklist Documents
+              </label>
+              {formData.documentType === 'checklist' && (
+                <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', width: '100%' }}>
+                  <label className="setup-radio-label">
+                    <input
+                      type="radio"
+                      name="documentHolderType"
+                      value="individual"
+                      checked={formData.documentHolderType === 'individual'}
+                      onChange={(e) => handleInputChange('documentHolderType', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-radio-input"
+                    />
+                    Individual
+                  </label>
+                  <label className="setup-radio-label">
+                    <input
+                      type="radio"
+                      name="documentHolderType"
+                      value="cooperate"
+                      checked={formData.documentHolderType === 'cooperate'}
+                      onChange={(e) => handleInputChange('documentHolderType', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="setup-radio-input"
+                    />
+                    Cooperate
+                  </label>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Row 2: Code + input | Active | Name + input (single row, 3 columns) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '32px', alignItems: 'center', width: '100%', marginTop: '16px' }}>
-        {/* Column 1: Code label + input inline */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px', alignItems: 'center' }}>
-          <label className="setup-input-label" style={{ marginBottom: 0 }}>Code</label>
-          <input
-            type="text"
-            value={formData.documentCode || ''}
-            onChange={(e) => handleInputChange('documentCode', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            style={{ width: '100%', maxWidth: '600px' }}
-            placeholder="Enter code"
-          />
         </div>
 
-        {/* Column 2: Active checkbox centered */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="setup-checkbox-container" style={{ marginBottom: 0 }}>
+        {/* Row 2: Code + input | Active | Name + input (single row, 3 columns) */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '32px', alignItems: 'center', width: '100%', marginTop: '16px' }}>
+          {/* Column 1: Code label + input inline */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px', alignItems: 'center' }}>
+            <label className="setup-input-label" style={{ marginBottom: 0 }}>Code</label>
             <input
-              type="checkbox"
-              id="documentActive"
-              checked={formData.documentActive || false}
-              onChange={(e) => handleInputChange('documentActive', e.target.checked)}
+              type="text"
+              value={formData.documentCode || ''}
+              onChange={(e) => handleInputChange('documentCode', e.target.value)}
               disabled={!isFormEditable}
-              className="setup-checkbox-input"
+              className="setup-input-field"
+              style={{ width: '100%', maxWidth: '600px' }}
+              placeholder="Enter code"
             />
-            <label htmlFor="documentActive" className="setup-checkbox-label">Active</label>
+          </div>
+
+          {/* Column 2: Active checkbox centered */}
+          <div className="setup-input-group" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <label className="setup-input-label">Active</label>
+            <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px', justifyContent: 'center' }}>
+              <input
+                type="checkbox"
+                id="documentActive"
+                checked={formData.documentActive || false}
+                onChange={(e) => handleInputChange('documentActive', e.target.checked)}
+                disabled={!isFormEditable}
+                className="setup-checkbox"
+              />
+            </div>
+          </div>
+
+          {/* Column 3: Name label + input inline */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px', alignItems: 'center' }}>
+            <label className="setup-input-label" style={{ marginBottom: 0 }}>Name</label>
+            <input
+              type="text"
+              value={formData.documentName || ''}
+              onChange={(e) => handleInputChange('documentName', e.target.value)}
+              disabled={!isFormEditable}
+              className="setup-input-field"
+              style={{ width: '100%', maxWidth: '600px' }}
+              placeholder="Enter name"
+            />
           </div>
         </div>
-
-        {/* Column 3: Name label + input inline */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px', alignItems: 'center' }}>
-          <label className="setup-input-label" style={{ marginBottom: 0 }}>Name</label>
-          <input
-            type="text"
-            value={formData.documentName || ''}
-            onChange={(e) => handleInputChange('documentName', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            style={{ width: '100%', maxWidth: '600px' }}
-            placeholder="Enter name"
-          />
-        </div>
-      </div>
       </div>
     </>
   );
@@ -4550,11 +4568,11 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
     handleInputChange('unitFeeApplicableFunds', updated);
   };
   return (
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: '1fr 1fr', 
-      gap: '48px', 
-      width: '100%', 
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '48px',
+      width: '100%',
       maxWidth: 'none',
       minWidth: '100%',
       boxSizing: 'border-box',
@@ -4569,7 +4587,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
           <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Txn. Type</div>
           <div style={{ display: 'flex', gap: '24px' }}>
             <label className="setup-radio-label">
-                <input
+              <input
                 type="radio"
                 name="unitFeeTxnType"
                 value="creation"
@@ -4579,7 +4597,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                 className="setup-radio-input"
               />
               Creation
-              </label>
+            </label>
             <label className="setup-radio-label">
               <input
                 type="radio"
@@ -4591,33 +4609,33 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                 className="setup-radio-input"
               />
               Redemption
-              </label>
+            </label>
           </div>
         </div>
         {/* Code */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
           <label className="setup-input-label" style={{ marginBottom: 0 }}>Code</label>
-            <input
+          <input
             type="text"
             value={formData.unitFeeCode || ''}
             onChange={e => handleInputChange('unitFeeCode', e.target.value)}
             disabled={!isFormEditable}
             className="setup-input-field"
             placeholder="Enter code"
-            />
+          />
         </div>
         {/* Percentage */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
           <label className="setup-input-label" style={{ marginBottom: 0 }}>Percentage</label>
-            <input
+          <input
             type="text"
             value={formData.unitFeePercentage || ''}
             onChange={e => handleInputChange('unitFeePercentage', e.target.value)}
             disabled={!isFormEditable}
             className="setup-input-field"
             placeholder="Enter percentage"
-            />
-         </div>
+          />
+        </div>
         {/* Description */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
           <label className="setup-input-label" style={{ marginBottom: 0 }}>Description</label>
@@ -4625,7 +4643,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             type="text"
             value={formData.unitFeeDescription || ''}
             onChange={e => handleInputChange('unitFeeDescription', e.target.value)}
-                        disabled={!isFormEditable}
+            disabled={!isFormEditable}
             className="setup-input-field"
             placeholder="Enter description"
           />
@@ -4665,8 +4683,8 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
               }}
               disabled={!isFormEditable}
               className="setup-btn setup-btn-primary"
-              style={{ 
-                padding: '8px 12px', 
+              style={{
+                padding: '8px 12px',
                 minWidth: '40px',
                 height: '40px',
                 fontSize: '14px',
@@ -4696,7 +4714,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
           <div className="setup-ash-box" style={{ marginTop: '8px' }}>
             {/* Redemption Age Title */}
             <label className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px', display: 'block' }}>Redemption Age</label>
-            
+
             {/* NO of Days From and To in 2 columns */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               {/* Left Column: NO of Days From */}
@@ -4711,7 +4729,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
                   placeholder="Enter days from"
                 />
               </div>
-              
+
               {/* Right Column: To */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
                 <label className="setup-input-label" style={{ marginBottom: 0 }}>To</label>
@@ -4727,13 +4745,13 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             </div>
           </div>
         )}
-    </div>
+      </div>
 
       {/* Right Column: Card with scrollable table */}
       <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>
         <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#000000' }}>Applicable Funds</div>
         <div style={{ flex: 1, overflowY: 'auto', maxHeight: '320px' }}>
-          <table className="setup-custom-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table className="setup-custom-table setup-applicable-funds-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
                 <th style={{ textAlign: 'left', padding: '8px', color: '#000000', fontWeight: 600 }}>Code</th>
@@ -4757,9 +4775,9 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
               ))}
             </tbody>
           </table>
-          </div>
         </div>
       </div>
+    </div>
   );
 }
 
@@ -4781,7 +4799,7 @@ function CommissionTypeModalContent({ formData, handleInputChange, isFormEditabl
           placeholder="Enter commission type"
         />
       </div>
-      
+
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
@@ -4817,7 +4835,7 @@ function CommissionLevelModalContent({ formData, handleInputChange, isFormEditab
           placeholder="Enter commission level"
         />
       </div>
-      
+
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
@@ -4840,11 +4858,11 @@ function CommissionLevelModalContent({ formData, handleInputChange, isFormEditab
 // ========================================
 function AgentCommissionDefinitionModalContent({ formData, handleInputChange, handleDateChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, handleDateChange: (field: string, date: Date | null) => void, isFormEditable: boolean }) {
   return (
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: '1fr 1fr', 
-      gap: '48px', 
-      width: '100%', 
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '48px',
+      width: '100%',
       maxWidth: 'none',
       minWidth: '100%',
       boxSizing: 'border-box',
@@ -5125,21 +5143,22 @@ function InstitutionCategoryModalContent({ formData, handleInputChange, isFormEd
           placeholder="Enter institution category"
         />
       </div>
-      
+
       {/* Active Checkbox */}
       <div className="setup-input-group">
-        <label className="setup-checkbox-label">
+        <label className="setup-input-label">Active</label>
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
           <input
             type="checkbox"
+            id="institutionCategoryActive"
             checked={formData.institutionCategoryActive || false}
             onChange={e => handleInputChange('institutionCategoryActive', e.target.checked)}
             disabled={!isFormEditable}
-            className="setup-checkbox-input"
+            className="setup-checkbox"
           />
-          <span className="setup-checkbox-text">Active</span>
-        </label>
+        </div>
       </div>
-      
+
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
@@ -5175,17 +5194,15 @@ function InstitutionModalContent({ formData, handleInputChange, isFormEditable }
         />
       </div>
       <div className="setup-input-group">
-        <div className="setup-checkbox-container" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label htmlFor="institutionCategoryActive" className="setup-checkbox-label" style={{ marginRight: '8px', order: -1 }}>
-            Active
-          </label>
+        <label className="setup-input-label">Active</label>
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
           <input
             type="checkbox"
             id="institutionCategoryActive"
             checked={formData.institutionCategoryActive || false}
             onChange={e => handleInputChange('institutionCategoryActive', e.target.checked)}
             disabled={!isFormEditable}
-            className="setup-checkbox-input"
+            className="setup-checkbox"
           />
         </div>
       </div>
@@ -5293,21 +5310,22 @@ function BlockingCategoryModalContent({ formData, handleInputChange, isFormEdita
           placeholder="Enter blocking category"
         />
       </div>
-      
+
       {/* Active Checkbox */}
       <div className="setup-input-group">
-        <label className="setup-checkbox-label">
+        <label className="setup-input-label">Active</label>
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
           <input
             type="checkbox"
+            id="blockingCategoryActive"
             checked={formData.blockingCategoryActive || false}
             onChange={e => handleInputChange('blockingCategoryActive', e.target.checked)}
             disabled={!isFormEditable}
-            className="setup-checkbox-input"
+            className="setup-checkbox"
           />
-          <span className="setup-checkbox-text">Active</span>
-        </label>
+        </div>
       </div>
-      
+
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
@@ -5343,21 +5361,22 @@ function CustomerZoneModalContent({ formData, handleInputChange, isFormEditable 
           placeholder="Enter zone code"
         />
       </div>
-      
+
       {/* Active Checkbox */}
       <div className="setup-input-group">
-        <label className="setup-checkbox-label">
+        <label className="setup-input-label">Active</label>
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
           <input
             type="checkbox"
+            id="customerZoneActive"
             checked={formData.customerZoneActive || false}
             onChange={e => handleInputChange('customerZoneActive', e.target.checked)}
             disabled={!isFormEditable}
-            className="setup-checkbox-input"
+            className="setup-checkbox"
           />
-          <span className="setup-checkbox-text">Active</span>
-        </label>
+        </div>
       </div>
-      
+
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
@@ -5377,14 +5396,14 @@ function CustomerZoneModalContent({ formData, handleInputChange, isFormEditable 
 // ========================================
 // JOINT SALE AGENT MODAL CONTENT
 // ========================================
-function JointSaleAgentModalContent({ 
-  formData, 
-  handleInputChange, 
-  isFormEditable 
-}: { 
-  formData: FormData, 
-  handleInputChange: (field: string, value: string | string[] | boolean) => void, 
-  isFormEditable: boolean 
+function JointSaleAgentModalContent({
+  formData,
+  handleInputChange,
+  isFormEditable
+}: {
+  formData: FormData,
+  handleInputChange: (field: string, value: string | string[] | boolean) => void,
+  isFormEditable: boolean
 }) {
   // State for dropdown table visibility
   const [showInstituteAgentTable, setShowInstituteAgentTable] = useState(false);
@@ -5435,22 +5454,22 @@ function JointSaleAgentModalContent({
         setShowJointSubAgencyTable(false);
       }
     };
-    
+
     if (showInstituteAgentTable || showNormalAgentTable || showJointAgencyTable || showJointSubAgencyTable) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showInstituteAgentTable, showNormalAgentTable, showJointAgencyTable, showJointSubAgencyTable]);
 
   return (
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: '1fr 1fr', 
-      gap: '48px', 
-      width: '100%', 
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '48px',
+      width: '100%',
       maxWidth: 'none',
       minWidth: '100%',
       boxSizing: 'border-box',
@@ -5459,11 +5478,11 @@ function JointSaleAgentModalContent({
     }}>
       {/* Left Column - Institute Section */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
-        
+
         {/* Institute Section */}
         <div className="setup-ash-box">
           <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Institute</div>
-          
+
           <div className="setup-input-group">
             <label className="setup-input-label">Agency</label>
             <select
@@ -5522,21 +5541,21 @@ function JointSaleAgentModalContent({
                     </thead>
                     <tbody>
                       {agentCodeData.map((agent, i) => (
-                        <tr 
-                          key={i} 
-                          onClick={() => { 
-                            handleInputChange('agentCode', agent.agentCode); 
-                            setShowInstituteAgentTable(false); 
-                          }} 
-                          style={{ 
-                            cursor: 'pointer', 
-                            backgroundColor: formData.agentCode === agent.agentCode ? '#f3e8ff' : '#ffffff' 
-                          }} 
-                          onMouseEnter={e => { 
-                            if (formData.agentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#f8fafc'; 
-                          }} 
-                          onMouseLeave={e => { 
-                            if (formData.agentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                        <tr
+                          key={i}
+                          onClick={() => {
+                            handleInputChange('agentCode', agent.agentCode);
+                            setShowInstituteAgentTable(false);
+                          }}
+                          style={{
+                            cursor: 'pointer',
+                            backgroundColor: formData.agentCode === agent.agentCode ? '#f3e8ff' : '#ffffff'
+                          }}
+                          onMouseEnter={e => {
+                            if (formData.agentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#f8fafc';
+                          }}
+                          onMouseLeave={e => {
+                            if (formData.agentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#ffffff';
                           }}
                         >
                           <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.agencyCode}</td>
@@ -5552,16 +5571,16 @@ function JointSaleAgentModalContent({
             </div>
           </div>
         </div>
-        
+
       </div>
 
       {/* Right Column - Name Section */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
-        
+
         {/* Name Section */}
         <div className="setup-ash-box">
           <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Normal</div>
-          
+
           <div className="setup-input-group">
             <label className="setup-input-label">Agency</label>
             <select
@@ -5620,21 +5639,21 @@ function JointSaleAgentModalContent({
                     </thead>
                     <tbody>
                       {agentCodeData.map((agent, i) => (
-                        <tr 
-                          key={i} 
-                          onClick={() => { 
-                            handleInputChange('nameAgentCode', agent.agentCode); 
-                            setShowNormalAgentTable(false); 
-                          }} 
-                          style={{ 
-                            cursor: 'pointer', 
-                            backgroundColor: formData.nameAgentCode === agent.agentCode ? '#f3e8ff' : '#ffffff' 
-                          }} 
-                          onMouseEnter={e => { 
-                            if (formData.nameAgentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#f8fafc'; 
-                          }} 
-                          onMouseLeave={e => { 
-                            if (formData.nameAgentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                        <tr
+                          key={i}
+                          onClick={() => {
+                            handleInputChange('nameAgentCode', agent.agentCode);
+                            setShowNormalAgentTable(false);
+                          }}
+                          style={{
+                            cursor: 'pointer',
+                            backgroundColor: formData.nameAgentCode === agent.agentCode ? '#f3e8ff' : '#ffffff'
+                          }}
+                          onMouseEnter={e => {
+                            if (formData.nameAgentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#f8fafc';
+                          }}
+                          onMouseLeave={e => {
+                            if (formData.nameAgentCode !== agent.agentCode) e.currentTarget.style.backgroundColor = '#ffffff';
                           }}
                         >
                           <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agent.agencyCode}</td>
@@ -5681,21 +5700,21 @@ function JointSaleAgentModalContent({
                     </thead>
                     <tbody>
                       {jointAgencyData.map((agency, i) => (
-                        <tr 
-                          key={i} 
-                          onClick={() => { 
-                            handleInputChange('jointAgency', agency.code); 
-                            setShowJointAgencyTable(false); 
-                          }} 
-                          style={{ 
-                            cursor: 'pointer', 
-                            backgroundColor: formData.jointAgency === agency.code ? '#f3e8ff' : '#ffffff' 
-                          }} 
-                          onMouseEnter={e => { 
-                            if (formData.jointAgency !== agency.code) e.currentTarget.style.backgroundColor = '#f8fafc'; 
-                          }} 
-                          onMouseLeave={e => { 
-                            if (formData.jointAgency !== agency.code) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                        <tr
+                          key={i}
+                          onClick={() => {
+                            handleInputChange('jointAgency', agency.code);
+                            setShowJointAgencyTable(false);
+                          }}
+                          style={{
+                            cursor: 'pointer',
+                            backgroundColor: formData.jointAgency === agency.code ? '#f3e8ff' : '#ffffff'
+                          }}
+                          onMouseEnter={e => {
+                            if (formData.jointAgency !== agency.code) e.currentTarget.style.backgroundColor = '#f8fafc';
+                          }}
+                          onMouseLeave={e => {
+                            if (formData.jointAgency !== agency.code) e.currentTarget.style.backgroundColor = '#ffffff';
                           }}
                         >
                           <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{agency.code}</td>
@@ -5735,21 +5754,21 @@ function JointSaleAgentModalContent({
                     </thead>
                     <tbody>
                       {jointSubAgencyData.map((subAgency, i) => (
-                        <tr 
-                          key={i} 
-                          onClick={() => { 
-                            handleInputChange('jointSubAgency', subAgency.code); 
-                            setShowJointSubAgencyTable(false); 
-                          }} 
-                          style={{ 
-                            cursor: 'pointer', 
-                            backgroundColor: formData.jointSubAgency === subAgency.code ? '#f3e8ff' : '#ffffff' 
-                          }} 
-                          onMouseEnter={e => { 
-                            if (formData.jointSubAgency !== subAgency.code) e.currentTarget.style.backgroundColor = '#f8fafc'; 
-                          }} 
-                          onMouseLeave={e => { 
-                            if (formData.jointSubAgency !== subAgency.code) e.currentTarget.style.backgroundColor = '#ffffff'; 
+                        <tr
+                          key={i}
+                          onClick={() => {
+                            handleInputChange('jointSubAgency', subAgency.code);
+                            setShowJointSubAgencyTable(false);
+                          }}
+                          style={{
+                            cursor: 'pointer',
+                            backgroundColor: formData.jointSubAgency === subAgency.code ? '#f3e8ff' : '#ffffff'
+                          }}
+                          onMouseEnter={e => {
+                            if (formData.jointSubAgency !== subAgency.code) e.currentTarget.style.backgroundColor = '#f8fafc';
+                          }}
+                          onMouseLeave={e => {
+                            if (formData.jointSubAgency !== subAgency.code) e.currentTarget.style.backgroundColor = '#ffffff';
                           }}
                         >
                           <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{subAgency.agencyCode}</td>
@@ -5818,7 +5837,7 @@ function ComplianceMsgSetupModalContent({ formData, handleInputChange, isFormEdi
           <option value="Specialist">Specialist</option>
         </select>
       </div>
-      
+
       {/* User Dropdown */}
       <div className="setup-input-group">
         <label className="setup-input-label">User</label>
@@ -5846,14 +5865,14 @@ function ComplianceMsgSetupModalContent({ formData, handleInputChange, isFormEdi
 // ========================================
 // PRODUCT TYPE MODAL CONTENT
 // ========================================
-function ProductTypeModalContent({ 
-  formData, 
-  handleInputChange, 
-  isFormEditable 
-}: { 
-  formData: FormData, 
-  handleInputChange: (field: string, value: string | string[] | boolean) => void, 
-  isFormEditable: boolean 
+function ProductTypeModalContent({
+  formData,
+  handleInputChange,
+  isFormEditable
+}: {
+  formData: FormData,
+  handleInputChange: (field: string, value: string | string[] | boolean) => void,
+  isFormEditable: boolean
 }) {
   // Product Type - Applicable Funds data
   const applicableFunds = [
@@ -5861,25 +5880,25 @@ function ProductTypeModalContent({
     { code: 'F002', name: 'Income Fund' },
     { code: 'F003', name: 'Balanced Fund' }
   ];
-  
+
   return (
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: '1fr 1fr', 
-      gap: '48px', 
-      width: '100%', 
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '48px',
+      width: '100%',
       maxWidth: 'none',
       minWidth: '100%',
       boxSizing: 'border-box',
       padding: '0',
       gridColumn: '1 / -1'
     }}>
-      
+
       {/* Left Column - Application Funds and Product Type Form */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
         {/* Product Type Form Section */}
         <div className="setup-ash-box">
-          
+
           {/* Product Type Input - Product Type field */}
           <div className="setup-input-group" style={{ marginBottom: '24px' }}>
             <label className="setup-input-label">Product Type</label>
@@ -5896,16 +5915,17 @@ function ProductTypeModalContent({
 
           {/* Active Checkbox - Product Type Active field */}
           <div className="setup-input-group">
-            <label className="setup-checkbox-label">
+            <label className="setup-input-label">Active</label>
+            <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
               <input
                 type="checkbox"
+                id="productTypeActive"
                 checked={formData.productTypeActive || false}
                 onChange={e => handleInputChange('productTypeActive', e.target.checked)}
                 disabled={!isFormEditable}
-                className="setup-checkbox-input"
+                className="setup-checkbox"
               />
-              <span className="setup-checkbox-text">Active</span>
-            </label>
+            </div>
           </div>
 
           {/* Description Textarea - Product Type Description field */}
@@ -5919,7 +5939,7 @@ function ProductTypeModalContent({
               placeholder="Enter product type description"
               rows={3}
               style={{ resize: 'vertical', minHeight: '80px' }}
-              
+
             />
           </div>
         </div>
@@ -5927,14 +5947,14 @@ function ProductTypeModalContent({
 
       {/* Right Column - Product Types Table */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
-        
+
         {/* Applicable Funds Table */}
         <div className="setup-ash-box" style={{ flex: 1 }}>
           <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#000000' }}>Applicable Funds</div>
-          
+
           {/* Simple table with just the structure */}
           <div style={{ overflowX: 'auto' }}>
-            <table className="setup-custom-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+            <table className="setup-custom-table setup-applicable-funds-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <colgroup>
                 <col style={{ width: '50%' }} />
                 <col style={{ width: '50%' }} />
@@ -5983,35 +6003,34 @@ function TitleModalContent({ formData, handleInputChange, isFormEditable }: { fo
           placeholder="Enter title code"
         />
       </div>
-      
+
       {/* Active Checkbox */}
       <div className="setup-input-group">
-        <label className="setup-checkbox-label">
-          <label className="setup-checkbox-label">
-            <input
-              type="checkbox"
-              checked={formData.titleActive || false}
-              onChange={e => handleInputChange('titleActive', e.target.checked)}
-              disabled={!isFormEditable}
-              className="setup-checkbox-input"
-            />
-            <span className="setup-checkbox-text">Active</span>
-          </label>
-        </label>
+        <label className="setup-input-label">Active</label>
+        <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1px' }}>
+          <input
+            type="checkbox"
+            id="titleActive"
+            checked={formData.titleActive || false}
+            onChange={e => handleInputChange('titleActive', e.target.checked)}
+            disabled={!isFormEditable}
+            className="setup-checkbox"
+          />
+        </div>
       </div>
-      
+
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
-                  <textarea
-            value={formData.titleDescription || ''}
-            onChange={e => handleInputChange('titleDescription', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            placeholder="Enter description"
-            rows={3}
-            style={{ resize: 'vertical', minHeight: '80px' }}
-          />
+        <textarea
+          value={formData.titleDescription || ''}
+          onChange={e => handleInputChange('titleDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
       </div>
     </>
   );

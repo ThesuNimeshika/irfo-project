@@ -6,6 +6,7 @@ import UnitOperations from './pages/UnitOperations';
 import Approval from './pages/Approval';
 import DocumentPrinting from './pages/DocumentPrinting';
 
+
 // CSS import ORDER matters:
 // 1. index.css is imported in main.tsx (already correct)
 // 2. App.css — base layout & dashboard styles
@@ -14,6 +15,7 @@ import './App.css';
 import './Setup.css';
 // 4. glass-overrides.css — LAST: overrides inline styles in all TSX files
 import './glass-overrides.css';
+import './modal-layout-fixes.css';
 
 function App() {
   return (

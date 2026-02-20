@@ -50,6 +50,8 @@ interface FormData {
   tinNo: string;
   nationality: 'Foreign' | 'Local';
   relatedPartyStatus: 'None Related' | 'Related party';
+  pepStatus: 'Yes' | 'No' | '';
+  fatcaRegistered: 'Yes' | 'No' | '';
   // Address fields
   correspondenceStreet: string;
   correspondenceTown: string;
@@ -91,6 +93,7 @@ interface FormData {
   sourceOfIncome: string;
   annualIncome: string;
   incomeCurrency: string;
+  riskCategory: string;
   isSubsidiaryAssociate: 'Yes' | 'No';
   ownershipType: 'Subsidiary' | 'Associate';
   organizationName: string;
@@ -299,6 +302,8 @@ function FourCardsWithModal() {
     tinNo: '',
     nationality: 'Local',
     relatedPartyStatus: 'None Related',
+    pepStatus: '',
+    fatcaRegistered: '',
     correspondenceStreet: '',
     correspondenceTown: '',
     correspondenceCity: '',
@@ -336,6 +341,7 @@ function FourCardsWithModal() {
     spouseOccupation: '',
     spouseEmployer: '',
     sourceOfIncome: '',
+    riskCategory: '',
     annualIncome: '',
     incomeCurrency: 'Sri Lanka',
     isSubsidiaryAssociate: 'No',
@@ -480,7 +486,123 @@ function FourCardsWithModal() {
   const [isAccountSearchModalOpen, setIsAccountSearchModalOpen] = useState<boolean>(false);
   const [isReinvestAccountSearchModalOpen, setIsReinvestAccountSearchModalOpen] = useState<boolean>(false);
   const [showApplicationNoTable, setShowApplicationNoTable] = useState<boolean>(false);
-  
+
+  // ── Custom address combobox state ──────────────────────────────────────
+  // Each field tracks: open panel, typed filter value
+  const [addrDropdown, setAddrDropdown] = useState<{
+    corrStreet: boolean; corrTown: boolean; corrCity: boolean;
+    permStreet: boolean; permTown: boolean; permCity: boolean;
+    offStreet: boolean; offTown: boolean; offCity: boolean;
+  }>({
+    corrStreet: false, corrTown: false, corrCity: false,
+    permStreet: false, permTown: false, permCity: false,
+    offStreet: false, offTown: false, offCity: false,
+  });
+
+  const toggleAddrDropdown = (key: keyof typeof addrDropdown) => {
+    setAddrDropdown(prev => {
+      const allClosed = Object.fromEntries(Object.keys(prev).map(k => [k, false])) as typeof prev;
+      return { ...allClosed, [key]: !prev[key] };
+    });
+  };
+  const closeAllAddrDropdowns = () =>
+    setAddrDropdown({ corrStreet: false, corrTown: false, corrCity: false,
+      permStreet: false, permTown: false, permCity: false,
+      offStreet: false, offTown: false, offCity: false });
+
+  // Shared address suggestion data
+  const streetOptions = [
+    'Galle Road', 'Duplication Road', 'High Level Road', 'Kandy Road',
+    'Main Street', 'Park Avenue', 'Flower Road', 'Hospital Road',
+    'Sea Street', 'Baseline Road', 'Temple Road', 'Lake Road',
+    'Green Path', 'Union Place', 'Bauddhaloka Mawatha',
+  ];
+  const townOptions = [
+    'Colombo', 'Kandy', 'Galle', 'Negombo', 'Jaffna', 'Matara',
+    'Kurunegala', 'Ratnapura', 'Badulla', 'Anuradhapura', 'Trincomalee',
+    'Batticaloa', 'Polonnaruwa', 'Nuwara Eliya', 'Hambantota',
+  ];
+  const cityOptions = [
+    'Colombo 01', 'Colombo 02', 'Colombo 03', 'Colombo 04', 'Colombo 05',
+    'Colombo 06', 'Colombo 07', 'Colombo 10', 'Kandy', 'Galle',
+    'Negombo', 'Jaffna', 'Matara', 'Kurunegala', 'Ratnapura',
+  ];
+
+  // Helper: render a custom combobox (typed input + dark dropdown panel)
+  const renderAddrCombobox = (
+    dropKey: keyof typeof addrDropdown,
+    field: string,
+    value: string,
+    options: string[],
+    placeholder: string,
+    minWidth?: string,
+  ) => {
+    const isOpen = addrDropdown[dropKey];
+    const filtered = options.filter(o => o.toLowerCase().includes(value.toLowerCase()));
+    return (
+      <div style={{ position: 'relative', flex: 1, minWidth: minWidth || '0' }} data-addr-combo>
+        {/* Input + chevron button */}
+        <div style={{ display: 'flex', border: '1px solid #cbd5e1', borderRadius: '4px', overflow: 'visible', backgroundColor: '#ffffff' }}>
+          <input
+            type="text"
+            value={value}
+            onChange={e => { handleInputChange(field, e.target.value); if (!isOpen) toggleAddrDropdown(dropKey); }}
+            onFocus={() => { if (!isOpen) toggleAddrDropdown(dropKey); }}
+            disabled={!isFormEditable}
+            placeholder={placeholder}
+            style={{
+              flex: 1, border: 'none', outline: 'none', padding: '6px 8px',
+              fontSize: '13px', color: '#000000', background: 'transparent',
+              minWidth: 0,
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => isFormEditable && toggleAddrDropdown(dropKey)}
+            disabled={!isFormEditable}
+            style={{
+              border: 'none', background: '#1e3a8a', color: '#fff',
+              padding: '0 8px', cursor: isFormEditable ? 'pointer' : 'default',
+              fontSize: '10px', borderRadius: '0 4px 4px 0', flexShrink: 0,
+            }}
+          >▼</button>
+        </div>
+        {/* Dropdown panel */}
+        {isOpen && (
+          <div
+            style={{
+              position: 'absolute', top: '100%', left: 0, zIndex: 9999,
+              background: '#1e293b', borderRadius: '6px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
+              minWidth: '220px', maxHeight: '260px', overflowY: 'auto',
+              marginTop: '2px',
+            }}
+          >
+            {filtered.length === 0 ? (
+              <div style={{ padding: '10px 16px', color: '#94a3b8', fontSize: '13px' }}>No matches</div>
+            ) : filtered.map((opt, i) => (
+              <div
+                key={i}
+                onMouseDown={e => { e.preventDefault(); handleInputChange(field, opt); closeAllAddrDropdowns(); }}
+                style={{
+                  padding: '9px 16px', color: '#f1f5f9', fontSize: '13px',
+                  cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.06)',
+                  background: opt === value ? 'rgba(255,255,255,0.12)' : 'transparent',
+                  transition: 'background 0.12s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.14)')}
+                onMouseLeave={e => (e.currentTarget.style.background = opt === value ? 'rgba(255,255,255,0.12)' : 'transparent')}
+              >
+                {opt}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+  // ── end custom address combobox ────────────────────────────────────────
+
   // Sorting state for all dropdown tables
   const [tableSorting, setTableSorting] = useState<Record<string, { column: string; direction: 'asc' | 'desc' }>>({});
   
@@ -534,6 +656,18 @@ function FourCardsWithModal() {
     const width = window.innerWidth;
     setIsMobile(width <= 768);
   };
+
+  // Close address dropdowns when clicking outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-addr-combo]')) {
+        closeAllAddrDropdowns();
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -741,6 +875,7 @@ function FourCardsWithModal() {
       spouseOccupation: '',
       spouseEmployer: '',
       sourceOfIncome: '',
+    riskCategory: '',
       annualIncome: '',
       incomeCurrency: 'Sri Lanka',
       isSubsidiaryAssociate: 'No',
@@ -1402,6 +1537,7 @@ function FourCardsWithModal() {
                   spouseOccupation: '',
                   spouseEmployer: '',
                   sourceOfIncome: '',
+    riskCategory: '',
                   annualIncome: '',
                   incomeCurrency: 'Sri Lanka',
                   isSubsidiaryAssociate: 'No',
@@ -2143,6 +2279,46 @@ function FourCardsWithModal() {
               </div>
 
             </div>
+
+            {/* PEP and FATCA Row */}
+            <div style={{ display: 'flex', gap: '24px', marginTop: '16px', flexWrap: 'wrap' }}>
+              {/* Politically Exposed Person (PEP) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label className="setup-input-label" style={{ minWidth: '220px', fontWeight: 600 }}>
+                  Politically Exposed Person (PEP)
+                </label>
+                <select
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', minWidth: '120px' }}
+                  value={formData.pepStatus}
+                  onChange={e => handleInputChange('pepStatus', e.target.value)}
+                  disabled={!isFormEditable}
+                >
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              {/* FATCA Registered */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label className="setup-input-label" style={{ minWidth: '140px', fontWeight: 600 }}>
+                  FATCA Registered
+                </label>
+                <select
+                  className="setup-dropdown-select"
+                  style={{ color: '#000000', minWidth: '120px' }}
+                  value={formData.fatcaRegistered}
+                  onChange={e => handleInputChange('fatcaRegistered', e.target.value)}
+                  disabled={!isFormEditable}
+                >
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+
                 </div>
 
           </div>
@@ -2162,44 +2338,20 @@ function FourCardsWithModal() {
                     {/* Row 1: Street and Town */}
                     <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
-                      <input
-                        type="text"
-                        value={formData.correspondenceStreet}
-                        onChange={(e) => handleInputChange('correspondenceStreet', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter street"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-              </div>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                        {renderAddrCombobox('corrStreet', 'correspondenceStreet', formData.correspondenceStreet, streetOptions, 'Enter or select street')}
+                      </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
-                      <input
-                        type="text"
-                        value={formData.correspondenceTown}
-                        onChange={(e) => handleInputChange('correspondenceTown', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter town"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                        {renderAddrCombobox('corrTown', 'correspondenceTown', formData.correspondenceTown, townOptions, 'Enter or select town')}
+                      </div>
                     </div>
                     {/* Row 2: City and District */}
                     <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
-                      <input
-                        type="text"
-                        value={formData.correspondenceCity}
-                        onChange={(e) => handleInputChange('correspondenceCity', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter city"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                        {renderAddrCombobox('corrCity', 'correspondenceCity', formData.correspondenceCity, cityOptions, 'Enter or select city')}
+                      </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                         <label className="setup-input-label" style={{ minWidth: '80px' }}>District</label>
                         <select
@@ -2296,44 +2448,20 @@ function FourCardsWithModal() {
                     {/* Row 1: Street and Town */}
                     <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
-                      <input
-                        type="text"
-                        value={formData.permanentStreet}
-                        onChange={(e) => handleInputChange('permanentStreet', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter street"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                        {renderAddrCombobox('permStreet', 'permanentStreet', formData.permanentStreet, streetOptions, 'Enter or select street')}
+                      </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
-                      <input
-                        type="text"
-                        value={formData.permanentTown}
-                        onChange={(e) => handleInputChange('permanentTown', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter town"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                        {renderAddrCombobox('permTown', 'permanentTown', formData.permanentTown, townOptions, 'Enter or select town')}
+                      </div>
                     </div>
                     {/* Row 2: City and District */}
                     <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', gap: '12px', width: '100%' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
-                      <input
-                        type="text"
-                        value={formData.permanentCity}
-                        onChange={(e) => handleInputChange('permanentCity', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter city"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
-                    </div>
+                        <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                        {renderAddrCombobox('permCity', 'permanentCity', formData.permanentCity, cityOptions, 'Enter or select city')}
+                      </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                         <label className="setup-input-label" style={{ minWidth: '80px' }}>District</label>
                         <select
@@ -2735,42 +2863,18 @@ function FourCardsWithModal() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
-                      <input
-                        type="text"
-                        value={formData.officeStreet}
-                        onChange={(e) => handleInputChange('officeStreet', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter street"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
+                      {renderAddrCombobox('offStreet', 'officeStreet', formData.officeStreet, streetOptions, 'Enter or select street')}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
-                      <input
-                        type="text"
-                        value={formData.officeTown}
-                        onChange={(e) => handleInputChange('officeTown', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter town"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
+                      {renderAddrCombobox('offTown', 'officeTown', formData.officeTown, townOptions, 'Enter or select town')}
                     </div>
                   </div>
                   {/* Row 2: City, Postal Code, Country, Tele. */}
                   <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
-                      <input
-                        type="text"
-                        value={formData.officeCity}
-                        onChange={(e) => handleInputChange('officeCity', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter city"
-                        style={{ color: '#000000', flex: 1 }}
-                      />
+                      {renderAddrCombobox('offCity', 'officeCity', formData.officeCity, cityOptions, 'Enter or select city')}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px' }}>Postal Code</label>
@@ -3076,6 +3180,34 @@ function FourCardsWithModal() {
                       <option value="Other">Other</option>
                           </select>
                         </div>
+                  {/* Column 4: Risk Category */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '110px' }}>Risk Category</label>
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <select
+                        className="setup-dropdown-select"
+                        style={{ color: '#000000', flex: 1 }}
+                        value={formData.riskCategory}
+                        onChange={e => handleInputChange('riskCategory', e.target.value)}
+                        disabled={!isFormEditable}
+                      >
+                        <option value="">-- Select --</option>
+                        <option value="Low">Low</option>
+                        <option value="Low - Medium">Low - Medium</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Medium - High">Medium - High</option>
+                        <option value="High">High</option>
+                        <option value="Very High">Very High</option>
+                      </select>
+                      {formData.riskCategory && (
+                        <span style={{
+                          padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 700, whiteSpace: 'nowrap',
+                          background: formData.riskCategory === 'Low' ? '#dcfce7' : formData.riskCategory === 'Low - Medium' ? '#d1fae5' : formData.riskCategory === 'Medium' ? '#fef9c3' : formData.riskCategory === 'Medium - High' ? '#ffedd5' : formData.riskCategory === 'High' ? '#fee2e2' : '#fce7f3',
+                          color: formData.riskCategory === 'Low' ? '#15803d' : formData.riskCategory === 'Low - Medium' ? '#047857' : formData.riskCategory === 'Medium' ? '#a16207' : formData.riskCategory === 'Medium - High' ? '#c2410c' : formData.riskCategory === 'High' ? '#b91c1c' : '#9d174d',
+                        }}>{formData.riskCategory}</span>
+                      )}
+                    </div>
+                  </div>
                       </div>
                     </div>
             )}
@@ -4299,6 +4431,7 @@ function FourCardsWithModal() {
                             spouseOccupation: '',
                             spouseEmployer: '',
                             sourceOfIncome: '',
+    riskCategory: '',
                             annualIncome: '',
                             incomeCurrency: 'Sri Lanka',
                             isSubsidiaryAssociate: 'No',

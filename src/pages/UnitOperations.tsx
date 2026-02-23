@@ -1,8 +1,14 @@
 import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import AccountSearchModal from '../components/AccountSearchModal';
+import HolderSearchModal from '../components/HolderSearchModal';
+import type { HolderRecord } from '../components/HolderSearchModal';
+import EditSearchModal from '../components/EditSearchModal';
+import AkctNoSearchModal from '../components/AkctNoSearchModal';
+import RequestAckModal from '../components/RequestAckModal';
 import '../App.css';
 import '../Setup.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -47,23 +53,58 @@ const fundData = [
   { code: 'F005', name: 'Income Fund' },
 ];
 
+// ── Table dropdown data ──
+const creationCodeData: Record<string, string>[] = [
+  { code: 'CC001', name: 'Standard Creation' },
+  { code: 'CC002', name: 'IPO Creation' },
+  { code: 'CC003', name: 'Reinvestment' },
+  { code: 'CC004', name: 'Bonus Units' },
+  { code: 'CC005', name: 'Transfer In' },
+  { code: 'CC006', name: 'Rights Issue' },
+  { code: 'CC007', name: 'Dividend Reinvestment' },
+  { code: 'CC008', name: 'Corporate Action' },
+  { code: 'CC009', name: 'Conversion' },
+  { code: 'CC010', name: 'Regular Savings Plan' },
+];
+
+const invTypeData: Record<string, string>[] = [
+  { type: 'LUMP',  description: 'Lump Sum Investment',       agent: 'All Agents' },
+  { type: 'REG',   description: 'Regular / Monthly SIP',     agent: 'Registered Agents' },
+  { type: 'IPO',   description: 'IPO Subscription',          agent: 'IPO Agents' },
+  { type: 'DIV',   description: 'Dividend Reinvestment',     agent: 'Fund Manager' },
+  { type: 'BONUS', description: 'Bonus Unit Allocation',     agent: 'Fund Manager' },
+  { type: 'CORP',  description: 'Corporate Investment',      agent: 'Corporate Agents' },
+  { type: 'RSP',   description: 'Regular Savings Plan',      agent: 'All Agents' },
+  { type: 'RTS',   description: 'Rights Issue Subscription', agent: 'Registered Agents' },
+  { type: 'CONV',  description: 'Fund Conversion',           agent: 'All Agents' },
+  { type: 'XFER',  description: 'Transfer Investment',       agent: 'Transfer Agents' },
+];
+
+const collAccData: Record<string, string>[] = [
+  { code: 'CA001', name: 'Main Collection Account',      bankAccNo: '0012345678' },
+  { code: 'CA002', name: 'Secondary Collection Account', bankAccNo: '0098765432' },
+  { code: 'CA003', name: 'IPO Collection Account',       bankAccNo: '0011223344' },
+  { code: 'CA004', name: 'Dividend Collection Account',  bankAccNo: '0055667788' },
+  { code: 'CA005', name: 'Bond Fund Collection',         bankAccNo: '0099887766' },
+  { code: 'CA006', name: 'Equity Fund Collection',       bankAccNo: '0033445566' },
+  { code: 'CA007', name: 'Corporate Client Account',     bankAccNo: '0077889900' },
+  { code: 'CA008', name: 'Suspense Account',             bankAccNo: '0044556677' },
+];
+
+const promotionalData: Record<string, string>[] = [
+  { promoCode: 'PA001', promoDesc: 'Summer Sale',       description: '20% fee waiver on new investments' },
+  { promoCode: 'PA002', promoDesc: 'Holiday Special',   description: '15% fee waiver during festive season' },
+  { promoCode: 'PA003', promoDesc: 'New Year Offer',    description: '10% discount on entry fee for Jan' },
+  { promoCode: 'PA004', promoDesc: 'Loyalty Reward',    description: 'Extra 5% units for existing holders' },
+  { promoCode: 'PA005', promoDesc: 'Referral Bonus',    description: '2% bonus units for referrals' },
+  { promoCode: 'PA006', promoDesc: 'Corporate Package', description: 'Zero entry fee for corporate clients' },
+  { promoCode: 'PA007', promoDesc: 'Early Bird',        description: '25% discount for first-week investors' },
+  { promoCode: 'PA008', promoDesc: 'SIP Incentive',     description: 'Free units after 12 months of SIP' },
+];
+
 // ========================================
 // UNIT CREATION — Shared sub-components
 // ========================================
-
-function BadgeBtn({ label, color = '#1e3a8a' }: { label: string; color?: string }) {
-  return (
-    <button
-      type="button"
-      style={{
-        background: color, color: '#fff', border: 'none', borderRadius: '3px',
-        width: '20px', height: '20px', fontSize: '10px', fontWeight: 700,
-        cursor: 'pointer', display: 'inline-flex', alignItems: 'center',
-        justifyContent: 'center', flexShrink: 0, padding: 0,
-      }}
-    >{label}</button>
-  );
-}
 
 function InputRow({
   label, labelWidth = 110, children, style,
@@ -83,11 +124,12 @@ function InputRow({
 
 function SectionBox({ title, children, style }: { title: string; children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <div style={{ background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', overflow: 'hidden', ...style }}>
+    <div style={{ background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', overflow: 'visible', ...style }}>
       <div style={{
         background: 'linear-gradient(90deg,#e8edf5 0%,#f1f4f9 100%)',
         color: '#374151', padding: '5px 10px', fontWeight: 700, fontSize: '11px',
         letterSpacing: '0.04em', textTransform: 'uppercase', borderBottom: '1px solid #e2e8f0',
+        borderRadius: '6px 6px 0 0',
       }}>{title}</div>
       <div style={{ padding: '10px' }}>{children}</div>
     </div>
@@ -98,51 +140,244 @@ function FundDropdown({ value, displayValue, onSelect }: {
   value: string; displayValue: string; onSelect: (code: string, name: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [popStyle, setPopStyle] = useState<React.CSSProperties>({});
+  const trigRef = useRef<HTMLDivElement>(null);
+  const popRef = useRef<HTMLDivElement>(null);
+
+  const openIt = () => {
+    if (!trigRef.current) return;
+    const rect = trigRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const popH = 220;
+    setPopStyle({
+      position: 'fixed',
+      top: spaceBelow >= popH ? rect.bottom + 3 : rect.top - popH - 3,
+      left: rect.left,
+      width: Math.max(rect.width, 320),
+      zIndex: 2147483647,  // max z-index, always above modal
+    });
+    setOpen(true);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const handle = (e: MouseEvent) => {
+      if (popRef.current && !popRef.current.contains(e.target as Node) &&
+          trigRef.current && !trigRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [open]);
+
+  const popup = open ? createPortal(
+    <div ref={popRef} style={{
+      ...popStyle,
+      backgroundColor: '#ffffff', border: '1px solid #cbd5e1',
+      borderRadius: '6px', boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+      maxHeight: '220px', overflowY: 'auto',
+    }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr style={{ background: '#1e3a8a' }}>
+            <th style={{ padding: '7px 10px', textAlign: 'left', fontSize: '11px', fontWeight: 700, color: '#fff', width: '30%', borderRight: '1px solid rgba(255,255,255,0.15)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Code</th>
+            <th style={{ padding: '7px 10px', textAlign: 'left', fontSize: '11px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {fundData.map((fund, i) => (
+            <tr key={i}
+              onClick={() => { onSelect(fund.code, fund.name); setOpen(false); }}
+              style={{ cursor: 'pointer', backgroundColor: value === fund.code ? '#eff6ff' : i % 2 === 0 ? '#ffffff' : '#f8fafc', borderBottom: '1px solid #e2e8f0' }}
+              onMouseEnter={e => { if (value !== fund.code) (e.currentTarget as HTMLTableRowElement).style.backgroundColor = '#dbeafe'; }}
+              onMouseLeave={e => { if (value !== fund.code) (e.currentTarget as HTMLTableRowElement).style.backgroundColor = i % 2 === 0 ? '#ffffff' : '#f8fafc'; }}
+            >
+              <td style={{ padding: '7px 10px', borderRight: '1px solid #e2e8f0', fontSize: '12px', color: '#1e3a8a', fontWeight: 700 }}>{fund.code}</td>
+              <td style={{ padding: '7px 10px', fontSize: '12px', color: '#1f2937' }}>{fund.name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>,
+    document.body
+  ) : null;
+
   return (
-    <div style={{ position: 'relative', flex: 1 }}>
+    <div ref={trigRef} style={{ position: 'relative', flex: 1 }}>
       <div
-        onClick={() => setOpen(v => !v)}
+        onClick={() => open ? setOpen(false) : openIt()}
         style={{
-          padding: '5px 9px', border: '1px solid rgba(0,0,0,0.10)', borderRadius: '4px',
-          backgroundColor: '#ffffff', cursor: 'pointer',
+          padding: '5px 9px', border: `1px solid ${open ? '#1e3a8a' : 'rgba(0,0,0,0.10)'}`,
+          borderRadius: '4px', backgroundColor: '#ffffff', cursor: 'pointer',
           color: displayValue ? '#1f2937' : '#9ca3af', minHeight: '30px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           fontSize: '12px', userSelect: 'none',
+          boxShadow: open ? '0 0 0 2px rgba(30,58,138,0.15)' : 'none',
         }}
       >
-        <span>{displayValue || 'Select fund'}</span>
-        <span style={{ fontSize: '10px', color: '#9ca3af' }}>▼</span>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayValue || 'Select fund'}</span>
+        <span style={{ fontSize: '10px', color: open ? '#1e3a8a' : '#9ca3af', flexShrink: 0, marginLeft: '4px', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▼</span>
       </div>
-      {open && (
-        <div style={{
-          position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff',
-          border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '2px',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 10000,
-          maxHeight: '200px', overflowY: 'auto', minWidth: '320px',
-        }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                <th style={{ padding: '6px 10px', textAlign: 'left', fontSize: '11px', fontWeight: 700, color: '#374151', width: '30%' }}>Code</th>
-                <th style={{ padding: '6px 10px', textAlign: 'left', fontSize: '11px', fontWeight: 700, color: '#374151' }}>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fundData.map((fund, i) => (
-                <tr key={i}
-                  onClick={() => { onSelect(fund.code, fund.name); setOpen(false); }}
-                  style={{ cursor: 'pointer', backgroundColor: value === fund.code ? '#eff6ff' : '#ffffff' }}
-                  onMouseEnter={e => { if (value !== fund.code) e.currentTarget.style.backgroundColor = '#f8fafc'; }}
-                  onMouseLeave={e => { if (value !== fund.code) e.currentTarget.style.backgroundColor = '#ffffff'; }}
-                >
-                  <td style={{ padding: '6px 10px', borderBottom: '1px solid #f1f5f9', fontSize: '12px', color: '#1e3a8a', fontWeight: 600 }}>{fund.code}</td>
-                  <td style={{ padding: '6px 10px', borderBottom: '1px solid #f1f5f9', fontSize: '12px', color: '#1f2937' }}>{fund.name}</td>
-                </tr>
+      {popup}
+    </div>
+  );
+}
+
+// ========================================
+// REUSABLE TABLE DROPDOWN — portal-based
+// ========================================
+
+interface TableDropdownCol { key: string; header: string; width?: string; }
+interface TableDropdownProps {
+  value: string;
+  displayValue: string;
+  placeholder?: string;
+  columns: TableDropdownCol[];
+  rows: Record<string, string>[];
+  valueKey: string;
+  onSelect: (row: Record<string, string>) => void;
+  style?: React.CSSProperties;
+}
+
+function TableDropdown({ value, displayValue, placeholder = 'Select', columns, rows, valueKey, onSelect, style }: TableDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const [filter, setFilter] = useState('');
+  const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  const openDropdown = useCallback(() => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const popupH = 260;
+    // Use fixed positioning so it escapes any scroll/overflow container
+    const top = spaceBelow >= popupH
+      ? rect.bottom + 3
+      : rect.top - popupH - 3;
+    setPopupStyle({
+      position: 'fixed',
+      top,
+      left: rect.left,
+      width: Math.max(rect.width, 380),
+      zIndex: 2147483647,  // max z-index, always above modal
+    });
+    setOpen(true);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const handle = (e: MouseEvent) => {
+      if (
+        popupRef.current && !popupRef.current.contains(e.target as Node) &&
+        triggerRef.current && !triggerRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+        setFilter('');
+      }
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [open]);
+
+  const filtered = filter
+    ? rows.filter(r => Object.values(r).some(v => v.toLowerCase().includes(filter.toLowerCase())))
+    : rows;
+
+  const popup = open ? createPortal(
+    <div ref={popupRef} style={{
+      ...popupStyle,
+      backgroundColor: '#ffffff',
+      border: '1px solid #cbd5e1',
+      borderRadius: '6px',
+      boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
+      display: 'flex', flexDirection: 'column',
+      maxHeight: '260px', overflow: 'hidden',
+    }}>
+      <div style={{ padding: '7px 8px', borderBottom: '2px solid #e2e8f0', flexShrink: 0, background: '#f8fafc' }}>
+        <input
+          autoFocus
+          value={filter}
+          onChange={e => setFilter(e.target.value)}
+          onKeyDown={e => e.key === 'Escape' && (setOpen(false), setFilter(''))}
+          placeholder="🔍  Search..."
+          style={{
+            width: '100%', padding: '5px 10px', fontSize: '12px',
+            border: '1px solid #cbd5e1', borderRadius: '4px',
+            outline: 'none', boxSizing: 'border-box',
+            background: '#ffffff', color: '#1f2937',
+          }}
+        />
+      </div>
+      <div style={{ overflowY: 'auto', flex: 1 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+          <thead>
+            <tr style={{ background: '#1e3a8a' }}>
+              {columns.map((col, ci) => (
+                <th key={col.key} style={{
+                  padding: '7px 10px', textAlign: 'left', fontSize: '11px',
+                  fontWeight: 700, color: '#ffffff', width: col.width,
+                  borderRight: ci < columns.length - 1 ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                  letterSpacing: '0.04em', textTransform: 'uppercase',
+                }}>{col.header}</th>
               ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0
+              ? <tr><td colSpan={columns.length} style={{ padding: '16px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No results found</td></tr>
+              : filtered.map((row, i) => {
+                const isSelected = row[valueKey] === value;
+                return (
+                  <tr key={i}
+                    onClick={() => { onSelect(row); setOpen(false); setFilter(''); }}
+                    style={{ cursor: 'pointer', background: isSelected ? '#eff6ff' : i % 2 === 0 ? '#ffffff' : '#f8fafc', borderBottom: '1px solid #e2e8f0' }}
+                    onMouseEnter={e => { if (!isSelected) (e.currentTarget as HTMLTableRowElement).style.background = '#dbeafe'; }}
+                    onMouseLeave={e => { if (!isSelected) (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? '#ffffff' : '#f8fafc'; }}
+                  >
+                    {columns.map((col, ci) => (
+                      <td key={col.key} style={{
+                        padding: '7px 10px', fontSize: '12px',
+                        borderRight: ci < columns.length - 1 ? '1px solid #e2e8f0' : 'none',
+                        color: ci === 0 ? '#1e3a8a' : '#374151',
+                        fontWeight: ci === 0 ? 700 : 400,
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>{row[col.key]}</td>
+                    ))}
+                  </tr>
+                );
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+      <div style={{ padding: '4px 10px', background: '#f1f5f9', borderTop: '1px solid #e2e8f0', fontSize: '10px', color: '#6b7280', flexShrink: 0, display: 'flex', justifyContent: 'space-between' }}>
+        <span>{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
+        <span>Click row to select · Esc to close</span>
+      </div>
+    </div>,
+    document.body
+  ) : null;
+
+  return (
+    <div ref={triggerRef} style={{ position: 'relative', flex: 1, ...style }}>
+      <div
+        onClick={() => open ? (setOpen(false), setFilter('')) : openDropdown()}
+        style={{
+          padding: '5px 9px', border: `1px solid ${open ? '#1e3a8a' : 'rgba(0,0,0,0.10)'}`,
+          borderRadius: '4px', backgroundColor: '#ffffff', cursor: 'pointer',
+          color: displayValue ? '#1f2937' : '#9ca3af', minHeight: '30px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          fontSize: '12px', userSelect: 'none',
+          boxShadow: open ? '0 0 0 2px rgba(30,58,138,0.15)' : 'none',
+          transition: 'border-color 0.15s, box-shadow 0.15s',
+        }}
+      >
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayValue || placeholder}</span>
+        <span style={{ fontSize: '10px', color: open ? '#1e3a8a' : '#9ca3af', flexShrink: 0, marginLeft: '4px', transition: 'transform 0.15s', transform: open ? 'rotate(180deg)' : 'none' }}>▼</span>
+      </div>
+      {popup}
     </div>
   );
 }
@@ -167,52 +402,87 @@ function CreationButtonPalette({ onNew, onClear }: { onNew?: () => void; onClear
   );
 }
 
+
+
+
+
 // ========================================
 // UNIT CREATION MODAL
 // ========================================
 function UnitCreationModal({ onClose }: { onClose: () => void }) {
-  type UCTab = 'Cheque Details' | 'Credit Card' | 'Bank Transfer / Draft' | 'Unit Fee Discounting' | 'Agent Details';
-  const [activeTab, setActiveTab] = useState<UCTab>('Agent Details');
+  type UCTab = 'Unit Fee Discounting' | 'Credit Card' | 'Bank Transfer / Draft' | 'Cheque Details' | 'Agent Details';
+
+  const [activeTab, setActiveTab] = useState<UCTab>('Unit Fee Discounting');
   const [creationDate, setCreationDate] = useState<Date | null>(new Date());
   const [priceDate, setPriceDate] = useState<Date | null>(new Date('2007-10-19'));
   const [fundDate, setFundDate] = useState<Date | null>(new Date());
   const [chequeDate, setChequeDate] = useState<Date | null>(null);
-  const [btDate, setBtDate] = useState<Date | null>(null);
+  const [btValueDate, setBtValueDate] = useState<Date | null>(null);
+
+  const [showAccountSearch, setShowAccountSearch] = useState(false);
+  const [showHolderSearch, setShowHolderSearch] = useState(false);
+  const [showCreationSearch, setShowCreationSearch] = useState(false);
+  const [showAkctSearch,     setShowAkctSearch]     = useState(false);
+  const [showRequestAck,     setShowRequestAck]     = useState(false);
+
+  const [chequeRecords, setChequeRecords] = useState<{ chequeNo: string; bankBranch: string; date: string; amount: string }[]>([]);
+  const [ccRecords, setCcRecords] = useState<{ holderName: string; cardNo: string; expiry: string; value: string }[]>([]);
+  const [btRecords, setBtRecords] = useState<{ bankBranch: string; draftNo: string; date: string; amount: string }[]>([]);
+  const [ufdRecords, setUfdRecords] = useState<{ feeCode: string; description: string; amount: string; pct: string; newAmount: string }[]>([]);
+
   const [form, setForm] = useState({
     accNo: '', unitHolderNo: '', creationNo: '',
     fundCode: '', fundName: '',
     creationCode: '', invType: '',
-    noOfUnits: '', paid: '', remark: '',
+    noOfUnits: '1', paid: '', remark: '',
     collAcc: '', promotionalActivity: '',
     prevDayUnitPrice: '',
     unitFeeYes: true,
-    payCash: true, payCheque: false, payBankTransfer: false, payCreditCard: false,
-    chequeNo: '', chequeBankCode: '', chequeBankBranch: '', chequeAmount: '',
-    ccNo: '', ccExpiry: '', ccHolder: '', ccAmount: '',
-    btRefNo: '', btBankCode: '', btBranch: '', btAmount: '',
-    ufdFeeCode: '', ufdPercentage: '', ufdAmount: '',
+    payCash: true, payCreditCard: false, payBankTransfer: false, payCheque: false,
+    chequeNo: '', chequeBankBranch: '', chequeAmount: '',
+    ccHolder: '', ccNo: '', ccExpiry: '', ccValue: '',
+    btBankBranch: '', btDescription: '', btValue: '',
+    btSwiftCode: '', btCreditAccNo: '', btCreditAccName: '',
+    ufdFeeCode: '', ufdDescription: '', ufdAmount: '', ufdPct: '', ufdNewAmount: '',
     agency: '', subAgency: '', agent: '',
+    reasonToEdit: '',
   });
 
   const set = (field: string, value: string | boolean) => setForm(p => ({ ...p, [field]: value }));
 
-  const clearForm = () => {
-    setCreationDate(null); setPriceDate(null); setFundDate(null);
-    setChequeDate(null); setBtDate(null);
-    setForm({
-      accNo: '', unitHolderNo: '', creationNo: '', fundCode: '', fundName: '',
-      creationCode: '', invType: '', noOfUnits: '', paid: '', remark: '',
-      collAcc: '', promotionalActivity: '', prevDayUnitPrice: '',
-      unitFeeYes: true, payCash: true, payCheque: false, payBankTransfer: false, payCreditCard: false,
-      chequeNo: '', chequeBankCode: '', chequeBankBranch: '', chequeAmount: '',
-      ccNo: '', ccExpiry: '', ccHolder: '', ccAmount: '',
-      btRefNo: '', btBankCode: '', btBranch: '', btAmount: '',
-      ufdFeeCode: '', ufdPercentage: '', ufdAmount: '',
-      agency: '', subAgency: '', agent: '',
-    });
+  const selectPayment = (method: 'payCash' | 'payCreditCard' | 'payBankTransfer' | 'payCheque') => {
+    const tabMap: Record<string, UCTab> = {
+      payCash: 'Unit Fee Discounting',
+      payCreditCard: 'Credit Card',
+      payBankTransfer: 'Bank Transfer / Draft',
+      payCheque: 'Cheque Details',
+    };
+    setForm(p => ({ ...p, payCash: false, payCreditCard: false, payBankTransfer: false, payCheque: false, [method]: true }));
+    setActiveTab(tabMap[method]);
   };
 
-  const tabs: UCTab[] = ['Cheque Details', 'Credit Card', 'Bank Transfer / Draft', 'Unit Fee Discounting', 'Agent Details'];
+  const clearForm = () => {
+    setCreationDate(null); setPriceDate(null); setFundDate(null);
+    setChequeDate(null); setBtValueDate(null);
+    setChequeRecords([]); setCcRecords([]); setBtRecords([]); setUfdRecords([]);
+    setForm({
+      accNo: '', unitHolderNo: '', creationNo: '', fundCode: '', fundName: '',
+      creationCode: '', invType: '', noOfUnits: '1', paid: '', remark: '',
+      collAcc: '', promotionalActivity: '', prevDayUnitPrice: '',
+      unitFeeYes: true, payCash: true, payCreditCard: false, payBankTransfer: false, payCheque: false,
+      chequeNo: '', chequeBankBranch: '', chequeAmount: '',
+      ccHolder: '', ccNo: '', ccExpiry: '', ccValue: '',
+      btBankBranch: '', btDescription: '', btValue: '',
+      btSwiftCode: '', btCreditAccNo: '', btCreditAccName: '',
+      ufdFeeCode: '', ufdDescription: '', ufdAmount: '', ufdPct: '', ufdNewAmount: '',
+      agency: '', subAgency: '', agent: '',
+      reasonToEdit: '',
+    });
+    setActiveTab('Unit Fee Discounting');
+  };
+
+  const tabs: UCTab[] = ['Unit Fee Discounting', 'Credit Card', 'Bank Transfer / Draft', 'Cheque Details', 'Agent Details'];
+  const tabLabel = (t: UCTab) => t === 'Unit Fee Discounting' ? 'Cash' : t;
 
   const radioCircle = (active: boolean, color = '#1e3a8a'): React.CSSProperties => ({
     width: '14px', height: '14px', borderRadius: '50%',
@@ -222,51 +492,118 @@ function UnitCreationModal({ onClose }: { onClose: () => void }) {
     boxShadow: active ? 'inset 0 0 0 2px #fff' : 'none',
   });
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '8px' }}>
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, fontSize: '11px',
+    color: '#374151', textAlign: 'left', borderBottom: '2px solid #cbd5e1',
+    borderRight: '1px solid #e2e8f0', whiteSpace: 'nowrap',
+  };
+  const tableCellStyle: React.CSSProperties = {
+    padding: '5px 10px', fontSize: '12px', color: '#1f2937',
+    borderBottom: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0',
+  };
+  const addBtnStyle: React.CSSProperties = {
+    background: '#b45309', color: '#fff', border: 'none', borderRadius: '3px',
+    width: '24px', height: '24px', fontSize: '14px', fontWeight: 700,
+    cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  };
 
-      {/* Section 1: Transaction Identity */}
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0 }}>
+
+      {/* ── Sub-modals ── */}
+      <AccountSearchModal
+        isOpen={showAccountSearch}
+        onClose={() => setShowAccountSearch(false)}
+        onGet={r => set('accNo', r.accountNo || '')}
+        onSelect={r => set('accNo', r.accountNo || '')}
+        title="Search Account"
+      />
+      <HolderSearchModal
+        isOpen={showHolderSearch}
+        onClose={() => setShowHolderSearch(false)}
+        onSelect={(r: HolderRecord) => set('unitHolderNo', r.holderId)}
+      />
+      <EditSearchModal
+        isOpen={showCreationSearch}
+        onClose={() => setShowCreationSearch(false)}
+        title="Edit — Select Creation Record"
+        onSelect={r => {
+          set('creationNo', r.transactionNo);
+          set('accNo', r.accNo);
+        }}
+      />
+      <AkctNoSearchModal
+        isOpen={showAkctSearch}
+        onClose={() => setShowAkctSearch(false)}
+        onSelect={r => set('creationNo', r.akctNo)}
+      />
+      <RequestAckModal
+        isOpen={showRequestAck}
+        onClose={() => setShowRequestAck(false)}
+        onConfirm={(ackNo) => set('creationNo', ackNo)}
+      />
+
+      {/* ── Section 1: Transaction Identity ── */}
       <SectionBox title="Transaction Identity">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 20px' }}>
           {/* Col 1 */}
           <div>
             <InputRow label="Acc No" labelWidth={108}>
               <input className="setup-input-field" value={form.accNo} onChange={e => set('accNo', e.target.value)} style={{ flex: 1 }} />
-              <BadgeBtn label="A" />
+              <button type="button" onClick={() => setShowAccountSearch(true)}
+                style={{ background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: '3px', width: '20px', height: '20px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 0 }}>A</button>
             </InputRow>
             <InputRow label="Unit Holder No" labelWidth={108}>
               <input className="setup-input-field" value={form.unitHolderNo} onChange={e => set('unitHolderNo', e.target.value)} style={{ flex: 1 }} />
-              <BadgeBtn label="H" />
+              <button type="button" onClick={() => setShowHolderSearch(true)}
+                style={{ background: '#7c3aed', color: '#fff', border: 'none', borderRadius: '3px', width: '20px', height: '20px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 0 }}>H</button>
             </InputRow>
             <InputRow label="Creation No" labelWidth={108}>
               <input className="setup-input-field" value={form.creationNo} onChange={e => set('creationNo', e.target.value)} style={{ flex: 1 }} />
-              <BadgeBtn label="E" />
-              <button type="button" style={{ background: '#0d7f5a', color: '#fff', border: 'none', borderRadius: '3px', padding: '2px 7px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>AKCT NO</button>
+              <button type="button" onClick={() => setShowCreationSearch(true)}
+                style={{ background: '#b45309', color: '#fff', border: 'none', borderRadius: '3px', width: '20px', height: '20px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 0 }}>E</button>
+              <button type="button" onClick={() => setShowAkctSearch(true)}
+                style={{ background: '#0d7f5a', color: '#fff', border: 'none', borderRadius: '3px', padding: '2px 7px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>AKCT NO</button>
+              <button type="button" onClick={() => setShowRequestAck(true)}
+                style={{ background: '#065f46', color: '#fff', border: 'none', borderRadius: '3px', padding: '2px 5px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', flexShrink: 0, lineHeight: 1 }}>?</button>
             </InputRow>
           </div>
-          {/* Col 2 */}
+          {/* Col 2 — Fund + Creation Code (TableDropdown) + Inv Type (TableDropdown) */}
           <div>
             <InputRow label="Fund" labelWidth={95}>
               <FundDropdown value={form.fundCode} displayValue={form.fundName} onSelect={(c, n) => setForm(p => ({ ...p, fundCode: c, fundName: n }))} />
             </InputRow>
             <InputRow label="Creation Code" labelWidth={95}>
-              <select className="setup-select-field" value={form.creationCode} onChange={e => set('creationCode', e.target.value)} style={{ flex: 1 }}>
-                <option value="">Select</option>
-                <option value="CC001">CC001 – Standard</option>
-                <option value="CC002">CC002 – IPO</option>
-                <option value="CC003">CC003 – Reinvestment</option>
-              </select>
+              <TableDropdown
+                value={form.creationCode}
+                displayValue={form.creationCode ? `${form.creationCode} – ${creationCodeData.find(r => r.code === form.creationCode)?.name || ''}` : ''}
+                placeholder="Select"
+                columns={[
+                  { key: 'code', header: 'Transaction Code', width: '38%' },
+                  { key: 'name', header: 'Name',             width: '62%' },
+                ]}
+                rows={creationCodeData as Record<string, string>[]}
+                valueKey="code"
+                onSelect={row => set('creationCode', row.code)}
+              />
             </InputRow>
             <InputRow label="Inv Type" labelWidth={95}>
-              <select className="setup-select-field" value={form.invType} onChange={e => set('invType', e.target.value)} style={{ flex: 1 }}>
-                <option value="">Select</option>
-                <option value="lump">Lump Sum</option>
-                <option value="regular">Regular</option>
-                <option value="ipo">IPO</option>
-              </select>
+              <TableDropdown
+                value={form.invType}
+                displayValue={form.invType ? `${form.invType} – ${invTypeData.find(r => r.type === form.invType)?.description || ''}` : ''}
+                placeholder="Select"
+                columns={[
+                  { key: 'type',        header: 'Type',        width: '22%' },
+                  { key: 'description', header: 'Description',  width: '45%' },
+                  { key: 'agent',       header: 'Agent',        width: '33%' },
+                ]}
+                rows={invTypeData as Record<string, string>[]}
+                valueKey="type"
+                onSelect={row => set('invType', row.type)}
+              />
             </InputRow>
           </div>
-          {/* Col 3 */}
+          {/* Col 3 — Dates */}
           <div>
             <InputRow label="Crea. Date" labelWidth={90}>
               <DatePicker selected={creationDate} onChange={d => setCreationDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" />
@@ -281,7 +618,7 @@ function UnitCreationModal({ onClose }: { onClose: () => void }) {
         </div>
       </SectionBox>
 
-      {/* Section 2: Transaction Details */}
+      {/* ── Section 2: Transaction Details ── */}
       <SectionBox title="Transaction Details">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 20px', alignItems: 'start' }}>
           {/* Col 1 */}
@@ -302,7 +639,7 @@ function UnitCreationModal({ onClose }: { onClose: () => void }) {
               <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '4px' }}>
                 Previous Day Unit Price — Creation
               </label>
-              <input className="setup-input-field" value={form.prevDayUnitPrice} onChange={e => set('prevDayUnitPrice', e.target.value)} />
+              <input className="setup-input-field" value={form.prevDayUnitPrice} onChange={e => set('prevDayUnitPrice', e.target.value)} style={{ width: '100%' }} />
             </div>
             <div>
               <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>Unit Fee</label>
@@ -321,14 +658,14 @@ function UnitCreationModal({ onClose }: { onClose: () => void }) {
             <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '8px' }}>Payment Method</label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 12px' }}>
               {([
-                { key: 'payCash',         label: 'Cash',                 color: '#1e3a8a' },
-                { key: 'payBankTransfer', label: 'Bank Transfer / Draft', color: '#7c3aed' },
-                { key: 'payCheque',       label: 'Cheque',               color: '#b45309' },
-                { key: 'payCreditCard',   label: 'Credit Card',          color: '#b91c1c' },
+                { key: 'payCash',         label: 'Cash',                  color: '#1e3a8a' },
+                { key: 'payCreditCard',   label: 'Credit Card',           color: '#b91c1c' },
+                { key: 'payBankTransfer', label: 'Bank Transfer / Draft',  color: '#7c3aed' },
+                { key: 'payCheque',       label: 'Cheque',                color: '#b45309' },
               ] as const).map(({ key, label, color }) => (
                 <label key={key}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '12px' }}
-                  onClick={() => setForm(p => ({ ...p, payCash: key === 'payCash', payCheque: key === 'payCheque', payBankTransfer: key === 'payBankTransfer', payCreditCard: key === 'payCreditCard' }))}
+                  onClick={() => selectPayment(key)}
                 >
                   <span style={radioCircle(form[key], color)} />
                   <span style={{ color, fontWeight: form[key] ? 700 : 500 }}>{label}</span>
@@ -337,44 +674,334 @@ function UnitCreationModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         </div>
-        {/* Coll. Acc + Promotional Activity */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px', marginTop: '4px' }}>
+
+        {/* Coll. Acc + Promotional Activity — with TableDropdown */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px', marginTop: '6px' }}>
           <InputRow label="Coll. Acc" labelWidth={108}>
-            <select className="setup-select-field" value={form.collAcc} onChange={e => set('collAcc', e.target.value)} style={{ flex: 1 }}>
-              <option value="">Select</option>
-              <option value="CA001">CA001</option>
-              <option value="CA002">CA002</option>
-            </select>
+            <TableDropdown
+              value={form.collAcc}
+              displayValue={form.collAcc
+                ? `${form.collAcc} – ${collAccData.find(r => r.code === form.collAcc)?.name || ''}`
+                : ''}
+              placeholder="Select"
+              columns={[
+                { key: 'code',      header: 'Code',        width: '22%' },
+                { key: 'name',      header: 'Name',        width: '45%' },
+                { key: 'bankAccNo', header: 'Bank Acc No', width: '33%' },
+              ]}
+              rows={collAccData as Record<string, string>[]}
+              valueKey="code"
+              onSelect={row => set('collAcc', row.code)}
+            />
           </InputRow>
           <InputRow label="Promotional Activity" labelWidth={148}>
-            <select className="setup-select-field" value={form.promotionalActivity} onChange={e => set('promotionalActivity', e.target.value)} style={{ flex: 1 }}>
-              <option value="">Select</option>
-              <option value="PA001">Summer Sale – 20%</option>
-              <option value="PA002">Holiday Special – 15%</option>
-            </select>
+            <TableDropdown
+              value={form.promotionalActivity}
+              displayValue={form.promotionalActivity
+                ? `${form.promotionalActivity} – ${promotionalData.find(r => r.promoCode === form.promotionalActivity)?.promoDesc || ''}`
+                : ''}
+              placeholder="Select"
+              columns={[
+                { key: 'promoCode',   header: 'Promo Code',       width: '22%' },
+                { key: 'promoDesc',   header: 'Promo Description', width: '30%' },
+                { key: 'description', header: 'Description',       width: '48%' },
+              ]}
+              rows={promotionalData as Record<string, string>[]}
+              valueKey="promoCode"
+              onSelect={row => set('promotionalActivity', row.promoCode)}
+            />
           </InputRow>
         </div>
       </SectionBox>
 
-      {/* Common Button Palette */}
+      {/* ── Button Palette ── */}
       <CreationButtonPalette onNew={onClose} onClear={clearForm} />
 
-      {/* Tabbed Bottom Section */}
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+      {/* ── Tabbed Bottom Section ── */}
+      <div style={{
+        display: 'flex', flexDirection: 'column',
+        background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0',
+        overflow: 'hidden', minHeight: '200px', flexShrink: 0,
+      }}>
+        {/* Reason to Edit bar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 10px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', flexShrink: 0 }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>Reason to Edit</span>
+          <input className="setup-input-field" value={form.reasonToEdit} onChange={e => set('reasonToEdit', e.target.value)} style={{ flex: 1 }} />
+        </div>
+
+        {/* Tab bar */}
         <div style={{ display: 'flex', borderBottom: '2px solid #e2e8f0', flexShrink: 0, background: '#f8fafc', padding: '0 8px', overflowX: 'auto' }}>
           {tabs.map(tab => (
             <button key={tab} type="button" onClick={() => setActiveTab(tab)} style={{
-              padding: '7px 12px', background: activeTab === tab ? '#ffffff' : 'transparent',
-              color: activeTab === tab ? '#1e3a8a' : '#6b7280', border: 'none',
+              padding: '7px 12px',
+              background: activeTab === tab ? '#ffffff' : 'transparent',
+              color: activeTab === tab ? '#1e3a8a' : '#6b7280',
+              border: 'none',
               borderBottom: activeTab === tab ? '2px solid #1e3a8a' : '2px solid transparent',
               marginBottom: '-2px', cursor: 'pointer',
               fontWeight: activeTab === tab ? 700 : 600, fontSize: '11px',
-              fontFamily: 'Lato, system-ui, sans-serif', transition: 'all 0.15s', whiteSpace: 'nowrap',
-            }}>{tab}</button>
+              fontFamily: 'inherit', transition: 'all 0.15s', whiteSpace: 'nowrap',
+            }}>{tabLabel(tab)}</button>
           ))}
         </div>
-        <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
 
+        {/* Tab content */}
+        <div style={{ padding: '10px', overflowY: 'auto', minHeight: '120px' }}>
+
+          {/* ── CASH / Unit Fee Discounting ── */}
+          {activeTab === 'Unit Fee Discounting' && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Fee Code</label>
+                  <select className="setup-select-field" value={form.ufdFeeCode} onChange={e => set('ufdFeeCode', e.target.value)} style={{ minWidth: '110px' }}>
+                    <option value=""></option>
+                    <option value="UFC001">UFC001</option>
+                    <option value="UFC002">UFC002</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '140px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Description</label>
+                  <input className="setup-input-field" value={form.ufdDescription} onChange={e => set('ufdDescription', e.target.value)} style={{ flex: 1 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Amount</label>
+                  <input type="number" className="setup-input-field" value={form.ufdAmount} onChange={e => set('ufdAmount', e.target.value)} style={{ width: '80px' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>%</label>
+                  <input type="number" className="setup-input-field" value={form.ufdPct} onChange={e => set('ufdPct', e.target.value)} style={{ width: '60px' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>New Amount</label>
+                  <input type="number" className="setup-input-field" value={form.ufdNewAmount} onChange={e => set('ufdNewAmount', e.target.value)} style={{ width: '80px' }} />
+                </div>
+                <button style={addBtnStyle} onClick={() => {
+                  if (!form.ufdFeeCode) return;
+                  setUfdRecords(p => [...p, { feeCode: form.ufdFeeCode, description: form.ufdDescription, amount: form.ufdAmount, pct: form.ufdPct, newAmount: form.ufdNewAmount }]);
+                  setForm(p => ({ ...p, ufdFeeCode: '', ufdDescription: '', ufdAmount: '', ufdPct: '', ufdNewAmount: '' }));
+                }} title="Add">▼</button>
+              </div>
+              <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                  <thead>
+                    <tr>
+                      <th style={tableHeaderStyle}>Fee Code</th>
+                      <th style={tableHeaderStyle}>Description</th>
+                      <th style={tableHeaderStyle}>Amount</th>
+                      <th style={tableHeaderStyle}>%</th>
+                      <th style={{ ...tableHeaderStyle, borderRight: 'none' }}>New Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ufdRecords.length === 0
+                      ? <tr><td colSpan={5} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                      : ufdRecords.map((r, i) => (
+                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                          <td style={tableCellStyle}>{r.feeCode}</td>
+                          <td style={tableCellStyle}>{r.description}</td>
+                          <td style={tableCellStyle}>{r.amount}</td>
+                          <td style={tableCellStyle}>{r.pct}</td>
+                          <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.newAmount}</td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── CREDIT CARD ── */}
+          {activeTab === 'Credit Card' && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '140px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Card Holder Name</label>
+                  <input className="setup-input-field" value={form.ccHolder} onChange={e => set('ccHolder', e.target.value)} style={{ flex: 1 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '120px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Card No</label>
+                  <input className="setup-input-field" value={form.ccNo} onChange={e => set('ccNo', e.target.value)} placeholder="XXXX XXXX XXXX XXXX" style={{ flex: 1 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Date of Expiry</label>
+                  <DatePicker selected={chequeDate} onChange={d => setChequeDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Value</label>
+                  <input type="number" className="setup-input-field" value={form.ccValue} onChange={e => set('ccValue', e.target.value)} style={{ width: '90px' }} />
+                </div>
+                <button style={addBtnStyle} onClick={() => {
+                  if (!form.ccNo) return;
+                  setCcRecords(p => [...p, { holderName: form.ccHolder, cardNo: form.ccNo, expiry: chequeDate?.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) || '', value: form.ccValue }]);
+                  setForm(p => ({ ...p, ccHolder: '', ccNo: '', ccValue: '' }));
+                  setChequeDate(null);
+                }} title="Add">▼</button>
+              </div>
+              <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                  <thead>
+                    <tr>
+                      <th style={tableHeaderStyle}>Card Holder Name</th>
+                      <th style={tableHeaderStyle}>Card No</th>
+                      <th style={tableHeaderStyle}>Date of Expiry</th>
+                      <th style={{ ...tableHeaderStyle, borderRight: 'none' }}>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ccRecords.length === 0
+                      ? <tr><td colSpan={4} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                      : ccRecords.map((r, i) => (
+                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                          <td style={tableCellStyle}>{r.holderName}</td>
+                          <td style={tableCellStyle}>{r.cardNo}</td>
+                          <td style={tableCellStyle}>{r.expiry}</td>
+                          <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.value}</td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── BANK TRANSFER / DRAFT ── */}
+          {activeTab === 'Bank Transfer / Draft' && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Bank–Branch</label>
+                  <select className="setup-select-field" value={form.btBankBranch} onChange={e => set('btBankBranch', e.target.value)} style={{ minWidth: '140px' }}>
+                    <option value=""></option>
+                    <option value="BOC-COL">BOC – Colombo</option>
+                    <option value="HNB-KDY">HNB – Kandy</option>
+                    <option value="COM-GLL">Commercial – Galle</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '120px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Description</label>
+                  <input className="setup-input-field" value={form.btDescription} onChange={e => set('btDescription', e.target.value)} style={{ flex: 1 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Value Date</label>
+                  <DatePicker selected={btValueDate} onChange={d => setBtValueDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Value</label>
+                  <input type="number" className="setup-input-field" value={form.btValue} onChange={e => set('btValue', e.target.value)} style={{ width: '90px' }} />
+                </div>
+                <button style={{ ...addBtnStyle, background: '#7c3aed' }} onClick={() => {
+                  if (!form.btBankBranch) return;
+                  setBtRecords(p => [...p, { bankBranch: form.btBankBranch, draftNo: form.btDescription, date: btValueDate?.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) || '', amount: form.btValue }]);
+                  setForm(p => ({ ...p, btBankBranch: '', btDescription: '', btValue: '', btSwiftCode: '', btCreditAccNo: '', btCreditAccName: '' }));
+                  setBtValueDate(null);
+                }} title="Add">▼</button>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>SWIFT Code</label>
+                  <input className="setup-input-field" value={form.btSwiftCode} onChange={e => set('btSwiftCode', e.target.value)} style={{ width: '100px' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '130px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Credit Acc Number</label>
+                  <input className="setup-input-field" value={form.btCreditAccNo} onChange={e => set('btCreditAccNo', e.target.value)} style={{ flex: 1 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '130px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Credit Acc Name</label>
+                  <input className="setup-input-field" value={form.btCreditAccName} onChange={e => set('btCreditAccName', e.target.value)} style={{ flex: 1 }} />
+                </div>
+              </div>
+              <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                  <thead>
+                    <tr>
+                      <th style={tableHeaderStyle}>Bank/Branch</th>
+                      <th style={tableHeaderStyle}>Transfer / Draft No</th>
+                      <th style={tableHeaderStyle}>Date</th>
+                      <th style={{ ...tableHeaderStyle, borderRight: 'none' }}>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {btRecords.length === 0
+                      ? <tr><td colSpan={4} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                      : btRecords.map((r, i) => (
+                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                          <td style={tableCellStyle}>{r.bankBranch}</td>
+                          <td style={tableCellStyle}>{r.draftNo}</td>
+                          <td style={tableCellStyle}>{r.date}</td>
+                          <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.amount}</td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── CHEQUE DETAILS ── */}
+          {activeTab === 'Cheque Details' && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '130px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Cheque No</label>
+                  <input className="setup-input-field" value={form.chequeNo} onChange={e => set('chequeNo', e.target.value)} style={{ flex: 1 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Bank/Branch</label>
+                  <select className="setup-select-field" value={form.chequeBankBranch} onChange={e => set('chequeBankBranch', e.target.value)} style={{ minWidth: '130px' }}>
+                    <option value=""></option>
+                    <option value="BOC-COL">BOC – Colombo</option>
+                    <option value="HNB-KDY">HNB – Kandy</option>
+                    <option value="COM-GLL">Commercial – Galle</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Date</label>
+                  <DatePicker selected={chequeDate} onChange={d => setChequeDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Amount</label>
+                  <input type="number" className="setup-input-field" value={form.chequeAmount} onChange={e => set('chequeAmount', e.target.value)} style={{ width: '90px' }} />
+                </div>
+                <button style={addBtnStyle} onClick={() => {
+                  if (!form.chequeNo) return;
+                  setChequeRecords(p => [...p, { chequeNo: form.chequeNo, bankBranch: form.chequeBankBranch, date: chequeDate?.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) || '', amount: form.chequeAmount }]);
+                  setForm(p => ({ ...p, chequeNo: '', chequeBankBranch: '', chequeAmount: '' }));
+                  setChequeDate(null);
+                }} title="Add">▼</button>
+              </div>
+              <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                  <thead>
+                    <tr>
+                      <th style={tableHeaderStyle}>Cheque No</th>
+                      <th style={tableHeaderStyle}>Bank/Branch</th>
+                      <th style={tableHeaderStyle}>Date</th>
+                      <th style={{ ...tableHeaderStyle, borderRight: 'none' }}>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {chequeRecords.length === 0
+                      ? <tr><td colSpan={4} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                      : chequeRecords.map((r, i) => (
+                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                          <td style={tableCellStyle}>{r.chequeNo}</td>
+                          <td style={tableCellStyle}>{r.bankBranch}</td>
+                          <td style={tableCellStyle}>{r.date}</td>
+                          <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.amount}</td>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── AGENT DETAILS ── */}
           {activeTab === 'Agent Details' && (
             <div style={{ maxWidth: '460px' }}>
               <div style={{ display: 'inline-block', padding: '3px 10px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', color: '#1e3a8a', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: '4px', marginBottom: '10px' }}>Agents</div>
@@ -402,60 +1029,6 @@ function UnitCreationModal({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {activeTab === 'Cheque Details' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 24px', maxWidth: '620px' }}>
-              <InputRow label="Cheque No" labelWidth={105}><input className="setup-input-field" value={form.chequeNo} onChange={e => set('chequeNo', e.target.value)} style={{ flex: 1 }} /></InputRow>
-              <InputRow label="Cheque Date" labelWidth={105}><DatePicker selected={chequeDate} onChange={d => setChequeDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" /></InputRow>
-              <InputRow label="Bank Code" labelWidth={105}>
-                <select className="setup-select-field" value={form.chequeBankCode} onChange={e => set('chequeBankCode', e.target.value)} style={{ flex: 1 }}>
-                  <option value="">Select Bank</option>
-                  <option value="B001">B001 – HSBC</option>
-                  <option value="B002">B002 – Lloyds</option>
-                </select>
-              </InputRow>
-              <InputRow label="Branch" labelWidth={105}><input className="setup-input-field" value={form.chequeBankBranch} onChange={e => set('chequeBankBranch', e.target.value)} style={{ flex: 1 }} /></InputRow>
-              <InputRow label="Amount" labelWidth={105}><input type="number" className="setup-input-field" value={form.chequeAmount} onChange={e => set('chequeAmount', e.target.value)} style={{ flex: 1 }} /></InputRow>
-            </div>
-          )}
-
-          {activeTab === 'Credit Card' && (
-            <div style={{ maxWidth: '440px' }}>
-              <InputRow label="Card No" labelWidth={105}><input className="setup-input-field" value={form.ccNo} onChange={e => set('ccNo', e.target.value)} style={{ flex: 1 }} placeholder="XXXX XXXX XXXX XXXX" /></InputRow>
-              <InputRow label="Expiry" labelWidth={105}><input className="setup-input-field" value={form.ccExpiry} onChange={e => set('ccExpiry', e.target.value)} style={{ flex: 1 }} placeholder="MM/YY" /></InputRow>
-              <InputRow label="Card Holder" labelWidth={105}><input className="setup-input-field" value={form.ccHolder} onChange={e => set('ccHolder', e.target.value)} style={{ flex: 1 }} /></InputRow>
-              <InputRow label="Amount" labelWidth={105}><input type="number" className="setup-input-field" value={form.ccAmount} onChange={e => set('ccAmount', e.target.value)} style={{ flex: 1 }} /></InputRow>
-            </div>
-          )}
-
-          {activeTab === 'Bank Transfer / Draft' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 24px', maxWidth: '620px' }}>
-              <InputRow label="Ref No" labelWidth={100}><input className="setup-input-field" value={form.btRefNo} onChange={e => set('btRefNo', e.target.value)} style={{ flex: 1 }} /></InputRow>
-              <InputRow label="Transfer Date" labelWidth={100}><DatePicker selected={btDate} onChange={d => setBtDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" /></InputRow>
-              <InputRow label="Bank Code" labelWidth={100}>
-                <select className="setup-select-field" value={form.btBankCode} onChange={e => set('btBankCode', e.target.value)} style={{ flex: 1 }}>
-                  <option value="">Select Bank</option>
-                  <option value="B001">B001 – HSBC</option>
-                  <option value="B002">B002 – Lloyds</option>
-                </select>
-              </InputRow>
-              <InputRow label="Branch" labelWidth={100}><input className="setup-input-field" value={form.btBranch} onChange={e => set('btBranch', e.target.value)} style={{ flex: 1 }} /></InputRow>
-              <InputRow label="Amount" labelWidth={100}><input type="number" className="setup-input-field" value={form.btAmount} onChange={e => set('btAmount', e.target.value)} style={{ flex: 1 }} /></InputRow>
-            </div>
-          )}
-
-          {activeTab === 'Unit Fee Discounting' && (
-            <div style={{ maxWidth: '440px' }}>
-              <InputRow label="Fee Code" labelWidth={105}>
-                <select className="setup-select-field" value={form.ufdFeeCode} onChange={e => set('ufdFeeCode', e.target.value)} style={{ flex: 1 }}>
-                  <option value="">Select</option>
-                  <option value="UFC001">UFC001 – Entry Fee</option>
-                  <option value="UFC002">UFC002 – Exit Fee</option>
-                </select>
-              </InputRow>
-              <InputRow label="Percentage" labelWidth={105}><input type="number" step="0.01" className="setup-input-field" value={form.ufdPercentage} onChange={e => set('ufdPercentage', e.target.value)} style={{ flex: 1 }} /></InputRow>
-              <InputRow label="Amount" labelWidth={105}><input type="number" className="setup-input-field" value={form.ufdAmount} onChange={e => set('ufdAmount', e.target.value)} style={{ flex: 1 }} /></InputRow>
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -470,9 +1043,10 @@ function UnitOperations() {
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // ── Unit Fees state (original) ──
   const [activeTab, setActiveTab] = useState<'Unit Price' | 'Creation Charges' | 'Redemption Charges'>('Unit Price');
   const [showFundTable, setShowFundTable] = useState(false);
+  const [fundTablePos, setFundTablePos] = useState<{top:number;left:number;width:number}>({top:0,left:0,width:400});
+  const unitFeesFundRef = useRef<HTMLDivElement>(null);
   const [priceDate, setPriceDate] = useState<Date | null>(null);
   const [unitFeesFormData, setUnitFeesFormData] = useState({
     fund: '', fundCode: '', fundName: '',
@@ -529,11 +1103,11 @@ function UnitOperations() {
 
   const [creationChargesTable, setCreationChargesTable] = useState<CreationChargeRow[]>([
     { feeCode: 'FC001', description: 'Initial Setup Fee', percentage: 2.5, amount: 15000 },
-    { feeCode: 'FC002', description: 'Admin Charges', percentage: 1.2, amount: 8000 },
+    { feeCode: 'FC002', description: 'Admin Charges',     percentage: 1.2, amount: 8000  },
   ]);
   const [redemptionChargesTable, setRedemptionChargesTable] = useState<ChargeRow[]>([
     { feeCode: 'RC001', description: 'Early Redemption Fee', percentage: 1.5, amount: 5000 },
-    { feeCode: 'RC002', description: 'Processing Fee', percentage: 0.8, amount: 3000 },
+    { feeCode: 'RC002', description: 'Processing Fee',       percentage: 0.8, amount: 3000 },
   ]);
   const [sortConfig, setSortConfig] = useState<{ key: keyof CreationChargeRow; direction: 'asc' | 'desc' } | null>(null);
   const [redemptionSortConfig, setRedemptionSortConfig] = useState<{ key: keyof ChargeRow; direction: 'asc' | 'desc' } | null>(null);
@@ -544,25 +1118,24 @@ function UnitOperations() {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig?.key === key && sortConfig.direction === 'asc') direction = 'desc';
     setSortConfig({ key, direction });
-    setCreationChargesTable(prev => [...prev].sort((a, b) => { if (a[key] < b[key]) return direction === 'asc' ? -1 : 1; if (a[key] > b[key]) return direction === 'asc' ? 1 : -1; return 0; }));
+    setCreationChargesTable(prev => [...prev].sort((a, b) => a[key] < b[key] ? (direction === 'asc' ? -1 : 1) : a[key] > b[key] ? (direction === 'asc' ? 1 : -1) : 0));
   };
 
   const handleRedemptionSort = (key: keyof ChargeRow) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (redemptionSortConfig?.key === key && redemptionSortConfig.direction === 'asc') direction = 'desc';
     setRedemptionSortConfig({ key, direction });
-    setRedemptionChargesTable(prev => [...prev].sort((a, b) => { if (a[key] < b[key]) return direction === 'asc' ? -1 : 1; if (a[key] > b[key]) return direction === 'asc' ? 1 : -1; return 0; }));
+    setRedemptionChargesTable(prev => [...prev].sort((a, b) => a[key] < b[key] ? (direction === 'asc' ? -1 : 1) : a[key] > b[key] ? (direction === 'asc' ? 1 : -1) : 0));
   };
 
-  // ── ORIGINAL Unit Fees render (pixel-perfect preserved) ──
   const renderUnitFeesModal = () => (
     <>
       <div className="setup-input-section" style={{ marginTop: '0' }}>
         <div className="setup-ash-box" style={{ padding: '8px', width: '100%' }}>
           {/* Tab headers */}
-          <div role="tablist" aria-label="Unit Fees Tabs" style={{ display: 'flex', flexWrap: 'nowrap', gap: '6px', marginBottom: '6px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          <div role="tablist" style={{ display: 'flex', flexWrap: 'nowrap', gap: '6px', marginBottom: '6px', overflowX: 'auto' }}>
             {(['Unit Price', 'Creation Charges', 'Redemption Charges'] as const).map(tab => (
-              <div key={tab} role="tab" aria-selected={activeTab === tab} tabIndex={0}
+              <div key={tab} role="tab" tabIndex={0}
                 onClick={() => setActiveTab(tab)}
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setActiveTab(tab); }}
                 style={{
@@ -582,135 +1155,102 @@ function UnitOperations() {
           <div>
             {activeTab === 'Unit Price' && (
               <>
-                {/* Fund + Price Date */}
                 <div className="setup-ash-box" style={{ padding: '8px', marginBottom: '6px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '50%', flex: '1 1 50%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: '1 1 50%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px', fontSize: '12px' }}>Fund</label>
                       <div style={{ position: 'relative', flex: 1 }} data-table="fund">
-                        <div onClick={() => setShowFundTable(!showFundTable)}
+                        <div ref={unitFeesFundRef} onClick={() => {
+                          if (!showFundTable && unitFeesFundRef.current) {
+                            const rect = unitFeesFundRef.current.getBoundingClientRect();
+                            setFundTablePos({ top: rect.bottom + 3, left: rect.left, width: Math.max(rect.width, 400) });
+                          }
+                          setShowFundTable(v => !v);
+                        }}
                           style={{ padding: '6px 8px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: 'pointer', color: unitFeesFormData.fundName ? '#0f172a' : '#64748b', minHeight: '30px', display: 'flex', alignItems: 'center', fontSize: '12px' }}>
                           {unitFeesFormData.fundName || 'Select fund'}
                         </div>
-                        {showFundTable && (
-                          <div data-table="fund" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
+                        {showFundTable && createPortal(
+                          <div data-table="fund" style={{ position: 'fixed', top: fundTablePos.top, left: fundTablePos.left, width: fundTablePos.width, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px', boxShadow: '0 12px 32px rgba(0,0,0,0.18)', zIndex: 2147483647, maxHeight: '220px', overflowY: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                               <thead>
-                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000' }}>Code</th>
-                                  <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000' }}>Name</th>
+                                <tr style={{ background: '#1e3a8a' }}>
+                                  <th style={{ padding: '7px 10px', textAlign: 'left', color: '#fff', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', width: '30%' }}>Code</th>
+                                  <th style={{ padding: '7px 10px', textAlign: 'left', color: '#fff', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Name</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 {fundData.map((fund, i) => (
                                   <tr key={i}
                                     onClick={() => { setUnitFeesFormData(prev => ({ ...prev, fund: fund.code, fundCode: fund.code, fundName: fund.name })); setShowFundTable(false); }}
-                                    style={{ cursor: 'pointer', backgroundColor: unitFeesFormData.fundCode === fund.code ? '#f3e8ff' : '#ffffff' }}
-                                    onMouseEnter={e => { if (unitFeesFormData.fundCode !== fund.code) e.currentTarget.style.backgroundColor = '#f8fafc'; }}
-                                    onMouseLeave={e => { if (unitFeesFormData.fundCode !== fund.code) e.currentTarget.style.backgroundColor = '#ffffff'; }}
+                                    style={{ cursor: 'pointer', background: unitFeesFormData.fundCode === fund.code ? '#eff6ff' : i % 2 === 0 ? '#ffffff' : '#f8fafc', borderBottom: '1px solid #e2e8f0' }}
+                                    onMouseEnter={e => { if (unitFeesFormData.fundCode !== fund.code) (e.currentTarget as HTMLTableRowElement).style.background = '#dbeafe'; }}
+                                    onMouseLeave={e => { if (unitFeesFormData.fundCode !== fund.code) (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? '#ffffff' : '#f8fafc'; }}
                                   >
-                                    <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{fund.code}</td>
-                                    <td style={{ padding: '8px 12px', color: '#000000' }}>{fund.name}</td>
+                                    <td style={{ padding: '7px 10px', color: '#1e3a8a', fontWeight: 700, fontSize: '12px', width: '30%' }}>{fund.code}</td>
+                                    <td style={{ padding: '7px 10px', color: '#1f2937', fontSize: '12px' }}>{fund.name}</td>
                                   </tr>
                                 ))}
                               </tbody>
                             </table>
-                          </div>
+                          </div>,
+                          document.body
                         )}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: '50%', flex: '1 1 50%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: '1 1 50%' }}>
                       <label className="setup-input-label" style={{ minWidth: '100px', fontSize: '12px' }}>Price Date</label>
                       <div style={{ position: 'relative', flex: 1 }}>
-                        <DatePicker selected={priceDate} onChange={(date: Date | null) => setPriceDate(date)} dateFormat="dd/MMM/yyyy" className="date-picker-input" placeholderText="Select date" showYearDropdown showMonthDropdown dropdownMode="select" />
+                        <DatePicker selected={priceDate} onChange={(d: Date | null) => setPriceDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" placeholderText="Select date" showYearDropdown showMonthDropdown dropdownMode="select" />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Button Palette */}
                 <div className="setup-action-buttons" style={{ marginBottom: '6px', marginTop: '4px', gap: '6px' }}>
                   <button className="setup-btn setup-btn-new" onClick={handleModalClose}><span className="setup-btn-icon">+</span>New</button>
                   <button className="setup-btn setup-btn-save"><span className="setup-btn-icon">💾</span>Save</button>
                   <button className="setup-btn setup-btn-delete"><span className="setup-btn-icon">🗑️</span>Delete</button>
                   <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
-                  <button className="setup-btn setup-btn-clear" onClick={() => {
-                    setPriceDate(null);
-                    setUnitFeesFormData({ fund: '', fundCode: '', fundName: '', beforeBrokerageNAV: '', beforeBrokerageNAVAmount: '0.00', afterBrokerageNAV: '', afterBrokerageNAVAmount: '0.00', whtRate: '0.00', creationPriceWithoutFee: '0.000000', creationPriceWithFee: '0.000000', redeemPriceWithoutFee: '0.000000', redeemPriceWithFee: '0.000000', fundDetails: '', creationCharges: '', redemptionCharges: '', totalUnits: '', totalHolders: '' });
-                  }}><span className="setup-btn-icon">🗑️</span>Clear</button>
+                  <button className="setup-btn setup-btn-clear" onClick={() => { setPriceDate(null); setUnitFeesFormData({ fund: '', fundCode: '', fundName: '', beforeBrokerageNAV: '', beforeBrokerageNAVAmount: '0.00', afterBrokerageNAV: '', afterBrokerageNAVAmount: '0.00', whtRate: '0.00', creationPriceWithoutFee: '0.000000', creationPriceWithFee: '0.000000', redeemPriceWithoutFee: '0.000000', redeemPriceWithFee: '0.000000', fundDetails: '', creationCharges: '', redemptionCharges: '', totalUnits: '', totalHolders: '' }); }}><span className="setup-btn-icon">🗑️</span>Clear</button>
                 </div>
 
-                {/* Before / After Brokerage */}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr', gap: '8px' }}>
-                  <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0', width: '100%' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+                  <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
                     <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '8px', fontWeight: 600, fontSize: '11px' }}>Before Brokerage</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr', gap: '8px' }}>
-                      <div className="setup-input-group">
-                        <label className="setup-input-label" style={{ fontSize: '11px' }}>NAV</label>
-                        <input type="number" className="setup-input-field" value={unitFeesFormData.beforeBrokerageNAV} onChange={e => handleInputChange('beforeBrokerageNAV', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                      </div>
-                      <div className="setup-input-group">
-                        <label className="setup-input-label" style={{ fontSize: '11px' }}>NAV Amount</label>
-                        <input type="number" step="0.01" className="setup-input-field" value={unitFeesFormData.beforeBrokerageNAVAmount} onChange={e => handleInputChange('beforeBrokerageNAVAmount', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                      </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                      <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>NAV</label><input type="number" className="setup-input-field" value={unitFeesFormData.beforeBrokerageNAV} onChange={e => handleInputChange('beforeBrokerageNAV', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
+                      <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>NAV Amount</label><input type="number" step="0.01" className="setup-input-field" value={unitFeesFormData.beforeBrokerageNAVAmount} onChange={e => handleInputChange('beforeBrokerageNAVAmount', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
                     </div>
                   </div>
-                  <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0', width: '100%' }}>
+                  <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
                     <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '8px', fontWeight: 600, fontSize: '11px' }}>After Brokerage</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr', gap: '8px' }}>
-                      <div className="setup-input-group">
-                        <label className="setup-input-label" style={{ fontSize: '11px' }}>NAV</label>
-                        <input type="number" className="setup-input-field" value={unitFeesFormData.afterBrokerageNAV} onChange={e => handleInputChange('afterBrokerageNAV', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                      </div>
-                      <div className="setup-input-group">
-                        <label className="setup-input-label" style={{ fontSize: '11px' }}>NAV Amount</label>
-                        <input type="number" step="0.01" className="setup-input-field" value={unitFeesFormData.afterBrokerageNAVAmount} onChange={e => handleInputChange('afterBrokerageNAVAmount', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                      </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                      <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>NAV</label><input type="number" className="setup-input-field" value={unitFeesFormData.afterBrokerageNAV} onChange={e => handleInputChange('afterBrokerageNAV', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
+                      <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>NAV Amount</label><input type="number" step="0.01" className="setup-input-field" value={unitFeesFormData.afterBrokerageNAVAmount} onChange={e => handleInputChange('afterBrokerageNAVAmount', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
                     </div>
                   </div>
                 </div>
 
-                {/* WHT + Creation + Redeem + Fund Details */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', width: '100%' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px' }}>
                   <div style={{ background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 'bold', fontSize: '11px' }}>WHT Rate per Unit</div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px' }}>WHT</label>
-                      <input type="number" step="0.01" className="setup-input-field" value={unitFeesFormData.whtRate} onChange={e => handleInputChange('whtRate', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                    </div>
+                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 700, fontSize: '11px' }}>WHT Rate per Unit</div>
+                    <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>WHT</label><input type="number" step="0.01" className="setup-input-field" value={unitFeesFormData.whtRate} onChange={e => handleInputChange('whtRate', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
                   </div>
                   <div style={{ background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 'bold', fontSize: '11px' }}>Creation Price</div>
-                    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
-                      <label className="setup-input-label" style={{ fontSize: '11px' }}>Without Front End Fee</label>
-                      <input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.creationPriceWithoutFee} onChange={e => handleInputChange('creationPriceWithoutFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                    </div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px' }}>With Front End Fee</label>
-                      <input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.creationPriceWithFee} onChange={e => handleInputChange('creationPriceWithFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                    </div>
+                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 700, fontSize: '11px' }}>Creation Price</div>
+                    <div className="setup-input-group" style={{ marginBottom: '6px' }}><label className="setup-input-label" style={{ fontSize: '11px' }}>Without Front End Fee</label><input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.creationPriceWithoutFee} onChange={e => handleInputChange('creationPriceWithoutFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
+                    <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>With Front End Fee</label><input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.creationPriceWithFee} onChange={e => handleInputChange('creationPriceWithFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
                   </div>
                   <div style={{ background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 'bold', fontSize: '11px' }}>Redeem Price</div>
-                    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
-                      <label className="setup-input-label" style={{ fontSize: '11px' }}>Without Exit Fee</label>
-                      <input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.redeemPriceWithoutFee} onChange={e => handleInputChange('redeemPriceWithoutFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                    </div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px' }}>With Exit Fee</label>
-                      <input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.redeemPriceWithFee} onChange={e => handleInputChange('redeemPriceWithFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                    </div>
+                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 700, fontSize: '11px' }}>Redeem Price</div>
+                    <div className="setup-input-group" style={{ marginBottom: '6px' }}><label className="setup-input-label" style={{ fontSize: '11px' }}>Without Exit Fee</label><input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.redeemPriceWithoutFee} onChange={e => handleInputChange('redeemPriceWithoutFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
+                    <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>With Exit Fee</label><input type="number" step="0.000001" className="setup-input-field" value={unitFeesFormData.redeemPriceWithFee} onChange={e => handleInputChange('redeemPriceWithFee', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
                   </div>
-                  <div style={{ background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px solid #e2e8f0', gridColumn: '4 / 5', height: '100%' }}>
-                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 'bold', fontSize: '11px' }}>Fund Details</div>
-                    <div className="setup-input-group" style={{ marginBottom: '6px' }}>
-                      <label className="setup-input-label" style={{ fontSize: '11px' }}>Total No of Units</label>
-                      <input type="number" className="setup-input-field" value={unitFeesFormData.totalUnits} onChange={e => handleInputChange('totalUnits', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                    </div>
-                    <div className="setup-input-group">
-                      <label className="setup-input-label" style={{ fontSize: '11px' }}>Total No of Holders</label>
-                      <input type="number" className="setup-input-field" value={unitFeesFormData.totalHolders} onChange={e => handleInputChange('totalHolders', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} />
-                    </div>
+                  <div style={{ background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ background: '#e2e8f0', color: '#0f172a', padding: '4px 8px', borderRadius: '4px', marginBottom: '6px', fontWeight: 700, fontSize: '11px' }}>Fund Details</div>
+                    <div className="setup-input-group" style={{ marginBottom: '6px' }}><label className="setup-input-label" style={{ fontSize: '11px' }}>Total No of Units</label><input type="number" className="setup-input-field" value={unitFeesFormData.totalUnits} onChange={e => handleInputChange('totalUnits', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
+                    <div className="setup-input-group"><label className="setup-input-label" style={{ fontSize: '11px' }}>Total No of Holders</label><input type="number" className="setup-input-field" value={unitFeesFormData.totalHolders} onChange={e => handleInputChange('totalHolders', e.target.value)} style={{ padding: '4px 6px', fontSize: '12px', minHeight: '28px' }} /></div>
                   </div>
                 </div>
               </>
@@ -718,25 +1258,20 @@ function UnitOperations() {
 
             {activeTab === 'Creation Charges' && (
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: '#000000' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: '#000' }}>
                   <thead>
                     <tr style={{ background: '#f3f4f6' }}>
                       {(['feeCode', 'description', 'percentage', 'amount'] as const).map(col => (
                         <th key={col} onClick={() => handleSort(col)} style={{ padding: '8px', border: '1px solid #e5e7eb', cursor: 'pointer', textAlign: 'left', fontWeight: 600 }}>
-                          {col === 'feeCode' && 'Fee Code'}{col === 'description' && 'Description'}{col === 'percentage' && 'Percentage (%)'}{col === 'amount' && 'Amount'}
+                          {col === 'feeCode' ? 'Fee Code' : col === 'description' ? 'Description' : col === 'percentage' ? 'Percentage (%)' : 'Amount'}
                           {sortConfig?.key === col && (sortConfig.direction === 'asc' ? ' ▲' : ' ▼')}
                         </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {creationChargesTable.map((row, index) => (
-                      <tr key={index}>
-                        <td style={cellStyle}>{row.feeCode}</td>
-                        <td style={cellStyle}>{row.description}</td>
-                        <td style={cellStyle}>{row.percentage}</td>
-                        <td style={cellStyle}>{row.amount.toLocaleString()}</td>
-                      </tr>
+                    {creationChargesTable.map((row, i) => (
+                      <tr key={i}><td style={cellStyle}>{row.feeCode}</td><td style={cellStyle}>{row.description}</td><td style={cellStyle}>{row.percentage}</td><td style={cellStyle}>{row.amount.toLocaleString()}</td></tr>
                     ))}
                   </tbody>
                 </table>
@@ -744,26 +1279,21 @@ function UnitOperations() {
             )}
 
             {activeTab === 'Redemption Charges' && (
-              <div style={{ overflowX: 'auto', color: '#000000' }}>
+              <div style={{ overflowX: 'auto', color: '#000' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <thead>
                     <tr style={{ background: '#f3f4f6' }}>
                       {(['feeCode', 'description', 'percentage', 'amount'] as const).map(col => (
                         <th key={col} onClick={() => handleRedemptionSort(col)} style={{ padding: '8px', border: '1px solid #e5e7eb', cursor: 'pointer', textAlign: 'left', fontWeight: 600 }}>
-                          {col === 'feeCode' && 'Fee Code'}{col === 'description' && 'Description'}{col === 'percentage' && 'Percentage (%)'}{col === 'amount' && 'Amount'}
+                          {col === 'feeCode' ? 'Fee Code' : col === 'description' ? 'Description' : col === 'percentage' ? 'Percentage (%)' : 'Amount'}
                           {redemptionSortConfig?.key === col && (redemptionSortConfig.direction === 'asc' ? ' ▲' : ' ▼')}
                         </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {redemptionChargesTable.map((row, index) => (
-                      <tr key={index}>
-                        <td style={cellStyle}>{row.feeCode}</td>
-                        <td style={cellStyle}>{row.description}</td>
-                        <td style={cellStyle}>{row.percentage}</td>
-                        <td style={cellStyle}>{row.amount.toLocaleString()}</td>
-                      </tr>
+                    {redemptionChargesTable.map((row, i) => (
+                      <tr key={i}><td style={cellStyle}>{row.feeCode}</td><td style={cellStyle}>{row.description}</td><td style={cellStyle}>{row.percentage}</td><td style={cellStyle}>{row.amount.toLocaleString()}</td></tr>
                     ))}
                   </tbody>
                 </table>
@@ -771,17 +1301,13 @@ function UnitOperations() {
             )}
           </div>
 
-          {/* Button Palette for Creation/Redemption Charges tabs */}
           {activeTab !== 'Unit Price' && (
             <div className="setup-action-buttons" style={{ marginTop: '6px', gap: '6px' }}>
               <button className="setup-btn setup-btn-new" onClick={handleModalClose}><span className="setup-btn-icon">+</span>New</button>
               <button className="setup-btn setup-btn-save"><span className="setup-btn-icon">💾</span>Save</button>
               <button className="setup-btn setup-btn-delete"><span className="setup-btn-icon">🗑️</span>Delete</button>
               <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
-              <button className="setup-btn setup-btn-clear" onClick={() => {
-                setPriceDate(null);
-                setUnitFeesFormData({ fund: '', fundCode: '', fundName: '', beforeBrokerageNAV: '', beforeBrokerageNAVAmount: '0.00', afterBrokerageNAV: '', afterBrokerageNAVAmount: '0.00', whtRate: '0.00', creationPriceWithoutFee: '0.000000', creationPriceWithFee: '0.000000', redeemPriceWithoutFee: '0.000000', redeemPriceWithFee: '0.000000', fundDetails: '', creationCharges: '', redemptionCharges: '', totalHolders: '', totalUnits: '' });
-              }}><span className="setup-btn-icon">🗑️</span>Clear</button>
+              <button className="setup-btn setup-btn-clear" onClick={() => { setPriceDate(null); setUnitFeesFormData({ fund: '', fundCode: '', fundName: '', beforeBrokerageNAV: '', beforeBrokerageNAVAmount: '0.00', afterBrokerageNAV: '', afterBrokerageNAVAmount: '0.00', whtRate: '0.00', creationPriceWithoutFee: '0.000000', creationPriceWithFee: '0.000000', redeemPriceWithoutFee: '0.000000', redeemPriceWithFee: '0.000000', fundDetails: '', creationCharges: '', redemptionCharges: '', totalHolders: '', totalUnits: '' }); }}><span className="setup-btn-icon">🗑️</span>Clear</button>
             </div>
           )}
         </div>
@@ -789,9 +1315,6 @@ function UnitOperations() {
     </>
   );
 
-  // ========================================
-  // RENDER
-  // ========================================
   return (
     <>
       <div className="navbar-fixed-wrapper"><Navbar /></div>
@@ -816,7 +1339,6 @@ function UnitOperations() {
               <div className={`setup-modal-overlay ${isMobile ? 'mobile' : ''}`} onClick={handleModalClose}>
                 <div className={`setup-modal-container ${isMobile ? 'mobile' : ''}`} onClick={e => e.stopPropagation()}>
 
-                  {/* Header */}
                   <div className="setup-modal-header">
                     <div className="setup-modal-header-content">
                       <span className="setup-modal-header-icon">{modules[modalIdx].icon}</span>
@@ -825,8 +1347,8 @@ function UnitOperations() {
                     <button onClick={handleModalClose} className="setup-modal-close-btn" aria-label="Close modal">×</button>
                   </div>
 
-                  {/* Content */}
-                  <div className="setup-modal-content" style={{ overflow: 'auto', padding: '8px' }}>
+                  {/* Content: overflow-y scroll, no overflow:hidden that clips dropdowns */}
+                  <div className="setup-modal-content" style={{ overflow: 'auto', padding: '8px', isolation: 'auto' }}>
                     {modalIdx === 0 && modules[modalIdx].title === 'Unit Fees'
                       ? renderUnitFeesModal()
                       : modalIdx === 1 && modules[modalIdx].title === 'Unit Creation'
@@ -840,7 +1362,6 @@ function UnitOperations() {
                     }
                   </div>
 
-                  {/* Footer for placeholder modals only */}
                   {!(modalIdx === 0 && modules[modalIdx].title === 'Unit Fees') &&
                    !(modalIdx === 1 && modules[modalIdx].title === 'Unit Creation') && (
                     <div className="setup-modal-footer"><p>Unit Operations Module</p></div>

@@ -239,7 +239,18 @@ interface FormData {
   productType: string;
   productTypeActive: boolean;
   productTypeDescription: string;
-
+  // Source of Income fields
+  sourceOfIncomeCode: string;
+  sourceOfIncomeDescription: string;
+  // Annual Income fields
+  annualIncomeCode: string;
+  annualIncomeDescription: string;
+  // Risk Category fields
+  riskCategoryCode: string;
+  riskCategoryDescription: string;
+  // Politically Exposed fields
+  politicallyExposedStatus: 'yes' | 'no' | '';
+  politicallyExposedType: string;
 }
 
 // ========================================
@@ -253,23 +264,23 @@ const moduleData = [
   { title: 'Transaction Type', icon: '🔄' },
   { title: 'System Calendar', icon: '📅' },
   { title: 'Trustees', icon: '👔' },
-  { title: 'Custodian', icon: '🗄️' },
+  { title: 'Custodian', icon: '🗂️' },
   { title: 'Postal Area', icon: '📮' },
   { title: 'Dividend Type', icon: '💸' },
   { title: 'Funds', icon: '💰' },
   { title: 'Company', icon: '🏢' },
   { title: 'Promotional Activity', icon: '🎉' },
   { title: 'Unit Fee Codes', icon: '🧾' },
-  { title: 'Agency Type', icon: '🏷️' },
+  { title: 'Agency Type', icon: '🏷' },
   { title: 'Agency', icon: '🏬' },
   { title: 'Sub Agency', icon: '🏪' },
-  { title: 'Agents', icon: '🧑‍💼' },
-  { title: 'Territory', icon: '🗺️' },
+  { title: 'Agents', icon: '👤' },
+  { title: 'Territory', icon: '🗺' },
   { title: 'Commision Type', icon: '📊' },
   { title: 'Commission Level', icon: '📈' },
-  { title: 'Agent Commission Definition', icon: '💰' },
+  { title: 'Agent Commission Definition', icon: '💲' },
   { title: 'Assign Agent to Commission Definition', icon: '👥' },
-  { title: 'Institution Category', icon: '🏛️' },
+  { title: 'Institution Category', icon: '🏛' },
   { title: 'Documents Setup', icon: '📄' },
   { title: 'Institution', icon: '🏫' },
   { title: 'Blocking Category', icon: '🚫' },
@@ -278,6 +289,10 @@ const moduleData = [
   { title: 'Complience MSG Setup', icon: '💬' },
   { title: 'Product Type', icon: '📦' },
   { title: 'Title', icon: '🔔' },
+  { title: 'Source of Income', icon: '💼' },
+  { title: 'Annual Income', icon: '📉' },
+  { title: 'Risk Category', icon: '⚠' },
+  { title: 'Politically Exposed', icon: '🏛' },
 ];
 
 // TODO: Replace with API call to fetch table data from backend
@@ -553,6 +568,37 @@ const tableData = {
     { titleCode: 'T003', active: 'Yes', description: 'Dr. - Academic title for individuals with doctoral degrees, used in professional and academic contexts' },
     { titleCode: 'T004', active: 'Yes', description: 'Prof. - Academic title for professors, used in educational and research institutions' },
     { titleCode: 'T005', active: 'No', description: 'Sir - Honorary title for knights, currently inactive in the system' }
+  ],
+  'Source of Income': [
+    { code: 'SOI001', description: 'Employment Income' },
+    { code: 'SOI002', description: 'Business Income' },
+    { code: 'SOI003', description: 'Rental Income' },
+    { code: 'SOI004', description: 'Investment Income' },
+    { code: 'SOI005', description: 'Pension / Retirement Income' },
+    { code: 'SOI006', description: 'Inheritance / Gift' },
+    { code: 'SOI007', description: 'Dividend Income' },
+    { code: 'SOI008', description: 'Other Income' },
+  ],
+  'Annual Income': [
+    { code: 'AI001', description: 'Below LKR 500,000' },
+    { code: 'AI002', description: 'LKR 500,001 – LKR 1,000,000' },
+    { code: 'AI003', description: 'LKR 1,000,001 – LKR 2,500,000' },
+    { code: 'AI004', description: 'LKR 2,500,001 – LKR 5,000,000' },
+    { code: 'AI005', description: 'LKR 5,000,001 – LKR 10,000,000' },
+    { code: 'AI006', description: 'Above LKR 10,000,000' },
+  ],
+  'Risk Category': [
+    { code: 'RC001', description: 'Conservative – Capital preservation with low risk tolerance' },
+    { code: 'RC002', description: 'Moderately Conservative – Low to moderate risk, stable returns preferred' },
+    { code: 'RC003', description: 'Moderate – Balanced approach, accepting medium level of risk' },
+    { code: 'RC004', description: 'Moderately Aggressive – Higher risk tolerance, growth-oriented' },
+    { code: 'RC005', description: 'Aggressive – High risk tolerance, seeking maximum returns' },
+  ],
+  'Politically Exposed': [
+    { exposureType: 'Direct', description: 'Individuals directly holding a prominent public position', category: 'Direct Exposure' },
+    { exposureType: 'Family', description: 'Immediate family members of politically exposed persons', category: 'Family Connection' },
+    { exposureType: 'Relation', description: 'Close associates and known business relations of PEPs', category: 'Associate Relation' },
+    { exposureType: 'Employment', description: 'Persons employed by or working closely with PEP entities', category: 'Employment Link' },
   ]
 };
 
@@ -631,7 +677,9 @@ function CustomDataTable({ data, columns, onRowDoubleClick }: {
                                                                                           column === 'registrarAccount' ? 'Registrar account' :
                                                                                             column === 'trustyAccount' ? 'Trusty account' :
                                                                                               column === 'tinNo' ? 'Tin_no' :
-                                                                                                column.replace(/([A-Z])/g, ' $1').trim(),
+                                                                                                column === 'exposureType' ? 'Exposure Type' :
+                                                                                                  column === 'category' ? 'Category' :
+                                                                                                    column.replace(/([A-Z])/g, ' $1').trim(),
       cell: (info) => (
         <span className="text-gray-900">{info.getValue()}</span>
       ),
@@ -1057,6 +1105,18 @@ function Setup() {
     productType: '',
     productTypeActive: false,
     productTypeDescription: '',
+    // Source of Income fields
+    sourceOfIncomeCode: '',
+    sourceOfIncomeDescription: '',
+    // Annual Income fields
+    annualIncomeCode: '',
+    annualIncomeDescription: '',
+    // Risk Category fields
+    riskCategoryCode: '',
+    riskCategoryDescription: '',
+    // Politically Exposed fields
+    politicallyExposedStatus: '',
+    politicallyExposedType: '',
   });
 
   // Reset form data function
@@ -1289,6 +1349,18 @@ function Setup() {
       productType: '',
       productTypeActive: false,
       productTypeDescription: '',
+      // Source of Income fields
+      sourceOfIncomeCode: '',
+      sourceOfIncomeDescription: '',
+      // Annual Income fields
+      annualIncomeCode: '',
+      annualIncomeDescription: '',
+      // Risk Category fields
+      riskCategoryCode: '',
+      riskCategoryDescription: '',
+      // Politically Exposed fields
+      politicallyExposedStatus: '',
+      politicallyExposedType: '',
     });
   };
 
@@ -1377,6 +1449,12 @@ function Setup() {
     // Enforce explicit column order for specific modules
     if (title === 'Join Sale Agent') {
       return ['agencyCode', 'subAgencyCode', 'agentCode', 'agentDescription'];
+    }
+    if (title === 'Source of Income' || title === 'Annual Income' || title === 'Risk Category') {
+      return ['code', 'description'];
+    }
+    if (title === 'Politically Exposed') {
+      return ['exposureType', 'description', 'category'];
     }
     const data = tableData[title as keyof typeof tableData] || [];
     if (data.length === 0) return [];
@@ -1614,6 +1692,34 @@ function Setup() {
               isFormEditable={isFormEditable}
             />
           )}
+          {modalTitle === 'Source of Income' && (
+            <SourceOfIncomeModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Annual Income' && (
+            <AnnualIncomeModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Risk Category' && (
+            <RiskCategoryModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
+          {modalTitle === 'Politically Exposed' && (
+            <PoliticallyExposedModalContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              isFormEditable={isFormEditable}
+            />
+          )}
           {modalTitle === 'Product Type' && (
             <ProductTypeModalContent
               formData={formData}
@@ -1622,7 +1728,7 @@ function Setup() {
             />
           )}
           {/* Default Bank modal for other modules */}
-          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title', 'Join Sale Agent', 'Product Type'].includes(modalTitle) && (
+          {!['Bank', 'Transaction Type', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Promotional Activity', 'Other Charges', 'Company', 'Unit Fee Codes', 'Documents Setup', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Commision Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Territory', 'Institution', 'Institution Category', 'Blocking Category', 'Customer Zone', 'Complience MSG Setup', 'Title', 'Join Sale Agent', 'Product Type', 'Source of Income', 'Annual Income', 'Risk Category', 'Politically Exposed'].includes(modalTitle) && (
             <BankModalContent
               formData={formData}
               handleInputChange={handleInputChange}
@@ -6036,6 +6142,298 @@ function TitleModalContent({ formData, handleInputChange, isFormEditable }: { fo
   );
 }
 
-// 
+// ========================================
+// SOURCE OF INCOME MODAL CONTENT
+// ========================================
+function SourceOfIncomeModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Source of Income Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Code</label>
+        <input
+          type="text"
+          value={formData.sourceOfIncomeCode || ''}
+          onChange={e => handleInputChange('sourceOfIncomeCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter source of income code"
+          style={{ color: '#000000' }}
+        />
+      </div>
+
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <input
+          type="text"
+          value={formData.sourceOfIncomeDescription || ''}
+          onChange={e => handleInputChange('sourceOfIncomeDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          style={{ color: '#000000' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// ANNUAL INCOME MODAL CONTENT
+// ========================================
+function AnnualIncomeModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Annual Income Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Code</label>
+        <input
+          type="text"
+          value={formData.annualIncomeCode || ''}
+          onChange={e => handleInputChange('annualIncomeCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter annual income code"
+          style={{ color: '#000000' }}
+        />
+      </div>
+
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <input
+          type="text"
+          value={formData.annualIncomeDescription || ''}
+          onChange={e => handleInputChange('annualIncomeDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          style={{ color: '#000000' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// RISK CATEGORY MODAL CONTENT
+// ========================================
+function RiskCategoryModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  return (
+    <>
+      {/* Risk Category Code */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Code</label>
+        <input
+          type="text"
+          value={formData.riskCategoryCode || ''}
+          onChange={e => handleInputChange('riskCategoryCode', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter risk category code"
+          style={{ color: '#000000' }}
+        />
+      </div>
+
+      {/* Description */}
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <input
+          type="text"
+          value={formData.riskCategoryDescription || ''}
+          onChange={e => handleInputChange('riskCategoryDescription', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          style={{ color: '#000000' }}
+        />
+      </div>
+    </>
+  );
+}
+
+// ========================================
+// POLITICALLY EXPOSED MODAL CONTENT
+// ========================================
+function PoliticallyExposedModalContent({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
+  const pepStatus = formData.politicallyExposedStatus || '';
+  const pepType = formData.politicallyExposedType || '';
+
+  return (
+    <div style={{ gridColumn: '1 / -1', width: '100%' }}>
+      <div className="setup-ash-box" style={{ maxWidth: '600px', margin: '0 auto' }}>
+
+        {/* Question */}
+        <div style={{
+          marginBottom: '20px',
+          padding: '14px 18px',
+          background: 'linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%)',
+          borderRadius: '8px',
+          border: '1px solid rgba(30,58,138,0.12)',
+          borderLeft: '4px solid #1e3a8a',
+        }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e3a8a', letterSpacing: '0.03em', marginBottom: '4px', textTransform: 'uppercase' }}>
+            🏛️ Compliance Question
+          </div>
+          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0d1117', lineHeight: '1.5' }}>
+            Is this person Politically Exposed?
+          </div>
+          <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px', lineHeight: '1.5' }}>
+            A Politically Exposed Person (PEP) is an individual who holds or has held a prominent public position, or is closely associated with such a person.
+          </div>
+        </div>
+
+        {/* Yes / No Selection */}
+        <div className="setup-input-group" style={{ marginBottom: '20px' }}>
+          <label className="setup-input-label">Politically Exposed or Not</label>
+          <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+            {/* YES option */}
+            <label style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '12px 16px',
+              border: `2px solid ${pepStatus === 'yes' ? '#1e3a8a' : 'rgba(0,0,0,0.12)'}`,
+              borderRadius: '8px',
+              background: pepStatus === 'yes' ? 'rgba(30,58,138,0.06)' : '#ffffff',
+              cursor: isFormEditable ? 'pointer' : 'not-allowed',
+              transition: 'all 0.18s',
+              opacity: isFormEditable ? 1 : 0.6,
+            }}>
+              <input
+                type="radio"
+                name="politicallyExposed"
+                value="yes"
+                checked={pepStatus === 'yes'}
+                onChange={e => {
+                  handleInputChange('politicallyExposedStatus', e.target.value);
+                  handleInputChange('politicallyExposedType', '');
+                }}
+                disabled={!isFormEditable}
+                style={{ accentColor: '#1e3a8a', width: '16px', height: '16px' }}
+              />
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: pepStatus === 'yes' ? '#1e3a8a' : '#374151' }}>Yes</div>
+                <div style={{ fontSize: '11px', color: '#9ca3af' }}>This person is a PEP</div>
+              </div>
+            </label>
+
+            {/* NO option */}
+            <label style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '12px 16px',
+              border: `2px solid ${pepStatus === 'no' ? '#0d7f5a' : 'rgba(0,0,0,0.12)'}`,
+              borderRadius: '8px',
+              background: pepStatus === 'no' ? 'rgba(13,127,90,0.06)' : '#ffffff',
+              cursor: isFormEditable ? 'pointer' : 'not-allowed',
+              transition: 'all 0.18s',
+              opacity: isFormEditable ? 1 : 0.6,
+            }}>
+              <input
+                type="radio"
+                name="politicallyExposed"
+                value="no"
+                checked={pepStatus === 'no'}
+                onChange={e => {
+                  handleInputChange('politicallyExposedStatus', e.target.value);
+                  handleInputChange('politicallyExposedType', '');
+                }}
+                disabled={!isFormEditable}
+                style={{ accentColor: '#0d7f5a', width: '16px', height: '16px' }}
+              />
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: pepStatus === 'no' ? '#0d7f5a' : '#374151' }}>No</div>
+                <div style={{ fontSize: '11px', color: '#9ca3af' }}>Not a PEP</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        {/* PEP Type Selection — only shown when YES is selected */}
+        {pepStatus === 'yes' && (
+          <div
+            className="setup-input-group"
+            style={{
+              padding: '16px',
+              background: 'rgba(30,58,138,0.04)',
+              borderRadius: '8px',
+              border: '1px solid rgba(30,58,138,0.12)',
+              animation: 'fadeInDown 0.2s ease',
+            }}
+          >
+            <label className="setup-input-label" style={{ marginBottom: '12px', display: 'block' }}>
+              PEP Exposure Type
+            </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[
+                { value: 'direct',     label: 'Direct',     desc: 'Individuals directly holding a prominent public position',       icon: '👤' },
+                { value: 'family',     label: 'Family',     desc: 'Immediate family members of a politically exposed person',        icon: '👨‍👩‍👧' },
+                { value: 'relation',   label: 'Relation',   desc: 'Close associates and known business relations of PEPs',           icon: '🤝' },
+                { value: 'employment', label: 'Employment', desc: 'Persons employed by or closely working with PEP entities',        icon: '🏢' },
+              ].map(opt => (
+                <label
+                  key={opt.value}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 14px',
+                    border: `1.5px solid ${pepType === opt.value ? '#1e3a8a' : 'rgba(0,0,0,0.10)'}`,
+                    borderRadius: '6px',
+                    background: pepType === opt.value ? 'rgba(30,58,138,0.08)' : '#ffffff',
+                    cursor: isFormEditable ? 'pointer' : 'not-allowed',
+                    transition: 'all 0.15s',
+                    opacity: isFormEditable ? 1 : 0.7,
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="pepType"
+                    value={opt.value}
+                    checked={pepType === opt.value}
+                    onChange={e => handleInputChange('politicallyExposedType', e.target.value)}
+                    disabled={!isFormEditable}
+                    style={{ accentColor: '#1e3a8a', width: '15px', height: '15px', flexShrink: 0 }}
+                  />
+                  <span style={{ fontSize: '16px', flexShrink: 0 }}>{opt.icon}</span>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: pepType === opt.value ? '#1e3a8a' : '#374151' }}>{opt.label}</div>
+                    <div style={{ fontSize: '11px', color: '#6b7280', lineHeight: '1.4' }}>{opt.desc}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Not a PEP confirmation badge */}
+        {pepStatus === 'no' && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '12px 16px',
+            background: 'rgba(13,127,90,0.06)',
+            border: '1px solid rgba(13,127,90,0.18)',
+            borderRadius: '8px',
+            marginTop: '4px',
+          }}>
+            <span style={{ fontSize: '18px' }}>✅</span>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#0d7f5a' }}>Not Politically Exposed</div>
+              <div style={{ fontSize: '11px', color: '#6b7280' }}>This person does not hold or have connections to a prominent public position.</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 
 export default Setup;

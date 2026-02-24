@@ -3242,26 +3242,14 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
         />
       </div>
       <div className="setup-input-group">
-        <label className="setup-input-label">Description</label>
+        <label className="setup-input-label">Branch No</label>
         <input
           type="text"
-          value={formData.description}
-          onChange={(e) => handleInputChange('description', e.target.value)}
+          value={formData.branchNo}
+          onChange={(e) => handleInputChange('branchNo', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
-          placeholder="Enter description"
-        />
-      </div>
-      <div className="setup-input-group">
-        <label className="setup-input-label">Address (No/Street/Town/City)</label>
-        <textarea
-          value={formData.address}
-          onChange={(e) => handleInputChange('address', e.target.value)}
-          disabled={!isFormEditable}
-          className="setup-input-field"
-          placeholder="Enter address as: No, Street Name, Town, City"
-          rows={3}
-          style={{ resize: 'vertical', minHeight: '80px' }}
+          placeholder="Enter branch number"
         />
       </div>
       <div className="setup-input-group">
@@ -3301,6 +3289,30 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
         </select>
       </div>
       <div className="setup-input-group">
+        <label className="setup-input-label">Address (No/Street/Town/City)</label>
+        <textarea
+          value={formData.address}
+          onChange={(e) => handleInputChange('address', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter address as: No, Street Name, Town, City"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+      <div className="setup-input-group">
+        <label className="setup-input-label">Description</label>
+        <textarea
+          value={formData.description}
+          onChange={(e) => handleInputChange('description', e.target.value)}
+          disabled={!isFormEditable}
+          className="setup-input-field"
+          placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
+        />
+      </div>
+      <div className="setup-input-group">
         <label className="setup-input-label">Swift Code</label>
         <input
           type="text"
@@ -3309,17 +3321,6 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
           className="setup-input-field readonly"
           placeholder="Read only field"
           readOnly
-        />
-      </div>
-      <div className="setup-input-group">
-        <label className="setup-input-label">Branch No</label>
-        <input
-          type="text"
-          value={formData.branchNo}
-          onChange={(e) => handleInputChange('branchNo', e.target.value)}
-          disabled={!isFormEditable}
-          className="setup-input-field"
-          placeholder="Enter branch number"
         />
       </div>
     </>

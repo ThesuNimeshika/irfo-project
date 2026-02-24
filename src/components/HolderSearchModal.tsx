@@ -94,13 +94,7 @@ export default function HolderSearchModal({
     }
   }, [isOpen]);
 
-  // Escape key closes
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
+
 
   if (!isOpen) return null;
 
@@ -361,7 +355,6 @@ export default function HolderSearchModal({
   return createPortal(
     <div
       style={S.overlay}
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={S.shell} role="dialog" aria-modal="true" aria-label={title}>
 
@@ -467,14 +460,6 @@ export default function HolderSearchModal({
 
           {/* Right — Close then Get (Get is rightmost) */}
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              style={S.btnClose}
-              onClick={onClose}
-              onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e2e8f0')}
-              onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#f1f5f9')}
-            >
-              Close
-            </button>
             <button
               style={S.btnGet(!selected)}
               onClick={handleGet}

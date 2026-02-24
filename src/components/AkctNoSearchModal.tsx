@@ -491,10 +491,6 @@ export default function AkctNoSearchModal({
               : 'No row selected · click a row first'}
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button style={S.btnClose} onClick={onClose}
-              onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e2e8f0')}
-              onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#f1f5f9')}
-            >Close</button>
             <button style={S.btnGet(!selected)} onClick={handleGet} disabled={!selected}
               onMouseEnter={e => { if (selected) (e.currentTarget as HTMLButtonElement).style.background = '#065f46'; }}
               onMouseLeave={e => { if (selected) (e.currentTarget as HTMLButtonElement).style.background = '#0d7f5a'; }}

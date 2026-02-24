@@ -56,13 +56,7 @@ export default function RequestAckModal({
     }
   }, [isOpen]);
 
-  // Escape closes
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
+
 
   if (!isOpen) return null;
 
@@ -278,7 +272,7 @@ export default function RequestAckModal({
   };
 
   return createPortal(
-    <div style={S.overlay} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+    <div style={S.overlay}>
       <div style={S.shell} role="dialog" aria-modal="true" aria-label={title}>
 
         {/* ══ HEADER ══ */}
@@ -331,10 +325,6 @@ export default function RequestAckModal({
 
         {/* ══ FOOTER ══ */}
         <div style={S.footer}>
-          <button style={S.btnCancel} onClick={onClose}
-            onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e2e8f0')}
-            onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#f1f5f9')}
-          >Cancel</button>
           <button style={S.btnOk} onClick={handleConfirm}
             onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg,#0a6b4c 0%,#044a35 100%)')}
             onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg,#0d7f5a 0%,#065f46 100%)')}

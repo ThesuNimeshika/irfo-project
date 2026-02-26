@@ -716,455 +716,260 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
         onConfirm={ackNo => set('txnNo', ackNo)}
       />
 
-      {/* ── Top: Redemption Header ── */}
-      <SectionBox title="Unit Redemption">
-        <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr 1fr', gap: '0 20px' }}>
-          {/* Col 1 */}
-          <div>
-            <InputRow label="Unit Holder Acc No" labelWidth={130}>
-              {/* Unit Holder Acc No input */}
-              <input
-                className="setup-input-field"
-                value={form.accNo}
-                onChange={e => set('accNo', e.target.value)}
-                style={{
-                  flex: '0 0 140px',
-                  maxWidth: '160px',
-                  background: isEnabled ? '#fff' : '#f1f5f9',
-                  cursor: isEnabled ? 'auto' : 'not-allowed',
-                  marginRight: '4px',
-                }}
-                disabled={!isEnabled}
-              />
-              <button
-                type="button"
-                onClick={() => isEnabled && setShowAccountSearch(true)}
-                disabled={!isEnabled}
-                style={{
-                  background: isEnabled ? '#1e3a8a' : '#9ca3af',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '3px',
-                  width: '20px',
-                  height: '20px',
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  padding: 0,
-                  marginRight: '6px',
-                }}
-              >
-                A
-              </button>
-            </InputRow>
-            <InputRow
-              label="Unit Holder No"
-              labelWidth={130}
-              style={{ marginTop: '10px' }}
-            >
-              {/* Unit Holder No input */}
-              <input
-                className="setup-input-field"
-                value={form.unitHolderNo}
-                onChange={e => set('unitHolderNo', e.target.value)}
-                style={{
-                  flex: '0 0 140px',
-                  maxWidth: '160px',
-                  background: isEnabled ? '#fff' : '#f1f5f9',
-                  cursor: isEnabled ? 'auto' : 'not-allowed',
-                  marginRight: '4px',
-                }}
-                disabled={!isEnabled}
-              />
-              {/* Holder search button (H) between number and name */}
-              <button
-                type="button"
-                onClick={() => isEnabled && setShowHolderSearch(true)}
-                disabled={!isEnabled}
-                style={{
-                  background: isEnabled ? '#7c3aed' : '#9ca3af',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '3px',
-                  width: '20px',
-                  height: '20px',
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  padding: 0,
-                  marginRight: '4px',
-                }}
-              >
-                H
-              </button>
-              {/* Unit Holder Name input (no label) */}
-              <input
-                className="setup-input-field"
-                value={form.unitHolderName}
-                onChange={e => set('unitHolderName', e.target.value)}
-                style={{
-                  flex: 1,
-                  background: isEnabled ? '#fff' : '#f1f5f9',
-                  cursor: isEnabled ? 'auto' : 'not-allowed',
-                }}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-            <InputRow label="Redemption Code" labelWidth={130}>
-              <TableDropdown
-                value={form.redemptionCode}
-                displayValue={
-                  form.redemptionCode
-                    ? `${form.redemptionCode} – ${redemptionCodeData.find(r => r.transCode === form.redemptionCode)?.name || ''}`
-                    : ''
-                }
-                placeholder="Select Redemption Code"
-                columns={[
-                  { key: 'transCode', header: 'TRANS_CODE', width: '35%' },
-                  { key: 'name', header: 'NAME', width: '65%' },
-                ]}
-                rows={redemptionCodeData}
-                valueKey="transCode"
-                onSelect={row => set('redemptionCode', row.transCode)}
-                disabled={!isEnabled}
-              />
-            </InputRow>
+      {/* ════════════════════════════════════════════════════════
+          SHARED STYLE HELPERS  (defined once, used in both boxes)
+          ════════════════════════════════════════════════════════ */}
+      {(() => {
+        /* ── primitives ── */
+        const fieldH = 28;
+        const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
+          height: fieldH, padding: '0 8px', fontSize: '12px',
+          border: '1px solid #cfd8e3', borderRadius: '5px',
+          background: isEnabled ? '#ffffff' : '#f0f4f8',
+          color: '#1e293b', outline: 'none', width: '100%',
+          boxSizing: 'border-box' as const,
+          cursor: isEnabled ? 'text' : 'not-allowed',
+          boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+          ...extra,
+        });
+        const sel = (): React.CSSProperties => ({ ...inp(), cursor: isEnabled ? 'pointer' : 'not-allowed' });
+        const LBL: React.CSSProperties = {
+          fontSize: '10px', fontWeight: 700, color: '#5a6a85',
+          textTransform: 'uppercase' as const, letterSpacing: '0.06em',
+          whiteSpace: 'nowrap' as const,
+        };
+        const iconBtn = (bg: string): React.CSSProperties => ({
+          height: fieldH, minWidth: 26, padding: '0 4px', flexShrink: 0,
+          background: isEnabled ? bg : '#b0bec5',
+          color: '#fff', border: 'none', borderRadius: '5px',
+          fontSize: '10px', fontWeight: 800,
+          cursor: isEnabled ? 'pointer' : 'not-allowed',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: isEnabled ? '0 1px 3px rgba(0,0,0,0.18)' : 'none',
+        });
+        const txtBtn = (bg: string): React.CSSProperties => ({
+          height: fieldH, padding: '0 10px', flexShrink: 0,
+          background: isEnabled ? bg : '#b0bec5',
+          color: '#fff', border: 'none', borderRadius: '5px',
+          fontSize: '10px', fontWeight: 700, whiteSpace: 'nowrap' as const,
+          cursor: isEnabled ? 'pointer' : 'not-allowed',
+          boxShadow: isEnabled ? '0 1px 3px rgba(0,0,0,0.18)' : 'none',
+        });
+
+        /* ── row wrapper: label + field side-by-side ── */
+        const Field = ({ label, labelW = 120, children, style }: {
+          label: string; labelW?: number; children: React.ReactNode; style?: React.CSSProperties;
+        }) => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', ...style }}>
+            <span style={LBL}>{label}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>{children}</div>
           </div>
+        );
 
+        return (
+          <>
+            {/* ══════════════════════════════════════════
+                BOX 1 — Unit Holder info  (2 rows)
+                ══════════════════════════════════════════ */}
+            <div style={{
+              background: '#ffffff',
+              border: '1.5px solid #bdd5f0',
+              borderRadius: '8px',
+              padding: '10px 14px',
+              marginBottom: '8px',
+              boxShadow: '0 1px 6px rgba(59,130,246,0.07)',
+            }}>
+              {/* Row 1 */}
+              <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', marginBottom: '8px', alignItems: 'end' }}>
+                <Field label="Unit Holder Acc No">
+                  <input className="setup-input-field" value={form.accNo} onChange={e => set('accNo', e.target.value)} style={inp()} disabled={!isEnabled} />
+                </Field>
+                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
+                  <button type="button" onClick={() => isEnabled && setShowAccountSearch(true)} disabled={!isEnabled} style={iconBtn('#1e3a8a')}>A</button>
+                </div>
+                <Field label="Fund">
+                  <FundDropdown value={form.fundCode} displayValue={form.fundName} onSelect={(c, n) => setForm(p => ({ ...p, fundCode: c, fundName: n }))} disabled={!isEnabled} />
+                </Field>
+              </div>
+              {/* Row 2 */}
+              <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
+                <Field label="Unit Holder No">
+                  <input className="setup-input-field" value={form.unitHolderNo} onChange={e => set('unitHolderNo', e.target.value)} style={inp()} disabled={!isEnabled} />
+                </Field>
+                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
+                  <button type="button" onClick={() => isEnabled && setShowHolderSearch(true)} disabled={!isEnabled} style={iconBtn('#7c3aed')}>H</button>
+                </div>
+                <Field label="Unit Holder Name">
+                  <input className="setup-input-field" value={form.unitHolderName} onChange={e => set('unitHolderName', e.target.value)} placeholder="Unit holder name" style={inp()} disabled={!isEnabled} />
+                </Field>
+              </div>
+            </div>
 
-          {/* Col 2 */}
-          <div>
+            {/* ══════════════════════════════════════════
+                BOX 2 — Redemption Details  (rows 3-7)
+                ══════════════════════════════════════════ */}
+            <div style={{
+              background: '#ffffff',
+              border: '1.5px solid #bdd5f0',
+              borderRadius: '8px',
+              padding: '10px 14px',
+              marginBottom: '8px',
+              boxShadow: '0 1px 6px rgba(59,130,246,0.07)',
+            }}>
 
+              {/* Row 3 — 3 cols: Redemption Code | Txn No [E] + Redeem Date | Price Date */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: '0 12px', marginBottom: '8px', alignItems: 'end' }}>
+                <Field label="Redemption Code">
+                  <TableDropdown
+                    value={form.redemptionCode}
+                    displayValue={form.redemptionCode ? `${form.redemptionCode} – ${redemptionCodeData.find(r => r.transCode === form.redemptionCode)?.name || ''}` : ''}
+                    placeholder="Select Redemption Code"
+                    columns={[{ key: 'transCode', header: 'TRANS_CODE', width: '35%' }, { key: 'name', header: 'NAME', width: '65%' }]}
+                    rows={redemptionCodeData} valueKey="transCode"
+                    onSelect={row => set('redemptionCode', row.transCode)}
+                    disabled={!isEnabled}
+                  />
+                </Field>
+                {/* middle col: Txn No [E] + Redeem Date side by side */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
+                  <Field label="Txn No">
+                    <input className="setup-input-field" value={form.txnNo} onChange={e => set('txnNo', e.target.value)} style={inp({ flex: 1 })} disabled={!isEnabled} />
+                    <button type="button" onClick={() => isEnabled && setShowEditSearch(true)} disabled={!isEnabled} style={iconBtn('#b45309')}>E</button>
+                  </Field>
+                  <Field label="Redeem Date">
+                    <DatePicker selected={redeemDate} onChange={d => setRedeemDate(d)} dateFormat="dd/MMM/yyyy" placeholderText="DD/MMM/YYYY" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" disabled={!isEnabled} />
+                  </Field>
+                </div>
+                <Field label="Price Date">
+                  <DatePicker selected={priceDate} onChange={d => setPriceDate(d)} dateFormat="dd/MMM/yyyy" placeholderText="DD/MMM/YYYY" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" disabled={!isEnabled} />
+                </Field>
+              </div>
 
-            <InputRow label="Fund" labelWidth={80}>
-              <FundDropdown
-                value={form.fundCode}
-                displayValue={form.fundName}
-                onSelect={(c, n) => setForm(p => ({ ...p, fundCode: c, fundName: n }))}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-            <InputRow label="Txn No" labelWidth={80}>
-              <input
-                className="setup-input-field"
-                value={form.txnNo}
-                onChange={e => set('txnNo', e.target.value)}
-                style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-                disabled={!isEnabled}
-              />
-              <button
-                type="button"
-                onClick={() => isEnabled && setShowEditSearch(true)}
-                disabled={!isEnabled}
-                style={{
-                  background: isEnabled ? '#b45309' : '#9ca3af',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '3px',
-                  width: '20px',
-                  height: '20px',
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  padding: 0,
-                }}
-              >
-                E
-              </button>
-            </InputRow>
-            <InputRow label="Investment Type" labelWidth={120}>
-              <TableDropdown
-                value={form.invType}
-                displayValue={
-                  form.invType
-                    ? `${form.invType} – ${invTypeData.find(r => r.type === form.invType)?.description || ''}`
-                    : ''
-                }
-                placeholder="Select"
-                columns={[
-                  { key: 'type', header: 'Type', width: '22%' },
-                  { key: 'description', header: 'Description', width: '45%' },
-                  { key: 'agent', header: 'Agent', width: '33%' },
-                ]}
-                rows={invTypeData as Record<string, string>[]}
-                valueKey="type"
-                onSelect={row => set('invType', row.type)}
-                disabled={!isEnabled}
-              />
-              <button
-                type="button"
-                onClick={() => isEnabled && setShowAkctSearch(true)}
-                disabled={!isEnabled}
-                style={{
-                  background: isEnabled ? '#0d7f5a' : '#9ca3af',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '3px',
-                  padding: '2px 7px',
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  flexShrink: 0,
-                  marginLeft: '4px',
-                }}
-              >
-                AKCT NO
-              </button>
-              <button
-                type="button"
-                onClick={() => isEnabled && setShowRequestAck(true)}
-                disabled={!isEnabled}
-                style={{
-                  background: isEnabled ? '#065f46' : '#9ca3af',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '3px',
-                  padding: '2px 5px',
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  flexShrink: 0,
-                  marginLeft: '4px',
-                  lineHeight: 1,
-                }}
-              >
-                ?
-              </button>
-            </InputRow>
-          </div>
+              {/* Row 4 — 3 cols: Investment Type [AKCT][?] | Unit Price Redemption + No of Units | Value */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: '0 12px', marginBottom: '8px', alignItems: 'end' }}>
+                <Field label="Investment Type">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', width: '100%' }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown
+                        value={form.invType}
+                        displayValue={form.invType || ''}
+                        placeholder="Select"
+                        columns={[{ key: 'type', header: 'Type', width: '22%' }, { key: 'description', header: 'Description', width: '45%' }, { key: 'agent', header: 'Agent', width: '33%' }]}
+                        rows={invTypeData as Record<string, string>[]} valueKey="type"
+                        onSelect={row => set('invType', row.type)}
+                        disabled={!isEnabled}
+                      />
+                    </div>
+                    <button type="button" onClick={() => isEnabled && setShowAkctSearch(true)} disabled={!isEnabled} style={txtBtn('#0d7f5a')}>AKCT NO</button>
+                    <button type="button" onClick={() => isEnabled && setShowRequestAck(true)} disabled={!isEnabled} style={iconBtn('#065f46')}>?</button>
+                  </div>
+                </Field>
+                {/* middle col: Unit Price + No of Units side by side */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
+                  <Field label="Unit Price Redemption">
+                    <input type="number" className="setup-input-field" value={form.unitPrice} onChange={e => set('unitPrice', e.target.value)} style={inp()} disabled={!isEnabled} />
+                  </Field>
+                  <Field label="No of Units">
+                    <input type="number" className="setup-input-field" value={form.noOfUnits} onChange={e => set('noOfUnits', e.target.value)} style={inp()} disabled={!isEnabled} />
+                  </Field>
+                </div>
+                <Field label="Value">
+                  <input type="number" className="setup-input-field" value={form.value} onChange={e => set('value', e.target.value)} style={inp()} disabled={!isEnabled} />
+                </Field>
+              </div>
 
-          {/* Col 3 — Dates + Reason to Edit */}
-          <div>
-            <InputRow label="Redeem Date" labelWidth={100}>
-              <DatePicker
-                selected={redeemDate}
-                onChange={d => setRedeemDate(d)}
-                dateFormat="dd/MMM/yyyy"
-                placeholderText="DD/MMM/YYYY"
-                className="date-picker-input"
-                showYearDropdown
-                showMonthDropdown
-                dropdownMode="select"
-                disabled={!isEnabled}
-              />
-            </InputRow>
-            <InputRow label="Price Date" labelWidth={100}>
-              <DatePicker
-                selected={priceDate}
-                onChange={d => setPriceDate(d)}
-                dateFormat="dd/MMM/yyyy"
-                placeholderText="DD/MMM/YYYY"
-                className="date-picker-input"
-                showYearDropdown
-                showMonthDropdown
-                dropdownMode="select"
-                disabled={!isEnabled}
-              />
-            </InputRow>
-            <InputRow label="Fund Date" labelWidth={100}>
-              <DatePicker
-                selected={fundDate}
-                onChange={d => setFundDate(d)}
-                dateFormat="dd/MMM/yyyy"
-                placeholderText="DD/MMM/YYYY"
-                className="date-picker-input"
-                showYearDropdown
-                showMonthDropdown
-                dropdownMode="select"
-                disabled={!isEnabled}
-              />
-            </InputRow>
+              {/* Row 5 — Agent/Bank | Fund Date | Unit Fee glass pill | Remark (all one row) */}
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr auto 1fr', gap: '0 12px', marginBottom: '8px', alignItems: 'end' }}>
+                <Field label="Agent / Bank">
+                  <TableDropdown
+                    value={form.agentBank}
+                    displayValue={form.agentBank ? `${form.agentBank} – ${agentBankData.find(r => r.agentCode === form.agentBank)?.agentDescription || ''}` : ''}
+                    placeholder="Select Agent / Bank"
+                    columns={[{ key: 'agentCode', header: 'Agent Code', width: '35%' }, { key: 'agentDescription', header: 'Agent Description', width: '65%' }]}
+                    rows={agentBankData} valueKey="agentCode"
+                    onSelect={row => set('agentBank', row.agentCode)}
+                    disabled={!isEnabled}
+                  />
+                </Field>
+                <Field label="Fund Date">
+                  <DatePicker selected={fundDate} onChange={d => setFundDate(d)} dateFormat="dd/MMM/yyyy" placeholderText="DD/MMM/YYYY" className="date-picker-input" showYearDropdown showMonthDropdown dropdownMode="select" disabled={!isEnabled} />
+                </Field>
 
-          </div>
-        </div>
-      </SectionBox>
+                {/* Unit Fee — white glass pill */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <span style={LBL}>Unit Fee</span>
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '2px',
+                    background: 'rgba(255,255,255,0.72)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                    border: '1.5px solid #cbd5e1',
+                    borderRadius: '8px', padding: '0 8px 0 0',
+                    height: fieldH, boxSizing: 'border-box',
+                    boxShadow: '0 2px 10px rgba(100,120,160,0.13), inset 0 1px 2px rgba(255,255,255,0.8)',
+                    opacity: isEnabled ? 1 : 0.55,
+                  }}>
+                    {(['YES', 'NO', 'PRICE_DIFF'] as const).map((mode, i) => {
+                      const active = form.unitFeeMode === mode;
+                      return (
+                        <label key={mode} onClick={() => isEnabled && set('unitFeeMode', mode)} style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '5px',
+                          cursor: isEnabled ? 'pointer' : 'not-allowed',
+                          padding: '3px 10px', borderRadius: '6px',
+                          background: active ? 'rgba(37,99,235,0.12)' : 'transparent',
+                          transition: 'background 0.15s',
+                        }}>
+                          <span style={{
+                            width: 13, height: 13, borderRadius: '50%', flexShrink: 0,
+                            border: `2px solid ${active ? '#2563eb' : '#94a3b8'}`,
+                            background: active ? '#2563eb' : 'transparent',
+                            boxShadow: active ? 'inset 0 0 0 2.5px #fff' : 'none',
+                            display: 'inline-block',
+                            transition: 'all 0.15s',
+                          }} />
+                          <span style={{ fontSize: '12px', fontWeight: active ? 700 : 500, color: active ? '#1d4ed8' : '#475569', whiteSpace: 'nowrap' }}>
+                            {i === 0 ? 'Yes' : i === 1 ? 'No' : 'Price Diff'}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
 
-      {/* ── Middle: Redemption Details ── */}
-      <SectionBox title="Redemption Details">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px', alignItems: 'start' }}>
-          {/* Col 1 */}
-          <div>
-            <InputRow label="Unit Price Redemption" labelWidth={140}>
-              <input
-                type="number"
-                className="setup-input-field"
-                value={form.unitPrice}
-                onChange={e => set('unitPrice', e.target.value)}
-                style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-            <InputRow label="Value" labelWidth={80}>
-              <input
-                type="number"
-                className="setup-input-field"
-                value={form.value}
-                onChange={e => set('value', e.target.value)}
-                style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-          </div>
+                <Field label="Remark">
+                  <input className="setup-input-field" value={form.remark} onChange={e => set('remark', e.target.value)} style={inp()} disabled={!isEnabled} />
+                </Field>
+              </div>
 
-          {/* Col 2 */}
-          <div>
-            <InputRow label="No of Units" labelWidth={100}>
-              <input
-                type="number"
-                className="setup-input-field"
-                value={form.noOfUnits}
-                onChange={e => set('noOfUnits', e.target.value)}
-                style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-            <InputRow label="Agent / Bank" labelWidth={110}>
-              <TableDropdown
-                value={form.agentBank}
-                displayValue={
-                  form.agentBank
-                    ? `${form.agentBank} – ${agentBankData.find(r => r.agentCode === form.agentBank)?.agentDescription || ''}`
-                    : ''
-                }
-                placeholder="Select Agent / Bank"
-                columns={[
-                  { key: 'agentCode', header: 'Agent Code', width: '35%' },
-                  { key: 'agentDescription', header: 'Agent Description', width: '65%' },
-                ]}
-                rows={agentBankData}
-                valueKey="agentCode"
-                onSelect={row => set('agentBank', row.agentCode)}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-          </div>
-        </div>
+              {/* Row 6 — Reason to Edit (full width) */}
+              <div style={{ marginBottom: '8px' }}>
+                <Field label="Reason to Edit">
+                  <input className="setup-input-field" value={form.reasonToEdit} onChange={e => set('reasonToEdit', e.target.value)} style={inp()} disabled={!isEnabled} />
+                </Field>
+              </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px', marginTop: '8px' }}>
-          <label
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#4b5563',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-              display: 'block',
-              marginBottom: '6px',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Unit Fee
-          </label>
-          <div style={{ display: 'flex', gap: '15px', marginBottom: '12px' }}>
-            <label
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                cursor: isEnabled ? 'pointer' : 'not-allowed',
-                fontSize: '12px',
-                fontWeight: form.unitFeeMode === 'YES' ? 700 : 400,
-                opacity: isEnabled ? 1 : 0.6,
-              }}
-              onClick={() => isEnabled && set('unitFeeMode', 'YES')}
-            >
-              <span style={radioCircle(form.unitFeeMode === 'YES')} /> Yes
-            </label>
-            <label
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                cursor: isEnabled ? 'pointer' : 'not-allowed',
-                fontSize: '12px',
-                fontWeight: form.unitFeeMode === 'NO' ? 700 : 400,
-                opacity: isEnabled ? 1 : 0.6,
-              }}
-              onClick={() => isEnabled && set('unitFeeMode', 'NO')}
-            >
-              <span style={radioCircle(form.unitFeeMode === 'NO')} /> No
-            </label>
-            <label
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                cursor: isEnabled ? 'pointer' : 'not-allowed',
-                fontSize: '12px',
-                fontWeight: form.unitFeeMode === 'PRICE_DIFF' ? 700 : 400,
-                opacity: isEnabled ? 1 : 0.6,
-              }}
-              onClick={() => isEnabled && set('unitFeeMode', 'PRICE_DIFF')}
-            >
-              <span style={radioCircle(form.unitFeeMode === 'PRICE_DIFF')} /> Price Difference
-            </label>
-          </div>
-        </div>
+              {/* Row 7 — Amount | Units to Auto Redeem */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
+                <Field label="Amount">
+                  <select className="setup-select-field" value={form.autoRedeemAmount || ''} onChange={e => set('autoRedeemAmount', e.target.value)} style={sel()} disabled={!isEnabled}>
+                    <option value="">Select</option>
+                    <option value="BY_VALUE">By Value</option>
+                    <option value="BY_UNITS">By Units</option>
+                  </select>
+                </Field>
+                <Field label="Units to Auto Redeem">
+                  <select className="setup-select-field" value={form.unitsToAutoRedeem || ''} onChange={e => set('unitsToAutoRedeem', e.target.value)} style={sel()} disabled={!isEnabled}>
+                    <option value="">Select</option>
+                    <option value="ALL">All Available Units</option>
+                    <option value="PARTIAL">Partial Units</option>
+                  </select>
+                </Field>
+              </div>
 
-        <div style={{ marginTop: '8px' }}>
-          <InputRow label="Remark" labelWidth={100}>
-            <input
-              className="setup-input-field"
-              value={form.remark}
-              onChange={e => set('remark', e.target.value)}
-              style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-              disabled={!isEnabled}
-            />
-          </InputRow>
-          <InputRow label="Reason to Edit" labelWidth={110} style={{ marginTop: '4px' }}>
-            <input
-              className="setup-input-field"
-              value={form.reasonToEdit}
-              onChange={e => set('reasonToEdit', e.target.value)}
-              style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-              disabled={!isEnabled}
-            />
-          </InputRow>
-        </div>
-
-
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
-          <InputRow label="Amount" labelWidth={80}>
-            <select
-              className="setup-select-field"
-              value={form.autoRedeemAmount || ''}
-              onChange={e => set('autoRedeemAmount', e.target.value)}
-              style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-              disabled={!isEnabled}
-            >
-              <option value="">Select</option>
-              <option value="BY_VALUE">By Value</option>
-              <option value="BY_UNITS">By Units</option>
-            </select>
-          </InputRow>
-          <InputRow label="Units to Auto Redeem" labelWidth={140}>
-            <select
-              className="setup-select-field"
-              value={form.unitsToAutoRedeem || ''}
-              onChange={e => set('unitsToAutoRedeem', e.target.value)}
-              style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-              disabled={!isEnabled}
-            >
-              <option value="">Select</option>
-              <option value="ALL">All Available Units</option>
-              <option value="PARTIAL">Partial Units</option>
-            </select>
-          </InputRow>
-        </div>
-      </SectionBox>
+            </div>
+          </>
+        );
+      })()}
 
       {/* ── Button Palette ── */}
       <CreationButtonPalette onNew={() => setIsEnabled(true)} onClear={clearForm} />
@@ -1257,79 +1062,66 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
         <div style={{ padding: '10px', overflowY: 'auto', minHeight: '120px' }}>
           {activeTab === 'Redemption' && (
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Certificate No</label>
-                  <input
-                    className="setup-input-field"
-                    value={form.redCertificateNo}
-                    onChange={e => set('redCertificateNo', e.target.value)}
-                    style={{ width: '130px' }}
-                    disabled={!isEnabled}
-                    placeholder="e.g. CERT001"
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Available Units</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.redAvailableUnits}
-                    onChange={e => set('redAvailableUnits', e.target.value)}
-                    style={{ width: '110px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Units to Redeem</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.redUnitsToRedeem}
-                    onChange={e => {
-                      set('redUnitsToRedeem', e.target.value);
-                      // Auto-calculate balance units
-                      const available = parseFloat(form.redAvailableUnits) || 0;
-                      const toRedeem = parseFloat(e.target.value) || 0;
-                      set('redBalanceUnits', (available - toRedeem).toString());
-                    }}
-                    style={{ width: '110px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Balance Units</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.redBalanceUnits}
-                    onChange={e => set('redBalanceUnits', e.target.value)}
-                    style={{ width: '100px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Amount</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.redAmount}
-                    onChange={e => set('redAmount', e.target.value)}
-                    style={{ width: '100px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Blocked Units</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.redBlockedUnits}
-                    onChange={e => set('redBlockedUnits', e.target.value)}
-                    style={{ width: '100px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+                <input
+                  className="setup-input-field"
+                  value={form.redCertificateNo}
+                  onChange={e => set('redCertificateNo', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Certificate No"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.redAvailableUnits}
+                  onChange={e => set('redAvailableUnits', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Available Units"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.redUnitsToRedeem}
+                  onChange={e => {
+                    set('redUnitsToRedeem', e.target.value);
+                    // Auto-calculate balance units
+                    const available = parseFloat(form.redAvailableUnits) || 0;
+                    const toRedeem = parseFloat(e.target.value) || 0;
+                    set('redBalanceUnits', (available - toRedeem).toString());
+                  }}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Units to Redeem"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.redBalanceUnits}
+                  onChange={e => set('redBalanceUnits', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Balance Units"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.redAmount}
+                  onChange={e => set('redAmount', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Amount"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.redBlockedUnits}
+                  onChange={e => set('redBlockedUnits', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Blocked Units"
+                />
                 <button
                   onClick={() => {
                     if (!isEnabled || !form.redCertificateNo) return;
@@ -1349,7 +1141,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                     color: '#fff',
                     border: 'none',
                     borderRadius: '3px',
-                    width: '28px',
+                    width: '36px',
                     height: '28px',
                     fontSize: '14px',
                     fontWeight: 700,
@@ -1358,7 +1150,6 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    marginLeft: 'auto',
                   }}
                   title="Add"
                 >
@@ -1423,69 +1214,58 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
 
           {activeTab === 'Unit Fee Discounting' && (
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Fee Code</label>
-                  <select
-                    className="setup-select-field"
-                    value={form.ufdFeeCode}
-                    onChange={e => {
-                      const selected = unitFeeCodeData.find(f => f.code === e.target.value);
-                      set('ufdFeeCode', e.target.value);
-                      if (selected) set('ufdDescription', selected.description);
-                    }}
-                    style={{ minWidth: '120px' }}
-                    disabled={!isEnabled}
-                  >
-                    <option value=""></option>
-                    {unitFeeCodeData.map(f => (
-                      <option key={f.code} value={f.code}>{f.code}</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '140px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Description</label>
-                  <input
-                    className="setup-input-field"
-                    value={form.ufdDescription}
-                    onChange={e => set('ufdDescription', e.target.value)}
-                    style={{ flex: 1 }}
-                    disabled={!isEnabled}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Amount</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.ufdAmount}
-                    onChange={e => set('ufdAmount', e.target.value)}
-                    style={{ width: '90px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>%</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.ufdPct}
-                    onChange={e => set('ufdPct', e.target.value)}
-                    style={{ width: '70px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>New Amount</label>
-                  <input
-                    type="number"
-                    className="setup-input-field"
-                    value={form.ufdNewAmount}
-                    onChange={e => set('ufdNewAmount', e.target.value)}
-                    style={{ width: '90px' }}
-                    disabled={!isEnabled}
-                  />
-                </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+                <select
+                  className="setup-select-field"
+                  value={form.ufdFeeCode}
+                  onChange={e => {
+                    const selected = unitFeeCodeData.find(f => f.code === e.target.value);
+                    set('ufdFeeCode', e.target.value);
+                    if (selected) set('ufdDescription', selected.description);
+                  }}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                >
+                  <option value="">Fee Code</option>
+                  {unitFeeCodeData.map(f => (
+                    <option key={f.code} value={f.code}>{f.code}</option>
+                  ))}
+                </select>
+                <input
+                  className="setup-input-field"
+                  value={form.ufdDescription}
+                  onChange={e => set('ufdDescription', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Description"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.ufdAmount}
+                  onChange={e => set('ufdAmount', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="Amount"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.ufdPct}
+                  onChange={e => set('ufdPct', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="%"
+                />
+                <input
+                  type="number"
+                  className="setup-input-field"
+                  value={form.ufdNewAmount}
+                  onChange={e => set('ufdNewAmount', e.target.value)}
+                  style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                  disabled={!isEnabled}
+                  placeholder="New Amount"
+                />
                 <button
                   onClick={() => {
                     if (!isEnabled || !form.ufdFeeCode) return;
@@ -1495,24 +1275,13 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                   disabled={!isEnabled || !form.ufdFeeCode}
                   style={{
                     background: isEnabled && form.ufdFeeCode ? '#b45309' : '#9ca3af',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '3px',
-                    width: '28px',
-                    height: '28px',
-                    fontSize: '14px',
-                    fontWeight: 700,
+                    color: '#fff', border: 'none', borderRadius: '3px',
+                    width: '36px', height: '28px', fontSize: '14px', fontWeight: 700,
                     cursor: isEnabled && form.ufdFeeCode ? 'pointer' : 'not-allowed',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    marginLeft: 'auto',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}
                   title="Add"
-                >
-                  ▼
-                </button>
+                >▼</button>
               </div>
               <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
@@ -1646,85 +1415,48 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
           )}
 
           {activeTab === 'Agent Details' && (
-            <div style={{ maxWidth: '460px' }}>
-              <div
-                style={{
-                  display: 'inline-block',
-                  padding: '3px 10px',
-                  background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)',
-                  color: '#1e3a8a',
-                  fontWeight: 700,
-                  fontSize: '11px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  borderRadius: '4px',
-                  marginBottom: '10px',
-                }}
-              >
-                Agents
+            <div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)', gap: '8px', alignItems: 'end' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: '#5a6a85', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Agency</span>
+                  <TableDropdown
+                    value={form.agency}
+                    displayValue={form.agency ? `${form.agency} – ${agencyTableData.find(r => r.agency_code === form.agency)?.agency_name || ''}` : ''}
+                    placeholder="Select Agency"
+                    columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]}
+                    rows={agencyTableData} valueKey="agency_code"
+                    onSelect={row => set('agency', row.agency_code)}
+                    style={{ flex: 1 }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: '#5a6a85', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Sub Agency</span>
+                  <TableDropdown
+                    value={form.subAgency}
+                    displayValue={form.subAgency ? `${form.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.subAgency)?.subagent_name || ''}` : ''}
+                    placeholder="Select Sub Agency"
+                    columns={[{ key: 'subagent_code', header: 'Subagent Code', width: '40%' }, { key: 'subagent_name', header: 'Subagent Name', width: '60%' }]}
+                    rows={subAgencyTableData} valueKey="subagent_code"
+                    onSelect={row => set('subAgency', row.subagent_code)}
+                    style={{ flex: 1 }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: '#5a6a85', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Agent</span>
+                  <TableDropdown
+                    value={form.agent}
+                    displayValue={form.agent ? `${form.agent} – ${agentTableData.find(r => r.agent_code === form.agent)?.agent_name || ''}` : ''}
+                    placeholder="Select Agent"
+                    columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency Code', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency Code', width: '20%' }]}
+                    rows={agentTableData} valueKey="agent_code"
+                    onSelect={row => set('agent', row.agent_code)}
+                    style={{ flex: 1 }}
+                    disabled={!isEnabled}
+                  />
+                </div>
               </div>
-              <InputRow label="Agency" labelWidth={90}>
-                <TableDropdown
-                  value={form.agency}
-                  displayValue={
-                    form.agency
-                      ? `${form.agency} – ${agencyTableData.find(r => r.agency_code === form.agency)?.agency_name || ''}`
-                      : ''
-                  }
-                  placeholder="Select Agency"
-                  columns={[
-                    { key: 'agency_code', header: 'Agency Code', width: '40%' },
-                    { key: 'agency_name', header: 'Agency Name', width: '60%' },
-                  ]}
-                  rows={agencyTableData}
-                  valueKey="agency_code"
-                  onSelect={row => set('agency', row.agency_code)}
-                  style={{ flex: 1 }}
-                  disabled={!isEnabled}
-                />
-              </InputRow>
-              <InputRow label="Sub Agency" labelWidth={90}>
-                <TableDropdown
-                  value={form.subAgency}
-                  displayValue={
-                    form.subAgency
-                      ? `${form.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.subAgency)?.subagent_name || ''}`
-                      : ''
-                  }
-                  placeholder="Select Sub Agency"
-                  columns={[
-                    { key: 'subagent_code', header: 'Subagent Code', width: '40%' },
-                    { key: 'subagent_name', header: 'Subagent Name', width: '60%' },
-                  ]}
-                  rows={subAgencyTableData}
-                  valueKey="subagent_code"
-                  onSelect={row => set('subAgency', row.subagent_code)}
-                  style={{ flex: 1 }}
-                  disabled={!isEnabled}
-                />
-              </InputRow>
-              <InputRow label="Agent" labelWidth={90}>
-                <TableDropdown
-                  value={form.agent}
-                  displayValue={
-                    form.agent
-                      ? `${form.agent} – ${agentTableData.find(r => r.agent_code === form.agent)?.agent_name || ''}`
-                      : ''
-                  }
-                  placeholder="Select Agent"
-                  columns={[
-                    { key: 'agent_code', header: 'Agent Code', width: '25%' },
-                    { key: 'agent_name', header: 'Agent Name', width: '35%' },
-                    { key: 'agency_code', header: 'Agency Code', width: '20%' },
-                    { key: 'sub_agency_code', header: 'Sub Agency Code', width: '20%' },
-                  ]}
-                  rows={agentTableData}
-                  valueKey="agent_code"
-                  onSelect={row => set('agent', row.agent_code)}
-                  style={{ flex: 1 }}
-                  disabled={!isEnabled}
-                />
-              </InputRow>
             </div>
           )}
         </div>

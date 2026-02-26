@@ -68,38 +68,38 @@ const creationCodeData: Record<string, string>[] = [
 ];
 
 const invTypeData: Record<string, string>[] = [
-  { type: 'LUMP',  description: 'Lump Sum Investment',       agent: 'All Agents' },
-  { type: 'REG',   description: 'Regular / Monthly SIP',     agent: 'Registered Agents' },
-  { type: 'IPO',   description: 'IPO Subscription',          agent: 'IPO Agents' },
-  { type: 'DIV',   description: 'Dividend Reinvestment',     agent: 'Fund Manager' },
-  { type: 'BONUS', description: 'Bonus Unit Allocation',     agent: 'Fund Manager' },
-  { type: 'CORP',  description: 'Corporate Investment',      agent: 'Corporate Agents' },
-  { type: 'RSP',   description: 'Regular Savings Plan',      agent: 'All Agents' },
-  { type: 'RTS',   description: 'Rights Issue Subscription', agent: 'Registered Agents' },
-  { type: 'CONV',  description: 'Fund Conversion',           agent: 'All Agents' },
-  { type: 'XFER',  description: 'Transfer Investment',       agent: 'Transfer Agents' },
+  { type: 'LUMP', description: 'Lump Sum Investment', agent: 'All Agents' },
+  { type: 'REG', description: 'Regular / Monthly SIP', agent: 'Registered Agents' },
+  { type: 'IPO', description: 'IPO Subscription', agent: 'IPO Agents' },
+  { type: 'DIV', description: 'Dividend Reinvestment', agent: 'Fund Manager' },
+  { type: 'BONUS', description: 'Bonus Unit Allocation', agent: 'Fund Manager' },
+  { type: 'CORP', description: 'Corporate Investment', agent: 'Corporate Agents' },
+  { type: 'RSP', description: 'Regular Savings Plan', agent: 'All Agents' },
+  { type: 'RTS', description: 'Rights Issue Subscription', agent: 'Registered Agents' },
+  { type: 'CONV', description: 'Fund Conversion', agent: 'All Agents' },
+  { type: 'XFER', description: 'Transfer Investment', agent: 'Transfer Agents' },
 ];
 
 const collAccData: Record<string, string>[] = [
-  { code: 'CA001', name: 'Main Collection Account',      bankAccNo: '0012345678' },
+  { code: 'CA001', name: 'Main Collection Account', bankAccNo: '0012345678' },
   { code: 'CA002', name: 'Secondary Collection Account', bankAccNo: '0098765432' },
-  { code: 'CA003', name: 'IPO Collection Account',       bankAccNo: '0011223344' },
-  { code: 'CA004', name: 'Dividend Collection Account',  bankAccNo: '0055667788' },
-  { code: 'CA005', name: 'Bond Fund Collection',         bankAccNo: '0099887766' },
-  { code: 'CA006', name: 'Equity Fund Collection',       bankAccNo: '0033445566' },
-  { code: 'CA007', name: 'Corporate Client Account',     bankAccNo: '0077889900' },
-  { code: 'CA008', name: 'Suspense Account',             bankAccNo: '0044556677' },
+  { code: 'CA003', name: 'IPO Collection Account', bankAccNo: '0011223344' },
+  { code: 'CA004', name: 'Dividend Collection Account', bankAccNo: '0055667788' },
+  { code: 'CA005', name: 'Bond Fund Collection', bankAccNo: '0099887766' },
+  { code: 'CA006', name: 'Equity Fund Collection', bankAccNo: '0033445566' },
+  { code: 'CA007', name: 'Corporate Client Account', bankAccNo: '0077889900' },
+  { code: 'CA008', name: 'Suspense Account', bankAccNo: '0044556677' },
 ];
 
 const promotionalData: Record<string, string>[] = [
-  { promoCode: 'PA001', promoDesc: 'Summer Sale',       description: '20% fee waiver on new investments' },
-  { promoCode: 'PA002', promoDesc: 'Holiday Special',   description: '15% fee waiver during festive season' },
-  { promoCode: 'PA003', promoDesc: 'New Year Offer',    description: '10% discount on entry fee for Jan' },
-  { promoCode: 'PA004', promoDesc: 'Loyalty Reward',    description: 'Extra 5% units for existing holders' },
-  { promoCode: 'PA005', promoDesc: 'Referral Bonus',    description: '2% bonus units for referrals' },
+  { promoCode: 'PA001', promoDesc: 'Summer Sale', description: '20% fee waiver on new investments' },
+  { promoCode: 'PA002', promoDesc: 'Holiday Special', description: '15% fee waiver during festive season' },
+  { promoCode: 'PA003', promoDesc: 'New Year Offer', description: '10% discount on entry fee for Jan' },
+  { promoCode: 'PA004', promoDesc: 'Loyalty Reward', description: 'Extra 5% units for existing holders' },
+  { promoCode: 'PA005', promoDesc: 'Referral Bonus', description: '2% bonus units for referrals' },
   { promoCode: 'PA006', promoDesc: 'Corporate Package', description: 'Zero entry fee for corporate clients' },
-  { promoCode: 'PA007', promoDesc: 'Early Bird',        description: '25% discount for first-week investors' },
-  { promoCode: 'PA008', promoDesc: 'SIP Incentive',     description: 'Free units after 12 months of SIP' },
+  { promoCode: 'PA007', promoDesc: 'Early Bird', description: '25% discount for first-week investors' },
+  { promoCode: 'PA008', promoDesc: 'SIP Incentive', description: 'Free units after 12 months of SIP' },
 ];
 
 // ── Agent table dropdown data ──
@@ -118,6 +118,85 @@ const agentData: Record<string, string>[] = [
   { code: 'AGT002', description: 'Sarah Johnson' },
 ];
 
+// ── Redemption Code table dropdown data ──
+const redemptionCodeData: Record<string, string>[] = [
+  { transCode: 'RC001', name: 'Standard Redemption' },
+  { transCode: 'RC002', name: 'Partial Redemption' },
+  { transCode: 'RC003', name: 'Full Redemption' },
+  { transCode: 'RC004', name: 'Forced Redemption' },
+  { transCode: 'RC005', name: 'Dividend Payout Redemption' },
+  { transCode: 'RC006', name: 'Maturity Redemption' },
+  { transCode: 'RC007', name: 'Early Redemption' },
+  { transCode: 'RC008', name: 'SIP Redemption' },
+  { transCode: 'RC009', name: 'Corporate Action Redemption' },
+  { transCode: 'RC010', name: 'Switch-Out Redemption' },
+];
+
+// ── Agent / Bank table dropdown data ──
+const agentBankData: Record<string, string>[] = [
+  { agentCode: 'AB001', agentDescription: 'First National Bank' },
+  { agentCode: 'AB002', agentDescription: 'City Commercial Bank' },
+  { agentCode: 'AB003', agentDescription: 'Standard Chartered' },
+  { agentCode: 'AB004', agentDescription: 'Peoples Bank' },
+  { agentCode: 'AB005', agentDescription: 'Bank of Ceylon' },
+  { agentCode: 'AB006', agentDescription: 'Commercial Bank Ltd' },
+  { agentCode: 'AB007', agentDescription: 'HNB Investments' },
+  { agentCode: 'AB008', agentDescription: 'DFCC Bank' },
+  { agentCode: 'AB009', agentDescription: 'Sampath Bank' },
+  { agentCode: 'AB010', agentDescription: 'NSB Fund Agents' },
+];
+
+// ── Payment Type table dropdown data ──
+const paymentTypeData: Record<string, string>[] = [
+  { code: 'CHEQUE', name: 'Cheque' },
+  { code: 'BANK_TRANSFER', name: 'Bank Transfer' },
+  { code: 'CASH', name: 'Cash' },
+  { code: 'ONLINE', name: 'Online Payment' },
+  { code: 'DRAFT', name: 'Demand Draft' },
+];
+
+// ── Agency table dropdown data (extended) ──
+const agencyTableData: Record<string, string>[] = [
+  { agency_code: 'AG001', agency_name: 'Main Street Agency' },
+  { agency_code: 'AG002', agency_name: 'Central Agency' },
+  { agency_code: 'AG003', agency_name: 'North Branch Agency' },
+  { agency_code: 'AG004', agency_name: 'South Branch Agency' },
+];
+
+// ── Sub-Agency table dropdown data (extended) ──
+const subAgencyTableData: Record<string, string>[] = [
+  { subagent_code: 'SA001', subagent_name: 'Downtown Branch' },
+  { subagent_code: 'SA002', subagent_name: 'Uptown Branch' },
+  { subagent_code: 'SA003', subagent_name: 'Midtown Branch' },
+  { subagent_code: 'SA004', subagent_name: 'Westside Branch' },
+];
+
+// ── Agent table dropdown data (extended with 4 columns) ──
+const agentTableData: Record<string, string>[] = [
+  { agent_code: 'AGT001', agent_name: 'John Smith', agency_code: 'AG001', sub_agency_code: 'SA001' },
+  { agent_code: 'AGT002', agent_name: 'Sarah Johnson', agency_code: 'AG001', sub_agency_code: 'SA002' },
+  { agent_code: 'AGT003', agent_name: 'Michael Brown', agency_code: 'AG002', sub_agency_code: 'SA001' },
+  { agent_code: 'AGT004', agent_name: 'Emily Davis', agency_code: 'AG002', sub_agency_code: 'SA003' },
+  { agent_code: 'AGT005', agent_name: 'David Wilson', agency_code: 'AG003', sub_agency_code: 'SA002' },
+  { agent_code: 'AGT006', agent_name: 'Jennifer Martinez', agency_code: 'AG003', sub_agency_code: 'SA004' },
+  { agent_code: 'AGT007', agent_name: 'Robert Garcia', agency_code: 'AG004', sub_agency_code: 'SA001' },
+  { agent_code: 'AGT008', agent_name: 'Lisa Anderson', agency_code: 'AG004', sub_agency_code: 'SA003' },
+];
+
+// ── Unit Fee Code table dropdown data ──
+const unitFeeCodeData: Record<string, string>[] = [
+  { code: 'UFC001', description: 'Entry Load Fee' },
+  { code: 'UFC002', description: 'Exit Load Fee' },
+  { code: 'UFC003', description: 'Management Fee' },
+  { code: 'UFC004', description: 'Performance Fee' },
+  { code: 'UFC005', description: 'Advisory Fee' },
+  { code: 'UFC006', description: 'Transaction Fee' },
+  { code: 'UFC007', description: 'Custodian Fee' },
+  { code: 'UFC008', description: 'Front End Load' },
+  { code: 'UFC009', description: 'Back End Load' },
+  { code: 'UFC010', description: 'Switching Fee' },
+];
+
 // ========================================
 // UNIT CREATION — Shared sub-components
 // ========================================
@@ -128,12 +207,44 @@ function InputRow({
   label: string; labelWidth?: number; children: React.ReactNode; style?: React.CSSProperties;
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', ...style }}>
-      <label style={{
-        minWidth: labelWidth, fontSize: '11px', fontWeight: 700, color: '#4b5563',
-        textTransform: 'uppercase', letterSpacing: '0.04em', flexShrink: 0, textAlign: 'right',
-      }}>{label}</label>
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px' }}>{children}</div>
+    <div
+      className="setup-inline-row"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '6px',
+        flexWrap: 'wrap',
+        ...style,
+      }}
+    >
+      <label
+        className="setup-inline-row-label"
+        style={{
+          minWidth: labelWidth,
+          fontSize: '11px',
+          fontWeight: 700,
+          color: '#4b5563',
+          textTransform: 'uppercase',
+          letterSpacing: '0.04em',
+          flexShrink: 0,
+          textAlign: 'right',
+        }}
+      >
+        {label}
+      </label>
+      <div
+        className="setup-inline-row-body"
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          minWidth: 0,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
@@ -179,7 +290,7 @@ function FundDropdown({ value, displayValue, onSelect, disabled = false }: {
     if (!open) return;
     const handle = (e: MouseEvent) => {
       if (popRef.current && !popRef.current.contains(e.target as Node) &&
-          trigRef.current && !trigRef.current.contains(e.target as Node)) {
+        trigRef.current && !trigRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
@@ -445,12 +556,14 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
   const [showAkctSearch, setShowAkctSearch] = useState(false);
   const [showRequestAck, setShowRequestAck] = useState(false);
 
-  const [gridRows] = useState<{ certificateNo: string; availableUnits: string; unitsToRedeem: string; balanceUnits: string; amount: string; blockedUnits: string }[]>([]);
+  const [gridRows, setGridRows] = useState<{ certificateNo: string; availableUnits: string; unitsToRedeem: string; balanceUnits: string; amount: string; blockedUnits: string }[]>([]);
   const [fullRedeem, setFullRedeem] = useState(false);
+  const [ufdRecords, setUfdRecords] = useState<{ feeCode: string; description: string; amount: string; pct: string; newAmount: string }[]>([]);
 
   const [form, setForm] = useState({
     accNo: '',
     unitHolderNo: '',
+    unitHolderName: '',
     fundCode: '',
     fundName: '',
     redemptionCode: '',
@@ -464,11 +577,24 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
     unitFeeMode: 'YES' as 'YES' | 'NO' | 'PRICE_DIFF',
     remark: '',
     reasonToEdit: '',
+    unitsToAutoRedeem: '',
+    autoRedeemAmount: '',
     payoutPaymentType: '',
     payoutPayee: '',
     agency: '',
     subAgency: '',
     agent: '',
+    ufdFeeCode: '',
+    ufdDescription: '',
+    ufdAmount: '',
+    ufdPct: '',
+    ufdNewAmount: '',
+    redCertificateNo: '',
+    redAvailableUnits: '',
+    redUnitsToRedeem: '',
+    redBalanceUnits: '',
+    redAmount: '',
+    redBlockedUnits: '',
   });
 
   const set = (field: string, value: string | boolean | 'YES' | 'NO' | 'PRICE_DIFF') =>
@@ -512,9 +638,12 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
     setPriceDate(null);
     setFundDate(null);
     setFullRedeem(false);
+    setUfdRecords([]);
+    setGridRows([]);
     setForm({
       accNo: '',
       unitHolderNo: '',
+      unitHolderName: '',
       fundCode: '',
       fundName: '',
       redemptionCode: '',
@@ -528,11 +657,24 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
       unitFeeMode: 'YES',
       remark: '',
       reasonToEdit: '',
+      unitsToAutoRedeem: '',
+      autoRedeemAmount: '',
       payoutPaymentType: '',
       payoutPayee: '',
       agency: '',
       subAgency: '',
       agent: '',
+      ufdFeeCode: '',
+      ufdDescription: '',
+      ufdAmount: '',
+      ufdPct: '',
+      ufdNewAmount: '',
+      redCertificateNo: '',
+      redAvailableUnits: '',
+      redUnitsToRedeem: '',
+      redBalanceUnits: '',
+      redAmount: '',
+      redBlockedUnits: '',
     });
   };
 
@@ -549,7 +691,10 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
       <HolderSearchModal
         isOpen={showHolderSearch}
         onClose={() => setShowHolderSearch(false)}
-        onSelect={(r: HolderRecord) => set('unitHolderNo', r.holderId)}
+        onSelect={(r: HolderRecord) => {
+          set('unitHolderNo', r.holderId);
+          set('unitHolderName', r.holderName);
+        }}
       />
       <EditSearchModal
         isOpen={showEditSearch}
@@ -576,8 +721,8 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr 1fr', gap: '0 20px' }}>
           {/* Col 1 */}
           <div>
-            <InputRow label="Unit Holder No" labelWidth={130}>
-              {/* Unlabeled Acc No (auto-filled) */}
+            <InputRow label="Unit Holder Acc No" labelWidth={130}>
+              {/* Unit Holder Acc No input */}
               <input
                 className="setup-input-field"
                 value={form.accNo}
@@ -615,32 +760,28 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
               >
                 A
               </button>
-
+            </InputRow>
+            <InputRow
+              label="Unit Holder No"
+              labelWidth={130}
+              style={{ marginTop: '10px' }}
+            >
               {/* Unit Holder No input */}
               <input
                 className="setup-input-field"
                 value={form.unitHolderNo}
                 onChange={e => set('unitHolderNo', e.target.value)}
                 style={{
-                  flex: 1,
+                  flex: '0 0 140px',
+                  maxWidth: '160px',
                   background: isEnabled ? '#fff' : '#f1f5f9',
                   cursor: isEnabled ? 'auto' : 'not-allowed',
+                  marginRight: '4px',
                 }}
                 disabled={!isEnabled}
               />
-              
-            </InputRow>
-            <InputRow label="Redemption Code" labelWidth={130}>
-              <input
-                className="setup-input-field"
-                value={form.redemptionCode}
-                onChange={e => set('redemptionCode', e.target.value)}
-                style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-
-            <button
+              {/* Holder search button (H) between number and name */}
+              <button
                 type="button"
                 onClick={() => isEnabled && setShowHolderSearch(true)}
                 disabled={!isEnabled}
@@ -659,18 +800,50 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                   justifyContent: 'center',
                   flexShrink: 0,
                   padding: 0,
-                  marginLeft: '4px',
+                  marginRight: '4px',
                 }}
               >
                 H
               </button>
+              {/* Unit Holder Name input (no label) */}
+              <input
+                className="setup-input-field"
+                value={form.unitHolderName}
+                onChange={e => set('unitHolderName', e.target.value)}
+                style={{
+                  flex: 1,
+                  background: isEnabled ? '#fff' : '#f1f5f9',
+                  cursor: isEnabled ? 'auto' : 'not-allowed',
+                }}
+                disabled={!isEnabled}
+              />
+            </InputRow>
+            <InputRow label="Redemption Code" labelWidth={130}>
+              <TableDropdown
+                value={form.redemptionCode}
+                displayValue={
+                  form.redemptionCode
+                    ? `${form.redemptionCode} – ${redemptionCodeData.find(r => r.transCode === form.redemptionCode)?.name || ''}`
+                    : ''
+                }
+                placeholder="Select Redemption Code"
+                columns={[
+                  { key: 'transCode', header: 'TRANS_CODE', width: '35%' },
+                  { key: 'name', header: 'NAME', width: '65%' },
+                ]}
+                rows={redemptionCodeData}
+                valueKey="transCode"
+                onSelect={row => set('redemptionCode', row.transCode)}
+                disabled={!isEnabled}
+              />
+            </InputRow>
           </div>
-          
+
 
           {/* Col 2 */}
           <div>
 
-            
+
             <InputRow label="Fund" labelWidth={80}>
               <FundDropdown
                 value={form.fundCode}
@@ -772,13 +945,14 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
             </InputRow>
           </div>
 
-          {/* Col 3 — Dates */}
+          {/* Col 3 — Dates + Reason to Edit */}
           <div>
             <InputRow label="Redeem Date" labelWidth={100}>
               <DatePicker
                 selected={redeemDate}
                 onChange={d => setRedeemDate(d)}
                 dateFormat="dd/MMM/yyyy"
+                placeholderText="DD/MMM/YYYY"
                 className="date-picker-input"
                 showYearDropdown
                 showMonthDropdown
@@ -791,6 +965,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                 selected={priceDate}
                 onChange={d => setPriceDate(d)}
                 dateFormat="dd/MMM/yyyy"
+                placeholderText="DD/MMM/YYYY"
                 className="date-picker-input"
                 showYearDropdown
                 showMonthDropdown
@@ -803,6 +978,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                 selected={fundDate}
                 onChange={d => setFundDate(d)}
                 dateFormat="dd/MMM/yyyy"
+                placeholderText="DD/MMM/YYYY"
                 className="date-picker-input"
                 showYearDropdown
                 showMonthDropdown
@@ -810,13 +986,14 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                 disabled={!isEnabled}
               />
             </InputRow>
+
           </div>
         </div>
       </SectionBox>
 
       {/* ── Middle: Redemption Details ── */}
       <SectionBox title="Redemption Details">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 20px', alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px', alignItems: 'start' }}>
           {/* Col 1 */}
           <div>
             <InputRow label="Unit Price Redemption" labelWidth={140}>
@@ -829,20 +1006,6 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                 disabled={!isEnabled}
               />
             </InputRow>
-            <InputRow label="No of Units" labelWidth={100}>
-              <input
-                type="number"
-                className="setup-input-field"
-                value={form.noOfUnits}
-                onChange={e => set('noOfUnits', e.target.value)}
-                style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-                disabled={!isEnabled}
-              />
-            </InputRow>
-          </div>
-
-          {/* Col 2 */}
-          <div>
             <InputRow label="Value" labelWidth={80}>
               <input
                 type="number"
@@ -853,76 +1016,100 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                 disabled={!isEnabled}
               />
             </InputRow>
-            <InputRow label="Agent / Bank" labelWidth={110}>
+          </div>
+
+          {/* Col 2 */}
+          <div>
+            <InputRow label="No of Units" labelWidth={100}>
               <input
+                type="number"
                 className="setup-input-field"
-                value={form.agentBank}
-                onChange={e => set('agentBank', e.target.value)}
+                value={form.noOfUnits}
+                onChange={e => set('noOfUnits', e.target.value)}
                 style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
                 disabled={!isEnabled}
               />
             </InputRow>
+            <InputRow label="Agent / Bank" labelWidth={110}>
+              <TableDropdown
+                value={form.agentBank}
+                displayValue={
+                  form.agentBank
+                    ? `${form.agentBank} – ${agentBankData.find(r => r.agentCode === form.agentBank)?.agentDescription || ''}`
+                    : ''
+                }
+                placeholder="Select Agent / Bank"
+                columns={[
+                  { key: 'agentCode', header: 'Agent Code', width: '35%' },
+                  { key: 'agentDescription', header: 'Agent Description', width: '65%' },
+                ]}
+                rows={agentBankData}
+                valueKey="agentCode"
+                onSelect={row => set('agentBank', row.agentCode)}
+                disabled={!isEnabled}
+              />
+            </InputRow>
           </div>
+        </div>
 
-          {/* Col 3 — Unit Fee */}
-          <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px', marginTop: '8px' }}>
+          <label
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#4b5563',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              display: 'block',
+              marginBottom: '6px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Unit Fee
+          </label>
+          <div style={{ display: 'flex', gap: '15px', marginBottom: '12px' }}>
             <label
               style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: '#4b5563',
-                textTransform: 'uppercase',
-                letterSpacing: '0.04em',
-                display: 'block',
-                marginBottom: '6px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                cursor: isEnabled ? 'pointer' : 'not-allowed',
+                fontSize: '12px',
+                fontWeight: form.unitFeeMode === 'YES' ? 700 : 400,
+                opacity: isEnabled ? 1 : 0.6,
               }}
+              onClick={() => isEnabled && set('unitFeeMode', 'YES')}
             >
-              Unit Fee
+              <span style={radioCircle(form.unitFeeMode === 'YES')} /> Yes
             </label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  fontSize: '12px',
-                  fontWeight: form.unitFeeMode === 'YES' ? 700 : 400,
-                  opacity: isEnabled ? 1 : 0.6,
-                }}
-                onClick={() => isEnabled && set('unitFeeMode', 'YES')}
-              >
-                <span style={radioCircle(form.unitFeeMode === 'YES')} /> Yes
-              </label>
-              <label
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  fontSize: '12px',
-                  fontWeight: form.unitFeeMode === 'NO' ? 700 : 400,
-                  opacity: isEnabled ? 1 : 0.6,
-                }}
-                onClick={() => isEnabled && set('unitFeeMode', 'NO')}
-              >
-                <span style={radioCircle(form.unitFeeMode === 'NO')} /> No
-              </label>
-              <label
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  cursor: isEnabled ? 'pointer' : 'not-allowed',
-                  fontSize: '12px',
-                  fontWeight: form.unitFeeMode === 'PRICE_DIFF' ? 700 : 400,
-                  opacity: isEnabled ? 1 : 0.6,
-                }}
-                onClick={() => isEnabled && set('unitFeeMode', 'PRICE_DIFF')}
-              >
-                <span style={radioCircle(form.unitFeeMode === 'PRICE_DIFF')} /> Price Difference
-              </label>
-            </div>
+            <label
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                cursor: isEnabled ? 'pointer' : 'not-allowed',
+                fontSize: '12px',
+                fontWeight: form.unitFeeMode === 'NO' ? 700 : 400,
+                opacity: isEnabled ? 1 : 0.6,
+              }}
+              onClick={() => isEnabled && set('unitFeeMode', 'NO')}
+            >
+              <span style={radioCircle(form.unitFeeMode === 'NO')} /> No
+            </label>
+            <label
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                cursor: isEnabled ? 'pointer' : 'not-allowed',
+                fontSize: '12px',
+                fontWeight: form.unitFeeMode === 'PRICE_DIFF' ? 700 : 400,
+                opacity: isEnabled ? 1 : 0.6,
+              }}
+              onClick={() => isEnabled && set('unitFeeMode', 'PRICE_DIFF')}
+            >
+              <span style={radioCircle(form.unitFeeMode === 'PRICE_DIFF')} /> Price Difference
+            </label>
           </div>
         </div>
 
@@ -935,6 +1122,46 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
               style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
               disabled={!isEnabled}
             />
+          </InputRow>
+          <InputRow label="Reason to Edit" labelWidth={110} style={{ marginTop: '4px' }}>
+            <input
+              className="setup-input-field"
+              value={form.reasonToEdit}
+              onChange={e => set('reasonToEdit', e.target.value)}
+              style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
+              disabled={!isEnabled}
+            />
+          </InputRow>
+        </div>
+
+
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
+          <InputRow label="Amount" labelWidth={80}>
+            <select
+              className="setup-select-field"
+              value={form.autoRedeemAmount || ''}
+              onChange={e => set('autoRedeemAmount', e.target.value)}
+              style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
+              disabled={!isEnabled}
+            >
+              <option value="">Select</option>
+              <option value="BY_VALUE">By Value</option>
+              <option value="BY_UNITS">By Units</option>
+            </select>
+          </InputRow>
+          <InputRow label="Units to Auto Redeem" labelWidth={140}>
+            <select
+              className="setup-select-field"
+              value={form.unitsToAutoRedeem || ''}
+              onChange={e => set('unitsToAutoRedeem', e.target.value)}
+              style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
+              disabled={!isEnabled}
+            >
+              <option value="">Select</option>
+              <option value="ALL">All Available Units</option>
+              <option value="PARTIAL">Partial Units</option>
+            </select>
           </InputRow>
         </div>
       </SectionBox>
@@ -955,7 +1182,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
           flexShrink: 0,
         }}
       >
-        {/* Reason to Edit + Full Redeem */}
+        {/* Full Redeem toggle bar */}
         <div
           style={{
             display: 'flex',
@@ -965,27 +1192,9 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
             background: '#f8fafc',
             borderBottom: '1px solid #e2e8f0',
             flexShrink: 0,
+            justifyContent: 'flex-end',
           }}
         >
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#4b5563',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Reason to Edit
-          </span>
-          <input
-            className="setup-input-field"
-            value={form.reasonToEdit}
-            onChange={e => set('reasonToEdit', e.target.value)}
-            style={{ flex: 1, background: isEnabled ? '#fff' : '#f1f5f9', cursor: isEnabled ? 'auto' : 'not-allowed' }}
-            disabled={!isEnabled}
-          />
           <label
             style={{
               display: 'inline-flex',
@@ -1048,6 +1257,114 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
         <div style={{ padding: '10px', overflowY: 'auto', minHeight: '120px' }}>
           {activeTab === 'Redemption' && (
             <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Certificate No</label>
+                  <input
+                    className="setup-input-field"
+                    value={form.redCertificateNo}
+                    onChange={e => set('redCertificateNo', e.target.value)}
+                    style={{ width: '130px' }}
+                    disabled={!isEnabled}
+                    placeholder="e.g. CERT001"
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Available Units</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.redAvailableUnits}
+                    onChange={e => set('redAvailableUnits', e.target.value)}
+                    style={{ width: '110px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Units to Redeem</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.redUnitsToRedeem}
+                    onChange={e => {
+                      set('redUnitsToRedeem', e.target.value);
+                      // Auto-calculate balance units
+                      const available = parseFloat(form.redAvailableUnits) || 0;
+                      const toRedeem = parseFloat(e.target.value) || 0;
+                      set('redBalanceUnits', (available - toRedeem).toString());
+                    }}
+                    style={{ width: '110px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Balance Units</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.redBalanceUnits}
+                    onChange={e => set('redBalanceUnits', e.target.value)}
+                    style={{ width: '100px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Amount</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.redAmount}
+                    onChange={e => set('redAmount', e.target.value)}
+                    style={{ width: '100px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Blocked Units</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.redBlockedUnits}
+                    onChange={e => set('redBlockedUnits', e.target.value)}
+                    style={{ width: '100px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <button
+                  onClick={() => {
+                    if (!isEnabled || !form.redCertificateNo) return;
+                    setGridRows(p => [...p, {
+                      certificateNo: form.redCertificateNo,
+                      availableUnits: form.redAvailableUnits,
+                      unitsToRedeem: form.redUnitsToRedeem,
+                      balanceUnits: form.redBalanceUnits,
+                      amount: form.redAmount,
+                      blockedUnits: form.redBlockedUnits,
+                    }]);
+                    setForm(p => ({ ...p, redCertificateNo: '', redAvailableUnits: '', redUnitsToRedeem: '', redBalanceUnits: '', redAmount: '', redBlockedUnits: '' }));
+                  }}
+                  disabled={!isEnabled || !form.redCertificateNo}
+                  style={{
+                    background: isEnabled && form.redCertificateNo ? '#b45309' : '#9ca3af',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '3px',
+                    width: '28px',
+                    height: '28px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    cursor: isEnabled && form.redCertificateNo ? 'pointer' : 'not-allowed',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    marginLeft: 'auto',
+                  }}
+                  title="Add"
+                >
+                  ▼
+                </button>
+              </div>
               <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <thead>
@@ -1106,6 +1423,97 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
 
           {activeTab === 'Unit Fee Discounting' && (
             <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Fee Code</label>
+                  <select
+                    className="setup-select-field"
+                    value={form.ufdFeeCode}
+                    onChange={e => {
+                      const selected = unitFeeCodeData.find(f => f.code === e.target.value);
+                      set('ufdFeeCode', e.target.value);
+                      if (selected) set('ufdDescription', selected.description);
+                    }}
+                    style={{ minWidth: '120px' }}
+                    disabled={!isEnabled}
+                  >
+                    <option value=""></option>
+                    {unitFeeCodeData.map(f => (
+                      <option key={f.code} value={f.code}>{f.code}</option>
+                    ))}
+                  </select>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: '140px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Description</label>
+                  <input
+                    className="setup-input-field"
+                    value={form.ufdDescription}
+                    onChange={e => set('ufdDescription', e.target.value)}
+                    style={{ flex: 1 }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Amount</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.ufdAmount}
+                    onChange={e => set('ufdAmount', e.target.value)}
+                    style={{ width: '90px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>%</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.ufdPct}
+                    onChange={e => set('ufdPct', e.target.value)}
+                    style={{ width: '70px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>New Amount</label>
+                  <input
+                    type="number"
+                    className="setup-input-field"
+                    value={form.ufdNewAmount}
+                    onChange={e => set('ufdNewAmount', e.target.value)}
+                    style={{ width: '90px' }}
+                    disabled={!isEnabled}
+                  />
+                </div>
+                <button
+                  onClick={() => {
+                    if (!isEnabled || !form.ufdFeeCode) return;
+                    setUfdRecords(p => [...p, { feeCode: form.ufdFeeCode, description: form.ufdDescription, amount: form.ufdAmount, pct: form.ufdPct, newAmount: form.ufdNewAmount }]);
+                    setForm(p => ({ ...p, ufdFeeCode: '', ufdDescription: '', ufdAmount: '', ufdPct: '', ufdNewAmount: '' }));
+                  }}
+                  disabled={!isEnabled || !form.ufdFeeCode}
+                  style={{
+                    background: isEnabled && form.ufdFeeCode ? '#b45309' : '#9ca3af',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '3px',
+                    width: '28px',
+                    height: '28px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    cursor: isEnabled && form.ufdFeeCode ? 'pointer' : 'not-allowed',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    marginLeft: 'auto',
+                  }}
+                  title="Add"
+                >
+                  ▼
+                </button>
+              </div>
               <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <thead>
@@ -1118,20 +1526,18 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td
-                        colSpan={5}
-                        style={{
-                          padding: '18px',
-                          textAlign: 'center',
-                          color: '#9ca3af',
-                          fontSize: '12px',
-                          fontStyle: 'italic',
-                        }}
-                      >
-                        No records
-                      </td>
-                    </tr>
+                    {ufdRecords.length === 0
+                      ? <tr><td colSpan={5} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                      : ufdRecords.map((r, i) => (
+                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                          <td style={tableCellStyle}>{r.feeCode}</td>
+                          <td style={tableCellStyle}>{r.description}</td>
+                          <td style={tableCellStyle}>{r.amount}</td>
+                          <td style={tableCellStyle}>{r.pct}</td>
+                          <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.newAmount}</td>
+                        </tr>
+                      ))
+                    }
                   </tbody>
                 </table>
               </div>
@@ -1163,18 +1569,24 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                   >
                     Payment Type
                   </label>
-                  <select
-                    className="setup-select-field"
+                  <TableDropdown
                     value={form.payoutPaymentType}
-                    onChange={e => set('payoutPaymentType', e.target.value)}
+                    displayValue={
+                      form.payoutPaymentType
+                        ? `${form.payoutPaymentType} – ${paymentTypeData.find(r => r.code === form.payoutPaymentType)?.name || ''}`
+                        : ''
+                    }
+                    placeholder="Select Payment Type"
+                    columns={[
+                      { key: 'code', header: 'CODE', width: '40%' },
+                      { key: 'name', header: 'NAME', width: '60%' },
+                    ]}
+                    rows={paymentTypeData}
+                    valueKey="code"
+                    onSelect={row => set('payoutPaymentType', row.code)}
                     style={{ minWidth: '180px' }}
                     disabled={!isEnabled}
-                  >
-                    <option value=""></option>
-                    <option value="CHEQUE">Cheque</option>
-                    <option value="BANK_TRANSFER">Bank Transfer</option>
-                    <option value="CASH">Cash</option>
-                  </select>
+                  />
                 </div>
 
                 <div style={{ flex: 1, minWidth: '260px' }}>
@@ -1252,43 +1664,66 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
                 Agents
               </div>
               <InputRow label="Agency" labelWidth={90}>
-                <select
-                  className="setup-select-field"
+                <TableDropdown
                   value={form.agency}
-                  onChange={e => set('agency', e.target.value)}
+                  displayValue={
+                    form.agency
+                      ? `${form.agency} – ${agencyTableData.find(r => r.agency_code === form.agency)?.agency_name || ''}`
+                      : ''
+                  }
+                  placeholder="Select Agency"
+                  columns={[
+                    { key: 'agency_code', header: 'Agency Code', width: '40%' },
+                    { key: 'agency_name', header: 'Agency Name', width: '60%' },
+                  ]}
+                  rows={agencyTableData}
+                  valueKey="agency_code"
+                  onSelect={row => set('agency', row.agency_code)}
                   style={{ flex: 1 }}
                   disabled={!isEnabled}
-                >
-                  <option value="">Select</option>
-                  <option value="AG001">AG001 – Main Street Agency</option>
-                  <option value="AG002">AG002 – Central Agency</option>
-                </select>
+                />
               </InputRow>
               <InputRow label="Sub Agency" labelWidth={90}>
-                <select
-                  className="setup-select-field"
+                <TableDropdown
                   value={form.subAgency}
-                  onChange={e => set('subAgency', e.target.value)}
+                  displayValue={
+                    form.subAgency
+                      ? `${form.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.subAgency)?.subagent_name || ''}`
+                      : ''
+                  }
+                  placeholder="Select Sub Agency"
+                  columns={[
+                    { key: 'subagent_code', header: 'Subagent Code', width: '40%' },
+                    { key: 'subagent_name', header: 'Subagent Name', width: '60%' },
+                  ]}
+                  rows={subAgencyTableData}
+                  valueKey="subagent_code"
+                  onSelect={row => set('subAgency', row.subagent_code)}
                   style={{ flex: 1 }}
                   disabled={!isEnabled}
-                >
-                  <option value="">Select</option>
-                  <option value="SA001">SA001 – Downtown Branch</option>
-                  <option value="SA002">SA002 – Uptown Branch</option>
-                </select>
+                />
               </InputRow>
               <InputRow label="Agent" labelWidth={90}>
-                <select
-                  className="setup-select-field"
+                <TableDropdown
                   value={form.agent}
-                  onChange={e => set('agent', e.target.value)}
+                  displayValue={
+                    form.agent
+                      ? `${form.agent} – ${agentTableData.find(r => r.agent_code === form.agent)?.agent_name || ''}`
+                      : ''
+                  }
+                  placeholder="Select Agent"
+                  columns={[
+                    { key: 'agent_code', header: 'Agent Code', width: '25%' },
+                    { key: 'agent_name', header: 'Agent Name', width: '35%' },
+                    { key: 'agency_code', header: 'Agency Code', width: '20%' },
+                    { key: 'sub_agency_code', header: 'Sub Agency Code', width: '20%' },
+                  ]}
+                  rows={agentTableData}
+                  valueKey="agent_code"
+                  onSelect={row => set('agent', row.agent_code)}
                   style={{ flex: 1 }}
                   disabled={!isEnabled}
-                >
-                  <option value="">Select</option>
-                  <option value="AGT001">AGT001 – John Smith</option>
-                  <option value="AGT002">AGT002 – Sarah Johnson</option>
-                </select>
+                />
               </InputRow>
             </div>
           )}
@@ -1317,8 +1752,8 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
   const [showAccountSearch, setShowAccountSearch] = useState(false);
   const [showHolderSearch, setShowHolderSearch] = useState(false);
   const [showCreationSearch, setShowCreationSearch] = useState(false);
-  const [showAkctSearch,     setShowAkctSearch]     = useState(false);
-  const [showRequestAck,     setShowRequestAck]     = useState(false);
+  const [showAkctSearch, setShowAkctSearch] = useState(false);
+  const [showRequestAck, setShowRequestAck] = useState(false);
 
   const [chequeRecords, setChequeRecords] = useState<{ chequeNo: string; bankBranch: string; date: string; amount: string }[]>([]);
   const [ccRecords, setCcRecords] = useState<{ holderName: string; cardNo: string; expiry: string; cvc: string }[]>([]);
@@ -1476,7 +1911,7 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
                 placeholder="Select"
                 columns={[
                   { key: 'code', header: 'Transaction Code', width: '38%' },
-                  { key: 'name', header: 'Name',             width: '62%' },
+                  { key: 'name', header: 'Name', width: '62%' },
                 ]}
                 rows={creationCodeData as Record<string, string>[]}
                 valueKey="code"
@@ -1490,9 +1925,9 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
                 displayValue={form.invType ? `${form.invType} – ${invTypeData.find(r => r.type === form.invType)?.description || ''}` : ''}
                 placeholder="Select"
                 columns={[
-                  { key: 'type',        header: 'Type',        width: '22%' },
-                  { key: 'description', header: 'Description',  width: '45%' },
-                  { key: 'agent',       header: 'Agent',        width: '33%' },
+                  { key: 'type', header: 'Type', width: '22%' },
+                  { key: 'description', header: 'Description', width: '45%' },
+                  { key: 'agent', header: 'Agent', width: '33%' },
                 ]}
                 rows={invTypeData as Record<string, string>[]}
                 valueKey="type"
@@ -1556,10 +1991,10 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
             <label style={{ fontSize: '11px', fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '8px' }}>Payment Method</label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 12px' }}>
               {([
-                { key: 'payCash',         label: 'Cash',                  color: '#1e3a8a' },
-                { key: 'payCreditCard',   label: 'Credit Card',           color: '#b91c1c' },
-                { key: 'payBankTransfer', label: 'Bank Transfer / Draft',  color: '#7c3aed' },
-                { key: 'payCheque',       label: 'Cheque',                color: '#b45309' },
+                { key: 'payCash', label: 'Cash', color: '#1e3a8a' },
+                { key: 'payCreditCard', label: 'Credit Card', color: '#b91c1c' },
+                { key: 'payBankTransfer', label: 'Bank Transfer / Draft', color: '#7c3aed' },
+                { key: 'payCheque', label: 'Cheque', color: '#b45309' },
               ] as const).map(({ key, label, color }) => (
                 <label key={key}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', cursor: isEnabled ? 'pointer' : 'not-allowed', fontSize: '12px', opacity: isEnabled ? 1 : 0.6 }}
@@ -1583,8 +2018,8 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
                 : ''}
               placeholder="Select"
               columns={[
-                { key: 'code',      header: 'Code',        width: '22%' },
-                { key: 'name',      header: 'Name',        width: '45%' },
+                { key: 'code', header: 'Code', width: '22%' },
+                { key: 'name', header: 'Name', width: '45%' },
                 { key: 'bankAccNo', header: 'Bank Acc No', width: '33%' },
               ]}
               rows={collAccData as Record<string, string>[]}
@@ -1601,9 +2036,9 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
                 : ''}
               placeholder="Select"
               columns={[
-                { key: 'promoCode',   header: 'Promo Code',       width: '22%' },
-                { key: 'promoDesc',   header: 'Promo Description', width: '30%' },
-                { key: 'description', header: 'Description',       width: '48%' },
+                { key: 'promoCode', header: 'Promo Code', width: '22%' },
+                { key: 'promoDesc', header: 'Promo Description', width: '30%' },
+                { key: 'description', header: 'Description', width: '48%' },
               ]}
               rows={promotionalData as Record<string, string>[]}
               valueKey="promoCode"
@@ -1827,12 +2262,12 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
                 <button style={{ ...addBtnStyle, background: '#7c3aed' }} onClick={() => {
                   if (!form.btBankBranch) return;
                   setBtRecords(p => [...p, {
-                    bankBranch:    form.btBankBranch,
-                    draftNo:       form.btDescription,
-                    date:          btValueDate?.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) || '',
-                    amount:        form.btValue,
-                    swiftCode:     form.btSwiftCode,
-                    creditAccNo:   form.btCreditAccNo,
+                    bankBranch: form.btBankBranch,
+                    draftNo: form.btDescription,
+                    date: btValueDate?.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) || '',
+                    amount: form.btValue,
+                    swiftCode: form.btSwiftCode,
+                    creditAccNo: form.btCreditAccNo,
                     creditAccName: form.btCreditAccName,
                   }]);
                   setForm(p => ({ ...p, btBankBranch: '', btDescription: '', btValue: '', btSwiftCode: '', btCreditAccNo: '', btCreditAccName: '' }));
@@ -2062,7 +2497,7 @@ function UnitCreationModal({ onClose: _onClose }: { onClose: () => void }) {
                   <span style={{ background: '#b91c1c', color: '#fff', borderRadius: '10px', fontSize: '10px', fontWeight: 700, padding: '1px 7px' }}>3 new</span>
                 </div>
                 <button style={{ background: 'none', border: 'none', fontSize: '11px', color: '#1e3a8a', fontWeight: 700, cursor: 'pointer', padding: '3px 8px', borderRadius: '4px', textDecoration: 'underline' }}
-                  onClick={() => {}}>Mark all as read</button>
+                  onClick={() => { }}>Mark all as read</button>
               </div>
 
               {/* Notification list */}
@@ -2160,7 +2595,7 @@ function UnitOperations() {
 
   const [activeTab, setActiveTab] = useState<'Unit Price' | 'Creation Charges' | 'Redemption Charges'>('Unit Price');
   const [showFundTable, setShowFundTable] = useState(false);
-  const [fundTablePos, setFundTablePos] = useState<{top:number;left:number;width:number}>({top:0,left:0,width:400});
+  const [fundTablePos, setFundTablePos] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 400 });
   const unitFeesFundRef = useRef<HTMLDivElement>(null);
   const [priceDate, setPriceDate] = useState<Date | null>(null);
   const [unitFeesFormData, setUnitFeesFormData] = useState({
@@ -2218,11 +2653,11 @@ function UnitOperations() {
 
   const [creationChargesTable, setCreationChargesTable] = useState<CreationChargeRow[]>([
     { feeCode: 'FC001', description: 'Initial Setup Fee', percentage: 2.5, amount: 15000 },
-    { feeCode: 'FC002', description: 'Admin Charges',     percentage: 1.2, amount: 8000  },
+    { feeCode: 'FC002', description: 'Admin Charges', percentage: 1.2, amount: 8000 },
   ]);
   const [redemptionChargesTable, setRedemptionChargesTable] = useState<ChargeRow[]>([
     { feeCode: 'RC001', description: 'Early Redemption Fee', percentage: 1.5, amount: 5000 },
-    { feeCode: 'RC002', description: 'Processing Fee',       percentage: 0.8, amount: 3000 },
+    { feeCode: 'RC002', description: 'Processing Fee', percentage: 0.8, amount: 3000 },
   ]);
   const [sortConfig, setSortConfig] = useState<{ key: keyof CreationChargeRow; direction: 'asc' | 'desc' } | null>(null);
   const [redemptionSortConfig, setRedemptionSortConfig] = useState<{ key: keyof ChargeRow; direction: 'asc' | 'desc' } | null>(null);
@@ -2467,23 +2902,23 @@ function UnitOperations() {
                     {modalIdx === 0 && modules[modalIdx].title === 'Unit Fees'
                       ? renderUnitFeesModal()
                       : modalIdx === 1 && modules[modalIdx].title === 'Unit Creation'
-                      ? <UnitCreationModal onClose={handleModalClose} />
-                      : modalIdx === 2 && modules[modalIdx].title === 'Unit Redemption'
-                      ? <UnitRedemptionModal onClose={handleModalClose} />
-                      : (
-                        <div className="empty-content">
-                          <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
-                          <p>This is a placeholder modal.</p>
-                        </div>
-                      )
+                        ? <UnitCreationModal onClose={handleModalClose} />
+                        : modalIdx === 2 && modules[modalIdx].title === 'Unit Redemption'
+                          ? <UnitRedemptionModal onClose={handleModalClose} />
+                          : (
+                            <div className="empty-content">
+                              <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
+                              <p>This is a placeholder modal.</p>
+                            </div>
+                          )
                     }
                   </div>
 
                   {!(modalIdx === 0 && modules[modalIdx].title === 'Unit Fees') &&
-                   !(modalIdx === 1 && modules[modalIdx].title === 'Unit Creation') &&
-                   !(modalIdx === 2 && modules[modalIdx].title === 'Unit Redemption') && (
-                    <div className="setup-modal-footer"><p>Unit Operations Module</p></div>
-                  )}
+                    !(modalIdx === 1 && modules[modalIdx].title === 'Unit Creation') &&
+                    !(modalIdx === 2 && modules[modalIdx].title === 'Unit Redemption') && (
+                      <div className="setup-modal-footer"><p>Unit Operations Module</p></div>
+                    )}
                 </div>
               </div>,
               document.body

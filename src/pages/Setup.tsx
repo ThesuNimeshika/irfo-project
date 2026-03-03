@@ -2610,425 +2610,112 @@ function CompanyDetailsTabs({
               <div className="setup-administrator-tab" style={{ width: '100%', maxWidth: '100%' }}>
                 <div className="setup-administrator-form" style={{ width: '100%', maxWidth: '100%' }}>
 
-                  {/* ========================================
-                 PATH CONFIGURATION SECTION (FULL WIDTH)
-                 ======================================== */}
-                  <div className="setup-input-group">
-                    <label className="setup-input-label">Report Path</label>
-                    <input
-                      type="text"
-                      value={formData.reportPath}
-                      onChange={(e) => handleInputChange('reportPath', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter report path"
-                    />
-                  </div>
-                  <div className="setup-input-group">
-                    <label className="setup-input-label">Document Path</label>
-                    <input
-                      type="text"
-                      value={formData.documentPath}
-                      onChange={(e) => handleInputChange('documentPath', e.target.value)}
-                      disabled={!isFormEditable}
-                      className="setup-input-field"
-                      placeholder="Enter document path"
-                    />
+                  {/* PATH CONFIGURATION */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', alignItems: 'center', gap: '10px' }}>
+                      <label className="setup-input-label" style={{ marginBottom: 0 }}>Report Path</label>
+                      <input type="text" value={formData.reportPath} onChange={(e) => handleInputChange('reportPath', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter report path" />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', alignItems: 'center', gap: '10px' }}>
+                      <label className="setup-input-label" style={{ marginBottom: 0 }}>Document Path</label>
+                      <input type="text" value={formData.documentPath} onChange={(e) => handleInputChange('documentPath', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter document path" />
+                    </div>
                   </div>
 
-                  {/* ========================================
-                 TWO COLUMN LAYOUT SECTION
-                 ======================================== */}
-                  <div className="setup-administrator-two-column" style={{ width: '100%', maxWidth: '100%' }}>
+                  {/* TWO-COLUMN: Left (Units + Amount + SMTP) | Right (Confirm/Approve) */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '12px' }}>
 
-                    {/* LEFT COLUMN - 3 ROWS WITH ASH BACKGROUND */}
-                    <div className="setup-administrator-left-column">
+                    {/* LEFT */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 
-                      {/* Row 1: Units */}
-                      <div className="setup-ash-box">
-                        <label className="setup-input-label">Units</label>
-                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', alignItems: 'center' }}>
-                            <label className="setup-input-label" style={{ marginBottom: '0' }}>Decimal Position</label>
-                            <input
-                              type="text"
-                              value={formData.unitsDecimalPosition}
-                              onChange={(e) => handleInputChange('unitsDecimalPosition', e.target.value)}
-                              disabled={!isFormEditable}
-                              className="setup-input-field"
-                              placeholder="Enter decimal position"
-                            />
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <label className="setup-radio-label">
-                              <input
-                                type="radio"
-                                name="unitsDecimalMethod"
-                                value="truncate"
-                                checked={formData.unitsDecimalMethod === 'truncate'}
-                                onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)}
-                                disabled={!isFormEditable}
-                                className="setup-radio-input"
-                              />
-                              Truncate
-                            </label>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <label className="setup-radio-label">
-                              <input
-                                type="radio"
-                                name="unitsDecimalMethod"
-                                value="round"
-                                checked={formData.unitsDecimalMethod === 'round'}
-                                onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)}
-                                disabled={!isFormEditable}
-                                className="setup-radio-input"
-                              />
-                              Round
-                            </label>
-                          </div>
+                      {/* Units */}
+                      <div className="setup-ash-box" style={{ padding: '10px 12px' }}>
+                        <label className="setup-input-label" style={{ fontWeight: 700, marginBottom: '8px', display: 'block' }}>Units</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto auto', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ marginBottom: 0, whiteSpace: 'nowrap', fontSize: '11px' }}>Decimal Position</label>
+                          <input type="text" value={formData.unitsDecimalPosition} onChange={(e) => handleInputChange('unitsDecimalPosition', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="0" style={{ minWidth: 0 }} />
+                          <label className="setup-radio-label" style={{ margin: 0, whiteSpace: 'nowrap' }}><input type="radio" name="unitsDecimalMethod" value="truncate" checked={formData.unitsDecimalMethod === 'truncate'} onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Truncate</label>
+                          <label className="setup-radio-label" style={{ margin: 0, whiteSpace: 'nowrap' }}><input type="radio" name="unitsDecimalMethod" value="round" checked={formData.unitsDecimalMethod === 'round'} onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Round</label>
                         </div>
                       </div>
 
-                      {/* Row 2: Amount */}
-                      <div className="setup-ash-box">
-                        <label className="setup-input-label">Amount</label>
-                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px', alignItems: 'center' }}>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', alignItems: 'center' }}>
-                            <label className="setup-input-label" style={{ marginBottom: '0' }}>Decimal Position</label>
-                            <input
-                              type="text"
-                              value={formData.amountDecimalPosition}
-                              onChange={(e) => handleInputChange('amountDecimalPosition', e.target.value)}
-                              disabled={!isFormEditable}
-                              className="setup-input-field"
-                              placeholder="Enter decimal position"
-                            />
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <label className="setup-radio-label">
-                              <input
-                                type="radio"
-                                name="amountDecimalMethod"
-                                value="truncate"
-                                checked={formData.amountDecimalMethod === 'truncate'}
-                                onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)}
-                                disabled={!isFormEditable}
-                                className="setup-radio-input"
-                              />
-                              Truncate
-                            </label>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <label className="setup-radio-label">
-                              <input
-                                type="radio"
-                                name="amountDecimalMethod"
-                                value="round"
-                                checked={formData.amountDecimalMethod === 'round'}
-                                onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)}
-                                disabled={!isFormEditable}
-                                className="setup-radio-input"
-                              />
-                              Round
-                            </label>
-                          </div>
+                      {/* Amount */}
+                      <div className="setup-ash-box" style={{ padding: '10px 12px' }}>
+                        <label className="setup-input-label" style={{ fontWeight: 700, marginBottom: '8px', display: 'block' }}>Amount</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto auto', alignItems: 'center', gap: '8px' }}>
+                          <label className="setup-input-label" style={{ marginBottom: 0, whiteSpace: 'nowrap', fontSize: '11px' }}>Decimal Position</label>
+                          <input type="text" value={formData.amountDecimalPosition} onChange={(e) => handleInputChange('amountDecimalPosition', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="0" style={{ minWidth: 0 }} />
+                          <label className="setup-radio-label" style={{ margin: 0, whiteSpace: 'nowrap' }}><input type="radio" name="amountDecimalMethod" value="truncate" checked={formData.amountDecimalMethod === 'truncate'} onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Truncate</label>
+                          <label className="setup-radio-label" style={{ margin: 0, whiteSpace: 'nowrap' }}><input type="radio" name="amountDecimalMethod" value="round" checked={formData.amountDecimalMethod === 'round'} onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Round</label>
                         </div>
                       </div>
 
-                      {/* Row 3: SMTP Email Setup */}
-                      <div className="setup-ash-box">
-                        <label className="setup-input-label">SMTP Email Setup</label>
-                        <div className="setup-three-column-row">
-                          <div className="setup-column">
-                            <div className="setup-checkbox-container">
-                              <input
-                                type="checkbox"
-                                id="smtpInvalidLogin"
-                                checked={formData.smtpInvalidLogin}
-                                onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked)}
-                                disabled={!isFormEditable}
-                                className="setup-checkbox-input"
-                              />
-                              <label htmlFor="smtpInvalidLogin" className="setup-checkbox-label">
-                                Invalid Login
-                              </label>
-                            </div>
-                          </div>
-                          <div className="setup-column">
-                            <div className="setup-checkbox-container">
-                              <input
-                                type="checkbox"
-                                id="smtpLockedAccount"
-                                checked={formData.smtpLockedAccount}
-                                onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked)}
-                                disabled={!isFormEditable}
-                                className="setup-checkbox-input"
-                              />
-                              <label htmlFor="smtpLockedAccount" className="setup-checkbox-label">
-                                Locked Account
-                              </label>
-                            </div>
-                          </div>
-                          <div className="setup-column">
-                            <div className="setup-checkbox-container">
-                              <input
-                                type="checkbox"
-                                id="smtpRegistrationApproval"
-                                checked={formData.smtpRegistrationApproval}
-                                onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked)}
-                                disabled={!isFormEditable}
-                                className="setup-checkbox-input"
-                              />
-                              <label htmlFor="smtpRegistrationApproval" className="setup-checkbox-label">
-                                Registration Approval
-                              </label>
-                            </div>
-                          </div>
+                      {/* SMTP Email Setup */}
+                      <div className="setup-ash-box" style={{ padding: '10px 12px' }}>
+                        <label className="setup-input-label" style={{ fontWeight: 700, marginBottom: '8px', display: 'block' }}>SMTP Email Setup</label>
+                        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                          <div className="setup-checkbox-container"><input type="checkbox" id="smtpInvalidLogin" checked={formData.smtpInvalidLogin} onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="smtpInvalidLogin" className="setup-checkbox-label">Invalid Login</label></div>
+                          <div className="setup-checkbox-container"><input type="checkbox" id="smtpLockedAccount" checked={formData.smtpLockedAccount} onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="smtpLockedAccount" className="setup-checkbox-label">Locked Account</label></div>
+                          <div className="setup-checkbox-container"><input type="checkbox" id="smtpRegistrationApproval" checked={formData.smtpRegistrationApproval} onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="smtpRegistrationApproval" className="setup-checkbox-label">Registration Approval</label></div>
                         </div>
                       </div>
 
                     </div>
 
-                    {/* RIGHT COLUMN - DIFFERENT DATA ENTRY CONFIRM/APPROVE */}
-                    <div className="setup-administrator-right-column">
-                      <div className="setup-ash-box">
-                        <label className="setup-input-label">Different Data Entry Confirm/Approve</label>
-                        <div className="setup-checkbox-group">
-                          <div className="setup-checkbox-container">
-                            <input
-                              type="checkbox"
-                              id="applicationApprove"
-                              checked={formData.applicationApprove}
-                              onChange={(e) => handleInputChange('applicationApprove', e.target.checked)}
-                              disabled={!isFormEditable}
-                              className="setup-checkbox-input"
-                            />
-                            <label htmlFor="applicationApprove" className="setup-checkbox-label">
-                              Application Approve
-                            </label>
-                          </div>
-                          <div className="setup-checkbox-container">
-                            <input
-                              type="checkbox"
-                              id="registrationApprove"
-                              checked={formData.registrationApprove}
-                              onChange={(e) => handleInputChange('registrationApprove', e.target.checked)}
-                              disabled={!isFormEditable}
-                              className="setup-checkbox-input"
-                            />
-                            <label htmlFor="registrationApprove" className="setup-checkbox-label">
-                              Registration Approve
-                            </label>
-                          </div>
-                          <div className="setup-checkbox-container">
-                            <input
-                              type="checkbox"
-                              id="accountApprove"
-                              checked={formData.accountApprove}
-                              onChange={(e) => handleInputChange('accountApprove', e.target.checked.toString())}
-                              disabled={!isFormEditable}
-                              className="setup-checkbox-input"
-                            />
-                            <label htmlFor="accountApprove" className="setup-checkbox-label">
-                              Account Approve
-                            </label>
-                          </div>
-                          <div className="setup-checkbox-container">
-                            <input
-                              type="checkbox"
-                              id="transactionApprove"
-                              checked={formData.transactionApprove}
-                              onChange={(e) => handleInputChange('transactionApprove', e.target.checked.toString())}
-                              disabled={!isFormEditable}
-                              className="setup-checkbox-input"
-                            />
-                            <label htmlFor="transactionApprove" className="setup-checkbox-label">
-                              Transaction Approve
-                            </label>
-                          </div>
-                          <div className="setup-checkbox-container">
-                            <input
-                              type="checkbox"
-                              id="unitPriceApprove"
-                              checked={formData.unitPriceApprove}
-                              onChange={(e) => handleInputChange('unitPriceApprove', e.target.checked.toString())}
-                              disabled={!isFormEditable}
-                              className="setup-checkbox-input"
-                            />
-                            <label htmlFor="unitPriceApprove" className="setup-checkbox-label">
-                              Unit Price Approve
-                            </label>
-                          </div>
-                        </div>
+                    {/* RIGHT: Different Data Entry Confirm/Approve */}
+                    <div className="setup-ash-box" style={{ padding: '10px 12px' }}>
+                      <label className="setup-input-label" style={{ fontWeight: 700, marginBottom: '8px', display: 'block' }}>Different Data Entry Confirm / Approve</label>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="applicationApprove" checked={formData.applicationApprove} onChange={(e) => handleInputChange('applicationApprove', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="applicationApprove" className="setup-checkbox-label">Application Approve</label></div>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="registrationApprove" checked={formData.registrationApprove} onChange={(e) => handleInputChange('registrationApprove', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="registrationApprove" className="setup-checkbox-label">Registration Approve</label></div>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="accountApprove" checked={formData.accountApprove} onChange={(e) => handleInputChange('accountApprove', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="accountApprove" className="setup-checkbox-label">Account Approve</label></div>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="transactionApprove" checked={formData.transactionApprove} onChange={(e) => handleInputChange('transactionApprove', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="transactionApprove" className="setup-checkbox-label">Transaction Approve</label></div>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="unitPriceApprove" checked={formData.unitPriceApprove} onChange={(e) => handleInputChange('unitPriceApprove', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="unitPriceApprove" className="setup-checkbox-label">Unit Price Approve</label></div>
                       </div>
                     </div>
 
                   </div>
 
-                  {/* ========================================
-                 FULL WIDTH THREE COLUMN SECTION
-                 ======================================== */}
-                  <div className="setup-administrator-full-width" style={{ width: '100%', maxWidth: '100%' }}>
+                  {/* THREE-COLUMN: Email Sending Options | Login | Multiple User Access */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', marginBottom: '12px' }}>
 
-                    {/* Column 1: Email Sending Options */}
-                    <div className="setup-ash-box">
-                      <label className="setup-input-label">Email Sending Options</label>
-                      <div className="setup-checkbox-group">
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="sendEmailsAccountApproval"
-                            checked={formData.sendEmailsAccountApproval}
-                            onChange={(e) => handleInputChange('sendEmailsAccountApproval', e.target.checked.toString())}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="sendEmailsAccountApproval" className="setup-checkbox-label">
-                            Send Emails on Account Approval
-                          </label>
-                        </div>
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="sendEmailsAcknowledgment"
-                            checked={formData.sendEmailsAcknowledgment}
-                            onChange={(e) => handleInputChange('sendEmailsAcknowledgment', e.target.checked.toString())}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="sendEmailsAcknowledgment" className="setup-checkbox-label">
-                            Send Emails on Acknowledgment
-                          </label>
-                        </div>
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="sendEmailsInvestment"
-                            checked={formData.sendEmailsInvestment}
-                            onChange={(e) => handleInputChange('sendEmailsInvestment', e.target.checked.toString())}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="sendEmailsInvestment" className="setup-checkbox-label">
-                            Send Emails on Investment
-                          </label>
-                        </div>
+                    <div className="setup-ash-box" style={{ padding: '10px 12px' }}>
+                      <label className="setup-input-label" style={{ fontWeight: 700, marginBottom: '8px', display: 'block' }}>Email Sending Options</label>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="sendEmailsAccountApproval" checked={formData.sendEmailsAccountApproval} onChange={(e) => handleInputChange('sendEmailsAccountApproval', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="sendEmailsAccountApproval" className="setup-checkbox-label">Send Emails on Account Approval</label></div>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="sendEmailsAcknowledgment" checked={formData.sendEmailsAcknowledgment} onChange={(e) => handleInputChange('sendEmailsAcknowledgment', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="sendEmailsAcknowledgment" className="setup-checkbox-label">Send Emails on Acknowledgment</label></div>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="sendEmailsInvestment" checked={formData.sendEmailsInvestment} onChange={(e) => handleInputChange('sendEmailsInvestment', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="sendEmailsInvestment" className="setup-checkbox-label">Send Emails on Investment</label></div>
                       </div>
                     </div>
 
-                    {/* Column 2: Login */}
-                    <div className="setup-ash-box">
-                      <label className="setup-input-label">Login</label>
-                      <div className="setup-checkbox-group">
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="loginInvalidUser"
-                            checked={formData.loginInvalidUser}
-                            onChange={(e) => handleInputChange('loginInvalidUser', e.target.checked.toString())}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="loginInvalidUser" className="setup-checkbox-label">
-                            Invalid User
-                          </label>
-                        </div>
-                        <div className="setup-checkbox-container">
-                          <input
-                            type="checkbox"
-                            id="loginAccountLock"
-                            checked={formData.loginAccountLock}
-                            onChange={(e) => handleInputChange('loginAccountLock', e.target.checked.toString())}
-                            disabled={!isFormEditable}
-                            className="setup-checkbox-input"
-                          />
-                          <label htmlFor="loginAccountLock" className="setup-checkbox-label">
-                            Account Lock
-                          </label>
-                        </div>
+                    <div className="setup-ash-box" style={{ padding: '10px 12px' }}>
+                      <label className="setup-input-label" style={{ fontWeight: 700, marginBottom: '8px', display: 'block' }}>Login</label>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="loginInvalidUser" checked={formData.loginInvalidUser} onChange={(e) => handleInputChange('loginInvalidUser', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="loginInvalidUser" className="setup-checkbox-label">Invalid User</label></div>
+                        <div className="setup-checkbox-container"><input type="checkbox" id="loginAccountLock" checked={formData.loginAccountLock} onChange={(e) => handleInputChange('loginAccountLock', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="loginAccountLock" className="setup-checkbox-label">Account Lock</label></div>
                       </div>
                     </div>
 
-                    {/* Column 3: Multiple User Access */}
-                    <div className="setup-ash-box">
-                      <label className="setup-input-label">Multiple User Access</label>
-                      <div className="setup-radio-group">
-                        <label className="setup-radio-label">
-                          <input
-                            type="radio"
-                            name="multipleUserAccess"
-                            value="yes"
-                            checked={formData.multipleUserAccess === 'yes'}
-                            onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
-                            disabled={!isFormEditable}
-                            className="setup-radio-input"
-                          />
-                          Yes
-                        </label>
-                        <label className="setup-radio-label">
-                          <input
-                            type="radio"
-                            name="multipleUserAccess"
-                            value="no"
-                            checked={formData.multipleUserAccess === 'no'}
-                            onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)}
-                            disabled={!isFormEditable}
-                            className="setup-radio-input"
-                          />
-                          No
-                        </label>
+                    <div className="setup-ash-box" style={{ padding: '10px 12px' }}>
+                      <label className="setup-input-label" style={{ fontWeight: 700, marginBottom: '8px', display: 'block' }}>Multiple User Access</label>
+                      <div style={{ display: 'flex', gap: '20px' }}>
+                        <label className="setup-radio-label"><input type="radio" name="multipleUserAccess" value="yes" checked={formData.multipleUserAccess === 'yes'} onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Yes</label>
+                        <label className="setup-radio-label"><input type="radio" name="multipleUserAccess" value="no" checked={formData.multipleUserAccess === 'no'} onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> No</label>
                       </div>
                     </div>
 
                   </div>
 
-                  {/* ========================================
-                 BOTTOM SECTION - TABLE NAME, CREATE FILE, CERTIFICATE
-                 ======================================== */}
-                  <div className="setup-three-column-row" style={{ marginBottom: '12px', width: '100%', maxWidth: '100%' }}>
-                    <div className="setup-column" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', alignItems: 'center' }}>
-                      <label className="setup-input-label" style={{ marginBottom: '0' }}>Table Name</label>
-                      <input
-                        type="text"
-                        value={formData.tableName}
-                        onChange={(e) => handleInputChange('tableName', e.target.value)}
-                        disabled={!isFormEditable}
-                        className="setup-input-field"
-                        placeholder="Enter table name"
-                      />
+                  {/* BOTTOM ROW: Table Name | Create File | Certificate */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label className="setup-input-label" style={{ marginBottom: 0, whiteSpace: 'nowrap' }}>Table Name</label>
+                      <input type="text" value={formData.tableName} onChange={(e) => handleInputChange('tableName', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter table name" style={{ width: '160px' }} />
                     </div>
-
-                    <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
-                      <button
-                        onClick={() => {
-                          // TODO: Add API call to create configuration file
-                          // API Endpoint: POST /api/setup/administrator/create-file
-                          console.log('Creating configuration file with data:', formData);
-                          alert('Configuration file created successfully!');
-                        }}
-                        disabled={!isFormEditable}
-                        className="setup-btn setup-btn-primary"
-                        style={{ width: '100%' }}
-                      >
-                        Create File
-                      </button>
-                    </div>
-
-                    <div className="setup-column" style={{ display: 'flex', alignItems: 'end' }}>
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="certificateSeparateExitFee"
-                          checked={formData.certificateSeparateExitFee}
-                          onChange={(e) => handleInputChange('certificateSeparateExitFee', e.target.checked.toString())}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="certificateSeparateExitFee" className="setup-checkbox-label">
-                          Certificate Separate with Exit Fee
-                        </label>
-                      </div>
+                    <button onClick={() => { console.log('Creating configuration file with data:', formData); alert('Configuration file created successfully!'); }} disabled={!isFormEditable} className="setup-btn setup-btn-primary" style={{ flex: '1 1 auto', minWidth: '140px', maxWidth: '260px' }}>Create File</button>
+                    <div className="setup-checkbox-container" style={{ flex: '0 0 auto' }}>
+                      <input type="checkbox" id="certificateSeparateExitFee" checked={formData.certificateSeparateExitFee} onChange={(e) => handleInputChange('certificateSeparateExitFee', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" />
+                      <label htmlFor="certificateSeparateExitFee" className="setup-checkbox-label">Certificate Separate with Exit Fee</label>
                     </div>
                   </div>
 
@@ -3612,13 +3299,14 @@ function PostalAreaModalContent({ formData, handleInputChange, isFormEditable = 
       </div>
       <div>
         <label className="setup-input-label">Description</label>
-        <input
-          type="text"
+        <textarea
           value={formData.postalDescription}
           onChange={(e) => handleInputChange('postalDescription', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
         />
       </div>
     </>
@@ -3657,13 +3345,14 @@ function DividendTypeModalContent({ formData, handleInputChange, isFormEditable 
       </div>
       <div>
         <label className="setup-input-label">Description</label>
-        <input
-          type="text"
+        <textarea
           value={formData.dividendDescription}
           onChange={(e) => handleInputChange('dividendDescription', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
+          rows={3}
+          style={{ resize: 'vertical', minHeight: '80px' }}
         />
       </div>
     </>
@@ -4858,26 +4547,32 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
       <div style={{ background: '#f8fafc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', width: '100%' }}>
         <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#000000' }}>Applicable Funds</div>
         <div style={{ flex: 1, overflowY: 'auto', maxHeight: '320px' }}>
-          <table className="setup-custom-table setup-applicable-funds-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+            <colgroup>
+              <col style={{ width: '36px' }} />
+              <col style={{ width: '30%' }} />
+              <col />
+            </colgroup>
             <thead>
-              <tr>
-                <th style={{ textAlign: 'left', padding: '8px', color: '#000000', fontWeight: 600 }}>Code</th>
-                <th style={{ textAlign: 'left', padding: '8px', color: '#000000', fontWeight: 600 }}>Fund Name</th>
+              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
+                <th style={{ padding: '8px 6px', textAlign: 'center' }}></th>
+                <th style={{ textAlign: 'left', padding: '8px 8px', color: '#000000', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Code</th>
+                <th style={{ textAlign: 'left', padding: '8px 8px', color: '#000000', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Fund Name</th>
               </tr>
             </thead>
             <tbody>
-              {funds.map(fund => (
-                <tr key={fund.code}>
-                  <td style={{ padding: '8px', color: '#000000' }}>
+              {funds.map((fund, i) => (
+                <tr key={fund.code} style={{ background: i % 2 === 0 ? '#ffffff' : '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '8px 6px', textAlign: 'center', verticalAlign: 'middle' }}>
                     <input
                       type="checkbox"
                       checked={selectedFunds && selectedFunds.includes(fund.code)}
                       onChange={e => handleFundCheckbox(fund.code, e.target.checked)}
                       className="setup-checkbox-input"
                     />
-                    <span style={{ marginLeft: '8px' }}>{fund.code}</span>
                   </td>
-                  <td style={{ padding: '8px', color: '#000000' }}>{fund.name}</td>
+                  <td style={{ padding: '8px 8px', color: '#000000', verticalAlign: 'middle', fontWeight: 500 }}>{fund.code}</td>
+                  <td style={{ padding: '8px 8px', color: '#000000', verticalAlign: 'middle' }}>{fund.name}</td>
                 </tr>
               ))}
             </tbody>
@@ -6060,28 +5755,32 @@ function ProductTypeModalContent({
           <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px', color: '#000000' }}>Applicable Funds</div>
 
           {/* Simple table with just the structure */}
-          <div style={{ overflowX: 'auto' }}>
-            <table className="setup-custom-table setup-applicable-funds-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+          <div style={{ overflowX: 'auto', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed', background: '#ffffff' }}>
               <colgroup>
-                <col style={{ width: '50%' }} />
-                <col style={{ width: '50%' }} />
+                <col style={{ width: '40px' }} />
+                <col style={{ width: '30%' }} />
+                <col />
               </colgroup>
               <thead>
-                <tr style={{ backgroundColor: '#f1f5f9' }}>
-                  <th style={{ padding: '12px', border: '1px solid #e2e8f0', textAlign: 'left', color: '#000000', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>Code</th>
-                  <th style={{ padding: '12px', border: '1px solid #e2e8f0', textAlign: 'left', color: '#000000', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>Fund Name</th>
+                <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
+                  <th style={{ padding: '10px 6px', textAlign: 'center' }}></th>
+                  <th style={{ textAlign: 'left', padding: '10px 12px', color: '#000000', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Code</th>
+                  <th style={{ textAlign: 'left', padding: '10px 12px', color: '#000000', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Fund Name</th>
                 </tr>
               </thead>
               <tbody>
-                {applicableFunds.map(f => (
-                  <tr key={f.code}>
-                    <td style={{ padding: '12px', border: '1px solid #e2e8f0', color: '#000000', verticalAlign: 'middle' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <input type="checkbox" disabled={!isFormEditable} />
-                        <span>{f.code}</span>
-                      </div>
+                {applicableFunds.map((f, i) => (
+                  <tr key={f.code} style={{ background: i % 2 === 0 ? '#ffffff' : '#f8fafc', borderBottom: i === applicableFunds.length - 1 ? 'none' : '1px solid #e2e8f0' }}>
+                    <td style={{ padding: '10px 6px', textAlign: 'center', verticalAlign: 'middle' }}>
+                      <input
+                        type="checkbox"
+                        disabled={!isFormEditable}
+                        className="setup-checkbox-input"
+                      />
                     </td>
-                    <td style={{ padding: '12px', border: '1px solid #e2e8f0', color: '#000000', verticalAlign: 'middle' }}>{f.name}</td>
+                    <td style={{ padding: '10px 12px', color: '#000000', verticalAlign: 'middle', fontWeight: 500 }}>{f.code}</td>
+                    <td style={{ padding: '10px 12px', color: '#000000', verticalAlign: 'middle' }}>{f.name}</td>
                   </tr>
                 ))}
               </tbody>
@@ -6166,14 +5865,14 @@ function SourceOfIncomeModalContent({ formData, handleInputChange, isFormEditabl
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
-        <input
-          type="text"
+        <textarea
           value={formData.sourceOfIncomeDescription || ''}
           onChange={e => handleInputChange('sourceOfIncomeDescription', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
-          style={{ color: '#000000' }}
+          rows={3}
+          style={{ color: '#000000', resize: 'vertical', minHeight: '80px' }}
         />
       </div>
     </>
@@ -6203,14 +5902,14 @@ function AnnualIncomeModalContent({ formData, handleInputChange, isFormEditable 
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
-        <input
-          type="text"
+        <textarea
           value={formData.annualIncomeDescription || ''}
           onChange={e => handleInputChange('annualIncomeDescription', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
-          style={{ color: '#000000' }}
+          rows={3}
+          style={{ color: '#000000', resize: 'vertical', minHeight: '80px' }}
         />
       </div>
     </>
@@ -6240,14 +5939,14 @@ function RiskCategoryModalContent({ formData, handleInputChange, isFormEditable 
       {/* Description */}
       <div className="setup-input-group">
         <label className="setup-input-label">Description</label>
-        <input
-          type="text"
+        <textarea
           value={formData.riskCategoryDescription || ''}
           onChange={e => handleInputChange('riskCategoryDescription', e.target.value)}
           disabled={!isFormEditable}
           className="setup-input-field"
           placeholder="Enter description"
-          style={{ color: '#000000' }}
+          rows={3}
+          style={{ color: '#000000', resize: 'vertical', minHeight: '80px' }}
         />
       </div>
     </>
@@ -6372,10 +6071,10 @@ function PoliticallyExposedModalContent({ formData, handleInputChange, isFormEdi
             </label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
-                { value: 'direct',     label: 'Direct',     desc: 'Individuals directly holding a prominent public position',       icon: '👤' },
-                { value: 'family',     label: 'Family',     desc: 'Immediate family members of a politically exposed person',        icon: '👨‍👩‍👧' },
-                { value: 'relation',   label: 'Relation',   desc: 'Close associates and known business relations of PEPs',           icon: '🤝' },
-                { value: 'employment', label: 'Employment', desc: 'Persons employed by or closely working with PEP entities',        icon: '🏢' },
+                { value: 'direct', label: 'Direct', desc: 'Individuals directly holding a prominent public position', icon: '👤' },
+                { value: 'family', label: 'Family', desc: 'Immediate family members of a politically exposed person', icon: '👨‍👩‍👧' },
+                { value: 'relation', label: 'Relation', desc: 'Close associates and known business relations of PEPs', icon: '🤝' },
+                { value: 'employment', label: 'Employment', desc: 'Persons employed by or closely working with PEP entities', icon: '🏢' },
               ].map(opt => (
                 <label
                   key={opt.value}

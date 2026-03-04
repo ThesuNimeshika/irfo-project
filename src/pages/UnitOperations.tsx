@@ -21,9 +21,8 @@ const moduleData = [
   { title: 'Unit Fees', icon: '💳' },
   { title: 'Unit Creation', icon: '✨' },
   { title: 'Unit Redemption', icon: '💸' },
-  { title: 'Unit Transfer', icon: '🔄' },
+  { title: 'Unit Transfer/Switching', icon: '🔄' },
   { title: 'Unit Consolidation', icon: '🔗' },
-  { title: 'Unit Switching', icon: '🔄' },
   { title: 'Unit Blocking', icon: '🚫' },
   { title: 'Dividend Issues', icon: '💰' },
   { title: 'Redemption Cheque Printing', icon: '🧾' },
@@ -602,16 +601,6 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
 
   const tabs: URTab[] = ['Redemption', 'Unit Fee Discounting', 'Payout Details', 'Agent Details'];
 
-  const radioCircle = (active: boolean, color = '#1e3a8a'): React.CSSProperties => ({
-    width: '14px',
-    height: '14px',
-    borderRadius: '50%',
-    border: `2px solid ${color}`,
-    background: active ? color : '#fff',
-    display: 'inline-block',
-    flexShrink: 0,
-    boxShadow: active ? 'inset 0 0 0 2px #fff' : 'none',
-  });
 
   const tableHeaderStyle: React.CSSProperties = {
     padding: '6px 10px',
@@ -757,8 +746,8 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
         });
 
         /* ── row wrapper: label + field side-by-side ── */
-        const Field = ({ label, labelW = 120, children, style }: {
-          label: string; labelW?: number; children: React.ReactNode; style?: React.CSSProperties;
+        const Field = ({ label, children, style }: {
+          label: string; children: React.ReactNode; style?: React.CSSProperties;
         }) => (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', ...style }}>
             <span style={LBL}>{label}</span>
@@ -2368,15 +2357,20 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
     switchCode: '', switchNo: '', invType: '', remark: '', reasonToEdit: '',
     // [From] tab
     fromAccNo: '', fromFund: '', fromFundName: '', fromFundDate: '',
-    fromHolderNo: '', fromNoOfUnits: '', fromValue: '', fromAgent: '',
+    fromHolderNo: '', fromHolderName: '', fromNoOfUnits: '', fromValue: '', fromAgent: '',
     unitFeeApply: 'No' as 'Yes' | 'No',
-    unitPriceCreationTo: '',
-    policyNo: '',
-    unitsToAutoRedeem: '', unitsToAutoRedeemMode: '▼' as string,
-    autoRedeemAmount: '', autoRedeemMode: '▼' as string,
+    unitPriceRedemptionFrom: '',
+    policyNoFrom: '',
+    unitToAutoRedeemFrom: '',
+    amountFrom: '',
     // [To] tab
     toAccNo: '', toFund: '', toFundName: '', toFundDate: '',
-    toHolderNo: '', toNoOfUnits: '', toValue: '', toAgent: '',
+    toHolderNo: '', toHolderName: '', toNoOfUnits: '', toValue: '', toAgent: '',
+    unitFeeApplyTo: 'No' as 'Yes' | 'No',
+    unitPriceCreationTo: '',
+    policyNoTo: '',
+    unitToAutoRedeemTo: '',
+    amountTo: '',
     // Cert row input
     certNo: '', availableUnits: '', switchUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '',
     // UFD row inputs
@@ -2384,6 +2378,7 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
     ufdInFeeCode: '', ufdInDescription: '', ufdInAmount: '', ufdInPct: '', ufdInNewAmount: '',
     // Agent Details
     agency: '', subAgency: '', agent: '',
+    toAgency: '', toSubAgency: '',
   };
 
   const [form, setForm] = useState(emptyForm);
@@ -2473,21 +2468,33 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   });
 
-  // Radio button helper
-  const Radio = ({ active, onClick, label, color = '#1e3a8a' }: {
-    active: boolean; onClick: () => void; label: string; color?: string;
+  // Segmented control helper for Yes/No toggles
+  const SegmentedControl = ({ label, value, options, onChange, style }: {
+    label: string, value: string, options: { label: string, value: string }[], onChange: (val: string) => void, style?: React.CSSProperties
   }) => (
-    <label onClick={() => isEnabled && onClick()}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', cursor: isEnabled ? 'pointer' : 'not-allowed', opacity: isEnabled ? 1 : 0.6, fontSize: '12px' }}>
-      <span style={{
-        width: 13, height: 13, borderRadius: '50%', flexShrink: 0,
-        border: `2px solid ${active ? color : '#94a3b8'}`,
-        background: active ? color : 'transparent',
-        boxShadow: active ? 'inset 0 0 0 2.5px #fff' : 'none',
-        display: 'inline-block', transition: 'all 0.15s',
-      }} />
-      <span style={{ fontWeight: active ? 700 : 500, color: active ? color : '#475569' }}>{label}</span>
-    </label>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', ...style }}>
+      <span style={LBL}>{label}</span>
+      <div style={{
+        display: 'inline-flex', background: '#f1f5f9', borderRadius: '6px', padding: '2px', border: '1px solid #cfd8e3',
+        height: FH, boxSizing: 'border-box', overflow: 'hidden', minWidth: '100px'
+      }}>
+        {options.map(opt => {
+          const active = value === opt.value;
+          return (
+            <button key={opt.value} onClick={() => isEnabled && onChange(opt.value)} disabled={!isEnabled}
+              style={{
+                flex: 1, border: 'none', borderRadius: '4px', padding: '0 10px', fontSize: '11px', fontWeight: active ? 700 : 600,
+                cursor: isEnabled ? 'pointer' : 'not-allowed', background: active ? '#1e3a8a' : 'transparent',
+                color: active ? '#ffffff' : '#64748b', transition: 'all 0.2s ease', whiteSpace: 'nowrap',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: active ? '0 1px 3px rgba(30,58,138,0.25)' : 'none'
+              }}>
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 
   return (
@@ -2496,8 +2503,8 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
       {/* ── Sub-modals ── */}
       <AccountSearchModal isOpen={showFromAccSearch} onClose={() => setShowFromAccSearch(false)} onGet={r => set('fromAccNo', r.accountNo || '')} onSelect={r => set('fromAccNo', r.accountNo || '')} title="Search Account [From]" />
       <AccountSearchModal isOpen={showToAccSearch} onClose={() => setShowToAccSearch(false)} onGet={r => set('toAccNo', r.accountNo || '')} onSelect={r => set('toAccNo', r.accountNo || '')} title="Search Account [To]" />
-      <HolderSearchModal isOpen={showFromHldSearch} onClose={() => setShowFromHldSearch(false)} onSelect={(r: HolderRecord) => set('fromHolderNo', r.holderId)} />
-      <HolderSearchModal isOpen={showToHldSearch} onClose={() => setShowToHldSearch(false)} onSelect={(r: HolderRecord) => set('toHolderNo', r.holderId)} />
+      <HolderSearchModal isOpen={showFromHldSearch} onClose={() => setShowFromHldSearch(false)} onSelect={(r: HolderRecord) => { set('fromHolderNo', r.holderId); set('fromHolderName', r.holderName); }} />
+      <HolderSearchModal isOpen={showToHldSearch} onClose={() => setShowToHldSearch(false)} onSelect={(r: HolderRecord) => { set('toHolderNo', r.holderId); set('toHolderName', r.holderName); }} />
       <EditSearchModal isOpen={showEditSearch} onClose={() => setShowEditSearchSW(false)} title="Edit — Select Switch Record" onSelect={r => set('switchNo', (r as any).transactionNo || '')} />
       <AkctNoSearchModal isOpen={showAkctSearch} onClose={() => setShowAkctSearchSW(false)} onSelect={r => set('switchNo', (r as any).akctNo || '')} />
 
@@ -2606,19 +2613,21 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
                 </Field>
               </div>
 
-              {/* Row 2: Unit Holder No [From] [H] */}
+              {/* Row 2: Unit Holder [From] [H] [Holder Name] */}
               <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
-                <Field label="Unit Holder No [From]">
+                <Field label="Unit Holder [From]">
                   <input style={inp()} value={form.fromHolderNo} onChange={e => set('fromHolderNo', e.target.value)} disabled={!isEnabled} />
                 </Field>
                 <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
                   <button style={iconBtn('#7c3aed')} onClick={() => isEnabled && setShowFromHldSearch(true)} disabled={!isEnabled}>H</button>
                 </div>
-                <div />
+                <div style={{ flex: 1 }}>
+                  <input style={inp({ background: '#f8fafc', color: '#1e3a8a', fontWeight: 600, borderColor: '#cbd5e1' })} value={form.fromHolderName} disabled readOnly />
+                </div>
               </div>
 
-              {/* Row 3: No of Unit [From] | Value [From] | Unit Fee Apply (radio) | Unit Price / Creation [To] */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto 1fr', gap: '0 16px', alignItems: 'end' }}>
+              {/* Row 3: No of Unit [From] | Value [From] | Unit Fee Apply | Unit Price Redemption [From] */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0 12px', alignItems: 'end' }}>
                 <Field label="No of Unit [From]">
                   <input type="number" style={inp()} value={form.fromNoOfUnits} onChange={e => set('fromNoOfUnits', e.target.value)} disabled={!isEnabled} />
                 </Field>
@@ -2626,31 +2635,24 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
                   <input type="number" style={inp()} value={form.fromValue} onChange={e => set('fromValue', e.target.value)} disabled={!isEnabled} />
                 </Field>
 
-                {/* Unit Fee Apply — glass pill */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL}>Unit Fee Apply</span>
-                  <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '10px',
-                    background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(8px)',
-                    border: '1.5px solid #cbd5e1', borderRadius: '8px',
-                    padding: '0 12px', height: FH, boxSizing: 'border-box',
-                    boxShadow: '0 2px 10px rgba(100,120,160,0.13), inset 0 1px 2px rgba(255,255,255,0.8)',
-                    opacity: isEnabled ? 1 : 0.55,
-                  }}>
-                    <Radio active={form.unitFeeApply === 'Yes'} onClick={() => set('unitFeeApply', 'Yes')} label="Yes" color="#1e3a8a" />
-                    <Radio active={form.unitFeeApply === 'No'} onClick={() => set('unitFeeApply', 'No')} label="No" color="#1e3a8a" />
-                  </div>
-                </div>
+                <SegmentedControl
+                  label="Unit Fee Apply"
+                  value={form.unitFeeApply}
+                  options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+                  onChange={val => set('unitFeeApply', val)}
+                />
 
-                {/* Unit Price / Creation [To] */}
-                <Field label="Unit Price  Creation [To]">
-                  <input type="number" style={inp()} value={form.unitPriceCreationTo} onChange={e => set('unitPriceCreationTo', e.target.value)} disabled={!isEnabled} />
-                </Field>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>Unit Price</span>
+                  <Field label="Redemption [From]">
+                    <input type="number" style={inp()} value={form.unitPriceRedemptionFrom} onChange={e => set('unitPriceRedemptionFrom', e.target.value)} disabled={!isEnabled} />
+                  </Field>
+                </div>
               </div>
 
-              {/* Row 4: Agent To | Unit Linked Details — Policy No */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px', alignItems: 'end' }}>
-                <Field label="Agent To">
+              {/* Row 4: Agent From | Unit Linked Details — Policy No | Unit to Auto Redeem | Amount */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0 12px', alignItems: 'end' }}>
+                <Field label="Agent From">
                   <TableDropdown
                     value={form.fromAgent}
                     displayValue={form.fromAgent ? `${form.fromAgent} – ${agentTableData.find(r => r.agent_code === form.fromAgent)?.agent_name || ''}` : ''}
@@ -2663,201 +2665,18 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
                 </Field>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                   <span style={{ ...LBL, color: '#374151' }}>Unit Linked Details</span>
-                  <Field label="Policy No">
-                    <input style={inp()} value={form.policyNo} onChange={e => set('policyNo', e.target.value)} disabled={!isEnabled} />
+                  <Field label="Policy No :">
+                    <input style={inp()} value={form.policyNoFrom} onChange={e => set('policyNoFrom', e.target.value)} disabled={!isEnabled} />
                   </Field>
                 </div>
-              </div>
-
-              {/* Row 5: Units to Auto Redeem [▼] | Amount [▼] */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px', alignItems: 'end' }}>
-                <Field label="Units to Auto Redeem">
-                  <input type="number" style={inp({ flex: 1 })} value={form.unitsToAutoRedeem} onChange={e => set('unitsToAutoRedeem', e.target.value)} disabled={!isEnabled} />
-                  <button style={{ ...iconBtn('#475569'), borderRadius: '4px', fontSize: '11px' }} disabled={!isEnabled}>▼</button>
+                <Field label="Unit to Auto Redeem">
+                  <input type="number" style={inp()} value={form.unitToAutoRedeemFrom} onChange={e => set('unitToAutoRedeemFrom', e.target.value)} disabled={!isEnabled} />
+                  <button style={addBtn(isEnabled && !!form.unitToAutoRedeemFrom)} onClick={() => { }} disabled={!isEnabled || !form.unitToAutoRedeemFrom} title="Add">▼</button>
                 </Field>
                 <Field label="Amount">
-                  <input type="number" style={inp({ flex: 1 })} value={form.autoRedeemAmount} onChange={e => set('autoRedeemAmount', e.target.value)} disabled={!isEnabled} />
-                  <button style={{ ...iconBtn('#475569'), borderRadius: '4px', fontSize: '11px' }} disabled={!isEnabled}>▼</button>
+                  <input type="number" style={inp()} value={form.amountFrom} onChange={e => set('amountFrom', e.target.value)} disabled={!isEnabled} />
+                  <button style={addBtn(isEnabled && !!form.amountFrom)} onClick={() => { }} disabled={!isEnabled || !form.amountFrom} title="Add">▼</button>
                 </Field>
-              </div>
-
-              {/* ── Bottom sub-tabs: Certificates / UFD Out / UFD In ── */}
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
-                {/* Sub-tab bar */}
-                <div style={{ display: 'flex', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', overflowX: 'auto' }}>
-                  {bottomTabs.map(bt => (
-                    <button key={bt} type="button" onClick={() => setBottomTab(bt)} style={{
-                      padding: '6px 14px', background: bottomTab === bt ? '#fff' : 'transparent',
-                      color: bottomTab === bt ? '#1e3a8a' : '#6b7280', border: 'none',
-                      borderBottom: bottomTab === bt ? '2px solid #1e3a8a' : '2px solid transparent',
-                      cursor: 'pointer', fontWeight: bottomTab === bt ? 700 : 600,
-                      fontSize: '11px', fontFamily: 'inherit', whiteSpace: 'nowrap',
-                      transition: 'all 0.15s',
-                    }}>{bt}</button>
-                  ))}
-                </div>
-
-                <div style={{ padding: '10px' }}>
-
-                  {/* ── Certificates ── */}
-                  {bottomTab === 'Certificates' && (
-                    <div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,minmax(0,1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
-                        {(['certNo', 'availableUnits', 'switchUnits', 'balanceUnits', 'certAmount', 'blockedUnits'] as const).map((f, i) => (
-                          <input key={f} className="setup-input-field" type={i > 0 ? 'number' : 'text'}
-                            value={(form as any)[f]}
-                            onChange={e => {
-                              set(f, e.target.value);
-                              if (f === 'switchUnits') {
-                                const avail = parseFloat(form.availableUnits) || 0;
-                                set('balanceUnits', (avail - (parseFloat(e.target.value) || 0)).toString());
-                              }
-                            }}
-                            style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
-                            disabled={!isEnabled}
-                            placeholder={['Certificate No', 'Available Units', 'Switch Units', 'Balance Units', 'Amount', 'Blocked Units'][i]}
-                          />
-                        ))}
-                        <button
-                          onClick={() => {
-                            if (!isEnabled || !form.certNo) return;
-                            setCertRows(p => [...p, { certificateNo: form.certNo, availableUnits: form.availableUnits, switchUnits: form.switchUnits, balanceUnits: form.balanceUnits, amount: form.certAmount, blockedUnits: form.blockedUnits }]);
-                            setForm(p => ({ ...p, certNo: '', availableUnits: '', switchUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '' }));
-                          }}
-                          disabled={!isEnabled || !form.certNo}
-                          style={addBtn(isEnabled && !!form.certNo)} title="Add"
-                        >▼</button>
-                      </div>
-                      <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                          <thead>
-                            <tr>
-                              {['Certificate No', 'Available Units', 'Switch Units', 'Balance Units', 'Amount', 'Blocked Units'].map((h, i, arr) => (
-                                <th key={h} style={{ ...thSt, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {certRows.length === 0
-                              ? <tr><td colSpan={6} style={{ padding: '16px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
-                              : certRows.map((r, i) => (
-                                <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                                  <td style={tdSt}>{r.certificateNo}</td>
-                                  <td style={tdSt}>{r.availableUnits}</td>
-                                  <td style={tdSt}>{r.switchUnits}</td>
-                                  <td style={tdSt}>{r.balanceUnits}</td>
-                                  <td style={tdSt}>{r.amount}</td>
-                                  <td style={{ ...tdSt, borderRight: 'none' }}>{r.blockedUnits}</td>
-                                </tr>
-                              ))
-                            }
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── Unit Fee Discounting Out ── */}
-                  {bottomTab === 'Unit Fee Discounting Out' && (
-                    <div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
-                        <select className="setup-select-field" value={form.ufdOutFeeCode}
-                          onChange={e => {
-                            const sel = unitFeeCodeData.find(f => f.code === e.target.value);
-                            set('ufdOutFeeCode', e.target.value);
-                            if (sel) set('ufdOutDescription', sel.description);
-                          }}
-                          style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled}>
-                          <option value="">Fee Code</option>
-                          {unitFeeCodeData.map(f => <option key={f.code} value={f.code}>{f.code}</option>)}
-                        </select>
-                        <input className="setup-input-field" value={form.ufdOutDescription} onChange={e => set('ufdOutDescription', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="Description" />
-                        <input type="number" className="setup-input-field" value={form.ufdOutAmount} onChange={e => set('ufdOutAmount', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="Amount" />
-                        <input type="number" className="setup-input-field" value={form.ufdOutPct} onChange={e => set('ufdOutPct', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="%" />
-                        <input type="number" className="setup-input-field" value={form.ufdOutNewAmount} onChange={e => set('ufdOutNewAmount', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="New Amount" />
-                        <button onClick={() => {
-                          if (!isEnabled || !form.ufdOutFeeCode) return;
-                          setUfdOutRows(p => [...p, { feeCode: form.ufdOutFeeCode, description: form.ufdOutDescription, amount: form.ufdOutAmount, pct: form.ufdOutPct, newAmount: form.ufdOutNewAmount }]);
-                          setForm(p => ({ ...p, ufdOutFeeCode: '', ufdOutDescription: '', ufdOutAmount: '', ufdOutPct: '', ufdOutNewAmount: '' }));
-                        }} disabled={!isEnabled || !form.ufdOutFeeCode} style={addBtn(isEnabled && !!form.ufdOutFeeCode)} title="Add">▼</button>
-                      </div>
-                      <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                          <thead><tr>
-                            {['Fee Code', 'Description', 'Amount', '%', 'New Amount'].map((h, i, arr) => (
-                              <th key={h} style={{ ...thSt, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
-                            ))}
-                          </tr></thead>
-                          <tbody>
-                            {ufdOutRows.length === 0
-                              ? <tr><td colSpan={5} style={{ padding: '16px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
-                              : ufdOutRows.map((r, i) => (
-                                <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                                  <td style={tdSt}>{r.feeCode}</td>
-                                  <td style={tdSt}>{r.description}</td>
-                                  <td style={tdSt}>{r.amount}</td>
-                                  <td style={tdSt}>{r.pct}</td>
-                                  <td style={{ ...tdSt, borderRight: 'none' }}>{r.newAmount}</td>
-                                </tr>
-                              ))
-                            }
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── Unit Fee Discounting In ── */}
-                  {bottomTab === 'Unit Fee Discounting In' && (
-                    <div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
-                        <select className="setup-select-field" value={form.ufdInFeeCode}
-                          onChange={e => {
-                            const sel = unitFeeCodeData.find(f => f.code === e.target.value);
-                            set('ufdInFeeCode', e.target.value);
-                            if (sel) set('ufdInDescription', sel.description);
-                          }}
-                          style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled}>
-                          <option value="">Fee Code</option>
-                          {unitFeeCodeData.map(f => <option key={f.code} value={f.code}>{f.code}</option>)}
-                        </select>
-                        <input className="setup-input-field" value={form.ufdInDescription} onChange={e => set('ufdInDescription', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="Description" />
-                        <input type="number" className="setup-input-field" value={form.ufdInAmount} onChange={e => set('ufdInAmount', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="Amount" />
-                        <input type="number" className="setup-input-field" value={form.ufdInPct} onChange={e => set('ufdInPct', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="%" />
-                        <input type="number" className="setup-input-field" value={form.ufdInNewAmount} onChange={e => set('ufdInNewAmount', e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled} placeholder="New Amount" />
-                        <button onClick={() => {
-                          if (!isEnabled || !form.ufdInFeeCode) return;
-                          setUfdInRows(p => [...p, { feeCode: form.ufdInFeeCode, description: form.ufdInDescription, amount: form.ufdInAmount, pct: form.ufdInPct, newAmount: form.ufdInNewAmount }]);
-                          setForm(p => ({ ...p, ufdInFeeCode: '', ufdInDescription: '', ufdInAmount: '', ufdInPct: '', ufdInNewAmount: '' }));
-                        }} disabled={!isEnabled || !form.ufdInFeeCode} style={addBtn(isEnabled && !!form.ufdInFeeCode)} title="Add">▼</button>
-                      </div>
-                      <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                          <thead><tr>
-                            {['Fee Code', 'Description', 'Amount', '%', 'New Amount'].map((h, i, arr) => (
-                              <th key={h} style={{ ...thSt, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
-                            ))}
-                          </tr></thead>
-                          <tbody>
-                            {ufdInRows.length === 0
-                              ? <tr><td colSpan={5} style={{ padding: '16px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
-                              : ufdInRows.map((r, i) => (
-                                <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                                  <td style={tdSt}>{r.feeCode}</td>
-                                  <td style={tdSt}>{r.description}</td>
-                                  <td style={tdSt}>{r.amount}</td>
-                                  <td style={tdSt}>{r.pct}</td>
-                                  <td style={{ ...tdSt, borderRight: 'none' }}>{r.newAmount}</td>
-                                </tr>
-                              ))
-                            }
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
-                </div>
               </div>
             </div>
           )}
@@ -2880,7 +2699,7 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
                 </Field>
               </div>
 
-              {/* Row 2: Unit Holder No [To] [H] */}
+              {/* Row 2: Unit Holder No [To] [H] [Holder Name] */}
               <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
                 <Field label="Unit Holder No [To]">
                   <input style={inp()} value={form.toHolderNo} onChange={e => set('toHolderNo', e.target.value)} disabled={!isEnabled} />
@@ -2888,16 +2707,61 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
                 <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
                   <button style={iconBtn('#7c3aed')} onClick={() => isEnabled && setShowToHldSearch(true)} disabled={!isEnabled}>H</button>
                 </div>
-                <div />
+                <div style={{ flex: 1 }}>
+                  <input style={inp({ background: '#f8fafc', color: '#1e3a8a', fontWeight: 600, borderColor: '#cbd5e1' })} value={form.toHolderName} disabled readOnly />
+                </div>
               </div>
 
-              {/* Row 3: No of Unit [To] | Value [To] */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
+              {/* Row 3: No of Unit [To] | Value [To] | Unit Fee Apply | Unit Price Creation [To] */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0 12px', alignItems: 'end' }}>
                 <Field label="No of Unit [To]">
                   <input type="number" style={inp()} value={form.toNoOfUnits} onChange={e => set('toNoOfUnits', e.target.value)} disabled={!isEnabled} />
                 </Field>
                 <Field label="Value [To]">
                   <input type="number" style={inp()} value={form.toValue} onChange={e => set('toValue', e.target.value)} disabled={!isEnabled} />
+                </Field>
+
+                <SegmentedControl
+                  label="Unit Fee Apply"
+                  value={form.unitFeeApplyTo}
+                  options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+                  onChange={val => set('unitFeeApplyTo', val)}
+                />
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>Unit Price</span>
+                  <Field label="Creation [To]">
+                    <input type="number" style={inp()} value={form.unitPriceCreationTo} onChange={e => set('unitPriceCreationTo', e.target.value)} disabled={!isEnabled} />
+                  </Field>
+                </div>
+              </div>
+
+              {/* Row 4: Agent To | Unit Linked Details — Policy No | Unit to Auto Redeem | Amount */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0 12px', alignItems: 'end' }}>
+                <Field label="Agent To">
+                  <TableDropdown
+                    value={form.toAgent}
+                    displayValue={form.toAgent ? `${form.toAgent} – ${agentTableData.find(r => r.agent_code === form.toAgent)?.agent_name || ''}` : ''}
+                    placeholder="Select Agent"
+                    columns={[{ key: 'agent_code', header: 'Code', width: '28%' }, { key: 'agent_name', header: 'Name', width: '40%' }, { key: 'agency_code', header: 'Agency', width: '32%' }]}
+                    rows={agentTableData} valueKey="agent_code"
+                    onSelect={row => set('toAgent', row.agent_code)}
+                    disabled={!isEnabled}
+                  />
+                </Field>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <span style={{ ...LBL, color: '#374151' }}>Unit Linked Details</span>
+                  <Field label="Policy No :">
+                    <input style={inp()} value={form.policyNoTo} onChange={e => set('policyNoTo', e.target.value)} disabled={!isEnabled} />
+                  </Field>
+                </div>
+                <Field label="Unit to Auto Redeem">
+                  <input type="number" style={inp()} value={form.unitToAutoRedeemTo} onChange={e => set('unitToAutoRedeemTo', e.target.value)} disabled={!isEnabled} />
+                  <button style={addBtn(isEnabled && !!form.unitToAutoRedeemTo)} onClick={() => { }} disabled={!isEnabled || !form.unitToAutoRedeemTo} title="Add">▼</button>
+                </Field>
+                <Field label="Amount">
+                  <input type="number" style={inp()} value={form.amountTo} onChange={e => set('amountTo', e.target.value)} disabled={!isEnabled} />
+                  <button style={addBtn(isEnabled && !!form.amountTo)} onClick={() => { }} disabled={!isEnabled || !form.amountTo} title="Add">▼</button>
                 </Field>
               </div>
 
@@ -2909,26 +2773,399 @@ function UnitSwitchingModal({ onClose: _onClose }: { onClose: () => void }) {
 
           {/* ══ Agent Details Tab ══ */}
           {activeTab === 'Agent Details' && (
-            <div>
-              <div style={{ display: 'inline-block', padding: '3px 10px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', color: '#1e3a8a', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: '4px', marginBottom: '12px' }}>Agents</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL}>Agency</span>
-                  <TableDropdown value={form.agency} displayValue={form.agency ? `${form.agency} – ${agencyTableData.find(r => r.agency_code === form.agency)?.agency_name || ''}` : ''} placeholder="Select Agency" columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]} rows={agencyTableData} valueKey="agency_code" onSelect={row => set('agency', row.agency_code)} disabled={!isEnabled} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              {/* Agents From */}
+              <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '3px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0 }}>
+                <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Agents From</legend>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown
+                        value={form.agency}
+                        displayValue={form.agency ? `${form.agency} – ${agencyTableData.find(r => r.agency_code === form.agency)?.agency_name || ''}` : ''}
+                        placeholder=""
+                        columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]}
+                        rows={agencyTableData} valueKey="agency_code"
+                        onSelect={row => set('agency', row.agency_code)}
+                        disabled={!isEnabled}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Sub Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown
+                        value={form.subAgency}
+                        displayValue={form.subAgency ? `${form.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.subAgency)?.subagent_name || ''}` : ''}
+                        placeholder=""
+                        columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]}
+                        rows={subAgencyTableData} valueKey="subagent_code"
+                        onSelect={row => set('subAgency', row.subagent_code)}
+                        disabled={!isEnabled}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agent</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown
+                        value={form.agent}
+                        displayValue={form.agent ? `${form.agent} – ${agentTableData.find(r => r.agent_code === form.agent)?.agent_name || ''}` : ''}
+                        placeholder=""
+                        columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]}
+                        rows={agentTableData} valueKey="agent_code"
+                        onSelect={row => set('agent', row.agent_code)}
+                        disabled={!isEnabled}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL}>Sub Agency</span>
-                  <TableDropdown value={form.subAgency} displayValue={form.subAgency ? `${form.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.subAgency)?.subagent_name || ''}` : ''} placeholder="Select Sub Agency" columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]} rows={subAgencyTableData} valueKey="subagent_code" onSelect={row => set('subAgency', row.subagent_code)} disabled={!isEnabled} />
+              </fieldset>
+
+              {/* Agents To */}
+              <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '3px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0 }}>
+                <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Agents To</legend>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown
+                        value={form.toAgency}
+                        displayValue={form.toAgency ? `${form.toAgency} – ${agencyTableData.find(r => r.agency_code === form.toAgency)?.agency_name || ''}` : ''}
+                        placeholder=""
+                        columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]}
+                        rows={agencyTableData} valueKey="agency_code"
+                        onSelect={row => set('toAgency', row.agency_code)}
+                        disabled={!isEnabled}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Sub Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown
+                        value={form.toSubAgency}
+                        displayValue={form.toSubAgency ? `${form.toSubAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.toSubAgency)?.subagent_name || ''}` : ''}
+                        placeholder=""
+                        columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]}
+                        rows={subAgencyTableData} valueKey="subagent_code"
+                        onSelect={row => set('toSubAgency', row.subagent_code)}
+                        disabled={!isEnabled}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agent</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown
+                        value={form.toAgent}
+                        displayValue={form.toAgent ? `${form.toAgent} – ${agentTableData.find(r => r.agent_code === form.toAgent)?.agent_name || ''}` : ''}
+                        placeholder=""
+                        columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]}
+                        rows={agentTableData} valueKey="agent_code"
+                        onSelect={row => set('toAgent', row.agent_code)}
+                        disabled={!isEnabled}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL}>Agent</span>
-                  <TableDropdown value={form.agent} displayValue={form.agent ? `${form.agent} – ${agentTableData.find(r => r.agent_code === form.agent)?.agent_name || ''}` : ''} placeholder="Select Agent" columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]} rows={agentTableData} valueKey="agent_code" onSelect={row => set('agent', row.agent_code)} disabled={!isEnabled} />
-                </div>
-              </div>
+              </fieldset>
             </div>
           )}
 
+          {/* ── Bottom sub-tabs: Certificates / UFD Out / UFD In ── */}
+          <div style={{ border: '1px solid #e2e8f0', borderRadius: '6px', overflow: 'hidden', marginTop: '12px' }}>
+            {/* Sub-tab bar */}
+            <div style={{ display: 'flex', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', overflowX: 'auto' }}>
+              {bottomTabs.map(bt => (
+                <button key={bt} type="button" onClick={() => setBottomTab(bt)} style={{
+                  padding: '6px 14px', background: bottomTab === bt ? '#fff' : 'transparent',
+                  color: bottomTab === bt ? '#1e3a8a' : '#6b7280', border: 'none',
+                  borderBottom: bottomTab === bt ? '2px solid #1e3a8a' : '2px solid transparent',
+                  cursor: 'pointer', fontWeight: bottomTab === bt ? 700 : 600,
+                  fontSize: '11px', fontFamily: 'inherit', whiteSpace: 'nowrap',
+                  transition: 'all 0.15s',
+                }}>{bt}</button>
+              ))}
+            </div>
+
+            <div style={{ padding: '10px' }}>
+
+              {/* ── Certificates ── */}
+              {bottomTab === 'Certificates' && (
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,minmax(0,1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+                    {(['certNo', 'availableUnits', 'switchUnits', 'balanceUnits', 'certAmount', 'blockedUnits'] as const).map((f, i) => (
+                      <input key={f} className="setup-input-field" type={i > 0 ? 'number' : 'text'}
+                        value={(form as any)[f]}
+                        onChange={e => {
+                          set(f, e.target.value);
+                          if (f === 'switchUnits') {
+                            const avail = parseFloat(form.availableUnits) || 0;
+                            set('balanceUnits', (avail - (parseFloat(e.target.value) || 0)).toString());
+                          }
+                        }}
+                        style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                        disabled={!isEnabled}
+                        placeholder={['Certificate No', 'Available Units', 'Switch Units', 'Balance Units', 'Amount', 'Blocked Units'][i]}
+                      />
+                    ))}
+                    <button
+                      onClick={() => {
+                        if (!isEnabled || !form.certNo) return;
+                        setCertRows(p => [...p, { certificateNo: form.certNo, availableUnits: form.availableUnits, switchUnits: form.switchUnits, balanceUnits: form.balanceUnits, amount: form.certAmount, blockedUnits: form.blockedUnits }]);
+                        setForm(p => ({ ...p, certNo: '', availableUnits: '', switchUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '' }));
+                      }}
+                      disabled={!isEnabled || !form.certNo}
+                      style={addBtn(isEnabled && !!form.certNo)} title="Add"
+                    >▼</button>
+                  </div>
+                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                      <thead>
+                        <tr>
+                          {['Certificate No', 'Available Units', 'Switch Units', 'Balance Units', 'Amount', 'Blocked Units'].map((h, i, arr) => (
+                            <th key={h} style={{ ...thSt, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {certRows.length === 0
+                          ? <tr><td colSpan={6} style={{ padding: '16px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                          : certRows.map((r, i) => (
+                            <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                              <td style={tdSt}>{r.certificateNo}</td>
+                              <td style={tdSt}>{r.availableUnits}</td>
+                              <td style={tdSt}>{r.switchUnits}</td>
+                              <td style={tdSt}>{r.balanceUnits}</td>
+                              <td style={tdSt}>{r.amount}</td>
+                              <td style={{ ...tdSt, borderRight: 'none' }}>{r.blockedUnits}</td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Unit Fee Discounting Out ── */}
+              {bottomTab === 'Unit Fee Discounting Out' && (
+                <div>
+                  {/* Headers */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,3.5fr) minmax(0,1fr) 40px minmax(0,1.2fr) 26px', gap: '6px', marginBottom: '2px' }}>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>Fee Code</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>Description</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>Amount</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>%</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>New Amount</div>
+                    <div />
+                  </div>
+
+                  {/* Inputs */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,3.5fr) minmax(0,1fr) 40px minmax(0,1.2fr) 26px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+                    <select value={form.ufdOutFeeCode}
+                      onChange={e => {
+                        const sel = unitFeeCodeData.find(f => f.code === e.target.value);
+                        set('ufdOutFeeCode', e.target.value);
+                        if (sel) set('ufdOutDescription', sel.description);
+                      }}
+                      style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled}>
+                      <option value=""></option>
+                      {unitFeeCodeData.map(f => <option key={f.code} value={f.code}>{f.code}</option>)}
+                    </select>
+                    <input value={form.ufdOutDescription} onChange={e => set('ufdOutDescription', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <input type="number" value={form.ufdOutAmount} onChange={e => set('ufdOutAmount', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <input type="number" value={form.ufdOutPct} onChange={e => set('ufdOutPct', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <input type="number" value={form.ufdOutNewAmount} onChange={e => set('ufdOutNewAmount', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <button onClick={() => {
+                      if (!isEnabled || !form.ufdOutFeeCode) return;
+                      setUfdOutRows(p => [...p, { feeCode: form.ufdOutFeeCode, description: form.ufdOutDescription, amount: form.ufdOutAmount, pct: form.ufdOutPct, newAmount: form.ufdOutNewAmount }]);
+                      setForm(p => ({ ...p, ufdOutFeeCode: '', ufdOutDescription: '', ufdOutAmount: '', ufdOutPct: '', ufdOutNewAmount: '' }));
+                    }} disabled={!isEnabled || !form.ufdOutFeeCode}
+                      style={{ height: '20px', width: '100%', background: 'linear-gradient(to bottom, #fde047, #eab308)', border: '1px solid #ca8a04', borderRadius: '3px', color: '#000', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isEnabled && !!form.ufdOutFeeCode ? 'pointer' : 'not-allowed', padding: 0 }} title="Add">▼</button>
+                  </div>
+
+                  {/* Display Table/Box */}
+                  <div style={{ background: '#f1f5f9', border: '1px solid #94a3b8', minHeight: '120px', width: '100%', boxSizing: 'border-box' }}>
+                    {ufdOutRows.length > 0 && (
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+                        <tbody>
+                          {ufdOutRows.map((r, i) => (
+                            <tr key={i} style={{ borderBottom: '1px solid #cbd5e1' }}>
+                              <td style={{ padding: '4px', width: '18%' }}>{r.feeCode}</td>
+                              <td style={{ padding: '4px', width: '40%' }}>{r.description}</td>
+                              <td style={{ padding: '4px', width: '15%' }}>{r.amount}</td>
+                              <td style={{ padding: '4px', width: '8%' }}>{r.pct}</td>
+                              <td style={{ padding: '4px', width: '15%' }}>{r.newAmount}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Unit Fee Discounting In ── */}
+              {bottomTab === 'Unit Fee Discounting In' && (
+                <div>
+                  {/* Headers */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,3.5fr) minmax(0,1fr) 40px minmax(0,1.2fr) 26px', gap: '6px', marginBottom: '2px' }}>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>Fee Code</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>Description</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>Amount</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>%</div>
+                    <div style={{ border: '1px solid #475569', textAlign: 'center', fontSize: '11px', padding: '1px 0', background: '#fff', color: '#000' }}>New Amount</div>
+                    <div />
+                  </div>
+
+                  {/* Inputs */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,3.5fr) minmax(0,1fr) 40px minmax(0,1.2fr) 26px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+                    <select value={form.ufdInFeeCode}
+                      onChange={e => {
+                        const sel = unitFeeCodeData.find(f => f.code === e.target.value);
+                        set('ufdInFeeCode', e.target.value);
+                        if (sel) set('ufdInDescription', sel.description);
+                      }}
+                      style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled}>
+                      <option value=""></option>
+                      {unitFeeCodeData.map(f => <option key={f.code} value={f.code}>{f.code}</option>)}
+                    </select>
+                    <input value={form.ufdInDescription} onChange={e => set('ufdInDescription', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <input type="number" value={form.ufdInAmount} onChange={e => set('ufdInAmount', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <input type="number" value={form.ufdInPct} onChange={e => set('ufdInPct', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <input type="number" value={form.ufdInNewAmount} onChange={e => set('ufdInNewAmount', e.target.value)} style={{ width: '100%', height: '20px', background: '#e2e8f0', border: 'none', outline: 'none', fontSize: '11px', padding: '0 4px', boxSizing: 'border-box' }} disabled={!isEnabled} />
+                    <button onClick={() => {
+                      if (!isEnabled || !form.ufdInFeeCode) return;
+                      setUfdInRows(p => [...p, { feeCode: form.ufdInFeeCode, description: form.ufdInDescription, amount: form.ufdInAmount, pct: form.ufdInPct, newAmount: form.ufdInNewAmount }]);
+                      setForm(p => ({ ...p, ufdInFeeCode: '', ufdInDescription: '', ufdInAmount: '', ufdInPct: '', ufdInNewAmount: '' }));
+                    }} disabled={!isEnabled || !form.ufdInFeeCode}
+                      style={{ height: '20px', width: '100%', background: 'linear-gradient(to bottom, #fde047, #eab308)', border: '1px solid #ca8a04', borderRadius: '3px', color: '#000', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isEnabled && !!form.ufdInFeeCode ? 'pointer' : 'not-allowed', padding: 0 }} title="Add">▼</button>
+                  </div>
+
+                  {/* Display Table/Box */}
+                  <div style={{ background: '#f1f5f9', border: '1px solid #94a3b8', minHeight: '120px', width: '100%', boxSizing: 'border-box' }}>
+                    {ufdInRows.length > 0 && (
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+                        <tbody>
+                          {ufdInRows.map((r, i) => (
+                            <tr key={i} style={{ borderBottom: '1px solid #cbd5e1' }}>
+                              <td style={{ padding: '4px', width: '18%' }}>{r.feeCode}</td>
+                              <td style={{ padding: '4px', width: '40%' }}>{r.description}</td>
+                              <td style={{ padding: '4px', width: '15%' }}>{r.amount}</td>
+                              <td style={{ padding: '4px', width: '8%' }}>{r.pct}</td>
+                              <td style={{ padding: '4px', width: '15%' }}>{r.newAmount}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>
+
         </div>
+      </div>
+    </div >
+  );
+}
+
+// ========================================
+// UNIT TRANSFER/SWITCHING MODAL (COMBINED)
+// ========================================
+function UnitTransferSwitchingModal({ onClose }: { onClose: () => void }) {
+  const [activeType, setActiveType] = useState<'Transfer' | 'Switching'>('Transfer');
+
+  const radioBtnContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '20px',
+    padding: '15px',
+    background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+    borderRadius: '12px',
+    marginBottom: '15px',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+  };
+
+  const radioOptionStyle = (active: boolean): React.CSSProperties => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    background: active ? '#ffffff' : 'transparent',
+    border: active ? '2px solid #3b82f6' : '2px solid transparent',
+    boxShadow: active ? '0 10px 15px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -2px rgba(59, 130, 246, 0.05)' : 'none',
+    transform: active ? 'translateY(-2px)' : 'none',
+  });
+
+  const radioCircleStyle = (active: boolean): React.CSSProperties => ({
+    width: '18px',
+    height: '18px',
+    borderRadius: '50%',
+    border: `2px solid ${active ? '#3b82f6' : '#94a3b8'}`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.3s ease',
+    background: '#fff',
+  });
+
+  const radioInnerStyle = (active: boolean): React.CSSProperties => ({
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    background: '#3b82f6',
+    transform: `scale(${active ? 1 : 0})`,
+    transition: 'transform 0.2s ease-in-out',
+  });
+
+  const radioLabelStyle = (active: boolean): React.CSSProperties => ({
+    fontSize: '14px',
+    fontWeight: 700,
+    color: active ? '#1e3a8a' : '#64748b',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+  });
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={radioBtnContainerStyle}>
+        <div
+          style={radioOptionStyle(activeType === 'Transfer')}
+          onClick={() => setActiveType('Transfer')}
+        >
+          <div style={radioCircleStyle(activeType === 'Transfer')}>
+            <div style={radioInnerStyle(activeType === 'Transfer')} />
+          </div>
+          <span style={radioLabelStyle(activeType === 'Transfer')}>Unit Transfer</span>
+        </div>
+
+        <div
+          style={radioOptionStyle(activeType === 'Switching')}
+          onClick={() => setActiveType('Switching')}
+        >
+          <div style={radioCircleStyle(activeType === 'Switching')}>
+            <div style={radioInnerStyle(activeType === 'Switching')} />
+          </div>
+          <span style={radioLabelStyle(activeType === 'Switching')}>Unit Switching</span>
+        </div>
+      </div>
+
+      <div style={{ transition: 'all 0.3s ease' }}>
+        {activeType === 'Transfer' ? (
+          <UnitTransferModal onClose={onClose} />
+        ) : (
+          <UnitSwitchingModal onClose={onClose} />
+        )}
       </div>
     </div>
   );
@@ -2962,10 +3199,11 @@ function UnitConsolidationModal({ onClose: _onClose }: { onClose: () => void }) 
     invType: '', agentBank: '',
     unitPrice: '', redemption: '',
     remark: '', reasonToEdit: '',
-    fromAccNo: '', fromHolderNo: '', fromNoOfUnits: '', fromValue: '',
-    toAccNo: '', toHolderNo: '', toNoOfUnits: '', toValue: '',
+    fromAccNo: '', fromHolderNo: '', fromHolderName: '', fromNoOfUnits: '', fromValue: '',
+    toAccNo: '', toHolderNo: '', toHolderName: '', toNoOfUnits: '', toValue: '',
     certNo: '', availableUnits: '', consolidateUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '',
     agency: '', subAgency: '', agent: '',
+    toAgency: '', toSubAgency: '', toAgent: '',
   };
 
   const [consolidationForm, setConsolidationForm] = useState(emptyConsolidationForm);
@@ -3047,23 +3285,18 @@ function UnitConsolidationModal({ onClose: _onClose }: { onClose: () => void }) 
     const label = side === 'from' ? 'From' : 'To';
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '25% 25% 49%', gap: '0 8px', alignItems: 'end' }}>
           <Field2 label={`Acc No [ ${label} ]`}>
             <input style={inp2()} value={(consolidationForm as any)[accKey]} onChange={e => setC(accKey, e.target.value)} disabled={!isEnabled} />
-          </Field2>
-          <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
             <button style={iconBtn2('#1e3a8a')} onClick={() => isEnabled && (side === 'from' ? setShowFromAccSearch(true) : setShowToAccSearch(true))} disabled={!isEnabled}>A</button>
-          </div>
-          <div />
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
+          </Field2>
           <Field2 label={`Holder No. [ ${label} ]`}>
             <input style={inp2()} value={(consolidationForm as any)[hldKey]} onChange={e => setC(hldKey, e.target.value)} disabled={!isEnabled} />
-          </Field2>
-          <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
             <button style={iconBtn2('#7c3aed')} onClick={() => isEnabled && (side === 'from' ? setShowFromHldSearch(true) : setShowToHldSearch(true))} disabled={!isEnabled}>H</button>
-          </div>
-          <div />
+          </Field2>
+          <Field2 label={`Holder Name [ ${label} ]`}>
+            <input style={inp2({ background: '#f8fafc', color: '#1e3a8a', fontWeight: 600, borderColor: '#cbd5e1' })} value={(consolidationForm as any)[side === 'from' ? 'fromHolderName' : 'toHolderName']} disabled readOnly />
+          </Field2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
           <Field2 label={`No of Unit [ ${label} ]`}>
@@ -3082,8 +3315,8 @@ function UnitConsolidationModal({ onClose: _onClose }: { onClose: () => void }) 
 
       <AccountSearchModal isOpen={showFromAccSearch} onClose={() => setShowFromAccSearch(false)} onGet={r => setC('fromAccNo', r.accountNo || '')} onSelect={r => setC('fromAccNo', r.accountNo || '')} title="Search Account [From]" />
       <AccountSearchModal isOpen={showToAccSearch} onClose={() => setShowToAccSearch(false)} onGet={r => setC('toAccNo', r.accountNo || '')} onSelect={r => setC('toAccNo', r.accountNo || '')} title="Search Account [To]" />
-      <HolderSearchModal isOpen={showFromHldSearch} onClose={() => setShowFromHldSearch(false)} onSelect={(r: HolderRecord) => setC('fromHolderNo', r.holderId)} />
-      <HolderSearchModal isOpen={showToHldSearch} onClose={() => setShowToHldSearch(false)} onSelect={(r: HolderRecord) => setC('toHolderNo', r.holderId)} />
+      <HolderSearchModal isOpen={showFromHldSearch} onClose={() => setShowFromHldSearch(false)} onSelect={(r: HolderRecord) => { setC('fromHolderNo', r.holderId); setC('fromHolderName', r.holderName); }} />
+      <HolderSearchModal isOpen={showToHldSearch} onClose={() => setShowToHldSearch(false)} onSelect={(r: HolderRecord) => { setC('toHolderNo', r.holderId); setC('toHolderName', r.holderName); }} />
       <EditSearchModal isOpen={showEditSearch} onClose={() => setShowEditSearch2(false)} title="Edit — Select Consolidation Record" onSelect={r => setC('consolidationNo', (r as any).transactionNo || '')} />
       <AkctNoSearchModal isOpen={showAkctSearch} onClose={() => setShowAkctSearch2(false)} onSelect={r => setC('consolidationNo', (r as any).akctNo || '')} />
 
@@ -3112,14 +3345,14 @@ function UnitConsolidationModal({ onClose: _onClose }: { onClose: () => void }) 
             <input style={inp2({ flex: 1 })} value={consolidationForm.consolidationNo} onChange={e => setC('consolidationNo', e.target.value)} disabled={!isEnabled} />
             <button style={iconBtn2('#b45309')} onClick={() => isEnabled && setShowEditSearch2(true)} disabled={!isEnabled}>E</button>
           </Field2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 8px', alignItems: 'end' }}>
-            <Field2 label="Unit Price">
-              <input type="number" style={inp2()} value={consolidationForm.unitPrice} onChange={e => setC('unitPrice', e.target.value)} disabled={!isEnabled} />
-            </Field2>
-            <Field2 label="Redemption">
+          {/* Unit Price block */}
+          <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0, height: '100%', boxSizing: 'border-box' }}>
+            <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Unit Price</legend>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+              <span style={{ fontSize: '11px', color: '#1d4ed8' }}>Redemption</span>
               <input type="number" style={inp2()} value={consolidationForm.redemption} onChange={e => setC('redemption', e.target.value)} disabled={!isEnabled} />
-            </Field2>
-          </div>
+            </div>
+          </fieldset>
         </div>
 
         {/* Row 3: Investment Type | Agent/Bank */}
@@ -3173,62 +3406,6 @@ function UnitConsolidationModal({ onClose: _onClose }: { onClose: () => void }) 
           {activeTab === 'Consolidator [From]' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <ConHolderPanel side="from" />
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '11px', color: '#374151', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px', padding: '4px 8px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', borderRadius: '4px' }}>Certificates</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,minmax(0,1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
-                  {(['certNo', 'availableUnits', 'consolidateUnits', 'balanceUnits', 'certAmount', 'blockedUnits'] as const).map((f, i) => (
-                    <input key={f} className="setup-input-field" type={i > 0 ? 'number' : 'text'}
-                      value={(consolidationForm as any)[f]}
-                      onChange={e => {
-                        setC(f, e.target.value);
-                        if (f === 'consolidateUnits') {
-                          const avail = parseFloat(consolidationForm.availableUnits) || 0;
-                          setC('balanceUnits', (avail - (parseFloat(e.target.value) || 0)).toString());
-                        }
-                      }}
-                      style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
-                      disabled={!isEnabled}
-                      placeholder={['Certificate No', 'Available Units', 'Consolidate Units', 'Balance Units', 'Amount', 'Blocked Units'][i]}
-                    />
-                  ))}
-                  <button
-                    onClick={() => {
-                      if (!isEnabled || !consolidationForm.certNo) return;
-                      setCertRows(p => [...p, { certificateNo: consolidationForm.certNo, availableUnits: consolidationForm.availableUnits, consolidateUnits: consolidationForm.consolidateUnits, balanceUnits: consolidationForm.balanceUnits, amount: consolidationForm.certAmount, blockedUnits: consolidationForm.blockedUnits }]);
-                      setConsolidationForm(p => ({ ...p, certNo: '', availableUnits: '', consolidateUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '' }));
-                    }}
-                    disabled={!isEnabled || !consolidationForm.certNo}
-                    style={{ background: isEnabled && consolidationForm.certNo ? '#b45309' : '#9ca3af', color: '#fff', border: 'none', borderRadius: '3px', width: '36px', height: '28px', fontSize: '14px', fontWeight: 700, cursor: isEnabled && consolidationForm.certNo ? 'pointer' : 'not-allowed', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-                    title="Add"
-                  >▼</button>
-                </div>
-                <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                    <thead>
-                      <tr>
-                        {['Certificate No', 'Available Units', 'Consolidate Units', 'Balance Units', 'Amount', 'Blocked Units'].map((h, i, arr) => (
-                          <th key={h} style={{ ...thStyle2, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {certRows.length === 0
-                        ? <tr><td colSpan={6} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
-                        : certRows.map((r, i) => (
-                          <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                            <td style={tdStyle2}>{r.certificateNo}</td>
-                            <td style={tdStyle2}>{r.availableUnits}</td>
-                            <td style={tdStyle2}>{r.consolidateUnits}</td>
-                            <td style={tdStyle2}>{r.balanceUnits}</td>
-                            <td style={tdStyle2}>{r.amount}</td>
-                            <td style={{ ...tdStyle2, borderRight: 'none' }}>{r.blockedUnits}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div style={{ marginTop: '5px', fontSize: '11px', color: '#6b7280', fontStyle: 'italic' }}>Single click to select · Double click to full consolidate.</div>
-              </div>
             </div>
           )}
 
@@ -3244,25 +3421,115 @@ function UnitConsolidationModal({ onClose: _onClose }: { onClose: () => void }) 
 
           {/* Agent Details */}
           {activeTab === 'Agent Details' && (
-            <div>
-              <div style={{ display: 'inline-block', padding: '3px 10px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', color: '#1e3a8a', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: '4px', marginBottom: '12px' }}>Agents</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL2}>Agency</span>
-                  <TableDropdown value={consolidationForm.agency} displayValue={consolidationForm.agency ? `${consolidationForm.agency} – ${agencyTableData.find(r => r.agency_code === consolidationForm.agency)?.agency_name || ''}` : ''} placeholder="Select Agency" columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]} rows={agencyTableData} valueKey="agency_code" onSelect={row => setC('agency', row.agency_code)} disabled={!isEnabled} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '3px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0 }}>
+                <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Agents From</legend>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={consolidationForm.agency} displayValue={consolidationForm.agency ? `${consolidationForm.agency} – ${agencyTableData.find(r => r.agency_code === consolidationForm.agency)?.agency_name || ''}` : ''} placeholder="" columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]} rows={agencyTableData} valueKey="agency_code" onSelect={row => setC('agency', row.agency_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Sub Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={consolidationForm.subAgency} displayValue={consolidationForm.subAgency ? `${consolidationForm.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === consolidationForm.subAgency)?.subagent_name || ''}` : ''} placeholder="" columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]} rows={subAgencyTableData} valueKey="subagent_code" onSelect={row => setC('subAgency', row.subagent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agent</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={consolidationForm.agent} displayValue={consolidationForm.agent ? `${consolidationForm.agent} – ${agentTableData.find(r => r.agent_code === consolidationForm.agent)?.agent_name || ''}` : ''} placeholder="" columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]} rows={agentTableData} valueKey="agent_code" onSelect={row => setC('agent', row.agent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL2}>Sub Agency</span>
-                  <TableDropdown value={consolidationForm.subAgency} displayValue={consolidationForm.subAgency ? `${consolidationForm.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === consolidationForm.subAgency)?.subagent_name || ''}` : ''} placeholder="Select Sub Agency" columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]} rows={subAgencyTableData} valueKey="subagent_code" onSelect={row => setC('subAgency', row.subagent_code)} disabled={!isEnabled} />
+              </fieldset>
+
+              <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '3px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0 }}>
+                <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Agents To</legend>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={consolidationForm.toAgency} displayValue={consolidationForm.toAgency ? `${consolidationForm.toAgency} – ${agencyTableData.find(r => r.agency_code === consolidationForm.toAgency)?.agency_name || ''}` : ''} placeholder="" columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]} rows={agencyTableData} valueKey="agency_code" onSelect={row => setC('toAgency', row.agency_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Sub Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={consolidationForm.toSubAgency} displayValue={consolidationForm.toSubAgency ? `${consolidationForm.toSubAgency} – ${subAgencyTableData.find(r => r.subagent_code === consolidationForm.toSubAgency)?.subagent_name || ''}` : ''} placeholder="" columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]} rows={subAgencyTableData} valueKey="subagent_code" onSelect={row => setC('toSubAgency', row.subagent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agent</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={consolidationForm.toAgent} displayValue={consolidationForm.toAgent ? `${consolidationForm.toAgent} – ${agentTableData.find(r => r.agent_code === consolidationForm.toAgent)?.agent_name || ''}` : ''} placeholder="" columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]} rows={agentTableData} valueKey="agent_code" onSelect={row => setC('toAgent', row.agent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL2}>Agent</span>
-                  <TableDropdown value={consolidationForm.agent} displayValue={consolidationForm.agent ? `${consolidationForm.agent} – ${agentTableData.find(r => r.agent_code === consolidationForm.agent)?.agent_name || ''}` : ''} placeholder="Select Agent" columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]} rows={agentTableData} valueKey="agent_code" onSelect={row => setC('agent', row.agent_code)} disabled={!isEnabled} />
-                </div>
-              </div>
+              </fieldset>
             </div>
           )}
 
+        </div>
+
+        {/* ── Certificates Section (Common for all tabs) ── */}
+        <div style={{ padding: '0 14px 14px 14px', borderTop: '1px solid #e2e8f0', background: '#ffffff', flexShrink: 0 }}>
+          <div style={{ fontWeight: 700, fontSize: '11px', color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px', padding: '6px 10px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', borderRadius: '4px' }}>Certificates</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,minmax(0,1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+            {(['certNo', 'availableUnits', 'consolidateUnits', 'balanceUnits', 'certAmount', 'blockedUnits'] as const).map((f, i) => (
+              <input key={f} className="setup-input-field" type={i > 0 ? 'number' : 'text'}
+                value={(consolidationForm as any)[f]}
+                onChange={e => {
+                  setC(f, e.target.value);
+                  if (f === 'consolidateUnits') {
+                    const avail = parseFloat(consolidationForm.availableUnits) || 0;
+                    setC('balanceUnits', (avail - (parseFloat(e.target.value) || 0)).toString());
+                  }
+                }}
+                style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+                disabled={!isEnabled}
+                placeholder={['Certificate No', 'Available Units', 'Consolidate Units', 'Balance Units', 'Amount', 'Blocked Units'][i]}
+              />
+            ))}
+            <button
+              onClick={() => {
+                if (!isEnabled || !consolidationForm.certNo) return;
+                setCertRows(p => [...p, { certificateNo: consolidationForm.certNo, availableUnits: consolidationForm.availableUnits, consolidateUnits: consolidationForm.consolidateUnits, balanceUnits: consolidationForm.balanceUnits, amount: consolidationForm.certAmount, blockedUnits: consolidationForm.blockedUnits }]);
+                setConsolidationForm(p => ({ ...p, certNo: '', availableUnits: '', consolidateUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '' }));
+              }}
+              disabled={!isEnabled || !consolidationForm.certNo}
+              style={{ background: isEnabled && consolidationForm.certNo ? '#b45309' : '#9ca3af', color: '#fff', border: 'none', borderRadius: '3px', width: '36px', height: '28px', fontSize: '14px', fontWeight: 700, cursor: isEnabled && consolidationForm.certNo ? 'pointer' : 'not-allowed', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+              title="Add"
+            >▼</button>
+          </div>
+          <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <thead>
+                <tr>
+                  {['Certificate No', 'Available Units', 'Consolidate Units', 'Balance Units', 'Amount', 'Blocked Units'].map((h, i, arr) => (
+                    <th key={h} style={{ ...thStyle2, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {certRows.length === 0
+                  ? <tr><td colSpan={6} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                  : certRows.map((r, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                      <td style={tdStyle2}>{r.certificateNo}</td>
+                      <td style={tdStyle2}>{r.availableUnits}</td>
+                      <td style={tdStyle2}>{r.consolidateUnits}</td>
+                      <td style={tdStyle2}>{r.balanceUnits}</td>
+                      <td style={tdStyle2}>{r.amount}</td>
+                      <td style={{ ...tdStyle2, borderRight: 'none' }}>{r.blockedUnits}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: '5px', fontSize: '11px', color: '#6b7280', fontStyle: 'italic' }}>Single click to select · Double click to full consolidate.</div>
         </div>
       </div>
     </div>
@@ -3298,13 +3565,14 @@ function UnitTransferModal({ onClose: _onClose }: { onClose: () => void }) {
     unitPrice: '', redemption: '',
     remark: '', reasonToEdit: '',
     // Transferor [From]
-    fromAccNo: '', fromHolderNo: '', fromNoOfUnits: '', fromValue: '',
+    fromAccNo: '', fromHolderNo: '', fromHolderName: '', fromNoOfUnits: '', fromValue: '',
     // Transferee [To]
-    toAccNo: '', toHolderNo: '', toNoOfUnits: '', toValue: '',
+    toAccNo: '', toHolderNo: '', toHolderName: '', toNoOfUnits: '', toValue: '',
     // Certificates row input
     certNo: '', availableUnits: '', transferUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '',
     // Agent Details
     agency: '', subAgency: '', agent: '',
+    toAgency: '', toSubAgency: '', toAgent: '',
   };
 
   const [form, setForm] = useState(emptyForm);
@@ -3391,23 +3659,18 @@ function UnitTransferModal({ onClose: _onClose }: { onClose: () => void }) {
     const label = side === 'from' ? 'From' : 'To';
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '25% 25% 49%', gap: '0 8px', alignItems: 'end' }}>
           <Field label={`Acc No [ ${label} ]`}>
             <input style={inp()} value={(form as any)[accKey]} onChange={e => set(accKey, e.target.value)} disabled={!isEnabled} />
-          </Field>
-          <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
             <button style={iconBtn(accBg)} onClick={() => isEnabled && (side === 'from' ? setShowFromAccSearch(true) : setShowToAccSearch(true))} disabled={!isEnabled}>A</button>
-          </div>
-          <div />
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
+          </Field>
           <Field label={`Holder No. [ ${label} ]`}>
             <input style={inp()} value={(form as any)[hldKey]} onChange={e => set(hldKey, e.target.value)} disabled={!isEnabled} />
-          </Field>
-          <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
             <button style={iconBtn(hldBg)} onClick={() => isEnabled && (side === 'from' ? setShowFromHldSearch(true) : setShowToHldSearch(true))} disabled={!isEnabled}>H</button>
-          </div>
-          <div />
+          </Field>
+          <Field label={`Holder Name [ ${label} ]`}>
+            <input style={inp({ background: '#f8fafc', color: '#1e3a8a', fontWeight: 600, borderColor: '#cbd5e1' })} value={(form as any)[side === 'from' ? 'fromHolderName' : 'toHolderName']} disabled readOnly />
+          </Field>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
           <Field label={`No of Unit [ ${label} ]`}>
@@ -3427,8 +3690,8 @@ function UnitTransferModal({ onClose: _onClose }: { onClose: () => void }) {
       {/* ── Sub-modals ── */}
       <AccountSearchModal isOpen={showFromAccSearch} onClose={() => setShowFromAccSearch(false)} onGet={r => set('fromAccNo', r.accountNo || '')} onSelect={r => set('fromAccNo', r.accountNo || '')} title="Search Account [From]" />
       <AccountSearchModal isOpen={showToAccSearch} onClose={() => setShowToAccSearch(false)} onGet={r => set('toAccNo', r.accountNo || '')} onSelect={r => set('toAccNo', r.accountNo || '')} title="Search Account [To]" />
-      <HolderSearchModal isOpen={showFromHldSearch} onClose={() => setShowFromHldSearch(false)} onSelect={(r: HolderRecord) => set('fromHolderNo', r.holderId)} />
-      <HolderSearchModal isOpen={showToHldSearch} onClose={() => setShowToHldSearch(false)} onSelect={(r: HolderRecord) => set('toHolderNo', r.holderId)} />
+      <HolderSearchModal isOpen={showFromHldSearch} onClose={() => setShowFromHldSearch(false)} onSelect={(r: HolderRecord) => { set('fromHolderNo', r.holderId); set('fromHolderName', r.holderName); }} />
+      <HolderSearchModal isOpen={showToHldSearch} onClose={() => setShowToHldSearch(false)} onSelect={(r: HolderRecord) => { set('toHolderNo', r.holderId); set('toHolderName', r.holderName); }} />
       <EditSearchModal isOpen={showEditSearch} onClose={() => setShowEditSearch(false)} title="Edit — Select Transfer Record" onSelect={r => set('transferNo', (r as any).transactionNo || '')} />
       <AkctNoSearchModal isOpen={showAkctSearch} onClose={() => setShowAkctSearch(false)} onSelect={r => set('transferNo', (r as any).akctNo || '')} />
 
@@ -3464,15 +3727,14 @@ function UnitTransferModal({ onClose: _onClose }: { onClose: () => void }) {
             <input style={inp({ flex: 1 })} value={form.transferNo} onChange={e => set('transferNo', e.target.value)} disabled={!isEnabled} />
             <button style={iconBtn('#b45309')} onClick={() => isEnabled && setShowEditSearch(true)} disabled={!isEnabled}>E</button>
           </Field>
-          {/* Unit Price / Redemption side-by-side */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 8px', alignItems: 'end' }}>
-            <Field label="Unit Price">
-              <input type="number" style={inp()} value={form.unitPrice} onChange={e => set('unitPrice', e.target.value)} disabled={!isEnabled} />
-            </Field>
-            <Field label="Redemption">
+          {/* Unit Price / Redemption block */}
+          <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0, height: '100%', boxSizing: 'border-box' }}>
+            <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Unit Price</legend>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+              <span style={{ fontSize: '11px', color: '#1d4ed8' }}>Redemption</span>
               <input type="number" style={inp()} value={form.redemption} onChange={e => set('redemption', e.target.value)} disabled={!isEnabled} />
-            </Field>
-          </div>
+            </div>
+          </fieldset>
         </div>
 
         {/* Row 3: Investment Type | Agent/Bank */}
@@ -3544,56 +3806,6 @@ function UnitTransferModal({ onClose: _onClose }: { onClose: () => void }) {
           {activeTab === 'Transferor [From]' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <HolderPanel side="from" />
-              {/* Certificates sub-section */}
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '11px', color: '#374151', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px', padding: '4px 8px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', borderRadius: '4px' }}>Certificates</div>
-                {/* Input row */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,minmax(0,1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
-                  {(['certNo', 'availableUnits', 'transferUnits', 'balanceUnits', 'certAmount', 'blockedUnits'] as const).map((f, i) => (
-                    <input key={f} className="setup-input-field" type={i > 0 ? 'number' : 'text'} value={(form as any)[f]} onChange={e => {
-                      set(f, e.target.value);
-                      if (f === 'transferUnits') {
-                        const avail = parseFloat(form.availableUnits) || 0;
-                        set('balanceUnits', (avail - (parseFloat(e.target.value) || 0)).toString());
-                      }
-                    }} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled}
-                      placeholder={['Certificate No', 'Available Units', 'Transfer Units', 'Balance Units', 'Amount', 'Blocked Units'][i]} />
-                  ))}
-                  <button onClick={() => {
-                    if (!isEnabled || !form.certNo) return;
-                    setCertRows(p => [...p, { certificateNo: form.certNo, availableUnits: form.availableUnits, transferUnits: form.transferUnits, balanceUnits: form.balanceUnits, amount: form.certAmount, blockedUnits: form.blockedUnits }]);
-                    setForm(p => ({ ...p, certNo: '', availableUnits: '', transferUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '' }));
-                  }} disabled={!isEnabled || !form.certNo}
-                    style={{ background: isEnabled && form.certNo ? '#b45309' : '#9ca3af', color: '#fff', border: 'none', borderRadius: '3px', width: '36px', height: '28px', fontSize: '14px', fontWeight: 700, cursor: isEnabled && form.certNo ? 'pointer' : 'not-allowed', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} title="Add">▼</button>
-                </div>
-                {/* Table */}
-                <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                    <thead>
-                      <tr>
-                        {['Certificate No', 'Available Units', 'Transfer Units', 'Balance Units', 'Amount', 'Blocked Units'].map((h, i, arr) => (
-                          <th key={h} style={{ ...tableHeaderStyle, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {certRows.length === 0
-                        ? <tr><td colSpan={6} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
-                        : certRows.map((r, i) => (
-                          <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                            <td style={tableCellStyle}>{r.certificateNo}</td>
-                            <td style={tableCellStyle}>{r.availableUnits}</td>
-                            <td style={tableCellStyle}>{r.transferUnits}</td>
-                            <td style={tableCellStyle}>{r.balanceUnits}</td>
-                            <td style={tableCellStyle}>{r.amount}</td>
-                            <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.blockedUnits}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div style={{ marginTop: '5px', fontSize: '11px', color: '#6b7280', fontStyle: 'italic' }}>Single click to select · Double click to full transfer.</div>
-              </div>
             </div>
           )}
 
@@ -3609,25 +3821,108 @@ function UnitTransferModal({ onClose: _onClose }: { onClose: () => void }) {
 
           {/* ── Agent Details ── */}
           {activeTab === 'Agent Details' && (
-            <div>
-              <div style={{ display: 'inline-block', padding: '3px 10px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', color: '#1e3a8a', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: '4px', marginBottom: '12px' }}>Agents</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL}>Agency</span>
-                  <TableDropdown value={form.agency} displayValue={form.agency ? `${form.agency} – ${agencyTableData.find(r => r.agency_code === form.agency)?.agency_name || ''}` : ''} placeholder="Select Agency" columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]} rows={agencyTableData} valueKey="agency_code" onSelect={row => set('agency', row.agency_code)} disabled={!isEnabled} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '3px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0 }}>
+                <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Agents From</legend>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={form.agency} displayValue={form.agency ? `${form.agency} – ${agencyTableData.find(r => r.agency_code === form.agency)?.agency_name || ''}` : ''} placeholder="" columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]} rows={agencyTableData} valueKey="agency_code" onSelect={row => set('agency', row.agency_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Sub Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={form.subAgency} displayValue={form.subAgency ? `${form.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.subAgency)?.subagent_name || ''}` : ''} placeholder="" columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]} rows={subAgencyTableData} valueKey="subagent_code" onSelect={row => set('subAgency', row.subagent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agent</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={form.agent} displayValue={form.agent ? `${form.agent} – ${agentTableData.find(r => r.agent_code === form.agent)?.agent_name || ''}` : ''} placeholder="" columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]} rows={agentTableData} valueKey="agent_code" onSelect={row => set('agent', row.agent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL}>Sub Agency</span>
-                  <TableDropdown value={form.subAgency} displayValue={form.subAgency ? `${form.subAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.subAgency)?.subagent_name || ''}` : ''} placeholder="Select Sub Agency" columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]} rows={subAgencyTableData} valueKey="subagent_code" onSelect={row => set('subAgency', row.subagent_code)} disabled={!isEnabled} />
+              </fieldset>
+
+              <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '3px', padding: '6px 12px 14px', margin: 0, background: '#ffffff', minWidth: 0 }}>
+                <legend style={{ color: '#1d4ed8', fontSize: '11px', padding: '0 4px', background: '#ffffff' }}>Agents To</legend>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={form.toAgency} displayValue={form.toAgency ? `${form.toAgency} – ${agencyTableData.find(r => r.agency_code === form.toAgency)?.agency_name || ''}` : ''} placeholder="" columns={[{ key: 'agency_code', header: 'Agency Code', width: '40%' }, { key: 'agency_name', header: 'Agency Name', width: '60%' }]} rows={agencyTableData} valueKey="agency_code" onSelect={row => set('toAgency', row.agency_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Sub Agency</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={form.toSubAgency} displayValue={form.toSubAgency ? `${form.toSubAgency} – ${subAgencyTableData.find(r => r.subagent_code === form.toSubAgency)?.subagent_name || ''}` : ''} placeholder="" columns={[{ key: 'subagent_code', header: 'Sub Agency Code', width: '40%' }, { key: 'subagent_name', header: 'Sub Agency Name', width: '60%' }]} rows={subAgencyTableData} valueKey="subagent_code" onSelect={row => set('toSubAgency', row.subagent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ width: '80px', fontSize: '11px', color: '#1d4ed8' }}>Agent</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <TableDropdown value={form.toAgent} displayValue={form.toAgent ? `${form.toAgent} – ${agentTableData.find(r => r.agent_code === form.toAgent)?.agent_name || ''}` : ''} placeholder="" columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]} rows={agentTableData} valueKey="agent_code" onSelect={row => set('toAgent', row.agent_code)} disabled={!isEnabled} />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <span style={LBL}>Agent</span>
-                  <TableDropdown value={form.agent} displayValue={form.agent ? `${form.agent} – ${agentTableData.find(r => r.agent_code === form.agent)?.agent_name || ''}` : ''} placeholder="Select Agent" columns={[{ key: 'agent_code', header: 'Agent Code', width: '25%' }, { key: 'agent_name', header: 'Agent Name', width: '35%' }, { key: 'agency_code', header: 'Agency', width: '20%' }, { key: 'sub_agency_code', header: 'Sub Agency', width: '20%' }]} rows={agentTableData} valueKey="agent_code" onSelect={row => set('agent', row.agent_code)} disabled={!isEnabled} />
-                </div>
-              </div>
+              </fieldset>
             </div>
           )}
 
+        </div>
+
+        {/* ── Certificates Section (Common for all tabs) ── */}
+        <div style={{ padding: '0 14px 14px 14px', borderTop: '1px solid #e2e8f0', background: '#ffffff', flexShrink: 0 }}>
+          <div style={{ fontWeight: 700, fontSize: '11px', color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px', padding: '6px 10px', background: 'linear-gradient(90deg,#e8edf5,#f1f4f9)', borderRadius: '4px' }}>Certificates</div>
+          {/* Input row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,minmax(0,1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+            {(['certNo', 'availableUnits', 'transferUnits', 'balanceUnits', 'certAmount', 'blockedUnits'] as const).map((f, i) => (
+              <input key={f} className="setup-input-field" type={i > 0 ? 'number' : 'text'} value={(form as any)[f]} onChange={e => {
+                set(f, e.target.value);
+                if (f === 'transferUnits') {
+                  const avail = parseFloat(form.availableUnits) || 0;
+                  set('balanceUnits', (avail - (parseFloat(e.target.value) || 0)).toString());
+                }
+              }} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }} disabled={!isEnabled}
+                placeholder={['Certificate No', 'Available Units', 'Transfer Units', 'Balance Units', 'Amount', 'Blocked Units'][i]} />
+            ))}
+            <button onClick={() => {
+              if (!isEnabled || !form.certNo) return;
+              setCertRows(p => [...p, { certificateNo: form.certNo, availableUnits: form.availableUnits, transferUnits: form.transferUnits, balanceUnits: form.balanceUnits, amount: form.certAmount, blockedUnits: form.blockedUnits }]);
+              setForm(p => ({ ...p, certNo: '', availableUnits: '', transferUnits: '', balanceUnits: '', certAmount: '', blockedUnits: '' }));
+            }} disabled={!isEnabled || !form.certNo}
+              style={{ background: isEnabled && form.certNo ? '#b45309' : '#9ca3af', color: '#fff', border: 'none', borderRadius: '3px', width: '36px', height: '28px', fontSize: '14px', fontWeight: 700, cursor: isEnabled && form.certNo ? 'pointer' : 'not-allowed', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} title="Add">▼</button>
+          </div>
+          {/* Table */}
+          <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <thead>
+                <tr>
+                  {['Certificate No', 'Available Units', 'Transfer Units', 'Balance Units', 'Amount', 'Blocked Units'].map((h, i, arr) => (
+                    <th key={h} style={{ ...tableHeaderStyle, borderRight: i < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {certRows.length === 0
+                  ? <tr><td colSpan={6} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>No records</td></tr>
+                  : certRows.map((r, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                      <td style={tableCellStyle}>{r.certificateNo}</td>
+                      <td style={tableCellStyle}>{r.availableUnits}</td>
+                      <td style={tableCellStyle}>{r.transferUnits}</td>
+                      <td style={tableCellStyle}>{r.balanceUnits}</td>
+                      <td style={tableCellStyle}>{r.amount}</td>
+                      <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.blockedUnits}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: '5px', fontSize: '11px', color: '#6b7280', fontStyle: 'italic' }}>Single click to select · Double click to full transfer.</div>
         </div>
       </div>
     </div>
@@ -3954,12 +4249,17 @@ function UnitOperations() {
                         ? <UnitCreationModal onClose={handleModalClose} />
                         : modalIdx === 2 && modules[modalIdx].title === 'Unit Redemption'
                           ? <UnitRedemptionModal onClose={handleModalClose} />
-                          : modalIdx === 3 && modules[modalIdx].title === 'Unit Transfer'
-                            ? <UnitTransferModal onClose={handleModalClose} />
+                          : modalIdx === 3 && modules[modalIdx].title === 'Unit Transfer/Switching'
+                            ? <UnitTransferSwitchingModal onClose={handleModalClose} />
                             : modalIdx === 4 && modules[modalIdx].title === 'Unit Consolidation'
                               ? <UnitConsolidationModal onClose={handleModalClose} />
-                              : modalIdx === 5 && modules[modalIdx].title === 'Unit Switching'
-                                ? <UnitSwitchingModal onClose={handleModalClose} />
+                              : modalIdx === 5 && modules[modalIdx].title === 'Unit Blocking'
+                                ? (
+                                  <div className="empty-content">
+                                    <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
+                                    <p>This is a placeholder modal.</p>
+                                  </div>
+                                )
                                 : (
                                   <div className="empty-content">
                                     <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
@@ -3972,9 +4272,8 @@ function UnitOperations() {
                   {!(modalIdx === 0 && modules[modalIdx].title === 'Unit Fees') &&
                     !(modalIdx === 1 && modules[modalIdx].title === 'Unit Creation') &&
                     !(modalIdx === 2 && modules[modalIdx].title === 'Unit Redemption') &&
-                    !(modalIdx === 3 && modules[modalIdx].title === 'Unit Transfer') &&
-                    !(modalIdx === 4 && modules[modalIdx].title === 'Unit Consolidation') &&
-                    !(modalIdx === 5 && modules[modalIdx].title === 'Unit Switching') && (
+                    !(modalIdx === 3 && modules[modalIdx].title === 'Unit Transfer/Switching') &&
+                    !(modalIdx === 4 && modules[modalIdx].title === 'Unit Consolidation') && (
                       <div className="setup-modal-footer"><p>Unit Operations Module</p></div>
                     )}
                 </div>

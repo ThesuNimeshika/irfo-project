@@ -188,12 +188,24 @@ const unitFeeCodeData: Record<string, string>[] = [
   { code: 'UFC002', description: 'Exit Load Fee' },
   { code: 'UFC003', description: 'Management Fee' },
   { code: 'UFC004', description: 'Performance Fee' },
-  { code: 'UFC005', description: 'Advisory Fee' },
-  { code: 'UFC006', description: 'Transaction Fee' },
-  { code: 'UFC007', description: 'Custodian Fee' },
+  { code: 'UFC005', description: 'Redemption Fee' },
+  { code: 'UFC006', description: 'Switching Fee' },
+  { code: 'UFC007', description: 'Registration Fee' },
   { code: 'UFC008', description: 'Front End Load' },
   { code: 'UFC009', description: 'Back End Load' },
   { code: 'UFC010', description: 'Switching Fee' },
+];
+
+const blockingCategoryData: Record<string, string>[] = [
+  { BC_Code: 'BC001', Active: 'Yes', Description: 'Lien Marking' },
+  { BC_Code: 'BC002', Active: 'Yes', Description: 'Court Order' },
+  { BC_Code: 'BC003', Active: 'Yes', Description: 'Internal Block' },
+  { BC_Code: 'BC004', Active: 'No', Description: 'Legacy Block' },
+];
+
+const institutionData: Record<string, string>[] = [
+  { INS_Code: 'INS001', Description: 'Bank of Ceylon', active: 'Yes', INS_Category: 'Bank', Address1: 'No 1', Address2: 'York Street', Address3: 'Colombo 01', Cont_person: 'Mr. Perera', Cont_no: '0112345678' },
+  { INS_Code: 'INS002', Description: 'Commercial Bank', active: 'Yes', INS_Category: 'Bank', Address1: 'No 21', Address2: 'Sir Chittampalam A Gardiner Mawatha', Address3: 'Colombo 02', Cont_person: 'Ms. Silva', Cont_no: '0112233445' },
 ];
 
 // ========================================
@@ -367,9 +379,10 @@ interface TableDropdownProps {
   onSelect: (row: Record<string, string>) => void;
   style?: React.CSSProperties;
   disabled?: boolean;
+  dropdownWidth?: number;
 }
 
-function TableDropdown({ value, displayValue, placeholder = 'Select', columns, rows, valueKey, onSelect, style, disabled = false }: TableDropdownProps) {
+function TableDropdown({ value, displayValue, placeholder = 'Select', columns, rows, valueKey, onSelect, style, disabled = false, dropdownWidth }: TableDropdownProps) {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState('');
   const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
@@ -381,19 +394,29 @@ function TableDropdown({ value, displayValue, placeholder = 'Select', columns, r
     const rect = triggerRef.current.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
     const popupH = 260;
+    const width = dropdownWidth || Math.max(rect.width, 380);
+
+    // Ensure it doesn't go off-screen horizontally
+    let left = rect.left;
+    if (left + width > window.innerWidth) {
+      left = window.innerWidth - width - 15;
+    }
+    if (left < 15) left = 15;
+
     // Use fixed positioning so it escapes any scroll/overflow container
     const top = spaceBelow >= popupH
       ? rect.bottom + 3
       : rect.top - popupH - 3;
+
     setPopupStyle({
       position: 'fixed',
       top,
-      left: rect.left,
-      width: Math.max(rect.width, 380),
+      left,
+      width,
       zIndex: 2147483647,  // max z-index, always above modal
     });
     setOpen(true);
-  }, []);
+  }, [dropdownWidth]);
 
   useEffect(() => {
     if (!open) return;
@@ -3930,6 +3953,295 @@ function UnitTransferModal({ onClose: _onClose }: { onClose: () => void }) {
 }
 
 // ========================================
+// UNIT BLOCKING MODAL
+// ========================================
+function UnitBlockingModal({ onClose: _onClose }: { onClose: () => void }) {
+  type UBTab = 'Blocking' | 'Releasing';
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [mode, setMode] = useState<'Block' | 'Release'>('Block');
+  const [activeTab, setActiveTab] = useState<UBTab>('Blocking');
+  const [blockedDate, setBlockedDate] = useState<Date | null>(new Date());
+
+  const [showAccountSearch, setShowAccountSearch] = useState(false);
+  const [showHolderSearch, setShowHolderSearch] = useState(false);
+
+  const emptyForm = {
+    holderAccNo: '', holderNo: '', holderName: '',
+    fundCode: '', fundName: '',
+    noOfUnits: '', totalAmount: '',
+    refDoc: '', reason: '',
+    blockingCategory: '', institution: '',
+    redemption: '', unitsToAuto: '', amount: '',
+    // Cert row
+    certNo: '', availUnits: '', unitsToBR: '', balanceUnits: '', certAmount: '', certBlockedUnits: ''
+  };
+
+  const [form, setForm] = useState(emptyForm);
+  const [gridRows, setGridRows] = useState<any[]>([]);
+
+  const tabs: UBTab[] = [mode === 'Block' ? 'Blocking' : 'Releasing'];
+
+  useEffect(() => {
+    setActiveTab(p => (p === 'Blocking' || p === 'Releasing' ? (mode === 'Block' ? 'Blocking' : 'Releasing') : p));
+  }, [mode]);
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '6px 10px',
+    background: '#f1f5f9',
+    fontWeight: 700,
+    fontSize: '11px',
+    color: '#374151',
+    textAlign: 'left',
+    borderBottom: '2px solid #cbd5e1',
+    borderRight: '1px solid #e2e8f0',
+    whiteSpace: 'nowrap',
+  };
+  const tableCellStyle: React.CSSProperties = {
+    padding: '5px 10px',
+    fontSize: '12px',
+    color: '#1f2937',
+    borderBottom: '1px solid #e2e8f0',
+    borderRight: '1px solid #e2e8f0',
+  };
+
+  const fieldH = 28;
+  const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
+    height: fieldH, padding: '0 8px', fontSize: '12px',
+    border: '1px solid #cfd8e3', borderRadius: '5px',
+    background: isEnabled ? '#ffffff' : '#f0f4f8',
+    color: '#1e293b', outline: 'none', width: '100%',
+    boxSizing: 'border-box' as const,
+    cursor: isEnabled ? 'text' : 'not-allowed',
+    ...extra,
+  });
+
+  const LBL: React.CSSProperties = { fontSize: '11px', fontWeight: 600, color: '#475569', whiteSpace: 'nowrap' };
+
+  const Field = ({ label, children, labelWidth = 100 }: { label: string; children: React.ReactNode; labelWidth?: number }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <span style={{ ...LBL, width: labelWidth, flexShrink: 0 }}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1 }}>{children}</div>
+    </div>
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {/* ── Sub-modals ── */}
+      <AccountSearchModal
+        isOpen={showAccountSearch}
+        onClose={() => setShowAccountSearch(false)}
+        onGet={r => setForm(p => ({ ...p, holderAccNo: r.accountNo || '' }))}
+        onSelect={r => setForm(p => ({ ...p, holderAccNo: r.accountNo || '' }))}
+        title="Search Account"
+      />
+      <HolderSearchModal
+        isOpen={showHolderSearch}
+        onClose={() => setShowHolderSearch(false)}
+        onSelect={(r: HolderRecord) => {
+          setForm(p => ({ ...p, holderNo: r.holderId, holderName: r.holderName }));
+        }}
+      />
+      {/* Top Radio Row */}
+      <div style={{ background: '#bfdbfe', padding: '6px 12px', borderRadius: '4px', display: 'flex', justifyContent: 'center', gap: '40px' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontWeight: 700, color: '#1e3a8a' }}>
+          <input type="radio" checked={mode === 'Block'} onChange={() => setMode('Block')} disabled={!isEnabled} /> Block
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontWeight: 700, color: '#1e3a8a' }}>
+          <input type="radio" checked={mode === 'Release'} onChange={() => setMode('Release')} disabled={!isEnabled} /> Release
+        </label>
+      </div>
+
+      <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px' }}>
+        {/* Left Col */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Field label="Unit Holder Acc No.">
+            <input style={inp()} value={form.holderAccNo} onChange={e => setForm({ ...form, holderAccNo: e.target.value })} disabled={!isEnabled} />
+            <button
+              onClick={() => isEnabled && setShowAccountSearch(true)}
+              style={{ height: 28, width: 28, background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: '4px', cursor: isEnabled ? 'pointer' : 'not-allowed' }}
+              disabled={!isEnabled}
+            >
+              A
+            </button>
+          </Field>
+          <Field label="Unit Holder No.">
+            <input style={inp()} value={form.holderNo} onChange={e => setForm({ ...form, holderNo: e.target.value })} disabled={!isEnabled} />
+            <button
+              onClick={() => isEnabled && setShowHolderSearch(true)}
+              style={{ height: 28, width: 28, background: '#7c3aed', color: '#fff', border: 'none', borderRadius: '4px', cursor: isEnabled ? 'pointer' : 'not-allowed' }}
+              disabled={!isEnabled}
+            >
+              H
+            </button>
+          </Field>
+          <Field label="No of Unit"><input style={inp()} type="number" value={form.noOfUnits} onChange={e => setForm({ ...form, noOfUnits: e.target.value })} disabled={!isEnabled} /></Field>
+          <Field label="Total Amount"><input style={inp()} type="number" value={form.totalAmount} onChange={e => setForm({ ...form, totalAmount: e.target.value })} disabled={!isEnabled} /></Field>
+          <Field label="Reference Document"><input style={inp()} value={form.refDoc} onChange={e => setForm({ ...form, refDoc: e.target.value })} disabled={!isEnabled} /></Field>
+        </div>
+
+        {/* Right Col */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Field label="Fund">
+            <FundDropdown value={form.fundCode} displayValue={form.fundName} onSelect={(c, n) => setForm({ ...form, fundCode: c, fundName: n })} disabled={!isEnabled} />
+          </Field>
+          <div style={{ display: 'flex', alignItems: 'center', height: fieldH }}>
+            <input style={inp()} value={form.holderName} onChange={e => setForm({ ...form, holderName: e.target.value })} placeholder="Unit holder name" disabled={!isEnabled} />
+          </div>
+          <Field label="Blocking Category">
+            <TableDropdown
+              value={form.blockingCategory}
+              displayValue={form.blockingCategory}
+              columns={[{ key: 'BC_Code', header: 'BC Code' }, { key: 'Active', header: 'Active' }, { key: 'Description', header: 'Description' }]}
+              rows={blockingCategoryData} valueKey="BC_Code" onSelect={r => setForm({ ...form, blockingCategory: r.BC_Code })} disabled={!isEnabled}
+            />
+          </Field>
+          <Field label="Blocked Date">
+            <DatePicker selected={blockedDate} onChange={d => setBlockedDate(d)} dateFormat="dd/MMM/yyyy" className="date-picker-input" disabled={!isEnabled} />
+          </Field>
+          <Field label="Institution">
+            <TableDropdown
+              value={form.institution}
+              displayValue={form.institution}
+              dropdownWidth={1100}
+              columns={[
+                { key: 'INS_Code', header: 'INS_Code', width: '80px' }, { key: 'Description', header: 'Description', width: '200px' }, { key: 'active', header: 'active', width: '70px' },
+                { key: 'INS_Category', header: 'INS_Categpory', width: '100px' }, { key: 'Address1', header: 'Address 1', width: '120px' }, { key: 'Address2', header: 'address2', width: '120px' },
+                { key: 'Address3', header: 'address 3', width: '120px' }, { key: 'Cont_person', header: 'Cont_person', width: '120px' }, { key: 'Cont_no', header: 'Cont_no', width: '120px' }
+              ]}
+              rows={institutionData} valueKey="INS_Code" onSelect={r => setForm({ ...form, institution: r.INS_Code })} disabled={!isEnabled}
+            />
+          </Field>
+        </div>
+
+        {/* Full width row for Reason */}
+        <div style={{ gridColumn: 'span 2' }}>
+          <Field label="Reason to Block / Release" labelWidth={140}>
+            <input style={inp()} value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })} disabled={!isEnabled} />
+          </Field>
+        </div>
+      </div>
+
+      {/* Unit Price Fieldset */}
+      <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '4px', padding: '10px', background: '#fff' }}>
+        <legend style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', padding: '0 5px' }}>Unit Price</legend>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: '15px' }}>
+          <Field label="Redemption"><input style={inp()} value={form.redemption} onChange={e => setForm({ ...form, redemption: e.target.value })} disabled={!isEnabled} /></Field>
+          <Field label={`Units to Auto ${mode}`} labelWidth={130}>
+            <input style={inp()} value={form.unitsToAuto} onChange={e => setForm({ ...form, unitsToAuto: e.target.value })} disabled={!isEnabled} />
+            <button style={{ height: 28, background: '#b45309', color: '#fff', border: 'none', borderRadius: '4px', padding: '2px 6px', cursor: isEnabled ? 'pointer' : 'not-allowed' }} disabled={!isEnabled}>▼</button>
+          </Field>
+          <Field label="Amount" labelWidth={60}>
+            <input style={inp()} value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} disabled={!isEnabled} />
+            <button style={{ height: 28, background: '#b45309', color: '#fff', border: 'none', borderRadius: '4px', padding: '2px 6px', cursor: isEnabled ? 'pointer' : 'not-allowed' }} disabled={!isEnabled}>▼</button>
+          </Field>
+        </div>
+      </fieldset>
+
+      {/* ── Button Palette ── */}
+      <CreationButtonPalette onNew={() => setIsEnabled(true)} onClear={() => { setIsEnabled(false); setForm(emptyForm); }} />
+
+      {/* Tabbed Grid Bottom */}
+      <div style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: '4px', minHeight: '200px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', borderBottom: '2px solid #e2e8f0', background: '#f8fafc', padding: '0 8px', overflowX: 'auto' }}>
+          {tabs.map(tab => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: '7px 12px',
+                background: activeTab === tab ? '#ffffff' : 'transparent',
+                color: activeTab === tab ? '#1e3a8a' : '#6b7280',
+                border: 'none',
+                borderBottom: activeTab === tab ? '2px solid #1e3a8a' : '2px solid transparent',
+                marginBottom: '-2px',
+                cursor: 'pointer',
+                fontWeight: activeTab === tab ? 700 : 600,
+                fontSize: '11px',
+                fontFamily: 'inherit',
+                transition: 'all 0.15s',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ padding: '8px', overflowY: 'auto' }}>
+          {(activeTab === 'Blocking' || activeTab === 'Releasing') && (
+            <div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr)) 36px', gap: '6px', marginBottom: '8px', alignItems: 'center' }}>
+                <input className="setup-input-field" value={form.certNo} onChange={e => setForm({ ...form, certNo: e.target.value })} style={{ width: '100%' }} disabled={!isEnabled} placeholder="Certificate No" />
+                <input className="setup-input-field" value={form.availUnits} onChange={e => setForm({ ...form, availUnits: e.target.value })} style={{ width: '100%' }} disabled={!isEnabled} placeholder="Available Units" />
+                <input className="setup-input-field" value={form.unitsToBR} onChange={e => setForm({ ...form, unitsToBR: e.target.value })} style={{ width: '100%' }} disabled={!isEnabled} placeholder={`Units to ${mode}`} />
+                <input className="setup-input-field" value={form.balanceUnits} onChange={e => setForm({ ...form, balanceUnits: e.target.value })} style={{ width: '100%' }} disabled={!isEnabled} placeholder="Balance Units" />
+                <input className="setup-input-field" value={form.certAmount} onChange={e => setForm({ ...form, certAmount: e.target.value })} style={{ width: '100%' }} disabled={!isEnabled} placeholder="Amount" />
+                <input className="setup-input-field" value={form.certBlockedUnits} onChange={e => setForm({ ...form, certBlockedUnits: e.target.value })} style={{ width: '100%' }} disabled={!isEnabled} placeholder="Blocked Units" />
+                <button
+                  onClick={() => {
+                    if (!isEnabled || !form.certNo) return;
+                    setGridRows(p => [...p, { ...form }]);
+                    setForm(p => ({ ...p, certNo: '', availUnits: '', unitsToBR: '', balanceUnits: '', certAmount: '', certBlockedUnits: '' }));
+                  }}
+                  disabled={!isEnabled || !form.certNo}
+                  style={{
+                    background: isEnabled && form.certNo ? '#b45309' : '#9ca3af',
+                    color: '#fff', border: 'none', borderRadius: '3px',
+                    width: '36px', height: '28px', fontSize: '14px', fontWeight: 700,
+                    cursor: isEnabled && form.certNo ? 'pointer' : 'not-allowed',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}
+                >
+                  ▼
+                </button>
+              </div>
+
+              <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={tableHeaderStyle}>CERTIFICATE NO</th>
+                      <th style={tableHeaderStyle}>AVAILABLE UNITS</th>
+                      <th style={tableHeaderStyle}>{activeTab.toUpperCase()} UNITS</th>
+                      <th style={tableHeaderStyle}>BALANCE UNITS</th>
+                      <th style={tableHeaderStyle}>AMOUNT</th>
+                      <th style={{ ...tableHeaderStyle, borderRight: 'none' }}>BLOCKED UNITS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gridRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} style={{ padding: '18px', textAlign: 'center', color: '#9ca3af', fontSize: '12px', fontStyle: 'italic' }}>
+                          No records
+                        </td>
+                      </tr>
+                    ) : (
+                      gridRows.map((r, i) => (
+                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                          <td style={tableCellStyle}>{r.certNo}</td>
+                          <td style={tableCellStyle}>{r.availUnits}</td>
+                          <td style={tableCellStyle}>{r.unitsToBR}</td>
+                          <td style={tableCellStyle}>{r.balanceUnits}</td>
+                          <td style={tableCellStyle}>{r.certAmount}</td>
+                          <td style={{ ...tableCellStyle, borderRight: 'none' }}>{r.certBlockedUnits}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{ marginTop: '5px', fontSize: '11px', color: '#6b7280', fontStyle: 'italic' }}>Single click to select · Double click to full {mode.toLowerCase()}.</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========================================
 // MAIN UNIT OPERATIONS COMPONENT
 // ========================================
 
@@ -4254,12 +4566,7 @@ function UnitOperations() {
                             : modalIdx === 4 && modules[modalIdx].title === 'Unit Consolidation'
                               ? <UnitConsolidationModal onClose={handleModalClose} />
                               : modalIdx === 5 && modules[modalIdx].title === 'Unit Blocking'
-                                ? (
-                                  <div className="empty-content">
-                                    <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
-                                    <p>This is a placeholder modal.</p>
-                                  </div>
-                                )
+                                ? <UnitBlockingModal onClose={handleModalClose} />
                                 : (
                                   <div className="empty-content">
                                     <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>

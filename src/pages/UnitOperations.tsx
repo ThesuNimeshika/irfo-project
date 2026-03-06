@@ -4321,115 +4321,427 @@ function DividendIssuesModal({ onClose: _onClose }: { onClose: () => void }) {
     dividendReinvestmentPrice: '',
     noOfHolders: '',
     amountMode: 'Truncate', amountPositions: '2',
-    unitsMode: 'Truncate', unitsPositions: '2'
+    unitsMode: 'Truncate', unitsPositions: '2',
   });
 
   const fieldH = 28;
+
   const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
-    height: fieldH, padding: '0 8px', fontSize: '12px',
-    border: '1px solid #cfd8e3', borderRadius: '5px',
+    height: fieldH,
+    padding: '0 8px',
+    fontSize: '12px',
+    border: '1px solid #cfd8e3',
+    borderRadius: '5px',
     background: isEnabled ? '#ffffff' : '#f0f4f8',
-    color: '#1e293b', outline: 'none', width: '100%',
+    color: '#1e293b',
+    outline: 'none',
+    width: '100%',
     boxSizing: 'border-box' as const,
     cursor: isEnabled ? 'text' : 'not-allowed',
     ...extra,
   });
 
-  const LBL: React.CSSProperties = { fontSize: '11px', fontWeight: 700, color: '#1e293b', whiteSpace: 'nowrap' };
+  const LBL: React.CSSProperties = {
+    fontSize: '11px',
+    fontWeight: 600,
+    color: '#475569',
+    whiteSpace: 'nowrap',
+  };
 
-  const Field = ({ label, children, labelWidth = 180 }: { label: string; children: React.ReactNode; labelWidth?: number }) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <span style={{ ...LBL, width: labelWidth, flexShrink: 0 }}>{label}</span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1 }}>{children}</div>
+  const sectionCard: React.CSSProperties = {
+    background: '#ffffff',
+    border: '1px solid #e2e8f0',
+    borderRadius: '8px',
+    padding: '14px 16px',
+  };
+
+  const Row = ({ label, labelW = 200, children }: { label: string; labelW?: number; children: React.ReactNode }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minHeight: fieldH }}>
+      <span style={{ ...LBL, width: labelW, flexShrink: 0 }}>{label}</span>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '6px' }}>{children}</div>
     </div>
   );
 
+  const readOnlyInp: React.CSSProperties = {
+    ...inp({ background: '#eff6ff', color: '#1e40af', fontWeight: 600, border: '1px solid #bfdbfe' }),
+  };
+
+
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 
-      {/* Top action row placeholder simulating the screenshot's empty top area before Fund */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', paddingBottom: '8px' }}>
-        <button className="setup-btn" style={{ background: '#ffffff', color: '#1e293b', border: '1px solid #cbd5e1', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }} onClick={() => setIsEnabled(!isEnabled)}>Developer</button>
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '600px' }}>
-          <Field label="Fund Name" labelWidth={90}>
-            <FundDropdown value={form.fundCode} displayValue={form.fundName} onSelect={(c, n) => setForm({ ...form, fundCode: c, fundName: n })} disabled={!isEnabled} />
-          </Field>
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '10px' }}>
-        {/* Left Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Field label="Unit Balance as at"><DatePicker selected={form.unitBalanceAsAt} onChange={d => setForm({ ...form, unitBalanceAsAt: d })} dateFormat="dd/MMM/yyyy" className="date-picker-input" disabled={!isEnabled} /></Field>
-            <button style={{ height: fieldH, padding: '0 12px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '4px', fontSize: '11px', color: '#334155', cursor: isEnabled ? 'pointer' : 'not-allowed' }} disabled={!isEnabled}>Load Units</button>
+      {/* ── Header / Fund Row ─────────────────────────────── */}
+      <div style={{ ...sectionCard, display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1 }}>
+          <span style={{ ...LBL, fontSize: '12px', width: 90, flexShrink: 0 }}>Fund Name</span>
+          <div style={{ flex: 1 }}>
+            <FundDropdown
+              value={form.fundCode}
+              displayValue={form.fundName}
+              onSelect={(c, n) => setForm({ ...form, fundCode: c, fundName: n })}
+              disabled={!isEnabled}
+            />
           </div>
-          <Field label="Dividend Pay (Reinvest) Date"><DatePicker selected={form.dividendPayDate} onChange={d => setForm({ ...form, dividendPayDate: d })} dateFormat="dd/MMM/yyyy" className="date-picker-input" disabled={!isEnabled} /></Field>
-          <Field label="Dividend Amount Per Unit"><input style={inp()} type="number" value={form.dividendAmountPerUnit} onChange={e => setForm({ ...form, dividendAmountPerUnit: e.target.value })} disabled={!isEnabled} /></Field>
+        </div>
+        <button
+          style={{
+            height: 28, padding: '0 14px', fontSize: '12px', fontWeight: 600,
+            background: isEnabled ? '#ffffff' : '#1e3a8a',
+            color: isEnabled ? '#1e293b' : '#ffffff',
+            border: `1px solid ${isEnabled ? '#cbd5e1' : '#1e3a8a'}`,
+            borderRadius: '5px', cursor: 'pointer',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+            flexShrink: 0,
+          }}
+          onClick={() => setIsEnabled(v => !v)}
+        >
+          Developer
+        </button>
+      </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Field label="Dividend Reinvestment Price Date"><DatePicker selected={form.dividendReinvestmentPriceDate} onChange={d => setForm({ ...form, dividendReinvestmentPriceDate: d })} dateFormat="dd/MMM/yyyy" className="date-picker-input" disabled={!isEnabled} /></Field>
-            <button style={{ height: fieldH, padding: '0 12px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '4px', fontSize: '11px', color: '#334155', cursor: isEnabled ? 'pointer' : 'not-allowed' }} disabled={!isEnabled}>Reinvest Price</button>
+      {/* ── Main Two-Column Form ──────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+
+        {/* Left Section */}
+        <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '8px', padding: '14px 16px', background: '#fff', margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <legend style={{ fontSize: '11px', fontWeight: 600, color: '#64748b', padding: '0 6px' }}>
+            Dividend Details
+          </legend>
+
+          {/* Unit Balance as at + Load Units */}
+          <Row label="Unit Balance as at" labelW={200}>
+            <div style={{ flex: 1 }}>
+              <DatePicker
+                selected={form.unitBalanceAsAt}
+                onChange={d => setForm({ ...form, unitBalanceAsAt: d })}
+                dateFormat="dd/MMM/yyyy"
+                placeholderText="dd/MMM/yyyy"
+                className="date-picker-input"
+                disabled={!isEnabled}
+              />
+            </div>
+            <button
+              style={{ height: fieldH, padding: '0 10px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', fontSize: '11px', color: '#334155', cursor: isEnabled ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap', flexShrink: 0 }}
+              disabled={!isEnabled}
+            >
+              Load Units
+            </button>
+          </Row>
+
+          <Row label="Dividend Pay (Reinvest) Date" labelW={200}>
+            <div style={{ flex: 1 }}>
+              <DatePicker
+                selected={form.dividendPayDate}
+                onChange={d => setForm({ ...form, dividendPayDate: d })}
+                dateFormat="dd/MMM/yyyy"
+                placeholderText="dd/MMM/yyyy"
+                className="date-picker-input"
+                disabled={!isEnabled}
+              />
+            </div>
+          </Row>
+
+          <Row label="Dividend Amount Per Unit" labelW={200}>
+            <input style={inp()} type="number" value={form.dividendAmountPerUnit} onChange={e => setForm({ ...form, dividendAmountPerUnit: e.target.value })} disabled={!isEnabled} />
+          </Row>
+
+          {/* Reinvestment Price Date + Reinvest Price btn */}
+          <Row label="Dividend Reinvestment Price Date" labelW={200}>
+            <div style={{ flex: 1 }}>
+              <DatePicker
+                selected={form.dividendReinvestmentPriceDate}
+                onChange={d => setForm({ ...form, dividendReinvestmentPriceDate: d })}
+                dateFormat="dd/MMM/yyyy"
+                placeholderText="dd/MMM/yyyy"
+                className="date-picker-input"
+                disabled={!isEnabled}
+              />
+            </div>
+            <button
+              style={{ height: fieldH, padding: '0 10px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', fontSize: '11px', color: '#334155', cursor: isEnabled ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap', flexShrink: 0 }}
+              disabled={!isEnabled}
+            >
+              Reinvest Price
+            </button>
+          </Row>
+
+          <Row label="Dividend Reinvestment Price" labelW={200}>
+            <input style={inp()} type="number" value={form.dividendReinvestmentPrice} onChange={e => setForm({ ...form, dividendReinvestmentPrice: e.target.value })} disabled={!isEnabled} />
+          </Row>
+
+          <Row label="Dividend (Ex) Date" labelW={200}>
+            <div style={{ flex: 1 }}>
+              <DatePicker
+                selected={form.dividendExDate}
+                onChange={d => setForm({ ...form, dividendExDate: d })}
+                dateFormat="dd/MMM/yyyy"
+                placeholderText="dd/MMM/yyyy"
+                className="date-picker-input"
+                disabled={!isEnabled}
+              />
+            </div>
+          </Row>
+        </fieldset>
+
+        {/* Right Section */}
+        <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '8px', padding: '14px 16px', background: '#fff', margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <legend style={{ fontSize: '11px', fontWeight: 600, color: '#64748b', padding: '0 6px' }}>
+            Computed Values
+          </legend>
+
+          <Row label="Period End Date" labelW={200}>
+            <div style={{ flex: 1 }}>
+              <DatePicker
+                selected={form.periodEndDate}
+                onChange={d => setForm({ ...form, periodEndDate: d })}
+                dateFormat="dd/MMM/yyyy"
+                placeholderText="dd/MMM/yyyy"
+                className="date-picker-input"
+                disabled={!isEnabled}
+              />
+            </div>
+          </Row>
+
+          <Row label="No of Units (Unit Balance)" labelW={200}>
+            <input style={readOnlyInp} value={form.noOfUnitsUnitBalance} readOnly placeholder="—" />
+          </Row>
+
+          <Row label="Declare Amount" labelW={200}>
+            <input style={readOnlyInp} value={form.declareAmount} readOnly placeholder="—" />
+          </Row>
+
+          {/* No of Holders highlight badge */}
+          <div style={{ marginTop: '8px', padding: '10px 14px', background: 'linear-gradient(135deg,#dbeafe,#eff6ff)', border: '1px solid #bfdbfe', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '12px', fontWeight: 600, color: '#1e40af' }}>No of Holders</span>
+            <span style={{ fontSize: '18px', fontWeight: 800, color: '#1e3a8a', letterSpacing: '0.02em' }}>{form.noOfHolders || '0'}</span>
           </div>
-          <Field label="Dividend (Ex) Date"><DatePicker selected={form.dividendExDate} onChange={d => setForm({ ...form, dividendExDate: d })} dateFormat="dd/MMM/yyyy" className="date-picker-input" disabled={!isEnabled} /></Field>
-        </div>
-
-        {/* Right Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <Field label="Period End Date"><DatePicker selected={form.periodEndDate} onChange={d => setForm({ ...form, periodEndDate: d })} dateFormat="dd/MMM/yyyy" className="date-picker-input" disabled={!isEnabled} /></Field>
-          <Field label="No of Units (Unit Balance)"><input style={inp({ background: '#f1f5f9', color: '#64748b' })} value={form.noOfUnitsUnitBalance} readOnly disabled={!isEnabled} /></Field>
-          <Field label="Declare Amount"><input style={inp({ background: '#f1f5f9', color: '#64748b' })} value={form.declareAmount} readOnly disabled={!isEnabled} /></Field>
-          {/* spacer to align with left */}
-          <div style={{ height: fieldH }}></div>
-          <Field label="Dividend Reinvestment Price"><input style={inp()} type="number" value={form.dividendReinvestmentPrice} onChange={e => setForm({ ...form, dividendReinvestmentPrice: e.target.value })} disabled={!isEnabled} /></Field>
-        </div>
+        </fieldset>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
-        <span style={{ fontSize: '11px', color: '#1e293b' }}>No of Holders <span style={{ fontWeight: 700, marginLeft: '8px' }}>{form.noOfHolders || '0'}</span></span>
-      </div>
-
-      {/* Computation Method Box */}
-      <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '6px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <legend style={{ fontSize: '11px', color: '#64748b', padding: '0 4px' }}>Computation method for Dividend amount and Reinvested Units</legend>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      {/* ── Computation Method ────────────────────────────── */}
+      <fieldset style={{ border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px 16px', background: '#fff', margin: 0 }}>
+        <legend style={{ fontSize: '11px', fontWeight: 600, color: '#64748b', padding: '0 6px' }}>
+          Computation Method — Dividend Amount &amp; Reinvested Units
+        </legend>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          {/* Amount */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>Amount</span>
-            <select style={{ ...inp({ width: '100px', appearance: 'auto', padding: '0 4px' }) }} value={form.amountMode} onChange={e => setForm({ ...form, amountMode: e.target.value })} disabled={!isEnabled}>
+            <span style={{ ...LBL, width: 55, flexShrink: 0 }}>Amount</span>
+            <select
+              style={{ height: fieldH, fontSize: '12px', border: '1px solid #cfd8e3', borderRadius: '5px', padding: '0 6px', background: isEnabled ? '#fff' : '#f0f4f8', cursor: isEnabled ? 'pointer' : 'not-allowed', flex: 1 }}
+              value={form.amountMode}
+              onChange={e => setForm({ ...form, amountMode: e.target.value })}
+              disabled={!isEnabled}
+            >
               <option value="Truncate">Truncate</option>
               <option value="Round">Round</option>
             </select>
-            <span style={LBL}>Positions</span>
-            <input style={inp({ width: '40px', textAlign: 'center' })} value={form.amountPositions} onChange={e => setForm({ ...form, amountPositions: e.target.value })} disabled={!isEnabled} />
+            <span style={{ ...LBL, flexShrink: 0 }}>Positions</span>
+            <input
+              style={{ ...inp({ width: 48, textAlign: 'center' }) }}
+              value={form.amountPositions}
+              onChange={e => setForm({ ...form, amountPositions: e.target.value })}
+              disabled={!isEnabled}
+            />
           </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* Units */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>Units</span>
-            <select style={{ ...inp({ width: '100px', appearance: 'auto', padding: '0 4px', border: '1px solid #3b82f6' }) }} value={form.unitsMode} onChange={e => setForm({ ...form, unitsMode: e.target.value })} disabled={!isEnabled}>
+            <span style={{ ...LBL, width: 55, flexShrink: 0 }}>Units</span>
+            <select
+              style={{ height: fieldH, fontSize: '12px', border: '1px solid #3b82f6', borderRadius: '5px', padding: '0 6px', background: isEnabled ? '#fff' : '#f0f4f8', cursor: isEnabled ? 'pointer' : 'not-allowed', flex: 1 }}
+              value={form.unitsMode}
+              onChange={e => setForm({ ...form, unitsMode: e.target.value })}
+              disabled={!isEnabled}
+            >
               <option value="Truncate">Truncate</option>
               <option value="Round">Round</option>
             </select>
-            <span style={LBL}>Positions</span>
-            <input style={inp({ width: '40px', textAlign: 'center' })} value={form.unitsPositions} onChange={e => setForm({ ...form, unitsPositions: e.target.value })} disabled={!isEnabled} />
+            <span style={{ ...LBL, flexShrink: 0 }}>Positions</span>
+            <input
+              style={{ ...inp({ width: 48, textAlign: 'center' }) }}
+              value={form.unitsPositions}
+              onChange={e => setForm({ ...form, unitsPositions: e.target.value })}
+              disabled={!isEnabled}
+            />
           </div>
         </div>
       </fieldset>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
-        <button className="setup-btn" style={{ minWidth: '120px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #7dd3fc', boxShadow: 'inset 0 -2px 0 rgba(0,0,0,0.1)' }} disabled={!isEnabled}>Compute</button>
-        <button className="setup-btn" style={{ minWidth: '120px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #7dd3fc', boxShadow: 'inset 0 -2px 0 rgba(0,0,0,0.1)' }} disabled={!isEnabled}>Status Print</button>
-        <button className="setup-btn" style={{ minWidth: '120px', background: '#e0f2fe', color: '#0369a1', border: '1px solid #7dd3fc', boxShadow: 'inset 0 -2px 0 rgba(0,0,0,0.1)' }} onClick={_onClose}>Close</button>
+      {/* ── Button Palette ────────────────────────────────── */}
+      <div style={{
+        display: 'flex', gap: '6px', justifyContent: 'center', flexWrap: 'wrap',
+        padding: '10px 14px',
+        background: 'linear-gradient(90deg,#f1f4f9 0%,#e8edf5 100%)',
+        borderRadius: '8px', border: '1px solid rgba(0,0,0,0.07)', flexShrink: 0,
+      }}>
+        <button className="setup-btn setup-btn-new" onClick={() => setIsEnabled(true)}><span className="setup-btn-icon">＋</span>New</button>
+        <button className="setup-btn setup-btn-save" disabled={!isEnabled}><span className="setup-btn-icon">💾</span>Save</button>
+        <button className="setup-btn setup-btn-delete" disabled={!isEnabled}><span className="setup-btn-icon">🗑️</span>Delete</button>
+        <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
+        <button className="setup-btn setup-btn-clear" onClick={() => { setIsEnabled(false); setForm({ fundCode: '', fundName: '', unitBalanceAsAt: null, dividendPayDate: null, dividendAmountPerUnit: '', dividendReinvestmentPriceDate: null, dividendExDate: null, periodEndDate: null, noOfUnitsUnitBalance: '', declareAmount: '', dividendReinvestmentPrice: '', noOfHolders: '', amountMode: 'Truncate', amountPositions: '2', unitsMode: 'Truncate', unitsPositions: '2' }); }}><span className="setup-btn-icon">✕</span>Clear</button>
+        <button className="setup-btn" style={{ background: '#0369a1', boxShadow: '0 2px 8px rgba(3,105,161,0.22)' }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#f97316')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#0369a1')}
+        ><span className="setup-btn-icon">📤</span>UHT xn Data Upload</button>
+        {/* Dividend-specific extras */}
+        <button className="setup-btn" disabled={!isEnabled}
+          style={{ background: isEnabled ? '#0c4a6e' : undefined, boxShadow: isEnabled ? '0 2px 8px rgba(12,74,110,0.22)' : undefined }}
+        ><span className="setup-btn-icon">⚙️</span>Compute</button>
+        <button className="setup-btn" disabled={!isEnabled}
+          style={{ background: isEnabled ? '#0c4a6e' : undefined, boxShadow: isEnabled ? '0 2px 8px rgba(12,74,110,0.22)' : undefined }}
+        ><span className="setup-btn-icon">🖨️</span>Status Print</button>
+
       </div>
 
+    </div >
+  );
+}
+
+// ========================================
+// REDEMPTION CHEQUE UPDATE MODAL
+// ========================================
+function RedemptionChequeUpdateModal() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [fromDate, setFromDate] = useState<Date | null>(new Date('2025-05-17'));
+  const [toDate, setToDate] = useState<Date | null>(new Date('2025-05-24'));
+  const [form, setForm] = useState({
+    fundCode: 'F005',
+    fundName: 'Ceylon Income Fund',
+    account: '',
+    uhRegNo: '',
+    transCode: '',
+    chequeNo: '',
+  });
+
+  const fieldH = 28;
+  const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
+    height: fieldH, padding: '0 8px', fontSize: '12px',
+    border: '1px solid #cfd8e3', borderRadius: '4px',
+    background: isEnabled ? '#ffffff' : '#f8f9fa',
+    color: '#1e293b', outline: 'none', width: '100%',
+    boxSizing: 'border-box',
+    cursor: isEnabled ? 'text' : 'not-allowed',
+    ...extra,
+  });
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 700, color: '#1e3a8a',
+    textTransform: 'uppercase', whiteSpace: 'nowrap',
+    minWidth: '80px', textAlign: 'right',
+  };
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '6px 10px', background: '#f8fafc', fontWeight: 700,
+    fontSize: '11px', color: '#1e3a8a', textAlign: 'left',
+    borderBottom: '2px solid #cbd5e1', borderRight: '1px solid #e2e8f0',
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0', minHeight: 0, border: '1px solid #cbd5e1', borderRadius: '4px', overflow: 'hidden' }}>
+
+
+      <div style={{ padding: '12px', background: '#e2f3e8' }}>
+        {/* Top Selection Row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          {/* Fund Selection */}
+          <div style={{ border: '1px solid #99ccaa', padding: '10px', borderRadius: '2px', background: '#ccebd6' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={labelStyle}>Fund</span>
+              <FundDropdown
+                value={form.fundCode}
+                displayValue={form.fundName}
+                onSelect={(code, name) => setForm(f => ({ ...f, fundCode: code, fundName: name }))}
+                disabled={!isEnabled}
+              />
+            </div>
+          </div>
+
+          {/* Transaction Date range */}
+          <div style={{ border: '1px solid #99ccaa', padding: '4px 10px 10px', borderRadius: '2px', background: '#ccebd6', position: 'relative' }}>
+            <span style={{
+              position: 'absolute', top: '-10px', left: '10px', background: '#ccebd6',
+              padding: '0 5px', fontSize: '11px', fontWeight: 700, color: '#1e3a8a'
+            }}>Transaction Date</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px' }}>
+              <span style={labelStyle}>From</span>
+              <DatePicker selected={fromDate} onChange={d => setFromDate(d)} className="date-picker-input" dateFormat="dd/MM/yyyy" />
+              <span style={labelStyle}>To</span>
+              <DatePicker selected={toDate} onChange={d => setToDate(d)} className="date-picker-input" dateFormat="dd/MM/yyyy" />
+            </div>
+          </div>
+        </div>
+
+        {/* Table Area */}
+        <div style={{ marginTop: '12px', height: '200px', background: '#fff', border: '1px solid #99ccaa', overflowY: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+              <tr>
+                <th style={tableHeaderStyle}>Acc No</th>
+                <th style={tableHeaderStyle}>Re-Cheque ...</th>
+                <th style={tableHeaderStyle}>Transaction ...</th>
+                <th style={tableHeaderStyle}>Price</th>
+                <th style={tableHeaderStyle}>Units</th>
+                <th style={tableHeaderStyle}>Amount</th>
+                <th style={tableHeaderStyle}>Transaction</th>
+                <th style={tableHeaderStyle}>Tr No</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Empty rows to mimic screenshot */}
+              {Array.from({ length: 8 }).map((_, i) => (
+                <tr key={i} style={{ height: '24px' }}>
+                  {Array.from({ length: 8 }).map((__, j) => (
+                    <td key={j} style={{ border: '1px solid #eee' }}></td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Bottom Input Area */}
+        <div style={{ marginTop: '12px', background: '#f0f0f0', padding: '10px', border: '1px solid #ccc' }}>
+          <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>ACCOUNT</span>
+              <input style={inp({ width: '120px' })} value={form.account} onChange={e => setForm(f => ({ ...f, account: e.target.value }))} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>UH.REG.NO</span>
+              <input style={inp({ width: '100px' })} value={form.uhRegNo} onChange={e => setForm(f => ({ ...f, uhRegNo: e.target.value }))} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>TRANS CODE</span>
+              <input style={inp({ width: '100px' })} value={form.transCode} onChange={e => setForm(f => ({ ...f, transCode: e.target.value }))} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>CHEQUE NO</span>
+              <input style={inp({ width: '120px' })} value={form.chequeNo} onChange={e => setForm(f => ({ ...f, chequeNo: e.target.value }))} disabled={!isEnabled} />
+            </div>
+            <input style={inp({ width: '100px' })} disabled={!isEnabled} />
+          </div>
+        </div>
+
+        <CreationButtonPalette
+          onNew={() => setIsEnabled(true)}
+          onClear={() => {
+            setIsEnabled(false);
+            setForm({
+              fundCode: 'F005',
+              fundName: 'Ceylon Income Fund',
+              account: '',
+              uhRegNo: '',
+              transCode: '',
+              chequeNo: '',
+            });
+          }}
+        />
+      </div>
     </div>
   );
 }
+
 
 // ========================================
 // MAIN UNIT OPERATIONS COMPONENT
@@ -4759,12 +5071,14 @@ function UnitOperations() {
                                 ? <UnitBlockingModal onClose={handleModalClose} />
                                 : modalIdx === 6 && modules[modalIdx].title === 'Dividend Issues'
                                   ? <DividendIssuesModal onClose={handleModalClose} />
-                                  : (
-                                    <div className="empty-content">
-                                      <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
-                                      <p>This is a placeholder modal.</p>
-                                    </div>
-                                  )
+                                  : modalIdx === 7 && modules[modalIdx].title === 'Redemption Cheque Printing'
+                                    ? <RedemptionChequeUpdateModal />
+                                    : (
+                                      <div className="empty-content">
+                                        <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
+                                        <p>This is a placeholder modal.</p>
+                                      </div>
+                                    )
                     }
                   </div>
 
@@ -4774,7 +5088,8 @@ function UnitOperations() {
                     !(modalIdx === 3 && modules[modalIdx].title === 'Unit Transfer/Switching') &&
                     !(modalIdx === 4 && modules[modalIdx].title === 'Unit Consolidation') &&
                     !(modalIdx === 5 && modules[modalIdx].title === 'Unit Blocking') &&
-                    !(modalIdx === 6 && modules[modalIdx].title === 'Dividend Issues') && (
+                    !(modalIdx === 6 && modules[modalIdx].title === 'Dividend Issues') &&
+                    !(modalIdx === 7 && modules[modalIdx].title === 'Redemption Cheque Printing') && (
                       <div className="setup-modal-footer"><p>Unit Operations Module</p></div>
                     )}
                 </div>

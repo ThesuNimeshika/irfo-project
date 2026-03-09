@@ -4704,22 +4704,46 @@ function RedemptionChequeUpdateModal() {
         <div style={{ marginTop: '12px', background: '#f0f0f0', padding: '10px', border: '1px solid #ccc' }}>
           <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>ACCOUNT</span>
-              <input style={inp({ width: '120px' })} value={form.account} onChange={e => setForm(f => ({ ...f, account: e.target.value }))} disabled={!isEnabled} />
+              <input
+                style={inp({ width: '120px' })}
+                value={form.account}
+                onChange={e => setForm(f => ({ ...f, account: e.target.value }))}
+                disabled={!isEnabled}
+                placeholder="ACCOUNT"
+                readOnly={!!form.account && isEnabled}
+              />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>UH.REG.NO</span>
-              <input style={inp({ width: '100px' })} value={form.uhRegNo} onChange={e => setForm(f => ({ ...f, uhRegNo: e.target.value }))} disabled={!isEnabled} />
+              <input
+                style={inp({ width: '100px' })}
+                value={form.uhRegNo}
+                onChange={e => setForm(f => ({ ...f, uhRegNo: e.target.value }))}
+                disabled={!isEnabled}
+                placeholder="UH.REG.NO"
+                readOnly={!!form.uhRegNo && isEnabled}
+              />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>TRANS CODE</span>
-              <input style={inp({ width: '100px' })} value={form.transCode} onChange={e => setForm(f => ({ ...f, transCode: e.target.value }))} disabled={!isEnabled} />
+              <input
+                style={inp({ width: '100px' })}
+                value={form.transCode}
+                onChange={e => setForm(f => ({ ...f, transCode: e.target.value }))}
+                disabled={!isEnabled}
+                placeholder="TRANS CODE"
+                readOnly={!!form.transCode && isEnabled}
+              />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#000' }}>CHEQUE NO</span>
-              <input style={inp({ width: '120px' })} value={form.chequeNo} onChange={e => setForm(f => ({ ...f, chequeNo: e.target.value }))} disabled={!isEnabled} />
+              <input
+                style={inp({ width: '120px' })}
+                value={form.chequeNo}
+                onChange={e => setForm(f => ({ ...f, chequeNo: e.target.value }))}
+                disabled={!isEnabled}
+                placeholder="CHEQUE NO"
+                readOnly={!!form.chequeNo && isEnabled}
+              />
             </div>
-            <input style={inp({ width: '100px' })} disabled={!isEnabled} />
+            <input style={inp({ width: '100px' })} disabled={!isEnabled} placeholder="TOTAL" />
           </div>
         </div>
 
@@ -4742,6 +4766,678 @@ function RedemptionChequeUpdateModal() {
   );
 }
 
+
+// ========================================
+// CHEQUE RE PRINTING MODAL
+// ========================================
+function ChequeRePrintingModal({ onClose: _onClose }: { onClose: () => void }) {
+  const [divDate, setDivDate] = useState<Date | null>(new Date('2025-05-07'));
+  const [fund, setFund] = useState({ code: 'F001', name: 'Ceylon Tourism Fund' });
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  // Table columns
+  const columns = [
+    { key: 'fund', label: 'Fund' },
+    { key: 'accNo', label: 'Account No' },
+    { key: 'warrantNo', label: 'Warrant No' },
+    { key: 'chqDate', label: 'CHQ. Date' },
+    { key: 'bankCode', label: 'Bank Code' },
+    { key: 'chqNo', label: 'Cheque No' },
+    { key: 'amount', label: 'Amount' },
+    { key: 'paidTo', label: 'Paid To' },
+  ];
+
+  const tableHeaderStyle: React.CSSProperties = {
+    background: '#ffffff',
+    padding: '6px 8px',
+    fontSize: '11px',
+    fontWeight: 700,
+    color: '#4b5563',
+    textAlign: 'left',
+    borderBottom: '1px solid #e5e7eb',
+    borderRight: '1px solid #f3f4f6',
+    whiteSpace: 'nowrap',
+  };
+
+  const tableRowStyle: React.CSSProperties = {
+    borderBottom: '1px solid #f3f4f6',
+  };
+
+  const tableCellStyle: React.CSSProperties = {
+    padding: '6px 8px',
+    fontSize: '11px',
+    color: '#1f2937',
+    borderRight: '1px solid #f3f4f6',
+  };
+
+  const renderTable = () => (
+    <div style={{
+      border: '1px solid #e5e7eb',
+      borderRadius: '4px',
+      overflow: 'hidden',
+      background: '#fff',
+    }}>
+      <div style={{ maxHeight: '180px', overflowY: 'auto', overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ position: 'sticky', top: 0, zIndex: 1, background: '#fff' }}>
+              {columns.map(col => (
+                <th key={col.key} style={tableHeaderStyle}>{col.label}</th>
+              ))}
+              <th style={tableHeaderStyle}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+              <tr key={i} style={tableRowStyle}>
+                {columns.map(col => (
+                  <td key={col.key} style={tableCellStyle}>&nbsp;</td>
+                ))}
+                <td style={tableCellStyle}>&nbsp;</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+      background: '#f3f4f6',
+      borderRadius: '8px',
+      padding: '0 0 12px 0',
+      overflow: 'visible'
+    }}>
+
+      <div style={{ padding: '12px 15px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        {/* Selection Area */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px',
+          justifyContent: 'center',
+          background: '#fff',
+          padding: '15px',
+          borderRadius: '8px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: '#374151' }}>Fund</span>
+            <div style={{ width: '300px' }}>
+              <FundDropdown
+                value={fund.code}
+                displayValue={fund.name}
+                onSelect={(code, name) => setFund({ code, name })}
+                disabled={!isEnabled}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: '#374151' }}>Dividend Date</span>
+            <DatePicker
+              selected={divDate}
+              onChange={date => setDivDate(date)}
+              dateFormat="dd/MMM/yyyy"
+              disabled={!isEnabled}
+              className="setup-datepicker-input"
+              customInput={
+                <div style={{
+                  padding: '5px 10px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: isEnabled ? '#fff' : '#f9fafb',
+                  cursor: isEnabled ? 'pointer' : 'not-allowed',
+                  opacity: isEnabled ? 1 : 0.7
+                }}>
+                  {divDate ? divDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '/') : 'Select Date'}
+                  <span style={{ marginLeft: '8px', color: '#9ca3af' }}>📅</span>
+                </div>
+              }
+            />
+          </div>
+
+          <button
+            disabled={!isEnabled}
+            style={{
+              background: isEnabled ? '#fff' : '#f3f4f6',
+              border: `1px solid ${isEnabled ? '#3b82f6' : '#d1d5db'}`,
+              color: isEnabled ? '#3b82f6' : '#9ca3af',
+              padding: '6px 16px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: isEnabled ? 'pointer' : 'not-allowed',
+              transition: 'all 0.2s',
+              opacity: isEnabled ? 1 : 0.7
+            }}
+            onMouseEnter={e => { if (isEnabled) e.currentTarget.style.background = '#eff6ff'; }}
+            onMouseLeave={e => { if (isEnabled) e.currentTarget.style.background = isEnabled ? '#fff' : '#f3f4f6'; }}
+          >
+            Load Cheques
+          </button>
+        </div>
+
+        {/* Tables Section */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ color: '#2563eb', fontSize: '12px', fontWeight: 700 }}>
+            Double click to Update the Cheque number
+          </div>
+
+          {renderTable()}
+
+          <CreationButtonPalette
+            onNew={() => setIsEnabled(true)}
+            onClear={() => {
+              setIsEnabled(false);
+              setDivDate(new Date('2025-05-07'));
+              setFund({ code: 'F001', name: 'Ceylon Tourism Fund' });
+            }}
+          />
+
+          {/* Filtering row between tables */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr) 28px',
+            gap: '4px',
+            background: '#e5e7eb',
+            padding: '4px',
+            borderRadius: '4px'
+          }}>
+            {Array.from({ length: 7 }).map((_, i) => (
+              <input key={i} style={{
+                height: '24px',
+                border: '1px solid #d1d5db',
+                borderRadius: '2px',
+                padding: '0 4px',
+                fontSize: '11px'
+              }} />
+            ))}
+            <button style={{
+              background: '#ea580c',
+              border: 'none',
+              borderRadius: '2px',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}>
+              ▼
+            </button>
+          </div>
+
+          {renderTable()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+// ========================================
+// WEB DATA DOWNLOADING MODAL
+// ========================================
+function WebDataDownloadingModal({ onClose }: { onClose: () => void }) {
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [status, setStatus] = useState('Ready to download');
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const mockData = [
+    { code: '11', name: 'test1', date: '2025/05/25', balance: '2,204,674.86' },
+    { code: '12', name: 'Ceylon Income Fund', date: '2025/05/23', balance: '96,321,744.65' },
+    { code: '13', name: 'Ceylon Tourism Fund', date: '2025/05/23', balance: '2,733,504.71' },
+    { code: '14', name: 'Ceylon Financial Sector Fund', date: '2025/05/24', balance: '7,150,433.92' },
+    { code: '15', name: 'Ceylon IPO Fund', date: '2025/05/23', balance: '3,404,630.87' },
+    { code: '16', name: 'Ceylon Gilt Edged Fund', date: '2019/09/24', balance: '0' },
+  ];
+
+  const handleDownload = () => {
+    setIsDownloading(true);
+    setStatus('Initializing download...');
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 5;
+      setDownloadProgress(progress);
+      if (progress >= 30) setStatus('Downloading fund data...');
+      if (progress >= 70) setStatus('Calculating unit balances...');
+      if (progress >= 100) {
+        clearInterval(interval);
+        setIsDownloading(false);
+        setStatus('Download Complete');
+      }
+    }, 100);
+  };
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '10px 12px',
+    background: '#f8fafc',
+    color: '#475569',
+    fontSize: '11px',
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    textAlign: 'left',
+    borderBottom: '2px solid #e2e8f0',
+  };
+
+  const tableCellStyle: React.CSSProperties = {
+    padding: '10px 12px',
+    fontSize: '12px',
+    color: '#1e293b',
+    borderBottom: '1px solid #f1f5f9',
+  };
+
+  return (
+    <div style={{ padding: '4px', display: 'flex', flexDirection: 'column', height: '100%', gap: '12px' }}>
+      {/* Main Table Container */}
+      <div style={{ flex: 1, background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <div style={{ maxHeight: 'calc(100vh - 450px)', overflowY: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+              <tr>
+                <th style={tableHeaderStyle}>Fund Code</th>
+                <th style={tableHeaderStyle}>Fund Name</th>
+                <th style={tableHeaderStyle}>Fund Date</th>
+                <th style={{ ...tableHeaderStyle, textAlign: 'right' }}>Unit Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mockData.map((row, i) => (
+                <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                  <td style={tableCellStyle}>{row.code}</td>
+                  <td style={{ ...tableCellStyle, fontWeight: 600 }}>{row.name}</td>
+                  <td style={tableCellStyle}>{row.date}</td>
+                  <td style={{ ...tableCellStyle, textAlign: 'right', fontFamily: 'monospace', fontWeight: 'bold', color: '#0f172a' }}>{row.balance}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Progress and Actions Container */}
+      <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Progress Bar Label Area */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>Processing: <span style={{ color: '#2563eb' }}>{status}</span></div>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b' }}>{downloadProgress}%</div>
+          </div>
+
+          {/* Progress Bar */}
+          <div style={{ height: '10px', background: '#e2e8f0', borderRadius: '10px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+            <div style={{ height: '100%', width: `${downloadProgress}%`, background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)', transition: 'width 0.3s ease', borderRadius: '10px' }}></div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Output Path:</div>
+              <div style={{ fontSize: '12px', color: '#1e293b', fontWeight: 'bold', fontFamily: 'monospace' }}>C:\IRNFO_Downloads\ID_09032026.csv</div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                full-width="false"
+                onClick={handleDownload}
+                disabled={isDownloading}
+                style={{
+                  padding: '8px 25px',
+                  background: isDownloading ? '#94a3b8' : '#059669',
+                  color: isDownloading ? '#fff' : '#fbbf24',
+                  border: isDownloading ? 'none' : '2px solid #059669',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 900,
+                  cursor: isDownloading ? 'not-allowed' : 'pointer',
+                  boxShadow: isDownloading ? 'none' : '0 2px 4px rgba(0,0,0,0.1)',
+                  transition: 'all 0.2s',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {isDownloading ? '⏳ Downloading...' : 'Download Data'}
+              </button>
+              <button
+                onClick={onClose}
+                style={{
+                  padding: '8px 25px',
+                  background: '#059669',
+                  color: '#fff',
+                  border: '2px solid #059669',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 900,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  transition: 'all 0.2s',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========================================
+// STANDING INSTRUCTIONS MODAL
+// ========================================
+function StandingInstructionsModal() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [form, setForm] = useState({
+    accNo: '',
+    holderNo: '',
+    fundCode: '',
+    fundName: '',
+    instructionType: 'SIP', // SIP, RWCA, RWTP
+    instructionNo: '',
+    frequency: 'Monthly',
+    description: '',
+    applyFrom: new Date(),
+    applyTo: new Date(),
+    active: true,
+    effectDate: new Date(),
+    lastProcessedOn: new Date(),
+    amount: '',
+    bankCode: '',
+    bankAccount: '',
+    bankAccountName: '',
+    remark: '',
+    holderName: '',
+    printReq: false,
+    activeOnly: false,
+    allTypes: false,
+  });
+
+  const set = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }));
+
+  const fieldH = 28;
+  const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
+    height: fieldH, padding: '0 8px', fontSize: '12px',
+    border: '1px solid #cfd8e3', borderRadius: '5px',
+    background: isEnabled ? '#ffffff' : '#f0f4f8',
+    color: '#1e293b', outline: 'none', width: '100%',
+    boxSizing: 'border-box',
+    cursor: isEnabled ? 'text' : 'not-allowed',
+    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+    ...extra,
+  });
+
+  const LBL: React.CSSProperties = {
+    fontSize: '10px', fontWeight: 700, color: '#5a6a85',
+    textTransform: 'uppercase', letterSpacing: '0.06em',
+    whiteSpace: 'nowrap', minWidth: '110px', textAlign: 'right'
+  };
+
+  const RadioGroup = ({ label, options, value, onChange, name, redSelection = false, useFieldset = false }: {
+    label: string, options: { label: string, value: string }[], value: string, onChange: (v: string) => void, name: string, redSelection?: boolean, useFieldset?: boolean
+  }) => {
+    const content = (
+      <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', padding: useFieldset ? '8px 4px 4px 4px' : '0' }}>
+        {options.map(opt => (
+          <label key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600, color: '#374151', cursor: isEnabled ? 'pointer' : 'not-allowed' }}>
+            <input
+              type="radio"
+              name={name}
+              checked={value === opt.value}
+              onChange={() => isEnabled && onChange(opt.value)}
+              disabled={!isEnabled}
+              style={{
+                accentColor: redSelection && value === opt.value ? '#ef4444' : '#1e3a8a',
+                width: '14px', height: '14px'
+              }}
+            />
+            <span style={{ color: redSelection && value === opt.value ? '#ef4444' : '#374151', transition: 'color 0.2s' }}>
+              {opt.label}
+            </span>
+          </label>
+        ))}
+      </div>
+    );
+
+    if (useFieldset) {
+      return (
+        <fieldset style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px 10px 12px', margin: 0 }}>
+          <legend style={{ fontSize: '10px', fontWeight: 700, color: '#1e3a8a', padding: '0 8px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</legend>
+          {content}
+        </fieldset>
+      );
+    }
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
+        <span style={LBL}>{label}</span>
+        {content}
+      </div>
+    );
+  };
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '8px 10px', background: '#f1f5f9', fontWeight: 700,
+    fontSize: '10px', color: '#475569', textAlign: 'left',
+    borderBottom: '2px solid #cbd5e1', borderRight: '1px solid #e2e8f0',
+    textTransform: 'uppercase', letterSpacing: '0.02em', whiteSpace: 'nowrap'
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0 }}>
+      {/* ── Top Section: Holder & Fund ─────────────────────── */}
+      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) minmax(300px, 2fr)', gap: '12px 20px' }}>
+          {/* Row 1 - Col 1: Acc No */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Unit Holder Acc No</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input style={inp()} value={form.accNo} onChange={e => set('accNo', e.target.value)} disabled={!isEnabled} />
+              <button style={{ height: 28, width: 28, background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 800, flexShrink: 0 }}>A</button>
+            </div>
+          </div>
+          {/* Row 1 - Col 2: Fund */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Fund</span>
+            <FundDropdown
+              value={form.fundCode}
+              displayValue={form.fundName}
+              onSelect={(c, n) => { set('fundCode', c); set('fundName', n); }}
+              disabled={!isEnabled}
+            />
+          </div>
+          {/* Row 2 - Col 1: Holder No */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Unit Holder No</span>
+            <input style={inp({ background: '#f8fafc' })} value={form.holderNo} disabled={true} />
+          </div>
+          {/* Row 2 - Col 2: Holder Name */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div style={{ height: '15px' }}></div> {/* Spacer to align with the other column's label height */}
+            <input style={inp({ background: '#f8fafc' })} value={form.holderName} onChange={e => set('holderName', e.target.value)} disabled={true} placeholder="Unit holder name" />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Instruction Type ─────────────────────────────────── */}
+      <div style={{ background: '#fff' }}>
+        <RadioGroup
+          label="Instruction Type"
+          redSelection={true}
+          name="instructionType"
+          useFieldset={true}
+          value={form.instructionType}
+          onChange={v => set('instructionType', v)}
+          options={[
+            { label: 'Systemic Investment Plan (SIP)', value: 'SIP' },
+            { label: 'Regular Withdrawal - Customer Account', value: 'RWCA' },
+            { label: 'Regular Withdrawal - Third Party', value: 'RWTP' },
+          ]}
+        />
+      </div>
+
+      {/* ── Main Details Section ─────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        {/* Left Column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={LBL}>Instruction No</span>
+            <input style={inp()} value={form.instructionNo} onChange={e => set('instructionNo', e.target.value)} disabled={!isEnabled} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={LBL}>Description</span>
+            <input style={inp()} value={form.description} onChange={e => set('description', e.target.value)} disabled={!isEnabled} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={LBL}>From</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+              <DatePicker selected={form.applyFrom} onChange={d => set('applyFrom', d)} className="date-picker-input" disabled={!isEnabled} />
+              <span style={{ fontSize: '10px', fontWeight: 700, color: '#5a6a85', padding: '0 4px', textTransform: 'uppercase' }}>To</span>
+              <DatePicker selected={form.applyTo} onChange={d => set('applyTo', d)} className="date-picker-input" disabled={!isEnabled} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={LBL}>Effect Date</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+              <DatePicker selected={form.effectDate} onChange={d => set('effectDate', d)} className="date-picker-input" disabled={!isEnabled} />
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', marginLeft: 'auto', cursor: isEnabled ? 'pointer' : 'not-allowed' }}>
+                <input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} disabled={!isEnabled} />
+                Active
+              </label>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={LBL}>Last Processed</span>
+            <DatePicker selected={form.lastProcessedOn} onChange={d => set('lastProcessedOn', d)} className="date-picker-input" disabled={!isEnabled} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={LBL}>Amount</span>
+            <input style={inp({ fontWeight: 700, color: '#1e3a8a' })} value={form.amount} onChange={e => set('amount', e.target.value)} disabled={!isEnabled} />
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div style={{ background: '#fff' }}>
+            <RadioGroup
+              label="Frequency"
+              name="frequency"
+              useFieldset={true}
+              value={form.frequency}
+              onChange={v => set('frequency', v)}
+              options={[
+                { label: 'Monthly', value: 'Monthly' },
+                { label: 'Quarterly', value: 'Quarterly' },
+                { label: 'Half-Yearly', value: 'Half-Yearly' },
+                { label: 'Yearly', value: 'Yearly' },
+              ]}
+            />
+          </div>
+          <div style={{ background: '#fefefe', border: '1px dotted #cbd5e1', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>Bank Code</span>
+              <TableDropdown
+                value={form.bankCode}
+                displayValue={form.bankCode ? `${form.bankCode} - ${agentBankData.find(b => b.agentCode === form.bankCode)?.agentDescription}` : ''}
+                columns={[{ key: 'agentCode', header: 'Code', width: '30%' }, { key: 'agentDescription', header: 'Name' }]}
+                rows={agentBankData}
+                valueKey="agentCode"
+                onSelect={r => set('bankCode', r.agentCode)}
+                disabled={!isEnabled}
+                placeholder="Select Bank"
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>Bank Account</span>
+              <input style={inp()} value={form.bankAccount} onChange={e => set('bankAccount', e.target.value)} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>Account Name</span>
+              <input style={inp()} value={form.bankAccountName} onChange={e => set('bankAccountName', e.target.value)} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: 'auto' }}>
+              <span style={LBL}>Remark</span>
+              <input style={inp()} value={form.remark} onChange={e => set('remark', e.target.value)} disabled={!isEnabled} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Buttons ─────────────────────────────────────────── */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', alignItems: 'center', padding: '10px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="setup-btn setup-btn-new" onClick={() => setIsEnabled(true)}><span className="setup-btn-icon">+</span>New</button>
+          <button className="setup-btn setup-btn-save"><span className="setup-btn-icon">💾</span>Save</button>
+          <button className="setup-btn setup-btn-delete"><span className="setup-btn-icon">🗑️</span>Delete</button>
+          <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
+          <button className="setup-btn setup-btn-clear" onClick={() => setIsEnabled(false)}><span className="setup-btn-icon">✕</span>Cancel</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: '15px', marginLeft: '10px', paddingLeft: '15px', borderLeft: '1px solid #cbd5e1' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
+            <input type="checkbox" checked={form.printReq} onChange={e => set('printReq', e.target.checked)} />
+            Print
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
+            <input type="checkbox" checked={form.activeOnly} onChange={e => set('activeOnly', e.target.checked)} />
+            Active Only
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
+            <input type="checkbox" checked={form.allTypes} onChange={e => set('allTypes', e.target.checked)} />
+            All Types
+          </label>
+        </div>
+      </div>
+
+      {/* ── Bottom Table ────────────────────────────────────── */}
+      <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', flex: 1, minHeight: '150px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', maxHeight: '400px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
+              <tr>
+                <th style={tableHeaderStyle}>Instruct No</th>
+                <th style={tableHeaderStyle}>Instruct Type</th>
+                <th style={tableHeaderStyle}>Account No</th>
+                <th style={tableHeaderStyle}>Approved</th>
+                <th style={tableHeaderStyle}>Active</th>
+                <th style={tableHeaderStyle}>Process Date</th>
+                <th style={tableHeaderStyle}>Last Process Date</th>
+                <th style={tableHeaderStyle}>Frequency</th>
+                <th style={tableHeaderStyle}>Amount</th>
+                <th style={tableHeaderStyle}>Bank</th>
+                <th style={tableHeaderStyle}>Account</th>
+                <th style={tableHeaderStyle}>Remark</th>
+                <th style={tableHeaderStyle}>Fund</th>
+                <th style={tableHeaderStyle}>Date From</th>
+                <th style={tableHeaderStyle}>Date To</th>
+                <th style={tableHeaderStyle}>Holder No</th>
+                <th style={tableHeaderStyle}>Account Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Placeholder rows */}
+              {[1, 2, 3, 4, 5].map(i => (
+                <tr key={i} style={{ height: '28px', borderBottom: '1px solid #f1f5f9' }}>
+                  {Array.from({ length: 17 }).map((_, j) => <td key={j} style={{ padding: '6px 10px', fontSize: '11px', borderRight: '1px solid #f1f5f9' }}>&nbsp;</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style={{ color: '#2563eb', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }}>
+        Double click to get the selected value
+      </div>
+    </div>
+  );
+}
 
 // ========================================
 // MAIN UNIT OPERATIONS COMPONENT
@@ -5073,12 +5769,18 @@ function UnitOperations() {
                                   ? <DividendIssuesModal onClose={handleModalClose} />
                                   : modalIdx === 7 && modules[modalIdx].title === 'Redemption Cheque Printing'
                                     ? <RedemptionChequeUpdateModal />
-                                    : (
-                                      <div className="empty-content">
-                                        <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
-                                        <p>This is a placeholder modal.</p>
-                                      </div>
-                                    )
+                                    : modalIdx === 8 && modules[modalIdx].title === 'Cheque Re Printing'
+                                      ? <ChequeRePrintingModal onClose={handleModalClose} />
+                                      : modalIdx === 9 && modules[modalIdx].title === 'Web Data Downloading'
+                                        ? <WebDataDownloadingModal onClose={handleModalClose} />
+                                        : modalIdx === 10 && modules[modalIdx].title === 'Standing Instructions'
+                                          ? <StandingInstructionsModal />
+                                          : (
+                                            <div className="empty-content">
+                                              <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
+                                              <p>This is a placeholder modal.</p>
+                                            </div>
+                                          )
                     }
                   </div>
 
@@ -5089,7 +5791,10 @@ function UnitOperations() {
                     !(modalIdx === 4 && modules[modalIdx].title === 'Unit Consolidation') &&
                     !(modalIdx === 5 && modules[modalIdx].title === 'Unit Blocking') &&
                     !(modalIdx === 6 && modules[modalIdx].title === 'Dividend Issues') &&
-                    !(modalIdx === 7 && modules[modalIdx].title === 'Redemption Cheque Printing') && (
+                    !(modalIdx === 7 && modules[modalIdx].title === 'Redemption Cheque Printing') &&
+                    !(modalIdx === 8 && modules[modalIdx].title === 'Cheque Re Printing') &&
+                    !(modalIdx === 9 && modules[modalIdx].title === 'Web Data Downloading') &&
+                    !(modalIdx === 10 && modules[modalIdx].title === 'Standing Instructions') && (
                       <div className="setup-modal-footer"><p>Unit Operations Module</p></div>
                     )}
                 </div>

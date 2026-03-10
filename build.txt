@@ -1,0 +1,2 @@
+﻿src/pages/UnitOperations.tsx(5306,96): error TS2353: Object literal may only specify known properties, and 'shrink' does not exist in type 'Properties<string | number, string & {}>'.
+src/pages/UnitOperations.tsx(5337,83): error TS2353: Object literal may only specify known properties, and 'shrink' does not exist in type 'Properties<string | number, string & {}>'.

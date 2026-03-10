@@ -536,7 +536,7 @@ function TableDropdown({ value, displayValue, placeholder = 'Select', columns, r
   );
 }
 
-function CreationButtonPalette({ onNew, onClear }: { onNew?: () => void; onClear?: () => void }) {
+function CreationButtonPalette({ onNew, onClear, onProcess, onUpdate, onClose, isEnabled = true, closeLabel = 'Close' }: { onNew?: () => void; onClear?: () => void; onProcess?: () => void; onUpdate?: () => void; onClose?: () => void; isEnabled?: boolean; closeLabel?: string }) {
   return (
     <div style={{
       display: 'flex', gap: '6px', justifyContent: 'center', flexWrap: 'wrap',
@@ -545,16 +545,58 @@ function CreationButtonPalette({ onNew, onClear }: { onNew?: () => void; onClear
       borderRadius: '8px', border: '1px solid rgba(0,0,0,0.07)', flexShrink: 0,
     }}>
       <button className="setup-btn setup-btn-new" onClick={onNew}><span className="setup-btn-icon">＋</span>New</button>
+      {onProcess && (
+        <button
+          className="setup-btn"
+          style={{
+            background: isEnabled ? '#10b981' : '#cbd5e1',
+            boxShadow: isEnabled ? '0 2px 8px rgba(16,185,129,0.3)' : 'none',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+          onClick={onProcess}
+          disabled={!isEnabled}
+          onMouseEnter={e => {
+            if (isEnabled) {
+              e.currentTarget.style.background = '#ffffff';
+              e.currentTarget.style.color = '#1e293b';
+            }
+          }}
+          onMouseLeave={e => {
+            if (isEnabled) {
+              e.currentTarget.style.background = '#10b981';
+              e.currentTarget.style.color = '#ffffff';
+            }
+          }}
+        >
+          <span className="setup-btn-icon">▶</span>Process
+        </button>
+      )}
       <button className="setup-btn setup-btn-save"><span className="setup-btn-icon">💾</span>Save</button>
       <button className="setup-btn setup-btn-delete"><span className="setup-btn-icon">🗑️</span>Delete</button>
       <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
       <button className="setup-btn setup-btn-clear" onClick={onClear}><span className="setup-btn-icon">✕</span>Clear</button>
-      <button className="setup-btn" style={{ background: '#0369a1', boxShadow: '0 2px 8px rgba(3,105,161,0.22)' }}
-        onMouseEnter={e => (e.currentTarget.style.background = '#f97316')}
-        onMouseLeave={e => (e.currentTarget.style.background = '#0369a1')}
-      >
-        <span className="setup-btn-icon">📤</span>UHT xn Data Upload
-      </button>
+      {onUpdate && (
+        <button
+          className="setup-btn"
+          style={{
+            background: '#1e40af',
+            boxShadow: '0 2px 8px rgba(30,64,175,0.22)',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+          onClick={onUpdate}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = '#ffffff';
+            e.currentTarget.style.color = '#1e293b';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = '#1e40af';
+            e.currentTarget.style.color = '#ffffff';
+          }}
+        >
+          <span className="setup-btn-icon">💾</span>Update
+        </button>
+      )}
+      {onClose && <button className="setup-btn setup-btn-clear" style={{ background: '#6b7280' }} onClick={onClose}>{closeLabel}</button>}
     </div>
   );
 }
@@ -5131,6 +5173,237 @@ function WebDataDownloadingModal({ onClose }: { onClose: () => void }) {
 }
 
 // ========================================
+// STANDING INSTRUCTIONS PROCESSING MODAL
+// ========================================
+function StandingInstructionsProcessingModal({ onClose }: { onClose: () => void }) {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [form, setForm] = useState({
+    fundCode: '',
+    fundName: '',
+    instructionType: 'SIP', // SIP or RW
+    accNo: '',
+  });
+  const [processDate, setProcessDate] = useState<Date | null>(new Date('2026-03-10'));
+
+  const fieldH = 32;
+
+  const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
+    height: fieldH, padding: '0 10px', fontSize: '12px',
+    border: '1px solid #cbd5e1', borderRadius: '5px',
+    background: isEnabled ? '#ffffff' : '#f8fafc',
+    color: '#1e293b', outline: 'none', width: '100%',
+    boxSizing: 'border-box',
+    cursor: isEnabled ? 'text' : 'not-allowed',
+    transition: 'border-color 0.2s',
+    ...extra,
+  });
+
+  const LBL: React.CSSProperties = {
+    fontSize: '10px', fontWeight: 700, color: '#64748b',
+    display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em',
+  };
+
+  const TH: React.CSSProperties = {
+    padding: '7px 10px', background: '#f1f5f9', fontWeight: 700,
+    fontSize: '10px', color: '#475569', textAlign: 'left',
+    borderBottom: '2px solid #cbd5e1', borderRight: '1px solid #e2e8f0',
+    whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.03em',
+  };
+  const TD: React.CSSProperties = {
+    padding: '7px 10px', fontSize: '12px', color: '#1e293b',
+    borderBottom: '1px solid #f1f5f9', borderRight: '1px solid #f1f5f9',
+    whiteSpace: 'nowrap',
+  };
+
+  const columns = [
+    'Fund Code', 'Account No', 'Holder Name', 'Instruct Type',
+    'Instruction', 'Date', 'Frequency', 'Date Gap',
+    'Amount', 'Last Processed', 'Date From', 'Date To',
+  ];
+
+  const sideBtn = (extra?: React.CSSProperties): React.CSSProperties => ({
+    width: '100%', padding: '6px 0', fontSize: '11px', fontWeight: 700,
+    border: '1px solid #cbd5e1', borderRadius: '5px',
+    background: '#ffffff', color: isEnabled ? '#334155' : '#94a3b8',
+    cursor: isEnabled ? 'pointer' : 'not-allowed',
+    transition: 'all 0.15s', textAlign: 'center' as const,
+    textTransform: 'uppercase',
+    ...extra,
+  });
+
+  const renderTable = (height: string = '160px') => (
+    <div style={{
+      flex: 1, background: '#ffffff', border: '1px solid #dde3ec',
+      borderRadius: '7px', overflow: 'hidden',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+    }}>
+      <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: height }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '1000px' }}>
+          <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f1f5f9' }}>
+            <tr>{columns.map((c, i) => <th key={i} style={TH}>{c}</th>)}</tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: 10 }).map((_, i) => (
+              <tr key={i}
+                style={{ background: i % 2 === 0 ? '#fff' : '#fafbfc', transition: 'background 0.12s' }}
+                onMouseEnter={e => isEnabled && (e.currentTarget.style.background = '#eff6ff')}
+                onMouseLeave={e => isEnabled && (e.currentTarget.style.background = i % 2 === 0 ? '#fff' : '#fafbfc')}
+              >
+                {columns.map((_, j) => <td key={j} style={TD}>&nbsp;</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: 0, padding: '4px' }}>
+
+      {/* ── Top Controls ── */}
+      <div style={{
+        background: '#ffffff', border: '1px solid #e2e8f0',
+        borderRadius: '8px', padding: '16px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+      }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-end' }}>
+
+          {/* Fund Name */}
+          <div style={{ flex: '2 1 300px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={LBL}>Fund Name</span>
+            <FundDropdown
+              value={form.fundCode}
+              displayValue={form.fundName}
+              onSelect={(code, name) => setForm(prev => ({ ...prev, fundCode: code, fundName: name }))}
+              disabled={!isEnabled}
+            />
+          </div>
+
+          {/* Instruction Type */}
+          <div style={{ flex: '1.5 1 350px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={LBL}>Instruction Type</span>
+            <div style={{
+              display: 'flex', gap: '15px', alignItems: 'center',
+              height: fieldH, padding: '0 12px',
+              background: isEnabled ? '#ffffff' : '#f8fafc',
+              border: `1px solid ${isEnabled ? '#cbd5e1' : '#e2e8f0'}`,
+              borderRadius: '5px',
+            }}>
+              {[
+                { val: 'SIP', label: 'Systematic Investment Plan (SIP)' },
+                { val: 'RW', label: 'Regular Withdrawal (RW)' },
+              ].map(opt => (
+                <label key={opt.val} style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  fontSize: '11px', fontWeight: 600, color: '#334155',
+                  cursor: isEnabled ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap',
+                }}>
+                  <input
+                    type="radio" name="sipType" value={opt.val}
+                    checked={form.instructionType === opt.val}
+                    onChange={() => isEnabled && setForm(prev => ({ ...prev, instructionType: opt.val }))}
+                    disabled={!isEnabled}
+                    style={{ width: '14px', height: '14px', accentColor: '#2563eb' }}
+                  />
+                  {opt.label}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Process Date */}
+          <div style={{ flex: '0 0 140px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={LBL}>Process Date</span>
+            <DatePicker
+              selected={processDate}
+              onChange={(d: Date | null) => isEnabled && setProcessDate(d)}
+              dateFormat="dd/MMM/yyyy"
+              disabled={!isEnabled}
+              customInput={
+                <div style={{
+                  ...inp(), display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', cursor: isEnabled ? 'pointer' : 'not-allowed',
+                }}>
+                  <span style={{ fontSize: '12px', color: processDate ? '#1e293b' : '#94a3b8' }}>
+                    {processDate ? processDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '/') : 'Select date'}
+                  </span>
+                  <span>📅</span>
+                </div>
+              }
+            />
+          </div>
+
+          {/* Acc No */}
+          <div style={{ flex: '1 1 250px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={LBL}>Account Number</span>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <input
+                type="text"
+                style={{ ...inp(), flex: 1 }}
+                value={form.accNo}
+                placeholder="Acc No."
+                onChange={e => setForm(prev => ({ ...prev, accNo: e.target.value }))}
+                disabled={!isEnabled}
+              />
+              <button
+                style={{
+                  width: '30px', height: fieldH, background: '#1e3a8a', color: '#fff',
+                  border: 'none', borderRadius: '4px', cursor: isEnabled ? 'pointer' : 'not-allowed',
+                  fontSize: '12px', fontWeight: 800, opacity: isEnabled ? 1 : 0.6
+                }}
+                disabled={!isEnabled}
+              >A</button>
+              <button
+                style={{
+                  height: fieldH, padding: '0 12px', background: '#1e3a8a', color: '#fff',
+                  border: 'none', borderRadius: '4px', cursor: isEnabled ? 'pointer' : 'not-allowed',
+                  fontSize: '11px', fontWeight: 700, opacity: isEnabled ? 1 : 0.6,
+                  display: 'flex', alignItems: 'center', gap: '5px'
+                }}
+                disabled={!isEnabled}
+              >
+                <span>🔍</span> Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Grid Areas ── */}
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {renderTable('180px')}
+          {renderTable('180px')}
+        </div>
+
+        <div style={{ width: '100px', display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: '40px' }}>
+          <button style={sideBtn()} disabled={!isEnabled}>Create</button>
+          <button style={sideBtn()} disabled={!isEnabled}>Suppress</button>
+          <div style={{ height: '140px' }}></div>
+          <button style={sideBtn()} disabled={!isEnabled}>↑ Up</button>
+        </div>
+      </div>
+
+      {/* ── Footer Palette ── */}
+      <CreationButtonPalette
+        onNew={() => setIsEnabled(true)}
+        onProcess={() => console.log('Processing...')}
+        onClear={() => {
+          setIsEnabled(false);
+          setForm({ fundCode: '', fundName: '', instructionType: 'SIP', accNo: '' });
+          setProcessDate(new Date('2026-03-10'));
+        }}
+        onUpdate={() => console.log('Updating...')}
+        onClose={onClose}
+        isEnabled={isEnabled}
+        closeLabel="Close"
+      />
+    </div>
+  );
+}
+
+// ========================================
 // STANDING INSTRUCTIONS MODAL
 // ========================================
 function StandingInstructionsModal() {
@@ -5775,12 +6048,14 @@ function UnitOperations() {
                                         ? <WebDataDownloadingModal onClose={handleModalClose} />
                                         : modalIdx === 10 && modules[modalIdx].title === 'Standing Instructions'
                                           ? <StandingInstructionsModal />
-                                          : (
-                                            <div className="empty-content">
-                                              <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
-                                              <p>This is a placeholder modal.</p>
-                                            </div>
-                                          )
+                                          : modalIdx === 11 && modules[modalIdx].title === 'Standing Instructions Processing'
+                                            ? <StandingInstructionsProcessingModal onClose={handleModalClose} />
+                                            : (
+                                              <div className="empty-content">
+                                                <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
+                                                <p>This is a placeholder modal.</p>
+                                              </div>
+                                            )
                     }
                   </div>
 
@@ -5794,7 +6069,8 @@ function UnitOperations() {
                     !(modalIdx === 7 && modules[modalIdx].title === 'Redemption Cheque Printing') &&
                     !(modalIdx === 8 && modules[modalIdx].title === 'Cheque Re Printing') &&
                     !(modalIdx === 9 && modules[modalIdx].title === 'Web Data Downloading') &&
-                    !(modalIdx === 10 && modules[modalIdx].title === 'Standing Instructions') && (
+                    !(modalIdx === 10 && modules[modalIdx].title === 'Standing Instructions') &&
+                    !(modalIdx === 11 && modules[modalIdx].title === 'Standing Instructions Processing') && (
                       <div className="setup-modal-footer"><p>Unit Operations Module</p></div>
                     )}
                 </div>

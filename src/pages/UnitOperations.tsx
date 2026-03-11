@@ -5713,6 +5713,191 @@ function StandingInstructionsModal() {
 }
 
 // ========================================
+// BANK SLIP TRANSFER MODAL
+// ========================================
+function BankSlipTransferModal({ onClose }: { onClose: () => void }) {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [trDate, setTrDate] = useState<Date | null>(new Date());
+  const [valueDate, setValueDate] = useState<Date | null>(new Date());
+  const [transferType, setTransferType] = useState('Dividend'); // Dividend, Redeemed
+  const [form, setForm] = useState({
+    fundCode: '',
+    fundName: '',
+    batchNo: '1',
+    amount: '',
+    outputPath1: 'C:\\Bank TransferOutput\\',
+    outputPath2: 'Batch_Number_1.txt',
+  });
+
+  const set = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }));
+
+  const fieldH = 28;
+  const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
+    height: fieldH, padding: '0 8px', fontSize: '12px',
+    border: '1px solid #cfd8e3', borderRadius: '5px',
+    background: isEnabled ? '#ffffff' : '#f0f4f8',
+    color: '#1e293b', outline: 'none', width: '100%',
+    boxSizing: 'border-box',
+    cursor: isEnabled ? 'text' : 'not-allowed',
+    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+    ...extra,
+  });
+
+  const LBL: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 700, color: '#475569',
+    whiteSpace: 'nowrap', width: '110px', textAlign: 'right'
+  };
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '8px 10px', background: '#f1f5f9', fontWeight: 700,
+    fontSize: '10px', color: '#475569', textAlign: 'left',
+    borderBottom: '2px solid #cbd5e1', borderRight: '1px solid #e2e8f0',
+    textTransform: 'uppercase', letterSpacing: '0.02em', whiteSpace: 'nowrap'
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minHeight: 0 }}>
+      {/* ── Top Control Bar ───────────────────────────────── */}
+      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '35px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ ...LBL, width: 'auto' }}>TR Date :</span>
+            <DatePicker selected={trDate} onChange={d => setTrDate(d)} className="date-picker-input" disabled={!isEnabled} />
+          </div>
+
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: 700, color: transferType === 'Dividend' ? '#2563eb' : '#475569', cursor: isEnabled ? 'pointer' : 'default' }}>
+              <input type="radio" name="trType" checked={transferType === 'Dividend'} onChange={() => isEnabled && setTransferType('Dividend')} disabled={!isEnabled} style={{ accentColor: '#2563eb' }} />
+              Fund Transfer Dividend
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: 700, color: transferType === 'Redeemed' ? '#2563eb' : '#475569', cursor: isEnabled ? 'pointer' : 'default' }}>
+              <input type="radio" name="trType" checked={transferType === 'Redeemed'} onChange={() => isEnabled && setTransferType('Redeemed')} disabled={!isEnabled} style={{ accentColor: '#2563eb' }} />
+              Fund Transfer Redeemed
+            </label>
+          </div>
+
+          <button style={{
+            height: 30, padding: '0 15px', background: '#1e3a8a',
+            color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer',
+            fontWeight: 700, fontSize: '12px'
+          }}>Load Data</button>
+        </div>
+      </div>
+
+      {/* ── Main Form Section ─────────────────────────────── */}
+      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 250px', gap: '12px' }}>
+          {/* Main Inputs Grid (2 columns x 3 rows) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 20px' }}>
+            {/* Row 1: Fund, Batch No */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={LBL}>Fund</span>
+              <FundDropdown value={form.fundCode} displayValue={form.fundName} onSelect={(c, n) => { set('fundCode', c); set('fundName', n); }} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={LBL}>Batch No :</span>
+              <input style={inp()} value={form.batchNo} onChange={e => set('batchNo', e.target.value)} disabled={!isEnabled} />
+            </div>
+
+            {/* Row 2: Amount, Value Date */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={LBL}>Amount :</span>
+              <input style={inp({ fontWeight: 700, color: '#1e3a8a' })} value={form.amount} onChange={e => set('amount', e.target.value)} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={LBL}>Value Date :</span>
+              <DatePicker selected={valueDate} onChange={d => setValueDate(d)} className="date-picker-input" disabled={!isEnabled} />
+            </div>
+
+            {/* Row 3: Output File Name (Spans 2 columns) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', gridColumn: 'span 2' }}>
+              <span style={LBL}>Output File Name</span>
+              <div style={{ display: 'flex', gap: '6px', flex: 1 }}>
+                <input style={inp({ background: '#f1f5f9' })} value={form.outputPath1} disabled />
+                <input style={inp({ background: '#f1f5f9' })} value={form.outputPath2} disabled />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Labels (Display only) */}
+          <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '120px 1fr', gap: '6px' }}>
+            <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748b' }}>Printed :</span>
+            <span style={{ fontSize: '11px', fontWeight: 700 }}>-</span>
+            <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748b' }}>Number of Records :</span>
+            <span style={{ fontSize: '11px', fontWeight: 700 }}>-</span>
+            <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748b' }}>Printed By :</span>
+            <span style={{ fontSize: '11px', fontWeight: 700 }}>-</span>
+            <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748b' }}>Printed Date :</span>
+            <span style={{ fontSize: '11px', fontWeight: 700 }}>-</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Action Palette ────────────────────────────────── */}
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'space-between', padding: '10px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="setup-btn setup-btn-new" onClick={() => setIsEnabled(true)}><span className="setup-btn-icon">+</span>New</button>
+          <button className="setup-btn setup-btn-save"><span className="setup-btn-icon">💾</span>Save</button>
+          <button className="setup-btn setup-btn-delete"><span className="setup-btn-icon">🗑️</span>Delete</button>
+          <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
+          <button className="setup-btn setup-btn-clear" onClick={() => setIsEnabled(false)}><span className="setup-btn-icon">✕</span>Cancel</button>
+        </div>
+        <button className="setup-btn setup-btn-close" onClick={onClose} style={{ background: '#ef4444' }}>Close</button>
+      </div>
+
+      {/* ── Tables ────────────────────────────────────────── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, minHeight: 0 }}>
+        {/* Top Table */}
+        <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', flex: 1, minHeight: '140px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, overflow: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
+                <tr>
+                  {['Batch No', 'Fund Code', 'Batch Date', 'Batch Amount', 'Batch Printed', 'Tr Type', 'Tr Date', 'Value Date', 'Printed By', 'Print'].map(h => (
+                    <th key={h} style={tableHeaderStyle}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3].map(i => (
+                  <tr key={i} style={{ height: '28px', borderBottom: '1px solid #f1f5f9' }}>
+                    {Array.from({ length: 10 }).map((_, j) => <td key={j} style={{ padding: '6px 10px', fontSize: '11px', borderRight: '1px solid #f1f5f9' }}>&nbsp;</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style={{ color: '#2563eb', fontSize: '11px', fontWeight: 700, padding: '2px 0' }}>Double click to Edit the selected value</div>
+
+        {/* Bottom Table */}
+        <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', flex: 1, minHeight: '140px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, overflow: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
+                <tr>
+                  {['Fund Code', 'Fund Name', 'Tr Date', 'Account No', 'Amount', 'To Bank Code', 'To Bank Account', 'Holder Name', 'From Bank Code'].map(h => (
+                    <th key={h} style={tableHeaderStyle}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3].map(i => (
+                  <tr key={i} style={{ height: '28px', borderBottom: '1px solid #f1f5f9' }}>
+                    {Array.from({ length: 9 }).map((_, j) => <td key={j} style={{ padding: '6px 10px', fontSize: '11px', borderRight: '1px solid #f1f5f9' }}>&nbsp;</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========================================
 // MAIN UNIT OPERATIONS COMPONENT
 // ========================================
 
@@ -6050,12 +6235,14 @@ function UnitOperations() {
                                           ? <StandingInstructionsModal />
                                           : modalIdx === 11 && modules[modalIdx].title === 'Standing Instructions Processing'
                                             ? <StandingInstructionsProcessingModal onClose={handleModalClose} />
-                                            : (
-                                              <div className="empty-content">
-                                                <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
-                                                <p>This is a placeholder modal.</p>
-                                              </div>
-                                            )
+                                            : modalIdx === 12 && modules[modalIdx].title === 'Bank Slip Transfer'
+                                              ? <BankSlipTransferModal onClose={handleModalClose} />
+                                              : (
+                                                <div className="empty-content">
+                                                  <p>Content for <strong>{modules[modalIdx].title}</strong> will be implemented here.</p>
+                                                  <p>This is a placeholder modal.</p>
+                                                </div>
+                                              )
                     }
                   </div>
 
@@ -6070,7 +6257,8 @@ function UnitOperations() {
                     !(modalIdx === 8 && modules[modalIdx].title === 'Cheque Re Printing') &&
                     !(modalIdx === 9 && modules[modalIdx].title === 'Web Data Downloading') &&
                     !(modalIdx === 10 && modules[modalIdx].title === 'Standing Instructions') &&
-                    !(modalIdx === 11 && modules[modalIdx].title === 'Standing Instructions Processing') && (
+                    !(modalIdx === 11 && modules[modalIdx].title === 'Standing Instructions Processing') &&
+                    !(modalIdx === 12 && modules[modalIdx].title === 'Bank Slip Transfer') && (
                       <div className="setup-modal-footer"><p>Unit Operations Module</p></div>
                     )}
                 </div>

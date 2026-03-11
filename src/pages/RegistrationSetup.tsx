@@ -7,6 +7,7 @@ import '../Setup.css';
 import '../RegistrationSetup.css';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useLocation } from 'react-router-dom';
 
 // ========================================
 // TYPE DEFINITIONS
@@ -313,6 +314,15 @@ const bankData = [
 // ========================================
 
 function FourCardsWithModal() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && typeof location.state.initialModalIdx === 'number') {
+      setModalIdx(location.state.initialModalIdx);
+      setIsFormEditable(false);
+    }
+  }, [location.state]);
+
   // ========================================
   // STATE MANAGEMENT
   // ========================================

@@ -3,7 +3,7 @@
    Clean, crisp financial-grade UI
    ============================================= */
 
-/* ── COMPULSORY DATA FIELD LABELS ── */
+/* ── COMPULSORY DATA FIELD LABELS — (Used in Reg. View) ── */
 .registration-setup-compulsory-label {
   color: #1e3a8a !important;
   font-weight: 700;
@@ -156,6 +156,8 @@
   font-family: 'Lato', system-ui, sans-serif;
 }
 
+/* ── MODAL SHARED STYLES — (Used in Reg. Details View) ── */
+
 .modal-close-btn {
   background: rgba(255, 255, 255, 0.12);
   border: none;
@@ -193,16 +195,21 @@
 }
 
 .modal-body::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
 }
 
 .modal-body::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f5f9;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.10);
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #1e3a8a;
 }
 
 /* ── MODAL FOOTER ── */
@@ -496,8 +503,8 @@
 }
 
 /* =============================================
-   REGISTRATION MODAL — PROPER LAYOUT OVERRIDES
-   Full-screen modal with sticky header/footer/buttons/tabs
+   REGISTRATION VIEW & MODAL — SPECIFIC STYLES
+   (CRITICAL FOR Approval.tsx & RegistrationDetailsView.tsx)
    ============================================= */
 
 /* ── Modal overlay — full screen ── */
@@ -653,16 +660,21 @@
 }
 
 .reg-modal-body::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
 }
 
 .reg-modal-body::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f5f9;
 }
 
 .reg-modal-body::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
+}
+
+.reg-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #1e3a8a;
 }
 
 /* ── Footer — fixed at bottom ── */

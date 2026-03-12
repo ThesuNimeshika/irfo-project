@@ -46,7 +46,7 @@ function Approval() {
 
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [viewingRegNo, setViewingRegNo] = useState<string | null>(null);
+  const [viewingData, setViewingData] = useState<{ regNo: string; applicantType: 'Individual' | 'Corporate' } | null>(null);
 
   // ========================================
   // EFFECTS
@@ -75,8 +75,8 @@ function Approval() {
     setModalIdx(null);
   };
 
-  const handleViewDetails = (regNo: string) => {
-    setViewingRegNo(regNo);
+  const handleViewDetails = (regNo: string, applicantType: 'Individual' | 'Corporate') => {
+    setViewingData({ regNo, applicantType });
   };
 
   // ========================================
@@ -162,30 +162,51 @@ function Approval() {
             )}
 
             {/* Inline Details View Modal (Portal on top of primary modal) */}
-            {viewingRegNo && createPortal(
+            {viewingData && createPortal(
               <div className="setup-modal-overlay"
-                onClick={() => setViewingRegNo(null)}
-                style={{ zIndex: 10001 }} // Higher than main modal
+                onClick={() => setViewingData(null)}
+                style={{ zIndex: 100000000, alignItems: 'center', justifyContent: 'center', display: 'flex' }}
               >
-                <div className="setup-modal-container"
-                  style={{ width: '1200px', maxWidth: '98vw', height: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+                <div
+                  className="registration-details-modal-container"
+                  style={{
+                    width: '700px',
+                    maxWidth: '95vw',
+                    height: '85vh',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    backgroundColor: '#ffffff',
+                    position: 'relative',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                    border: 'none'
+                  }}
                   onClick={e => e.stopPropagation()}
                 >
-                  <div className="setup-modal-header">
+                  <div className="setup-modal-header" style={{ background: '#1e3a8a', color: '#ffffff', minHeight: '52px', padding: '0 24px' }}>
                     <div className="setup-modal-header-content">
-                      <span className="setup-modal-header-icon">👁</span>
-                      <span className="setup-modal-header-title">Registration Details - {viewingRegNo}</span>
+                      <span className="setup-modal-header-icon" style={{ fontSize: '18px', color: '#ffffff' }}>👁</span>
+                      <span className="setup-modal-header-title" style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', color: '#ffffff', letterSpacing: '0.05em' }}>
+                        Registration Details — {viewingData.regNo}
+                      </span>
                     </div>
-                    <button onClick={() => setViewingRegNo(null)} className="setup-modal-close-btn">×</button>
+                    <button
+                      className="setup-modal-close-btn"
+                      onClick={() => setViewingData(null)}
+                      style={{ background: 'rgba(255, 255, 255, 0.15)', color: '#ffffff', borderRadius: '10px', width: '32px', height: '32px', padding: 0, fontSize: '16px' }}
+                    >
+                      ✕
+                    </button>
                   </div>
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <RegistrationDetailsView
                       data={{
-                        applicantType: 'Individual',
+                        applicantType: viewingData.applicantType,
                         title: 'Mr',
                         initials: 'N.',
-                        nameByInitials: 'Nimeshika',
-                        surname: 'Bandara',
+                        nameByInitials: viewingData.applicantType === 'Corporate' ? 'MSL Computer Services' : 'Nimeshika',
+                        surname: viewingData.applicantType === 'Corporate' ? 'Software Solutions' : 'Bandara',
                         dateOfBirth: '1995-10-15',
                         nic: '199512345678',
                         mobile: '0771234567',
@@ -201,7 +222,7 @@ function Approval() {
                         permanentCity: 'Colombo',
                         permanentDistrict: 'Colombo',
                         investmentTypeAtRegistration: 'Direct',
-                        investorCategory: 'Individual'
+                        investorCategory: viewingData.applicantType
                       }}
                     />
                   </div>
@@ -221,22 +242,23 @@ function Approval() {
 // APPLICATION CONFIRMATION MODAL
 // ========================================
 
-function ApplicationConfirmationModal({ onViewDetails }: { onViewDetails: (regNo: string) => void }) {
+function ApplicationConfirmationModal({ onViewDetails }: { onViewDetails: (regNo: string, applicantType: 'Individual' | 'Corporate') => void }) {
   interface RowData {
     id: number;
     regNo: string;
     name: string;
     nic: string;
+    applicantType: 'Individual' | 'Corporate';
     status: 'approved' | 'rejected' | null;
   }
 
   const [data, setData] = useState<RowData[]>([
-    { id: 1, regNo: 'REG001', name: 'Nimeshika Bandara', nic: '199512345678', status: null },
-    { id: 2, regNo: 'REG002', name: 'Chaminda Perera', nic: '198822345678', status: 'approved' },
-    { id: 3, regNo: 'REG003', name: 'Sajith Rathnayake', nic: '199232345678', status: 'rejected' },
-    { id: 4, regNo: 'REG004', name: 'Gayathri Wickramasinghe', nic: '199842345678', status: null },
-    { id: 5, regNo: 'REG005', name: 'Ruwan Kumara', nic: '198552345678', status: null },
-    { id: 6, regNo: 'REG006', name: 'Ishara Madushanka', nic: '199162345678', status: 'approved' },
+    { id: 1, regNo: 'REG001', name: 'Nimeshika Bandara', nic: '199512345678', applicantType: 'Individual', status: null },
+    { id: 2, regNo: 'REG002', name: 'Chaminda Perera', nic: '198822345678', applicantType: 'Corporate', status: 'approved' },
+    { id: 3, regNo: 'REG003', name: 'Sajith Rathnayake', nic: '199232345678', applicantType: 'Individual', status: 'rejected' },
+    { id: 4, regNo: 'REG004', name: 'Gayathri Wickramasinghe', nic: '199842345678', applicantType: 'Individual', status: null },
+    { id: 5, regNo: 'REG005', name: 'Ruwan Kumara', nic: '198552345678', applicantType: 'Corporate', status: null },
+    { id: 6, regNo: 'REG006', name: 'Ishara Madushanka', nic: '199162345678', applicantType: 'Individual', status: 'approved' },
   ]);
 
   const handleStatusChange = (id: number, status: 'approved' | 'rejected') => {
@@ -270,10 +292,11 @@ function ApplicationConfirmationModal({ onViewDetails }: { onViewDetails: (regNo
       <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#ffffff' }}>
         <thead>
           <tr>
-            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>RegNo</th>
-            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '25%' }}>Name</th>
-            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '20%' }}>NIC</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '10%' }}>RegNo</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '20%' }}>Name</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>NIC</th>
             <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '25%' }}>Status</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>Applicant Type</th>
             <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>View</th>
           </tr>
         </thead>
@@ -339,10 +362,23 @@ function ApplicationConfirmationModal({ onViewDetails }: { onViewDetails: (regNo
                 </div>
               </td>
               <td style={{ ...tableCellStyle, textAlign: 'center' }}>
+                <span style={{
+                  padding: '4px 10px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  backgroundColor: row.applicantType === 'Individual' ? '#eff6ff' : '#f5f3ff',
+                  color: row.applicantType === 'Individual' ? '#1d4ed8' : '#6d28d9',
+                  border: `1px solid ${row.applicantType === 'Individual' ? '#dbeafe' : '#ede9fe'}`
+                }}>
+                  {row.applicantType}
+                </span>
+              </td>
+              <td style={{ ...tableCellStyle, textAlign: 'center' }}>
                 <button
-                  onClick={() => onViewDetails(row.regNo)}
+                  onClick={() => onViewDetails(row.regNo, row.applicantType)}
                   style={{
-                    padding: '8px 16px',
+                    padding: '6px 12px',
                     backgroundColor: '#ffffff',
                     border: '1px solid #e2e8f0',
                     borderRadius: '8px',
@@ -355,7 +391,8 @@ function ApplicationConfirmationModal({ onViewDetails }: { onViewDetails: (regNo
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px'
+                    gap: '6px',
+                    whiteSpace: 'nowrap'
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.backgroundColor = '#f0f9ff';
@@ -388,22 +425,23 @@ function ApplicationConfirmationModal({ onViewDetails }: { onViewDetails: (regNo
 // APPLICATION APPROVAL MODAL
 // ========================================
 
-function ApplicationApprovalModal({ onViewDetails }: { onViewDetails: (regNo: string) => void }) {
+function ApplicationApprovalModal({ onViewDetails }: { onViewDetails: (regNo: string, applicantType: 'Individual' | 'Corporate') => void }) {
   interface RowData {
     id: number;
     regNo: string;
     name: string;
     nic: string;
+    applicantType: 'Individual' | 'Corporate';
     status: 'approved' | 'rejected' | null;
   }
 
   const [data, setData] = useState<RowData[]>([
-    { id: 1, regNo: 'REG001', name: 'Nimeshika Bandara', nic: '199512345678', status: null },
-    { id: 2, regNo: 'REG002', name: 'Chaminda Perera', nic: '198822345678', status: 'approved' },
-    { id: 3, regNo: 'REG003', name: 'Sajith Rathnayake', nic: '199232345678', status: 'rejected' },
-    { id: 4, regNo: 'REG004', name: 'Gayathri Wickramasinghe', nic: '199842345678', status: null },
-    { id: 5, regNo: 'REG005', name: 'Ruwan Kumara', nic: '198552345678', status: null },
-    { id: 6, regNo: 'REG006', name: 'Ishara Madushanka', nic: '199162345678', status: 'approved' },
+    { id: 1, regNo: 'REG001', name: 'Nimeshika Bandara', nic: '199512345678', applicantType: 'Individual', status: null },
+    { id: 2, regNo: 'REG002', name: 'Chaminda Perera', nic: '198822345678', applicantType: 'Corporate', status: 'approved' },
+    { id: 3, regNo: 'REG003', name: 'Sajith Rathnayake', nic: '199232345678', applicantType: 'Individual', status: 'rejected' },
+    { id: 4, regNo: 'REG004', name: 'Gayathri Wickramasinghe', nic: '199842345678', applicantType: 'Individual', status: null },
+    { id: 5, regNo: 'REG005', name: 'Ruwan Kumara', nic: '198552345678', applicantType: 'Corporate', status: null },
+    { id: 6, regNo: 'REG006', name: 'Ishara Madushanka', nic: '199162345678', applicantType: 'Individual', status: 'approved' },
   ]);
 
   const handleStatusChange = (id: number, status: 'approved' | 'rejected') => {
@@ -437,10 +475,11 @@ function ApplicationApprovalModal({ onViewDetails }: { onViewDetails: (regNo: st
       <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#ffffff' }}>
         <thead>
           <tr>
-            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>RegNo</th>
-            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '25%' }}>Name</th>
-            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '20%' }}>NIC</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '10%' }}>RegNo</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '20%' }}>Name</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>NIC</th>
             <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '25%' }}>Status</th>
+            <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>Applicant Type</th>
             <th style={{ ...tableHeaderStyle, textAlign: 'center', width: '15%' }}>View</th>
           </tr>
         </thead>
@@ -506,10 +545,23 @@ function ApplicationApprovalModal({ onViewDetails }: { onViewDetails: (regNo: st
                 </div>
               </td>
               <td style={{ ...tableCellStyle, textAlign: 'center' }}>
+                <span style={{
+                  padding: '4px 10px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  backgroundColor: row.applicantType === 'Individual' ? '#eff6ff' : '#f5f3ff',
+                  color: row.applicantType === 'Individual' ? '#1d4ed8' : '#6d28d9',
+                  border: `1px solid ${row.applicantType === 'Individual' ? '#dbeafe' : '#ede9fe'}`
+                }}>
+                  {row.applicantType}
+                </span>
+              </td>
+              <td style={{ ...tableCellStyle, textAlign: 'center' }}>
                 <button
-                  onClick={() => onViewDetails(row.regNo)}
+                  onClick={() => onViewDetails(row.regNo, row.applicantType)}
                   style={{
-                    padding: '8px 16px',
+                    padding: '6px 12px',
                     backgroundColor: '#ffffff',
                     border: '1px solid #e2e8f0',
                     borderRadius: '8px',
@@ -522,7 +574,8 @@ function ApplicationApprovalModal({ onViewDetails }: { onViewDetails: (regNo: st
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px'
+                    gap: '6px',
+                    whiteSpace: 'nowrap'
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.backgroundColor = '#f0f9ff';

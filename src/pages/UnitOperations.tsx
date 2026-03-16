@@ -6,6 +6,7 @@ import type { HolderRecord } from '../components/HolderSearchModal';
 import EditSearchModal from '../components/EditSearchModal';
 import AkctNoSearchModal from '../components/AkctNoSearchModal';
 import RequestAckModal from '../components/RequestAckModal';
+import AccountSelectionPopup from '../components/AccountSelectionPopup';
 import '../App.css';
 import '../Setup.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -536,7 +537,7 @@ function TableDropdown({ value, displayValue, placeholder = 'Select', columns, r
   );
 }
 
-function CreationButtonPalette({ onNew, onClear, onProcess, onUpdate, isEnabled = true }: { onNew?: () => void; onClear?: () => void; onProcess?: () => void; onUpdate?: () => void; isEnabled?: boolean }) {
+function CreationButtonPalette({ onNew, onClear, onProcess, onUpdate, isEnabled = true, children }: { onNew?: () => void; onClear?: () => void; onProcess?: () => void; onUpdate?: () => void; isEnabled?: boolean; children?: React.ReactNode }) {
   return (
     <div style={{
       display: 'flex', gap: '6px', justifyContent: 'center', flexWrap: 'wrap',
@@ -596,6 +597,7 @@ function CreationButtonPalette({ onNew, onClear, onProcess, onUpdate, isEnabled 
           <span className="setup-btn-icon">💾</span>Update
         </button>
       )}
+      {children}
     </div>
   );
 }
@@ -6413,6 +6415,905 @@ function RemindersModal({ onClose: _onClose }: { onClose: () => void }) {
 }
 
 // ========================================
+// CHANGE AGENT FOR TRANSACTION MODAL
+// ========================================
+function ChangeAgentForTransactionModal() {
+  type SearchMode = 'By Profile' | 'By Transaction';
+  const [searchMode, setSearchMode] = useState<SearchMode>('By Profile');
+
+  // By-Profile fields
+  const [registrationNo, setRegistrationNo] = useState('200612003701');
+  const [profileAgentCode, setProfileAgentCode] = useState('102');
+  const [updateProfile, setUpdateProfile] = useState(true);
+  const [updateTransactions, setUpdateTransactions] = useState(true);
+
+  // By-Transaction fields
+  const [transactionType, setTransactionType] = useState('Subscription');
+  const [transRange, setTransRange] = useState<'From' | 'To'>('From');
+  const [transNo, setTransNo] = useState('');
+
+  // Agent fields
+  const [prevAgency, setPrevAgency] = useState('');
+  const [prevSubAgent, setPrevSubAgent] = useState('');
+  const [prevAgent, setPrevAgent] = useState('');
+  const [newAgency, setNewAgency] = useState('');
+  const [newSubAgent, setNewSubAgent] = useState('');
+  const [newAgent, setNewAgent] = useState('');
+
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const transactionTypes = ['Subscription', 'Redemption', 'Transfer', 'Switching', 'Dividend', 'Consolidation'];
+
+  const sampleRows = [
+    { transCode: 'CR001', transNo: '291', sqNo: '0', holderAccNo: '200612003711101', transDate: '29/12/2006', agencyCode: '', subAgencyCode: '', agentCode: '100', agentCodeAlt: '99' },
+  ];
+
+  const tableColumns = ['TRANS_CODE', 'TRANS_NO', 'SQ_NO', 'HOLDER_ACCOUNT_NO', 'TRANSACTION_DATE', 'AGENCY_CODE', 'SUB_AGENCY_CODE', 'AGENT_CODE', 'ALT'];
+
+  const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
+    height: 28, padding: '0 8px', fontSize: '12px',
+    border: '1px solid #cbd5e1', borderRadius: '6px',
+    background: isEnabled ? '#ffffff' : '#f1f5f9',
+    color: '#1e293b', outline: 'none',
+    boxSizing: 'border-box' as const,
+    cursor: isEnabled ? 'text' : 'not-allowed',
+    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+    ...extra,
+  });
+
+  const sel = (extra?: React.CSSProperties): React.CSSProperties => ({
+    height: 28, padding: '0 6px', fontSize: '12px',
+    border: '1px solid #cbd5e1', borderRadius: '6px',
+    background: isEnabled ? '#ffffff' : '#f1f5f9',
+    color: '#1e293b', outline: 'none',
+    boxSizing: 'border-box' as const,
+    cursor: isEnabled ? 'pointer' : 'not-allowed',
+    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+    ...extra,
+  });
+
+  const LBL: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 700, color: '#475569',
+    whiteSpace: 'nowrap', minWidth: '80px',
+  };
+
+  const thStyle: React.CSSProperties = {
+    padding: '8px 10px', background: '#1e3a8a', fontWeight: 700,
+    fontSize: '10px', color: '#ffffff', textAlign: 'left',
+    borderRight: '1px solid rgba(255,255,255,0.15)',
+    textTransform: 'uppercase', letterSpacing: '0.04em',
+    whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 1,
+  };
+
+  const tdStyle = (rowIdx: number): React.CSSProperties => ({
+    padding: '7px 10px', fontSize: '11px', color: '#1f2937',
+    borderBottom: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0',
+    background: selectedRow === rowIdx ? '#dbeafe' : rowIdx % 2 === 0 ? '#ffffff' : '#f8fafc',
+    cursor: 'pointer',
+    transition: 'background 0.15s',
+  });
+
+  const agentPanelField = (
+    label: string,
+    value: string,
+    onSelect: (row: Record<string, string>) => void,
+    type: 'Agency' | 'SubAgent' | 'Agent'
+  ) => {
+    let rows: Record<string, string>[] = [];
+    let columns: TableDropdownCol[] = [];
+    let valueKey = '';
+    let displayValue = value;
+
+    if (type === 'Agency') {
+      rows = agencyTableData;
+      columns = [
+        { key: 'agency_code', header: 'Code', width: '30%' },
+        { key: 'agency_name', header: 'Name' }
+      ];
+      valueKey = 'agency_code';
+      const found = agencyTableData.find(a => a.agency_code === value);
+      if (found) displayValue = `${found.agency_code} - ${found.agency_name}`;
+    } else if (type === 'SubAgent') {
+      rows = subAgencyTableData;
+      columns = [
+        { key: 'subagent_code', header: 'Code', width: '30%' },
+        { key: 'subagent_name', header: 'Name' }
+      ];
+      valueKey = 'subagent_code';
+      const found = subAgencyTableData.find(s => s.subagent_code === value);
+      if (found) displayValue = `${found.subagent_code} - ${found.subagent_name}`;
+    } else {
+      rows = agentTableData;
+      columns = [
+        { key: 'agent_code', header: 'Code', width: '30%' },
+        { key: 'agent_name', header: 'Name' }
+      ];
+      valueKey = 'agent_code';
+      const found = agentTableData.find(a => a.agent_code === value);
+      if (found) displayValue = `${found.agent_code} - ${found.agent_name}`;
+    }
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{ ...LBL, minWidth: '72px' }}>{label}</span>
+        <TableDropdown
+          value={value}
+          displayValue={displayValue}
+          columns={columns}
+          rows={rows}
+          valueKey={valueKey}
+          onSelect={onSelect}
+          disabled={!isEnabled}
+          placeholder={`Select ${label}`}
+        />
+      </div>
+    );
+  };
+
+  const [showHolderSearch, setShowHolderSearch] = useState(false);
+
+  const addBtnStyle: React.CSSProperties = {
+    background: '#b45309', color: '#fff', border: 'none', borderRadius: '4px',
+    width: '30px', height: '28px', fontSize: '10px',
+    cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+  };
+
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: '10px',
+      fontFamily: "'Inter', 'Segoe UI', sans-serif",
+      minHeight: 0,
+    }}>
+      <HolderSearchModal
+        isOpen={showHolderSearch}
+        onClose={() => setShowHolderSearch(false)}
+        onSelect={(r: HolderRecord) => setRegistrationNo(r.holderId)}
+      />
+
+      {/* ── Mode Toggle + Search Section ─────────────────────── */}
+      <div style={{
+        background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+        border: '1px solid #e2e8f0', borderRadius: '10px',
+        padding: '12px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+      }}>
+        {/* Radio mode selector */}
+        <div style={{ display: 'flex', gap: '24px', marginBottom: '12px' }}>
+          {(['By Profile', 'By Transaction'] as SearchMode[]).map(mode => (
+            <label key={mode} style={{
+              display: 'flex', alignItems: 'center', gap: '7px',
+              cursor: 'pointer', fontSize: '12px', fontWeight: 700,
+              color: searchMode === mode ? '#1e40af' : '#64748b',
+              transition: 'color 0.2s',
+            }}>
+              <span style={{
+                width: 16, height: 16, borderRadius: '50%',
+                border: `2px solid ${searchMode === mode ? '#2563eb' : '#94a3b8'}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: '#fff', flexShrink: 0,
+                boxShadow: searchMode === mode ? '0 0 0 3px rgba(37,99,235,0.12)' : 'none',
+                transition: 'all 0.2s',
+              }}>
+                {searchMode === mode && (
+                  <span style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: '#2563eb', display: 'block',
+                  }} />
+                )}
+              </span>
+              <input
+                type="radio" name="cagMode"
+                style={{ display: 'none' }}
+                checked={searchMode === mode}
+                onChange={() => setSearchMode(mode)}
+              />
+              {mode}
+            </label>
+          ))}
+        </div>
+
+        {/* Search controls */}
+        {searchMode === 'By Profile' ? (
+          <div style={{
+            background: '#ffffff', border: '1px solid #e2e8f0',
+            borderRadius: '8px', padding: '10px 14px',
+            display: 'flex', flexWrap: 'wrap', gap: '10px 24px',
+            alignItems: 'center',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ ...LBL, minWidth: '95px' }}>Registration No</span>
+              <input
+                style={{ ...inp(), width: '140px' }}
+                value={registrationNo}
+                onChange={e => setRegistrationNo(e.target.value)}
+              />
+              <button style={addBtnStyle} onClick={() => setShowHolderSearch(true)}>
+                <span style={{ fontSize: '12px' }}>▼</span>
+              </button>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ ...LBL, minWidth: '105px' }}>Profile Agent Code</span>
+              <input
+                style={{ ...inp(), width: '80px' }}
+                value={profileAgentCode}
+                onChange={e => setProfileAgentCode(e.target.value)}
+              />
+            </div>
+            <button style={{
+              height: 28, padding: '0 20px', background: 'linear-gradient(135deg, #1e3a8a, #2563eb)',
+              color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer',
+              fontWeight: 700, fontSize: '12px', boxShadow: '0 2px 6px rgba(37,99,235,0.35)',
+              transition: 'all 0.2s', letterSpacing: '0.02em',
+            }}>Load</button>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '16px', alignItems: 'center' }}>
+              {[{ label: 'Update Profile', val: updateProfile, set: setUpdateProfile },
+              { label: 'Update Transactions', val: updateTransactions, set: setUpdateTransactions }].map(({ label, val, set }) => (
+                <label key={label} style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer',
+                }}>
+                  <input
+                    type="checkbox" checked={val}
+                    onChange={e => set(e.target.checked)}
+                    style={{ accentColor: '#2563eb', width: 14, height: 14 }}
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div style={{
+            background: '#ffffff', border: '1px solid #e2e8f0',
+            borderRadius: '8px', padding: '10px 14px',
+            display: 'flex', flexWrap: 'wrap', gap: '10px 24px',
+            alignItems: 'center',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ ...LBL, minWidth: '105px' }}>Transaction Type</span>
+              <select
+                style={{ ...sel(), width: '150px' }}
+                value={transactionType}
+                onChange={e => setTransactionType(e.target.value)}
+              >
+                {transactionTypes.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              {(['From', 'To'] as const).map(opt => (
+                <label key={opt} style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  cursor: 'pointer', fontSize: '11px', fontWeight: 700,
+                  color: transRange === opt ? '#1e40af' : '#64748b',
+                }}>
+                  <span style={{
+                    width: 14, height: 14, borderRadius: '50%',
+                    border: `2px solid ${transRange === opt ? '#2563eb' : '#94a3b8'}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: '#fff', flexShrink: 0,
+                  }}>
+                    {transRange === opt && <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#2563eb', display: 'block' }} />}
+                  </span>
+                  <input type="radio" name="transRange" style={{ display: 'none' }} checked={transRange === opt} onChange={() => setTransRange(opt)} />
+                  {opt}
+                </label>
+              ))}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ ...LBL, minWidth: '60px' }}>Trans No</span>
+              <input
+                style={{ ...inp(), width: '110px' }}
+                value={transNo}
+                onChange={e => setTransNo(e.target.value)}
+              />
+            </div>
+            <button style={{
+              height: 28, padding: '0 20px', background: 'linear-gradient(135deg, #1e3a8a, #2563eb)',
+              color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer',
+              fontWeight: 700, fontSize: '12px', boxShadow: '0 2px 6px rgba(37,99,235,0.35)',
+              transition: 'all 0.2s',
+            }}>Load</button>
+          </div>
+        )}
+      </div>
+
+      {/* ── Transactions Table ───────────────────────────────── */}
+      <div style={{
+        background: '#ffffff', border: '1px solid #e2e8f0',
+        borderRadius: '10px', overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+        minHeight: '160px', display: 'flex', flexDirection: 'column',
+      }}>
+        <div style={{ overflow: 'auto', flex: 1, maxHeight: '200px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                {tableColumns.map(col => (
+                  <th key={col} style={thStyle}>{col.replace(/_/g, ' ')}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {sampleRows.map((row, i) => (
+                <tr key={i} onClick={() => setSelectedRow(i)} style={{ cursor: 'pointer' }}>
+                  <td style={tdStyle(i)}>{row.transCode}</td>
+                  <td style={tdStyle(i)}>{row.transNo}</td>
+                  <td style={tdStyle(i)}>{row.sqNo}</td>
+                  <td style={tdStyle(i)}>{row.holderAccNo}</td>
+                  <td style={tdStyle(i)}>{row.transDate}</td>
+                  <td style={tdStyle(i)}>{row.agencyCode}</td>
+                  <td style={tdStyle(i)}>{row.subAgencyCode}</td>
+                  <td style={tdStyle(i)}>{row.agentCode}</td>
+                  <td style={tdStyle(i)}>{row.agentCodeAlt}</td>
+                </tr>
+              ))}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <tr key={`empty-${i}`}>
+                  {tableColumns.map((_, j) => (
+                    <td key={j} style={{ ...tdStyle(i + 1), background: (i + 1) % 2 === 0 ? '#ffffff' : '#f8fafc' }}>&nbsp;</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ── Previous Agent + New Agent panels ───────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        {/* Previous Agent */}
+        <div style={{
+          background: 'linear-gradient(135deg, #fefefe, #f8fafc)',
+          border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px 14px',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+        }}>
+          <div style={{
+            fontSize: '11px', fontWeight: 800, color: '#1e3a8a',
+            textTransform: 'uppercase', letterSpacing: '0.05em',
+            marginBottom: '10px', paddingBottom: '6px',
+            borderBottom: '2px solid #dbeafe',
+          }}>Previous Agent</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {agentPanelField('Agency', prevAgency, r => setPrevAgency(r.agency_code), 'Agency')}
+            {agentPanelField('Sub Agent', prevSubAgent, r => setPrevSubAgent(r.subagent_code), 'SubAgent')}
+            {agentPanelField('Agent', prevAgent, r => setPrevAgent(r.agent_code), 'Agent')}
+          </div>
+        </div>
+
+        {/* New Agent */}
+        <div style={{
+          background: 'linear-gradient(135deg, #fefefe, #f8fafc)',
+          border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px 14px',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+        }}>
+          <div style={{
+            fontSize: '11px', fontWeight: 800, color: '#059669',
+            textTransform: 'uppercase', letterSpacing: '0.05em',
+            marginBottom: '10px', paddingBottom: '6px',
+            borderBottom: '2px solid #d1fae5',
+          }}>New Agent</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {agentPanelField('Agency', newAgency, r => setNewAgency(r.agency_code), 'Agency')}
+            {agentPanelField('Sub Agent', newSubAgent, r => setNewSubAgent(r.subagent_code), 'SubAgent')}
+            {agentPanelField('Agent', newAgent, r => setNewAgent(r.agent_code), 'Agent')}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Action Buttons ───────────────────────────────────── */}
+      <CreationButtonPalette
+        onNew={() => setIsEnabled(true)}
+        onClear={() => {
+          setIsEnabled(false);
+          setPrevAgency(''); setPrevSubAgent(''); setPrevAgent('');
+          setNewAgency(''); setNewSubAgent(''); setNewAgent('');
+        }}
+        isEnabled={isEnabled}
+      >
+        <button style={{
+          height: 30, padding: '0 18px',
+          background: 'linear-gradient(135deg, #0f766e, #14b8a6)',
+          color: '#fff', border: 'none', borderRadius: '7px', cursor: 'pointer',
+          fontWeight: 700, fontSize: '12px',
+          boxShadow: '0 2px 6px rgba(20,184,166,0.4)',
+          transition: 'all 0.2s', letterSpacing: '0.02em',
+        }}>📊 Agent Update Excel</button>
+      </CreationButtonPalette>
+    </div>
+  );
+}
+
+// ========================================
+// ACKNOWLEDGEMENT PRINTING MODAL
+// ========================================
+function AcknowledgementPrintingModal() {
+  const [activeSubModal, setActiveSubModal] = useState<string | null>(null);
+  const [fromDate, setFromDate] = useState<Date | null>(new Date());
+  const [toDate, setToDate] = useState<Date | null>(new Date());
+  const [investDate, setInvestDate] = useState<Date | null>(new Date());
+  const [chqDate, setChqDate] = useState<Date | null>(new Date());
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const [form, setForm] = useState({
+    holderNo: '200712010501',
+    fundCode: '',
+    fundName: '',
+    accountNo: '',
+    paymentType: '',
+    paymentTypeName: '',
+    amount: '0.00',
+    chqNo: '',
+    ackNo: '0',
+    lastNo: '',
+    bankBranchCode: '',
+    bankBranchName: '',
+    pending: true,
+    reportFilter: false,
+    doNotCheck: false
+  });
+
+  const updateForm = (updates: Partial<typeof form>) => setForm(f => ({ ...f, ...updates }));
+
+  const [showAccountSearch, setShowAccountSearch] = useState(false);
+  const [showHolderSearch, setShowHolderSearch] = useState(false);
+
+  const funds = [
+    { code: 'F001', name: 'Ceylon Financial Sector Fund' },
+    { code: 'F002', name: 'Growth Equity Fund' },
+    { code: 'F003', name: 'Balanced Income Fund' }
+  ];
+  const paymentTypes = [
+    { code: 'CHQ', name: 'Cheque' },
+    { code: 'DRAFT', name: 'Draft' },
+    { code: 'CASH', name: 'Cash' },
+    { code: 'BANK', name: 'Bank Transfer' }
+  ];
+  const bankBranches = [
+    { code: 'B001', name: 'Colombo Main' },
+    { code: 'B002', name: 'Kandy Central' },
+    { code: 'B003', name: 'Galle Fort' }
+  ];
+
+  const inp = (): React.CSSProperties => ({
+    height: '28px', padding: '0 8px', fontSize: '12px',
+    border: '1px solid #cfd8e3', borderRadius: '5px',
+    background: '#ffffff',
+    color: '#1e293b', outline: 'none', width: '100%',
+    boxSizing: 'border-box' as const,
+    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+  });
+
+  const LBL: React.CSSProperties = {
+    fontSize: '10px', fontWeight: 700, color: '#5a6a85',
+    textTransform: 'uppercase' as const, letterSpacing: '0.06em',
+    whiteSpace: 'nowrap' as const,
+  };
+
+  const Field = ({ label, children, style }: {
+    label: string; children: React.ReactNode; style?: React.CSSProperties;
+  }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', ...style }}>
+      <span style={LBL}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>{children}</div>
+    </div>
+  );
+
+  const iconBtn = (bg: string): React.CSSProperties => ({
+    height: '28px', minWidth: '26px', padding: '0 4px', flexShrink: 0,
+    background: bg, color: '#fff', border: 'none', borderRadius: '5px',
+    fontSize: '10px', fontWeight: 800, cursor: 'pointer',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.18)',
+  });
+
+  const txtBtn = (bg: string): React.CSSProperties => ({
+    height: '28px', padding: '0 12px', flexShrink: 0,
+    background: bg, color: '#fff', border: 'none', borderRadius: '5px',
+    fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.18)',
+  });
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#f1f5f9', minHeight: '520px' }}>
+      <style>{`
+        .dp-input { height: 28px; padding: 0 8px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 5px; width: 100%; box-sizing: border-box; }
+        .ack-btn { min-width: 80px; height: 28px; padding: 0 12px; font-size: 11px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+        .ack-btn-new { background: #3b82f6; color: #fff; }
+        .ack-btn-save { background: #10b981; color: #fff; }
+        .ack-btn-print { background: #0d7f5a; color: #fff; }
+        .ack-btn-clear { background: #64748b; color: #fff; }
+        .ack-btn-close { background: #f1f5f9; color: #374151; border: 1px solid #cbd5e1; }
+        .ack-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+      `}</style>
+
+      {/* HOLDER INFO BOX */}
+      <div style={{ background: '#ffffff', border: '1.5px solid #bdd5f0', borderRadius: '8px', padding: '10px 14px', boxShadow: '0 1px 6px rgba(59,130,246,0.07)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(180px, 1fr) 30px minmax(200px, 1.5fr) 60px', gap: '8px', marginBottom: '8px' }}>
+          <Field label="Holder No">
+            <input style={{ ...inp(), background: '#f8fafc' }} value={form.holderNo} readOnly />
+          </Field>
+          <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
+            <button style={iconBtn('#7c3aed')} onClick={() => setShowHolderSearch(true)}>H</button>
+          </div>
+          <Field label="Holder Name">
+            <input style={{ ...inp(), background: '#f8fafc' }} value="MRS. Mabula Marappeuma Arachchige Chinta Hemakanthi Abayawan" readOnly />
+          </Field>
+          <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
+            <button style={txtBtn('#0ea5e9')} onClick={() => { }}>Add</button>
+          </div>
+        </div>
+
+        <div style={{ border: '1px solid #e2e8f0', borderRadius: '6px', padding: '8px', background: '#fcfdfe' }}>
+          <div style={{ fontSize: '10px', fontWeight: 800, color: '#64748b', marginBottom: '6px', textTransform: 'uppercase' }}>Holder Details</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ display: 'flex', fontSize: '11px' }}><span style={{ width: '100px', fontWeight: 600 }}>NIC Number:</span> <span>495191931V</span></div>
+              <div style={{ display: 'flex', fontSize: '11px' }}><span style={{ width: '100px', fontWeight: 600 }}>Name in Full:</span> <span>MRS. Mabula Marapperuma Arachchige Chinta Hemakanthi Abayawardana</span></div>
+              <div style={{ display: 'flex', fontSize: '11px' }}><span style={{ width: '100px', fontWeight: 600 }}>Address:</span> <span>370/1, Ahugammana, Demalagama</span></div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ display: 'flex', fontSize: '11px' }}><span style={{ width: '100px', fontWeight: 600 }}>Land Number:</span> <span>0112402518</span></div>
+              <div style={{ display: 'flex', fontSize: '11px' }}><span style={{ width: '100px', fontWeight: 600 }}>Mobile Number:</span> <span>0777656133</span></div>
+              <div style={{ display: 'flex', fontSize: '11px' }}><span style={{ width: '100px', fontWeight: 600 }}>E Mail:</span> <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Not Provided</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PARAMETERS BOX */}
+      <div style={{ background: '#ffffff', border: '1.5px solid #bdd5f0', borderRadius: '8px', padding: '10px 14px', boxShadow: '0 1px 6px rgba(59,130,246,0.07)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+          <Field label="Fund Name">
+            <TableDropdown
+              value={form.fundCode} displayValue={form.fundName}
+              rows={funds} valueKey="code" placeholder="Select Fund"
+              columns={[{ key: 'code', header: 'CODE', width: '30%' }, { key: 'name', header: 'NAME' }]}
+              onSelect={r => updateForm({ fundCode: r.code, fundName: r.name })}
+            />
+          </Field>
+          <Field label="Account No">
+            <div style={{ display: 'flex', width: '100%', gap: '4px' }}>
+              <input style={{ ...inp(), flex: 1 }} value={form.accountNo} onChange={e => updateForm({ accountNo: e.target.value })} placeholder="Enter or search..." />
+              <button style={iconBtn('#1e3a8a')} onClick={() => setShowAccountSearch(true)}>A</button>
+            </div>
+          </Field>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderTop: '1px solid #f1f5f9', paddingTop: '8px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569' }}>
+            <input type="checkbox" checked={form.reportFilter} onChange={e => updateForm({ reportFilter: e.target.checked })} />
+            REPORT FILTER
+          </label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: form.reportFilter ? 1 : 0.5, pointerEvents: form.reportFilter ? 'auto' : 'none' }}>
+            <div style={{ width: '120px' }}><DatePicker selected={fromDate} onChange={d => setFromDate(d)} className="dp-input" dateFormat="dd/MM/yyyy" /></div>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8' }}>TO</span>
+            <div style={{ width: '120px' }}><DatePicker selected={toDate} onChange={d => setToDate(d)} className="dp-input" dateFormat="dd/MM/yyyy" /></div>
+          </div>
+        </div>
+      </div>
+
+      {/* BOTTOM SECTION: 3-COLUMN INTEGRATED LAYOUT */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) minmax(300px, 1.2fr) 200px', gap: '10px', alignItems: 'stretch' }}>
+        {/* INVESTMENT BOX */}
+        <div style={{ background: '#ffffff', border: '1.5px solid #bdd5f0', borderRadius: '8px', padding: '10px 14px', boxShadow: '0 1px 6px rgba(59,130,246,0.07)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ fontSize: '10px', fontWeight: 800, color: '#3b82f6', marginBottom: '2px', textTransform: 'uppercase' }}>Investment Details</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <Field label="Investment Date">
+              <DatePicker selected={investDate} onChange={d => setInvestDate(d)} className="dp-input" dateFormat="dd/MM/yyyy" />
+            </Field>
+            <Field label="Payment Type">
+              <TableDropdown
+                value={form.paymentType} displayValue={form.paymentTypeName}
+                rows={paymentTypes} valueKey="code" placeholder="Select Type"
+                columns={[{ key: 'code', header: 'CODE', width: '30%' }, { key: 'name', header: 'NAME' }]}
+                onSelect={r => updateForm({ paymentType: r.code, paymentTypeName: r.name })}
+              />
+            </Field>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: '8px' }}>
+            <Field label="Investment Amount">
+              <input style={{ ...inp(), textAlign: 'right' }} value={form.amount} onChange={e => updateForm({ amount: e.target.value })} />
+            </Field>
+            <Field label="Cheque/Draft/Acc/Ref/Card No">
+              <input style={inp()} value={form.chqNo} onChange={e => updateForm({ chqNo: e.target.value })} />
+            </Field>
+          </div>
+        </div>
+
+        {/* ACKNOWLEDGEMENT BOX */}
+        <div style={{ background: '#ffffff', border: '1.5px solid #bdd5f0', borderRadius: '8px', padding: '10px 14px', boxShadow: '0 1px 6px rgba(59,130,246,0.07)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ fontSize: '10px', fontWeight: 800, color: '#3b82f6', marginBottom: '2px', textTransform: 'uppercase' }}>Acknowledgement Setup</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: '8px' }}>
+            <Field label="Acknowledgement No">
+              <input style={inp()} value={form.ackNo} readOnly />
+            </Field>
+            <Field label="Last No">
+              <input style={inp()} value={form.lastNo} placeholder="Last No" readOnly />
+            </Field>
+          </div>
+          <Field label="Bank Branch Code">
+            <TableDropdown
+              value={form.bankBranchCode} displayValue={form.bankBranchName}
+              rows={bankBranches} valueKey="code" placeholder="Select Branch"
+              columns={[{ key: 'code', header: 'CODE', width: '30%' }, { key: 'name', header: 'NAME' }]}
+              onSelect={r => updateForm({ bankBranchCode: r.code, bankBranchName: r.name })}
+            />
+          </Field>
+          <Field label="Chq/Ref/Exp Date">
+            <DatePicker selected={chqDate} onChange={d => setChqDate(d)} className="dp-input" dateFormat="dd/MM/yyyy" />
+          </Field>
+        </div>
+
+        {/* OPERATIONS & VERIFICATION PANEL */}
+        <div style={{
+          display: 'flex', flexDirection: 'column', gap: '10px',
+          background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+          border: '1.5px solid #93c5fd', borderRadius: '10px',
+          padding: '12px', boxShadow: '0 4px 10px rgba(59,130,246,0.12)',
+        }}>
+          {/* Signature Area */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+            <span style={{ ...LBL, color: '#1e40af' }}>Digital Signature / ID</span>
+            <div style={{
+              width: '100%', height: '70px', border: '1px dashed #94a3b8',
+              borderRadius: '6px', background: '#fff', display: 'flex',
+              alignItems: 'center', justifyContent: 'center', color: '#94a3b8',
+              fontSize: '10px', fontWeight: 600, textTransform: 'uppercase'
+            }}>
+              Signature Image
+            </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 700, color: '#475569' }}>
+              <input type="checkbox" checked={form.doNotCheck} onChange={e => updateForm({ doNotCheck: e.target.checked })} />
+              DO NOT CHECK
+            </label>
+          </div>
+
+          <div style={{ height: '1px', background: '#e2e8f0', margin: '2px 0' }} />
+
+          {/* Create Account Buttons */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={{ ...LBL, color: '#1e40af', textAlign: 'center' }}>Create Account For</span>
+            <button className="ack-btn" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', width: '100%' }} onClick={() => setActiveSubModal('Creations')}>Creations</button>
+            <button className="ack-btn" style={{ background: '#f5f3ff', color: '#6d28d9', border: '1px solid #ddd6fe', width: '100%' }} onClick={() => setActiveSubModal('Switches')}>Switches</button>
+            <button className="ack-btn" style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fef3c7', width: '100%' }} onClick={() => setActiveSubModal('Transfers')}>Transfers</button>
+          </div>
+        </div>
+      </div>
+
+      {/* STANDARD ACTION BUTTON PALETTE */}
+      <CreationButtonPalette
+        onNew={() => setIsEnabled(true)}
+        onClear={() => {
+          setIsEnabled(false);
+          setForm({
+            holderNo: '',
+            fundCode: '',
+            fundName: '',
+            accountNo: '',
+            paymentType: '',
+            paymentTypeName: '',
+            amount: '0.00',
+            chqNo: '',
+            ackNo: '0',
+            lastNo: '',
+            bankBranchCode: '',
+            bankBranchName: '',
+            pending: false,
+            reportFilter: true,
+            doNotCheck: false
+          });
+          setFromDate(new Date());
+          setToDate(new Date());
+          setInvestDate(new Date());
+          setChqDate(new Date());
+        }}
+        isEnabled={isEnabled}
+      >
+        <button className="ack-btn ack-btn-print" style={{ width: 'auto', padding: '0 16px' }}><span>🖨️</span>Print Acknowledgement</button>
+        <button className="ack-btn ack-btn-print" style={{ background: '#1e40af' }}><span>📊</span>Print List</button>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', marginLeft: '6px' }}>
+          <input type="checkbox" checked={form.pending} onChange={e => updateForm({ pending: e.target.checked })} />
+          Pending
+        </label>
+      </CreationButtonPalette>
+
+      <AccountSelectionPopup
+        isOpen={!!activeSubModal}
+        onClose={() => setActiveSubModal(null)}
+        title={`Edit — Account Selection: ${activeSubModal}`}
+        onSelect={r => { updateForm({ accountNo: r.actNo }); setActiveSubModal(null); }}
+      />
+      <AccountSearchModal
+        isOpen={showAccountSearch}
+        onClose={() => setShowAccountSearch(false)}
+        onSelect={r => updateForm({ accountNo: r.accountNo || '' })}
+        title="Search Account"
+      />
+      <HolderSearchModal
+        isOpen={showHolderSearch}
+        onClose={() => setShowHolderSearch(false)}
+        onSelect={(r: HolderRecord) => updateForm({ holderNo: r.holderId })}
+      />
+    </div>
+  );
+}
+
+// ========================================
+// FUND PRICE E-STATEMENT MODAL
+// ========================================
+function FundPriceEStatementModal() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [showHolderSearch, setShowHolderSearch] = useState(false);
+  const [form, setForm] = useState({
+    holderNo: '',
+    holderName: '',
+    fromAddress: 'ops@ceylonam.com',
+    toAddress: '',
+    ccAddress: '',
+    subject: 'Type Subject Here',
+    body: 'Type Text Body Here <br><br><br><br>For general enquiries <br>Please contact us via - +94 11 7394000 <br><br>Thank you <br>Ceylon Asset Management Co. Ltd.',
+    filePath: '',
+    otherAttachments: '',
+    includingZeroBalance: false,
+    ignoreAlreadySent: false,
+    emailingOption: 'Other', // 'Unit Price' or 'Other'
+    eStatementReport: true,
+    allAttachments: false,
+  });
+
+  const updateForm = (updates: Partial<typeof form>) => setForm(prev => ({ ...prev, ...updates }));
+
+  const LBL: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 700, color: '#444',
+    display: 'inline-block', minWidth: '85px'
+  };
+
+  const inpSt: React.CSSProperties = {
+    flex: 1, height: '28px', padding: '0 8px', fontSize: '12px',
+    border: '1px solid #ccc', borderRadius: '2px', outline: 'none',
+    background: isEnabled ? '#fff' : '#f0f0f0'
+  };
+
+  const btnSt: React.CSSProperties = {
+    height: '28px', padding: '0 12px', fontSize: '11px', fontWeight: 600,
+    border: '1px solid #ccc', borderRadius: '3px', background: '#f5f5f5',
+    cursor: isEnabled ? 'pointer' : 'not-allowed', color: '#444'
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: '#f0f0f0', padding: '10px', borderRadius: '8px' }}>
+
+      {/* Holder Row */}
+      <div style={{ background: '#e8e8e8', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{ fontSize: '12px', fontWeight: 700, color: '#333', minWidth: '50px' }}>Holder</span>
+        <input style={{ ...inpSt, maxWidth: '150px' }} value={form.holderNo} onChange={e => updateForm({ holderNo: e.target.value })} disabled={!isEnabled} />
+        <button style={{ ...btnSt, width: '30px', padding: 0 }} onClick={() => isEnabled && setShowHolderSearch(true)} disabled={!isEnabled}>🔍</button>
+        <input style={{ ...inpSt, background: '#e0e0e0' }} value={form.holderName} readOnly />
+      </div>
+
+      {/* Email Composition */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={LBL}>From Address</span>
+          <input style={inpSt} value={form.fromAddress} onChange={e => updateForm({ fromAddress: e.target.value })} disabled={!isEnabled} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={LBL}>To Address</span>
+          <input style={inpSt} value={form.toAddress} onChange={e => updateForm({ toAddress: e.target.value })} disabled={!isEnabled} />
+          <span style={{ fontSize: '11px', fontWeight: 700, color: '#444' }}>CC Address</span>
+          <input style={inpSt} value={form.ccAddress} onChange={e => updateForm({ ccAddress: e.target.value })} disabled={!isEnabled} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={LBL}>Subject</span>
+          <input style={inpSt} value={form.subject} onChange={e => updateForm({ subject: e.target.value })} disabled={!isEnabled} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+          <span style={LBL}>Text Body</span>
+          <textarea
+            style={{ ...inpSt, height: '180px', padding: '8px', resize: 'none' }}
+            value={form.body}
+            onChange={e => updateForm({ body: e.target.value })}
+            disabled={!isEnabled}
+          />
+        </div>
+      </div>
+
+      {/* Attachments Group */}
+      <fieldset style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px' }}>
+        <legend style={{ fontSize: '11px', fontWeight: 700, color: '#666' }}>Attachments</legend>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+          <button style={btnSt} disabled={!isEnabled}>Brows #...</button>
+          <button style={btnSt} disabled={!isEnabled}>Add to List</button>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 700 }}>
+            <input type="checkbox" checked={form.allAttachments} onChange={e => updateForm({ allAttachments: e.target.checked })} disabled={!isEnabled} />
+            All
+          </label>
+          <button style={{ ...btnSt, color: '#c00', border: '1px solid #faa' }} disabled={!isEnabled}>Remove From List</button>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, minWidth: '60px' }}>File Path</span>
+          <input style={inpSt} value={form.filePath} onChange={e => updateForm({ filePath: e.target.value })} disabled={!isEnabled} />
+        </div>
+        <textarea
+          style={{ ...inpSt, height: '60px', width: '100%', resize: 'none' }}
+          placeholder="Other Attachment Files"
+          value={form.otherAttachments}
+          onChange={e => updateForm({ otherAttachments: e.target.value })}
+          disabled={!isEnabled}
+        />
+      </fieldset>
+
+      {/* Processing Options */}
+      <div style={{ display: 'flex', gap: '20px', padding: '0 5px' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#333' }}>
+          <input type="checkbox" checked={form.includingZeroBalance} onChange={e => updateForm({ includingZeroBalance: e.target.checked })} disabled={!isEnabled} />
+          Including Zero Balance Accounts
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#333' }}>
+          <input type="checkbox" checked={form.ignoreAlreadySent} onChange={e => updateForm({ ignoreAlreadySent: e.target.checked })} disabled={!isEnabled} />
+          Ignore Already Sent E-Mails(Bulk)
+        </label>
+      </div>
+
+      {/* Emailing Options Group */}
+      <fieldset style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', alignSelf: 'center', minWidth: '350px' }}>
+        <legend style={{ fontSize: '11px', fontWeight: 700, color: '#666' }}>Emailing Options</legend>
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700 }}>
+            <input type="radio" name="emailOpt" checked={form.emailingOption === 'Unit Price'} onChange={() => updateForm({ emailingOption: 'Unit Price' })} disabled={!isEnabled} />
+            Unit Price
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700 }}>
+            <input type="radio" name="emailOpt" checked={form.emailingOption === 'Other'} onChange={() => updateForm({ emailingOption: 'Other' })} disabled={!isEnabled} />
+            Other
+          </label>
+        </div>
+      </fieldset>
+
+      {/* Action Buttons */}
+      <CreationButtonPalette
+        onNew={() => setIsEnabled(true)}
+        onClear={() => {
+          setIsEnabled(false);
+          setForm({
+            holderNo: '', holderName: '', fromAddress: 'ops@ceylonam.com', toAddress: '', ccAddress: '',
+            subject: 'Type Subject Here', body: 'Type Text Body Here <br><br><br><br>For general enquiries <br>Please contact us via - +94 11 7394000 <br><br>Thank you <br>Ceylon Asset Management Co. Ltd.', filePath: '', otherAttachments: '',
+            includingZeroBalance: false, ignoreAlreadySent: false, emailingOption: 'Other',
+            eStatementReport: true, allAttachments: false
+          });
+        }}
+        isEnabled={isEnabled}
+      >
+        <button
+          className="setup-btn"
+          style={{ background: isEnabled ? '#1e40af' : '#94a3b8', color: '#fff' }}
+          disabled={!isEnabled}
+        >
+          <span className="setup-btn-icon">📧</span>Send email
+        </button>
+        <button
+          className="setup-btn"
+          style={{ background: isEnabled ? '#0369a1' : '#94a3b8', color: '#fff' }}
+          disabled={!isEnabled}
+        >
+          <span className="setup-btn-icon">⚡</span>Bulk Email
+        </button>
+      </CreationButtonPalette>
+
+      <HolderSearchModal
+        isOpen={showHolderSearch}
+        onClose={() => setShowHolderSearch(false)}
+        onSelect={(r: HolderRecord) => {
+          updateForm({ holderNo: r.holderId, holderName: r.holderName });
+          setShowHolderSearch(false);
+        }}
+      />
+    </div>
+  );
+}
+
+
+// ========================================
 // MAIN UNIT OPERATIONS COMPONENT
 // ========================================
 
@@ -6711,6 +7612,9 @@ function UnitOperations() {
       case 'Bank Slip Transfer': return <BankSlipTransferModal />;
       case 'Reminders': return <RemindersModal onClose={handleModalClose} />;
       case 'Unit Transfer - Suspense Account': return <UnitTransferSuspenseAccountModal onClose={handleModalClose} />;
+      case 'Change Agent for Transaction': return <ChangeAgentForTransactionModal />;
+      case 'Acknowledgement Printing': return <AcknowledgementPrintingModal />;
+      case 'Fund Price E-statement': return <FundPriceEStatementModal />;
       default:
         return (
           <div className="empty-content">
@@ -6726,7 +7630,8 @@ function UnitOperations() {
     'Unit Consolidation', 'Unit Blocking', 'Dividend Issues', 'Redemption Cheque Printing',
     'Cheque Re Printing', 'Web Data Downloading', 'Standing Instructions',
     'Standing Instructions Processing', 'Bank Slip Transfer', 'Reminders',
-    'Unit Transfer - Suspense Account'
+    'Unit Transfer - Suspense Account', 'Change Agent for Transaction', 'Acknowledgement Printing',
+    'Fund Price E-statement'
   ].includes(modules[modalIdx].title);
 
   return (

@@ -740,6 +740,14 @@ textarea.setup-input-field:focus {
   filter: brightness(1.06);
 }
 
+/* Disable hover effects for specific buttons */
+.setup-btn.no-hover:hover {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+  background: inherit !important;
+}
+
 .setup-btn-new {
   background: var(--accent);
   box-shadow: 0 2px 8px rgba(30, 58, 138, 0.22);

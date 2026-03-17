@@ -548,26 +548,15 @@ function CreationButtonPalette({ onNew, onClear, onProcess, onUpdate, isEnabled 
       <button className="setup-btn setup-btn-new" onClick={onNew}><span className="setup-btn-icon">＋</span>New</button>
       {onProcess && (
         <button
-          className="setup-btn"
+          className="setup-btn setup-btn-process"
           style={{
             background: isEnabled ? '#10b981' : '#cbd5e1',
+            color: '#ffffff',
             boxShadow: isEnabled ? '0 2px 8px rgba(16,185,129,0.3)' : 'none',
             transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
           onClick={onProcess}
           disabled={!isEnabled}
-          onMouseEnter={e => {
-            if (isEnabled) {
-              e.currentTarget.style.background = '#ffffff';
-              e.currentTarget.style.color = '#1e293b';
-            }
-          }}
-          onMouseLeave={e => {
-            if (isEnabled) {
-              e.currentTarget.style.background = '#10b981';
-              e.currentTarget.style.color = '#ffffff';
-            }
-          }}
         >
           <span className="setup-btn-icon">▶</span>Process
         </button>
@@ -578,21 +567,15 @@ function CreationButtonPalette({ onNew, onClear, onProcess, onUpdate, isEnabled 
       <button className="setup-btn setup-btn-clear" onClick={onClear}><span className="setup-btn-icon">✕</span>Clear</button>
       {onUpdate && (
         <button
-          className="setup-btn"
+          className="setup-btn setup-btn-update"
           style={{
             background: '#1e40af',
+            color: '#ffffff',
             boxShadow: '0 2px 8px rgba(30,64,175,0.22)',
             transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
           onClick={onUpdate}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = '#ffffff';
-            e.currentTarget.style.color = '#1e293b';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = '#1e40af';
-            e.currentTarget.style.color = '#ffffff';
-          }}
+          disabled={!isEnabled}
         >
           <span className="setup-btn-icon">💾</span>Update
         </button>
@@ -6919,11 +6902,11 @@ function AcknowledgementPrintingModal() {
       <style>{`
         .dp-input { height: 28px; padding: 0 8px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 5px; width: 100%; box-sizing: border-box; }
         .ack-btn { min-width: 80px; height: 28px; padding: 0 12px; font-size: 11px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-        .ack-btn-new { background: #3b82f6; color: #fff; }
-        .ack-btn-save { background: #10b981; color: #fff; }
-        .ack-btn-print { background: #0d7f5a; color: #fff; }
-        .ack-btn-clear { background: #64748b; color: #fff; }
-        .ack-btn-close { background: #f1f5f9; color: #374151; border: 1px solid #cbd5e1; }
+        .ack-btn-new, .ack-btn-new:hover { background: #3b82f6; color: #fff; }
+        .ack-btn-save, .ack-btn-save:hover { background: #10b981; color: #fff; }
+        .ack-btn-print, .ack-btn-print:hover { background: #0d7f5a; color: #fff; }
+        .ack-btn-clear, .ack-btn-clear:hover { background: #64748b; color: #fff; }
+        .ack-btn-close, .ack-btn-close:hover { background: #f1f5f9; color: #374151; border: 1px solid #cbd5e1; }
         .ack-btn:hover { opacity: 0.9; transform: translateY(-1px); }
       `}</style>
 
@@ -7110,7 +7093,7 @@ function AcknowledgementPrintingModal() {
         isEnabled={isEnabled}
       >
         <button className="ack-btn ack-btn-print" style={{ width: 'auto', padding: '0 16px' }}><span>🖨️</span>Print Acknowledgement</button>
-        <button className="ack-btn ack-btn-print" style={{ background: '#1e40af' }}><span>📊</span>Print List</button>
+        <button className="ack-btn ack-btn-print" style={{ background: '#1e40af', width: 'auto', padding: '0 16px' }}><span>📊</span>Print List</button>
         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', marginLeft: '6px' }}>
           <input type="checkbox" checked={form.pending} onChange={e => updateForm({ pending: e.target.checked })} />
           Pending
@@ -7308,6 +7291,589 @@ function FundPriceEStatementModal() {
           setShowHolderSearch(false);
         }}
       />
+    </div>
+  );
+}
+
+
+// ========================================
+// WHT PER UNIT ENTRY MODAL
+// ========================================
+function WHTPerUnitEntryModal() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [form, setForm] = useState({
+    fundCode: '',
+    fundName: '',
+    whtPerUnit: '0.000000',
+  });
+
+  const [records] = useState([
+    { fundCode: 'F001', date: '19/Oct/2007', wht: '0.005000' },
+    { fundCode: 'F002', date: '20/Oct/2007', wht: '0.004500' },
+    { fundCode: 'F003', date: '21/Oct/2007', wht: '0.006000' },
+  ]);
+
+  const updateForm = (updates: Partial<typeof form>) => setForm(prev => ({ ...prev, ...updates }));
+
+  const cardStyle: React.CSSProperties = {
+    background: '#ffffff',
+    border: '1px solid #e2e8f0',
+    borderRadius: '10px',
+    padding: '20px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+  };
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '10px 12px',
+    background: '#1e3a8a',
+    color: '#ffffff',
+    fontSize: '11px',
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    textAlign: 'left',
+    borderRight: '1px solid rgba(255,255,255,0.1)'
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px' }}>
+
+      {/* FORM SECTION */}
+      <div style={cardStyle}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+
+          <InputRow label="Fund Code" labelWidth={100}>
+            <TableDropdown
+              value={form.fundCode}
+              displayValue={form.fundName ? `${form.fundCode} - ${form.fundName}` : ''}
+              placeholder="Select Fund"
+              columns={[
+                { key: 'code', header: 'Code', width: '30%' },
+                { key: 'name', header: 'Name' }
+              ]}
+              rows={fundData}
+              valueKey="code"
+              onSelect={r => updateForm({ fundCode: r.code, fundName: r.name })}
+              disabled={!isEnabled}
+            />
+          </InputRow>
+
+          <InputRow label="Date" labelWidth={100}>
+            <div style={{ flex: 1 }}>
+              <DatePicker
+                selected={selectedDate}
+                onChange={d => setSelectedDate(d)}
+                dateFormat="dd/MMM/yyyy"
+                className="date-picker-input"
+                disabled={!isEnabled}
+              />
+            </div>
+          </InputRow>
+
+          <InputRow label="WHT Per Unit" labelWidth={100}>
+            <input
+              type="text"
+              style={{
+                height: '30px', padding: '0 10px', fontSize: '13px',
+                border: '1px solid #cfd8e3', borderRadius: '6px',
+                background: isEnabled ? '#fff' : '#f8fafc',
+                width: '100%', outline: 'none'
+              }}
+              value={form.whtPerUnit}
+              onChange={e => updateForm({ whtPerUnit: e.target.value })}
+              disabled={!isEnabled}
+            />
+          </InputRow>
+
+        </div>
+      </div>
+
+      {/* ACTION PALETTE */}
+      <CreationButtonPalette
+        onNew={() => setIsEnabled(true)}
+        onClear={() => {
+          setIsEnabled(false);
+          setForm({ fundCode: '', fundName: '', whtPerUnit: '0.000000' });
+          setSelectedDate(new Date());
+        }}
+        isEnabled={isEnabled}
+      />
+
+      {/* DATA VIEW TABLE */}
+      <div style={{ ...cardStyle, padding: '0', overflow: 'hidden' }}>
+        <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={tableHeaderStyle}>Fund Code</th>
+                <th style={tableHeaderStyle}>Date</th>
+                <th style={{ ...tableHeaderStyle, borderRight: 'none' }}>WHT Per Unit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {records.map((r, i) => (
+                <tr
+                  key={i}
+                  onDoubleClick={() => {
+                    if (!isEnabled) setIsEnabled(true);
+                    const fund = fundData.find(f => f.code === r.fundCode);
+                    updateForm({ fundCode: r.fundCode, fundName: fund?.name || '', whtPerUnit: r.wht });
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                    borderBottom: '1px solid #f1f5f9',
+                    background: i % 2 === 0 ? '#ffffff' : '#fbfcfe',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'}
+                  onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? '#ffffff' : '#fbfcfe'}
+                >
+                  <td style={{ padding: '10px 12px', fontSize: '12px', color: '#1e3a8a', fontWeight: 700 }}>{r.fundCode}</td>
+                  <td style={{ padding: '10px 12px', fontSize: '12px', color: '#334155' }}>{r.date}</td>
+                  <td style={{ padding: '10px 12px', fontSize: '12px', color: '#0f766e', fontWeight: 600 }}>{r.wht}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div style={{ padding: '8px 16px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>
+          Double click to get the selected value
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+
+// ========================================
+// TRANSACTION UPLOAD MODAL
+// ========================================
+function TransactionUploadModal() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [txnDate, setTxnDate] = useState<Date | null>(new Date());
+  const [sourceFile, setSourceFile] = useState('');
+
+  const [previewData] = useState([
+    { accNo: '10002345', amount: '25,000.00', mode: 'Cheque', ref: 'CHQ-88291' },
+    { accNo: '10005567', amount: '12,500.00', mode: 'Bank Transfer', ref: 'BT-11029' },
+    { accNo: '10003312', amount: '50,000.00', mode: 'Cash', ref: 'CASH-991' },
+  ]);
+
+  const cardStyle: React.CSSProperties = {
+    background: '#ffffff',
+    border: '1px solid #e2e8f0',
+    borderRadius: '12px',
+    padding: '20px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)',
+  };
+
+  const headerAlertStyle: React.CSSProperties = {
+    background: '#f0f9ff',
+    border: '1px solid #bae6fd',
+    borderRadius: '8px',
+    padding: '12px',
+    marginBottom: '20px',
+    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    color: '#0369a1',
+    fontWeight: 600,
+    fontSize: '13px'
+  };
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '12px',
+    background: '#f8fafc',
+    color: '#475569',
+    fontSize: '11px',
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    textAlign: 'left',
+    borderBottom: '2px solid #e2e8f0'
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px' }}>
+
+      {/* HEADER INFO */}
+      <div style={headerAlertStyle}>
+        <span style={{ fontSize: '18px' }}>ℹ️</span>
+        File Date Format - "YYYY-MM-DD"
+      </div>
+
+      <div style={cardStyle}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="setup-btn" style={{ background: '#f5f3ff', color: '#6d28d9', border: '1px solid #ddd6fe' }} disabled={!isEnabled}>
+              UnitCorrectionADD
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <InputRow label="Transaction Date" labelWidth={130} style={{ flex: '0 0 auto', marginBottom: 0 }}>
+              <div style={{ width: '150px' }}>
+                <DatePicker
+                  selected={txnDate}
+                  onChange={d => setTxnDate(d)}
+                  dateFormat="dd/MMM/yyyy"
+                  className="date-picker-input"
+                  disabled={!isEnabled}
+                />
+              </div>
+            </InputRow>
+
+            <InputRow label="Source File" labelWidth={100} style={{ flex: 1, marginBottom: 0 }}>
+              <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
+                <input
+                  type="text"
+                  style={{
+                    height: '32px', padding: '0 12px', fontSize: '13px',
+                    border: '1px solid #cbd5e1', borderRadius: '6px',
+                    background: isEnabled ? '#fff' : '#f8fafc', flex: 1, outline: 'none'
+                  }}
+                  value={sourceFile}
+                  onChange={e => setSourceFile(e.target.value)}
+                  placeholder="Choose transaction data file..."
+                  disabled={!isEnabled}
+                />
+                <button
+                  className="setup-btn"
+                  style={{ background: '#2563eb', color: '#fff', border: 'none', minWidth: '100px', justifyContent: 'center' }}
+                  disabled={!isEnabled}
+                >
+                  Browse
+                </button>
+              </div>
+            </InputRow>
+          </div>
+
+        </div>
+      </div>
+
+      {/* ACTION PALETTE */}
+      <CreationButtonPalette
+        onNew={() => setIsEnabled(true)}
+        onClear={() => {
+          setIsEnabled(false);
+          setTxnDate(new Date());
+          setSourceFile('');
+        }}
+        isEnabled={isEnabled}
+      >
+        <button
+          className="setup-btn no-hover"
+          style={{
+            background: isEnabled ? '#ef4444' : '#94a3b8',
+            color: '#fff',
+            padding: '0 24px',
+            fontSize: '13px',
+            fontWeight: 700
+          }}
+          disabled={!isEnabled}
+        >
+          Upload
+        </button>
+      </CreationButtonPalette>
+
+      {/* PREVIEW TABLE */}
+      <div style={{ ...cardStyle, padding: '0', overflow: 'hidden' }}>
+        <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={tableHeaderStyle}>Account Number</th>
+                <th style={tableHeaderStyle}>Amount</th>
+                <th style={tableHeaderStyle}>Payment Mode</th>
+                <th style={tableHeaderStyle}>Reference No</th>
+              </tr>
+            </thead>
+            <tbody>
+              {previewData.map((row, i) => (
+                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#fbfcfe' }}>
+                  <td style={{ padding: '12px', fontSize: '13px', color: '#1e3a8a', fontWeight: 600 }}>{row.accNo}</td>
+                  <td style={{ padding: '12px', fontSize: '13px', color: '#334155', textAlign: 'right' }}>{row.amount}</td>
+                  <td style={{ padding: '12px', fontSize: '13px', color: '#475569' }}>{row.mode}</td>
+                  <td style={{ padding: '12px', fontSize: '13px', color: '#64748b', fontFamily: 'monospace' }}>{row.ref}</td>
+                </tr>
+              ))}
+              {isEnabled && Array(3).fill(0).map((_, i) => (
+                <tr key={`empty-${i}`} style={{ borderBottom: '1px solid #f1f5f9', height: '40px' }}>
+                  <td colSpan={4} style={{ background: '#fff' }}></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+
+// ========================================
+// UPLOAD AND DOWNLOAD DATA WEB-AUTOMATED MODAL
+// ========================================
+function UploadDownloadWebAutomatedModal() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [sqlOptions, setSqlOptions] = useState({ testDb: false });
+  const [actionOptions, setActionOptions] = useState({ withReturnValues: false, sqlDbReturnTransferOnly: false });
+  const [selectedSqlTable, setSelectedSqlTable] = useState('Profiles');
+  const [selectedMslTable, setSelectedMslTable] = useState('Returns');
+
+  const sqlTables = ['Profiles', 'Account', 'Price', 'Trans', 'Balance', 'Returns', 'Count'];
+  const mslTables = ['Returns', 'Count'];
+
+  const LBL: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 700, color: '#475569',
+    textTransform: 'uppercase', letterSpacing: '0.04em'
+  };
+
+  const cardStyle: React.CSSProperties = {
+    background: '#ffffff',
+    border: '1px solid #e2e8f0',
+    borderRadius: '10px',
+    padding: '16px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+  };
+
+  const radioLabelStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: '12px',
+    color: '#334155',
+    cursor: isEnabled ? 'pointer' : 'not-allowed',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    transition: 'background 0.2s'
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px' }}>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 300px) 1fr', gap: '16px' }}>
+
+        {/* LEFT COLUMN: OPTIONS & TABLES */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+          {/* SQL DATABASE CONNECTION */}
+          <div style={cardStyle}>
+            <div style={{ ...LBL, marginBottom: '12px', color: '#1e40af', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>SQL DataBase</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                className="setup-btn"
+                style={{
+                  background: isEnabled ? '#2563eb' : '#94a3b8',
+                  color: '#fff',
+                  width: '100%',
+                  justifyContent: 'center'
+                }}
+                disabled={!isEnabled}
+              >
+                <span className="setup-btn-icon">🔌</span>Connect
+              </button>
+              <label style={{ ...radioLabelStyle, opacity: isEnabled ? 1 : 0.6 }}>
+                <input
+                  type="checkbox"
+                  checked={sqlOptions.testDb}
+                  onChange={e => setSqlOptions({ testDb: e.target.checked })}
+                  disabled={!isEnabled}
+                />
+                Test DB
+              </label>
+            </div>
+          </div>
+
+          {/* SQL TABLES SELECTION */}
+          <div style={cardStyle}>
+            <div style={{ ...LBL, marginBottom: '12px', color: '#1e40af', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>SQL Tables</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {sqlTables.map(t => (
+                <label key={t} style={{
+                  ...radioLabelStyle,
+                  background: selectedSqlTable === t ? '#eff6ff' : 'transparent',
+                  fontWeight: selectedSqlTable === t ? 600 : 400
+                }}>
+                  <input
+                    type="radio"
+                    name="sqlTable"
+                    checked={selectedSqlTable === t}
+                    onChange={() => setSelectedSqlTable(t)}
+                    disabled={!isEnabled}
+                  />
+                  {t}
+                </label>
+              ))}
+            </div>
+            <button
+              className="setup-btn"
+              style={{ background: isEnabled ? '#f8fafc' : '#f1f5f9', color: '#334155', border: '1px solid #e2e8f0', width: '100%', marginTop: '12px', justifyContent: 'center' }}
+              disabled={!isEnabled}
+            >
+              Show
+            </button>
+          </div>
+
+          {/* MSL TABLES SELECTION */}
+          <div style={cardStyle}>
+            <div style={{ ...LBL, marginBottom: '12px', color: '#1e40af', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>MSL Tables</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {mslTables.map(t => (
+                <label key={t} style={{
+                  ...radioLabelStyle,
+                  background: selectedMslTable === t ? '#eff6ff' : 'transparent',
+                  fontWeight: selectedMslTable === t ? 600 : 400
+                }}>
+                  <input
+                    type="radio"
+                    name="mslTable"
+                    checked={selectedMslTable === t}
+                    onChange={() => setSelectedMslTable(t)}
+                    disabled={!isEnabled}
+                  />
+                  {t}
+                </label>
+              ))}
+            </div>
+            <button
+              className="setup-btn"
+              style={{ background: isEnabled ? '#f8fafc' : '#f1f5f9', color: '#334155', border: '1px solid #e2e8f0', width: '100%', marginTop: '12px', justifyContent: 'center' }}
+              disabled={!isEnabled}
+            >
+              Show
+            </button>
+          </div>
+
+        </div>
+
+        {/* RIGHT COLUMN: ACTIONS & STATUS */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+          {/* ACTION BAR */}
+          <div style={{ ...cardStyle, background: 'linear-gradient(to bottom, #f8fafc, #f1f5f9)' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+              <button
+                className="setup-btn no-hover"
+                style={{ background: isEnabled ? '#1d4ed8' : '#94a3b8', color: '#fff', padding: '8px 20px' }}
+                disabled={!isEnabled}
+              >
+                <span className="setup-btn-icon">⬇️</span>Download
+              </button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '0 8px' }}>
+                <label style={{ ...radioLabelStyle, opacity: isEnabled ? 1 : 0.6 }}>
+                  <input
+                    type="checkbox"
+                    checked={actionOptions.withReturnValues}
+                    onChange={e => setActionOptions(prev => ({ ...prev, withReturnValues: e.target.checked }))}
+                    disabled={!isEnabled}
+                  />
+                  With Return Values
+                </label>
+
+                <button
+                  className="setup-btn no-hover"
+                  style={{ background: isEnabled ? '#ffffff' : '#f1f5f9', color: '#1e40af', border: '1px solid #1e40af' }}
+                  disabled={!isEnabled}
+                >
+                  <span className="setup-btn-icon">📤</span>Upload
+                </button>
+
+                <label style={{ ...radioLabelStyle, opacity: isEnabled ? 1 : 0.6 }}>
+                  <input
+                    type="checkbox"
+                    checked={actionOptions.sqlDbReturnTransferOnly}
+                    onChange={e => setActionOptions(prev => ({ ...prev, sqlDbReturnTransferOnly: e.target.checked }))}
+                    disabled={!isEnabled}
+                  />
+                  Sql DB Return Transfer Only
+                </label>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
+                <button
+                  className="setup-btn"
+                  style={{ background: isEnabled ? '#0891b2' : '#94a3b8', color: '#fff' }}
+                  disabled={!isEnabled}
+                >
+                  Compute Returns
+                </button>
+                <button
+                  className="setup-btn"
+                  style={{ background: isEnabled ? '#0f766e' : '#94a3b8', color: '#fff' }}
+                  disabled={!isEnabled}
+                >
+                  Export Return Values
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* STATUS CONSOLE / LOG AREA */}
+          <div style={{
+            ...cardStyle,
+            flex: 1,
+            background: '#1e293b',
+            color: '#34d399',
+            fontFamily: "'Fira Code', 'Courier New', monospace",
+            fontSize: '13px',
+            minHeight: '400px',
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <div style={{
+              background: '#334155',
+              color: '#f8fafc',
+              padding: '6px 12px',
+              fontSize: '11px',
+              fontWeight: 600,
+              display: 'flex',
+              justifyContent: 'space-between',
+              margin: '-16px -16px 16px -16px'
+            }}>
+              <span>CONNECTION LOG / STATUS</span>
+              <span style={{ opacity: 0.7 }}>Ready</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              {isEnabled ? (
+                <>
+                  <div>[SYSTEM] Local automated services initialized...</div>
+                  <div style={{ color: '#94a3b8' }}>Waiting for database connection...</div>
+                </>
+              ) : (
+                <div style={{ color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontStyle: 'italic' }}>
+                  System in standby mode. Click 'New' to initialize session.
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* FOOTER PALETTE */}
+      <CreationButtonPalette
+        onNew={() => setIsEnabled(true)}
+        onClear={() => {
+          setIsEnabled(false);
+          setSqlOptions({ testDb: false });
+          setActionOptions({ withReturnValues: false, sqlDbReturnTransferOnly: false });
+          setSelectedSqlTable('Profiles');
+          setSelectedMslTable('Returns');
+        }}
+        isEnabled={isEnabled}
+      />
+
     </div>
   );
 }
@@ -7615,6 +8181,9 @@ function UnitOperations() {
       case 'Change Agent for Transaction': return <ChangeAgentForTransactionModal />;
       case 'Acknowledgement Printing': return <AcknowledgementPrintingModal />;
       case 'Fund Price E-statement': return <FundPriceEStatementModal />;
+      case 'Upload and Download Data Web-Automated': return <UploadDownloadWebAutomatedModal />;
+      case 'WHT Per Unit Entry': return <WHTPerUnitEntryModal />;
+      case 'Transaction Upload': return <TransactionUploadModal />;
       default:
         return (
           <div className="empty-content">
@@ -7631,7 +8200,7 @@ function UnitOperations() {
     'Cheque Re Printing', 'Web Data Downloading', 'Standing Instructions',
     'Standing Instructions Processing', 'Bank Slip Transfer', 'Reminders',
     'Unit Transfer - Suspense Account', 'Change Agent for Transaction', 'Acknowledgement Printing',
-    'Fund Price E-statement'
+    'Fund Price E-statement', 'Upload and Download Data Web-Automated', 'WHT Per Unit Entry', 'Transaction Upload'
   ].includes(modules[modalIdx].title);
 
   return (

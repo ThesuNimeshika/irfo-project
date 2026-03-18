@@ -1,11 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Setup from './pages/Setup';
 import FourCardsWithModal from './pages/RegistrationSetup';
 import UnitOperations from './pages/UnitOperations';
 import Approval from './pages/Approval';
 import DocumentPrinting from './pages/DocumentPrinting';
-
+import Login from './pages/Login';
+import OtpAuth from './pages/OtpAuth';
+import ResetRequest from './pages/ResetRequest';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // CSS import ORDER matters:
 // 1. index.css is imported in main.tsx (already correct)
@@ -19,16 +23,27 @@ import './modal-layout-fixes.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/setup" element={<Setup />} />
-        <Route path="/registrationsetup" element={<FourCardsWithModal />} />
-        <Route path="/unit-operations" element={<UnitOperations />} />
-        <Route path="/approval" element={<Approval />} />
-        <Route path="/document-printing" element={<DocumentPrinting />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/auth" element={<OtpAuth />} />
+          <Route path="/reset-request" element={<ResetRequest />} />
+
+          {/* Protected routes */}
+          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/setup" element={<ProtectedRoute><Setup /></ProtectedRoute>} />
+          <Route path="/registrationsetup" element={<ProtectedRoute><FourCardsWithModal /></ProtectedRoute>} />
+          <Route path="/unit-operations" element={<ProtectedRoute><UnitOperations /></ProtectedRoute>} />
+          <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
+          <Route path="/document-printing" element={<ProtectedRoute><DocumentPrinting /></ProtectedRoute>} />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

@@ -59,11 +59,6 @@ export default function Login() {
 
     return (
         <div className="login-bg">
-            {/* Floating decorative circles */}
-            <div className="login-circle login-circle-1" />
-            <div className="login-circle login-circle-2" />
-            <div className="login-circle login-circle-3" />
-            <div className="login-circle login-circle-4" />
 
             {/* Toast notifications */}
             <div className="login-toast-container">
@@ -81,8 +76,26 @@ export default function Login() {
             {/* Card */}
             <div className="login-card">
 
-                {/* ── LEFT: Form ── */}
+                {/* ── LEFT: Branding ── */}
                 <div className="login-left">
+                    <div className="login-logo-circle">
+                        <span className="login-logo-text">IRFO</span>
+                    </div>
+
+
+                    <div className="login-app-name">IRFO</div>
+                    <div className="login-app-desc">
+                        Investor Registration and<br />Service Solution for<br />Fund Operation
+                    </div>
+
+                    <div className="login-brand-badge">
+                        <span style={{ fontSize: 18, color: '#1565c0' }}>🏦</span>
+                        <span className="login-brand-badge-text">MSL Management Systems</span>
+                    </div>
+                </div>
+
+                {/* ── RIGHT: Form ── */}
+                <div className="login-right">
                     <div style={{ width: '100%' }}>
                         <div className="login-welcome-title">Welcome to IRFO</div>
                         <div className="login-subtitle">Login</div>
@@ -147,26 +160,7 @@ export default function Login() {
                     </div>
 
                     <div className="login-copyright">
-                        © 2025 Management Systems (Pvt) Ltd | All rights reserved
-                    </div>
-                </div>
-
-                {/* ── RIGHT: Branding ── */}
-                <div className="login-right">
-                    <div className="login-logo-circle">
-                        <span className="login-logo-text">IRFO</span>
-                    </div>
-
-                    <div className="login-divider" />
-
-                    <div className="login-app-name">IRFO</div>
-                    <div className="login-app-desc">
-                        Investor Registration and<br />Service Solution for<br />Fund Operation
-                    </div>
-
-                    <div className="login-brand-badge">
-                        <span style={{ fontSize: 18, color: '#1565c0' }}>🏦</span>
-                        <span className="login-brand-badge-text">MSL Management Systems</span>
+                        © 2025 Management Systems (Pvt) Ltd
                     </div>
                 </div>
             </div>

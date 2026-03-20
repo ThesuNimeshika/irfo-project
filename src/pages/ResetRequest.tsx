@@ -43,9 +43,6 @@ export default function ResetRequest() {
 
     return (
         <div className="login-bg">
-            <div className="login-circle login-circle-1" />
-            <div className="login-circle login-circle-2" />
-
             {/* Toast notifications */}
             <div className="login-toast-container">
                 {toasts.map(t => (
@@ -60,7 +57,25 @@ export default function ResetRequest() {
             </div>
 
             <div className="login-card">
+                {/* ── LEFT: Branding ── */}
                 <div className="login-left">
+                    <div className="login-logo-circle">
+                        <span className="login-logo-text">IRFO</span>
+                    </div>
+                    <div className="login-app-name">IRFO</div>
+                    <div className="login-app-desc">
+                        Security Support Center<br />
+                        Investor Registration and<br />
+                        Service Solution
+                    </div>
+                    <div className="login-brand-badge">
+                        <span style={{ fontSize: 18, color: '#1565c0' }}>🛡️</span>
+                        <span className="login-brand-badge-text">Admin Approval Desk</span>
+                    </div>
+                </div>
+
+                {/* ── RIGHT: Reset Form ── */}
+                <div className="login-right">
                     <div style={{ width: '100%' }}>
                         <div className="login-welcome-title">Reset Password</div>
                         <div className="login-subtitle">Request admin for password reset</div>
@@ -89,23 +104,7 @@ export default function ResetRequest() {
                     </div>
 
                     <div className="login-copyright">
-                        © 2025 Management Systems (Pvt) Ltd | All rights reserved
-                    </div>
-                </div>
-
-                <div className="login-right">
-                    <div className="login-logo-circle">
-                        <span className="login-logo-text">IRFO</span>
-                    </div>
-                    <div className="login-app-name">IRFO</div>
-                    <div className="login-app-desc">
-                        Security Support Center<br />
-                        Investor Registration and<br />
-                        Service Solution
-                    </div>
-                    <div className="login-brand-badge">
-                        <span style={{ fontSize: 18, color: '#1565c0' }}>🛡️</span>
-                        <span className="login-brand-badge-text">Admin Approval Desk</span>
+                        © 2025 Management Systems (Pvt) Ltd
                     </div>
                 </div>
             </div>

@@ -17,6 +17,7 @@ export default function OtpAuth() {
     const navigate = useNavigate();
     const { login } = useAuth();
     const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
+    const [otpMethod, setOtpMethod] = useState<'email' | 'mobile'>('email');
     const [loading, setLoading] = useState(false);
     const [toasts, setToasts] = useState<Toast[]>([]);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -75,7 +76,7 @@ export default function OtpAuth() {
     const handleResend = () => {
         setDigits(Array(OTP_LENGTH).fill(''));
         inputRefs.current[0]?.focus();
-        addToast('success', 'A new OTP has been sent to your email.');
+        addToast('success', `A new OTP has been sent to your ${otpMethod === 'email' ? 'email' : 'mobile number'}.`);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -115,12 +116,6 @@ export default function OtpAuth() {
 
     return (
         <div className="login-bg">
-            {/* Decorative circles */}
-            <div className="login-circle login-circle-1" />
-            <div className="login-circle login-circle-2" />
-            <div className="login-circle login-circle-3" />
-            <div className="login-circle login-circle-4" />
-
             {/* Toasts */}
             <div className="login-toast-container">
                 {toasts.map(t => (
@@ -136,16 +131,51 @@ export default function OtpAuth() {
 
             {/* Card */}
             <div className="login-card">
-
-                {/* ── LEFT: OTP Form ── */}
+                {/* ── LEFT: Branding ── */}
                 <div className="login-left">
+                    <div className="login-logo-circle">
+                        <span className="login-logo-text">IRFO</span>
+                    </div>
+
+                    <div className="login-app-name">IRFO</div>
+                    <div className="login-app-desc">
+                        Investor Registration and<br />Service Solution for<br />Fund Operation
+                    </div>
+
+                    <div className="login-brand-badge">
+                        <span style={{ fontSize: 18, color: '#1565c0' }}>🛡️</span>
+                        <span className="login-brand-badge-text">Secure Access</span>
+                    </div>
+                </div>
+
+                {/* ── RIGHT: OTP Form ── */}
+                <div className="login-right">
                     <div style={{ width: '100%' }}>
                         <div className="login-welcome-title">Authentication</div>
-                        <div className="login-subtitle" style={{ marginBottom: 24 }}>OTP Verification</div>
+                        <div className="login-subtitle" style={{ marginBottom: 12 }}>OTP Verification</div>
+
+                        <div className="otp-method-selection">
+                            <label className={`otp-method-option ${otpMethod === 'email' ? 'selected' : ''}`}>
+                                <input
+                                    type="checkbox"
+                                    checked={otpMethod === 'email'}
+                                    onChange={() => setOtpMethod('email')}
+                                />
+                                <span>Email</span>
+                            </label>
+                            <label className={`otp-method-option ${otpMethod === 'mobile' ? 'selected' : ''}`}>
+                                <input
+                                    type="checkbox"
+                                    checked={otpMethod === 'mobile'}
+                                    onChange={() => setOtpMethod('mobile')}
+                                />
+                                <span>Mobile Number</span>
+                            </label>
+                        </div>
 
                         <p className="otp-instructions">
-                            A verification code has been sent to your email.<br />
-                            Please enter the {OTP_LENGTH}-digit code below to continue.
+                            Code sent to your {otpMethod === 'email' ? 'email' : 'mobile'}.<br />
+                            Please enter the {OTP_LENGTH}-digit code.
                         </p>
 
                         <form onSubmit={handleSubmit}>
@@ -186,26 +216,7 @@ export default function OtpAuth() {
                     </div>
 
                     <div className="login-copyright">
-                        © 2025 Management Systems (Pvt) Ltd | All rights reserved
-                    </div>
-                </div>
-
-                {/* ── RIGHT: Branding ── */}
-                <div className="login-right">
-                    <div className="login-logo-circle">
-                        <span className="login-logo-text">IRFO</span>
-                    </div>
-
-                    <div className="login-divider" />
-
-                    <div className="login-app-name">IRFO</div>
-                    <div className="login-app-desc">
-                        Investor Registration and<br />Service Solution for<br />Fund Operation
-                    </div>
-
-                    <div className="login-brand-badge">
-                        <span style={{ fontSize: 18, color: '#1565c0' }}>🏦</span>
-                        <span className="login-brand-badge-text">MSL Management Systems</span>
+                        © 2025 Management Systems (Pvt) Ltd
                     </div>
                 </div>
             </div>

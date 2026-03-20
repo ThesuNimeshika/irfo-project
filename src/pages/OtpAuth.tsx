@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import type { KeyboardEvent, ClipboardEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FiCheckCircle, FiXCircle, FiX } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import '../Login.css';
@@ -15,9 +15,11 @@ interface Toast {
 
 export default function OtpAuth() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { login } = useAuth();
     const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
-    const [otpMethod, setOtpMethod] = useState<'email' | 'mobile'>('email');
+    const initialMethod = location.state?.otpMethod || 'email';
+    const otpMethod = initialMethod;
     const [loading, setLoading] = useState(false);
     const [toasts, setToasts] = useState<Toast[]>([]);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -154,24 +156,6 @@ export default function OtpAuth() {
                         <div className="login-welcome-title">Authentication</div>
                         <div className="login-subtitle" style={{ marginBottom: 12 }}>OTP Verification</div>
 
-                        <div className="otp-method-selection">
-                            <label className={`otp-method-option ${otpMethod === 'email' ? 'selected' : ''}`}>
-                                <input
-                                    type="checkbox"
-                                    checked={otpMethod === 'email'}
-                                    onChange={() => setOtpMethod('email')}
-                                />
-                                <span>Email</span>
-                            </label>
-                            <label className={`otp-method-option ${otpMethod === 'mobile' ? 'selected' : ''}`}>
-                                <input
-                                    type="checkbox"
-                                    checked={otpMethod === 'mobile'}
-                                    onChange={() => setOtpMethod('mobile')}
-                                />
-                                <span>Mobile Number</span>
-                            </label>
-                        </div>
 
                         <p className="otp-instructions">
                             Code sent to your {otpMethod === 'email' ? 'email' : 'mobile'}.<br />

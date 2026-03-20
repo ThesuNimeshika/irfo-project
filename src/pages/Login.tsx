@@ -14,6 +14,7 @@ export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [otpMethod, setOtpMethod] = useState<'email' | 'mobile'>('email');
     const [loading, setLoading] = useState(false);
     const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -43,7 +44,7 @@ export default function Login() {
 
             if (res.ok) {
                 addToast('success', 'Login successful! Get your OTP.');
-                setTimeout(() => navigate('/auth'), 1200);
+                setTimeout(() => navigate('/auth', { state: { otpMethod } }), 1200);
             } else {
                 const data = await res.json().catch(() => null);
                 addToast('error', data?.message || 'Invalid username or password.');
@@ -51,7 +52,7 @@ export default function Login() {
         } catch {
             // Backend unreachable – allow demo login
             addToast('success', 'Login successful! Get your OTP.');
-            setTimeout(() => navigate('/auth'), 1200);
+            setTimeout(() => navigate('/auth', { state: { otpMethod } }), 1200);
         } finally {
             setLoading(false);
         }
@@ -139,13 +140,34 @@ export default function Login() {
                                     {showPassword ? <FiEyeOff /> : <FiEye />}
                                 </button>
                             </div>
-
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-12px' }}>
                                 <Link to="/reset-request" style={{ fontSize: '13px', fontWeight: 600, color: '#3b82f6', textDecoration: 'none' }}>
                                     Forgot Password?
                                 </Link>
                             </div>
 
+                            {/* OTP Method Selection */}
+                            <div style={{ marginTop: 20 }}>
+                                <p className="otp-selection-question">Where should we send your OTP?</p>
+                                <div className="otp-method-selection">
+                                    <label className="otp-method-option">
+                                        <input
+                                            type="checkbox"
+                                            checked={otpMethod === 'email'}
+                                            onChange={() => setOtpMethod('email')}
+                                        />
+                                        <span>Email</span>
+                                    </label>
+                                    <label className="otp-method-option">
+                                        <input
+                                            type="checkbox"
+                                            checked={otpMethod === 'mobile'}
+                                            onChange={() => setOtpMethod('mobile')}
+                                        />
+                                        <span>Mobile Number</span>
+                                    </label>
+                                </div>
+                            </div>
                             {/* Submit */}
                             <button
                                 id="irfo-signin-btn"
@@ -163,7 +185,7 @@ export default function Login() {
                         © 2025 Management Systems (Pvt) Ltd
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

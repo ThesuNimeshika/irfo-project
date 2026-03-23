@@ -586,6 +586,21 @@ function CreationButtonPalette({ onNew, onClear, onProcess, onUpdate, isEnabled 
 }
 
 
+const StableLBL: React.CSSProperties = {
+  fontSize: '10px', fontWeight: 700, color: '#5a6a85',
+  textTransform: 'uppercase' as const, letterSpacing: '0.06em',
+  whiteSpace: 'nowrap' as const,
+};
+
+const StableField = ({ label, children, style }: {
+  label: string; children: React.ReactNode; style?: React.CSSProperties;
+}) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', ...style }}>
+    <span style={StableLBL}>{label}</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>{children}</div>
+  </div>
+);
+
 // ========================================
 // UNIT REDEMPTION MODAL
 // ========================================
@@ -643,6 +658,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
     redBalanceUnits: '',
     redAmount: '',
     redBlockedUnits: '',
+    accountSearchLocked: false,
   });
 
   const set = (field: string, value: string | boolean | 'YES' | 'NO' | 'PRICE_DIFF') =>
@@ -713,6 +729,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
       redBalanceUnits: '',
       redAmount: '',
       redBlockedUnits: '',
+      accountSearchLocked: false,
     });
   };
 
@@ -722,8 +739,26 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
       <AccountSearchModal
         isOpen={showAccountSearch}
         onClose={() => setShowAccountSearch(false)}
-        onGet={r => set('accNo', r.accountNo || '')}
-        onSelect={r => set('accNo', r.accountNo || '')}
+        onGet={r => {
+          setForm(prev => ({
+            ...prev,
+            accNo: r.accountNo || '',
+            unitHolderNo: r.holderId || '',
+            unitHolderName: r.holderName || '',
+            fundName: r.fund || '',
+            accountSearchLocked: true
+          }));
+        }}
+        onSelect={r => {
+          setForm(prev => ({
+            ...prev,
+            accNo: r.accountNo || '',
+            unitHolderNo: r.holderId || '',
+            unitHolderName: r.holderName || '',
+            fundName: r.fund || '',
+            accountSearchLocked: true
+          }));
+        }}
         title="Search Account"
       />
       <HolderSearchModal
@@ -770,12 +805,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
           boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
           ...extra,
         });
-        const sel = (): React.CSSProperties => ({ ...inp(), cursor: isEnabled ? 'pointer' : 'not-allowed' });
-        const LBL: React.CSSProperties = {
-          fontSize: '10px', fontWeight: 700, color: '#5a6a85',
-          textTransform: 'uppercase' as const, letterSpacing: '0.06em',
-          whiteSpace: 'nowrap' as const,
-        };
+        const LBL = StableLBL;
         const iconBtn = (bg: string): React.CSSProperties => ({
           height: fieldH, minWidth: 26, padding: '0 4px', flexShrink: 0,
           background: isEnabled ? bg : '#b0bec5',
@@ -795,14 +825,7 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
         });
 
         /* ── row wrapper: label + field side-by-side ── */
-        const Field = ({ label, children, style }: {
-          label: string; children: React.ReactNode; style?: React.CSSProperties;
-        }) => (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', ...style }}>
-            <span style={LBL}>{label}</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>{children}</div>
-          </div>
-        );
+        const Field = StableField;
 
         return (
           <>
@@ -817,28 +840,28 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
               marginBottom: '8px',
               boxShadow: '0 1px 6px rgba(59,130,246,0.07)',
             }}>
-              {/* Row 1 */}
+              {/* Row 1 (Formerly Row 2) */}
               <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', marginBottom: '8px', alignItems: 'end' }}>
+                <Field label="Unit Holder No">
+                  <input className="setup-input-field" value={form.unitHolderNo} onChange={e => set('unitHolderNo', e.target.value)} style={inp()} disabled={!isEnabled || form.accountSearchLocked} />
+                </Field>
+                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
+                  <button type="button" onClick={() => isEnabled && !form.accountSearchLocked && setShowHolderSearch(true)} disabled={!isEnabled || form.accountSearchLocked} style={iconBtn('#7c3aed')}>H</button>
+                </div>
+                <Field label="Unit Holder Name">
+                  <input className="setup-input-field" value={form.unitHolderName} onChange={e => set('unitHolderName', e.target.value)} placeholder="Unit holder name" style={inp()} disabled={!isEnabled || form.accountSearchLocked} />
+                </Field>
+              </div>
+              {/* Row 2 (Formerly Row 1) */}
+              <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
                 <Field label="Unit Holder Acc No">
-                  <input className="setup-input-field" value={form.accNo} onChange={e => set('accNo', e.target.value)} style={inp()} disabled={!isEnabled} />
+                  <input className="setup-input-field" value={form.accNo} onChange={e => set('accNo', e.target.value)} style={inp()} disabled={!isEnabled || form.accountSearchLocked} />
                 </Field>
                 <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
                   <button type="button" onClick={() => isEnabled && setShowAccountSearch(true)} disabled={!isEnabled} style={iconBtn('#1e3a8a')}>A</button>
                 </div>
                 <Field label="Fund">
-                  <FundDropdown value={form.fundCode} displayValue={form.fundName} onSelect={(c, n) => setForm(p => ({ ...p, fundCode: c, fundName: n }))} disabled={!isEnabled} />
-                </Field>
-              </div>
-              {/* Row 2 */}
-              <div style={{ display: 'grid', gridTemplateColumns: '220px 32px 1fr', gap: '0 8px', alignItems: 'end' }}>
-                <Field label="Unit Holder No">
-                  <input className="setup-input-field" value={form.unitHolderNo} onChange={e => set('unitHolderNo', e.target.value)} style={inp()} disabled={!isEnabled} />
-                </Field>
-                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '1px' }}>
-                  <button type="button" onClick={() => isEnabled && setShowHolderSearch(true)} disabled={!isEnabled} style={iconBtn('#7c3aed')}>H</button>
-                </div>
-                <Field label="Unit Holder Name">
-                  <input className="setup-input-field" value={form.unitHolderName} onChange={e => set('unitHolderName', e.target.value)} placeholder="Unit holder name" style={inp()} disabled={!isEnabled} />
+                  <FundDropdown value={form.fundCode} displayValue={form.fundName} onSelect={(c, n) => setForm(p => ({ ...p, fundCode: c, fundName: n }))} disabled={!isEnabled || form.accountSearchLocked} />
                 </Field>
               </div>
             </div>
@@ -989,18 +1012,28 @@ function UnitRedemptionModal({ onClose: _onClose }: { onClose: () => void }) {
               {/* Row 7 — Amount | Units to Auto Redeem */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 12px', alignItems: 'end' }}>
                 <Field label="Amount">
-                  <select className="setup-select-field" value={form.autoRedeemAmount || ''} onChange={e => set('autoRedeemAmount', e.target.value)} style={sel()} disabled={!isEnabled}>
-                    <option value="">Select</option>
-                    <option value="BY_VALUE">By Value</option>
-                    <option value="BY_UNITS">By Units</option>
-                  </select>
+                  <input className="setup-input-field" value={form.autoRedeemAmount} onChange={e => {
+                    const val = e.target.value;
+                    const amount = parseFloat(val) || 0;
+                    const price = parseFloat(form.unitPrice) || 10;
+                    const unitsToRedeem = val ? (amount / price).toFixed(2) : '';
+                    const availableUnits = 1000;
+                    const balance = val ? (availableUnits - (amount / price)).toFixed(2) : '';
+
+                    setForm(prev => ({
+                      ...prev,
+                      autoRedeemAmount: val,
+                      redAmount: val,
+                      redCertificateNo: val ? `CERT-${Math.floor(Math.random() * 10000)}` : '',
+                      redAvailableUnits: val ? '1000' : '',
+                      redUnitsToRedeem: unitsToRedeem,
+                      redBalanceUnits: balance,
+                      redBlockedUnits: val ? '0' : '',
+                    }));
+                  }} style={inp()} disabled={!isEnabled} />
                 </Field>
                 <Field label="Units to Auto Redeem">
-                  <select className="setup-select-field" value={form.unitsToAutoRedeem || ''} onChange={e => set('unitsToAutoRedeem', e.target.value)} style={sel()} disabled={!isEnabled}>
-                    <option value="">Select</option>
-                    <option value="ALL">All Available Units</option>
-                    <option value="PARTIAL">Partial Units</option>
-                  </select>
+                  <input className="setup-input-field" value={form.unitsToAutoRedeem} onChange={e => set('unitsToAutoRedeem', e.target.value)} style={inp()} disabled={!isEnabled} />
                 </Field>
               </div>
 
@@ -5783,6 +5816,7 @@ function StandingInstructionsProcessingModal({ onClose: _onClose }: { onClose: (
 // ========================================
 function StandingInstructionsModal() {
   const [isEnabled, setIsEnabled] = useState(false);
+  const [showAccountSearch, setShowAccountSearch] = useState(false);
   const [form, setForm] = useState({
     accNo: '',
     holderNo: '',
@@ -5797,6 +5831,7 @@ function StandingInstructionsModal() {
     active: true,
     effectDate: new Date(),
     lastProcessedOn: new Date(),
+    returnBasis: false,
     amount: '',
     bankCode: '',
     bankAccount: '',
@@ -5806,6 +5841,7 @@ function StandingInstructionsModal() {
     printReq: false,
     activeOnly: false,
     allTypes: false,
+    frequencyDDD: '0',
   });
 
   const set = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }));
@@ -5879,211 +5915,247 @@ function StandingInstructionsModal() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0 }}>
-      {/* ── Top Section: Holder & Fund ─────────────────────── */}
-      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) minmax(300px, 2fr)', gap: '12px 20px' }}>
-          {/* Row 1 - Col 1: Acc No */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Unit Holder Acc No</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <input style={inp()} value={form.accNo} onChange={e => set('accNo', e.target.value)} disabled={!isEnabled} />
-              <button style={{ height: 28, width: 28, background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 800, flexShrink: 0 }}>A</button>
+    <>
+      <AccountSearchModal
+        isOpen={showAccountSearch}
+        onClose={() => setShowAccountSearch(false)}
+        onGet={r => {
+          setForm(prev => ({
+            ...prev,
+            accNo: r.accountNo || '',
+            holderNo: r.holderId || '',
+            holderName: r.name || r.holderName || '',
+            fundCode: r.fundCode || '',
+            fundName: r.fund || ''
+          }));
+          setShowAccountSearch(false);
+        }}
+        onSelect={r => {
+          setForm(prev => ({
+            ...prev,
+            accNo: r.accountNo || '',
+            holderNo: r.holderId || '',
+            holderName: r.name || r.holderName || '',
+            fundCode: r.fundCode || '',
+            fundName: r.fund || ''
+          }));
+          setShowAccountSearch(false);
+        }}
+      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: 0 }}>
+        {/* ── Top Section: Holder & Fund ─────────────────────── */}
+        <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) minmax(300px, 2fr)', gap: '12px 20px' }}>
+            {/* Row 1 - Col 1: Acc No */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Unit Holder Acc No</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input style={inp()} value={form.accNo} onChange={e => set('accNo', e.target.value)} disabled={!isEnabled} />
+                <button type="button" onClick={() => isEnabled && setShowAccountSearch(true)} disabled={!isEnabled} style={{ height: 28, width: 28, background: isEnabled ? '#1e3a8a' : '#94a3b8', color: '#fff', border: 'none', borderRadius: '4px', cursor: isEnabled ? 'pointer' : 'not-allowed', fontWeight: 800, flexShrink: 0 }}>A</button>
+              </div>
             </div>
-          </div>
-          {/* Row 1 - Col 2: Fund */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Fund</span>
-            <FundDropdown
-              value={form.fundCode}
-              displayValue={form.fundName}
-              onSelect={(c, n) => { set('fundCode', c); set('fundName', n); }}
-              disabled={!isEnabled}
-            />
-          </div>
-          {/* Row 2 - Col 1: Holder No */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Unit Holder No</span>
-            <input style={inp({ background: '#f8fafc' })} value={form.holderNo} disabled={true} />
-          </div>
-          {/* Row 2 - Col 2: Holder Name */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <div style={{ height: '15px' }}></div> {/* Spacer to align with the other column's label height */}
-            <input style={inp({ background: '#f8fafc' })} value={form.holderName} onChange={e => set('holderName', e.target.value)} disabled={true} placeholder="Unit holder name" />
-          </div>
-        </div>
-      </div>
-
-      {/* ── Instruction Type ─────────────────────────────────── */}
-      <div style={{ background: '#fff' }}>
-        <RadioGroup
-          label="Instruction Type"
-          redSelection={true}
-          name="instructionType"
-          useFieldset={true}
-          value={form.instructionType}
-          onChange={v => set('instructionType', v)}
-          options={[
-            { label: 'Systemic Investment Plan (SIP)', value: 'SIP' },
-            { label: 'Regular Withdrawal - Customer Account', value: 'RWCA' },
-            { label: 'Regular Withdrawal - Third Party', value: 'RWTP' },
-          ]}
-        />
-      </div>
-
-      {/* ── Main Details Section ─────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-        {/* Left Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>Instruction No</span>
-            <input style={inp()} value={form.instructionNo} onChange={e => set('instructionNo', e.target.value)} disabled={!isEnabled} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>Description</span>
-            <input style={inp()} value={form.description} onChange={e => set('description', e.target.value)} disabled={!isEnabled} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>From</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-              <DatePicker selected={form.applyFrom} onChange={d => set('applyFrom', d)} className="date-picker-input" disabled={!isEnabled} />
-              <span style={{ fontSize: '10px', fontWeight: 700, color: '#5a6a85', padding: '0 4px', textTransform: 'uppercase' }}>To</span>
-              <DatePicker selected={form.applyTo} onChange={d => set('applyTo', d)} className="date-picker-input" disabled={!isEnabled} />
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>Effect Date</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-              <DatePicker selected={form.effectDate} onChange={d => set('effectDate', d)} className="date-picker-input" disabled={!isEnabled} />
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', marginLeft: 'auto', cursor: isEnabled ? 'pointer' : 'not-allowed' }}>
-                <input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} disabled={!isEnabled} />
-                Active
-              </label>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>Last Processed</span>
-            <DatePicker selected={form.lastProcessedOn} onChange={d => set('lastProcessedOn', d)} className="date-picker-input" disabled={!isEnabled} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={LBL}>Amount</span>
-            <input style={inp({ fontWeight: 700, color: '#1e3a8a' })} value={form.amount} onChange={e => set('amount', e.target.value)} disabled={!isEnabled} />
-          </div>
-        </div>
-
-        {/* Right Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <div style={{ background: '#fff' }}>
-            <RadioGroup
-              label="Frequency"
-              name="frequency"
-              useFieldset={true}
-              value={form.frequency}
-              onChange={v => set('frequency', v)}
-              options={[
-                { label: 'Monthly', value: 'Monthly' },
-                { label: 'Quarterly', value: 'Quarterly' },
-                { label: 'Half-Yearly', value: 'Half-Yearly' },
-                { label: 'Yearly', value: 'Yearly' },
-              ]}
-            />
-          </div>
-          <div style={{ background: '#fefefe', border: '1px dotted #cbd5e1', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={LBL}>Bank Code</span>
-              <TableDropdown
-                value={form.bankCode}
-                displayValue={form.bankCode ? `${form.bankCode} - ${agentBankData.find(b => b.agentCode === form.bankCode)?.agentDescription}` : ''}
-                columns={[{ key: 'agentCode', header: 'Code', width: '30%' }, { key: 'agentDescription', header: 'Name' }]}
-                rows={agentBankData}
-                valueKey="agentCode"
-                onSelect={r => set('bankCode', r.agentCode)}
+            {/* Row 1 - Col 2: Fund */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Fund</span>
+              <FundDropdown
+                value={form.fundCode}
+                displayValue={form.fundName}
+                onSelect={(c, n) => { set('fundCode', c); set('fundName', n); }}
                 disabled={!isEnabled}
-                placeholder="Select Bank"
               />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={LBL}>Bank Account</span>
-              <input style={inp()} value={form.bankAccount} onChange={e => set('bankAccount', e.target.value)} disabled={!isEnabled} />
+            {/* Row 2 - Col 1: Holder No */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ ...LBL, textAlign: 'left', minWidth: 'auto' }}>Unit Holder No</span>
+              <input style={inp({ background: '#f8fafc' })} value={form.holderNo} disabled={true} />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={LBL}>Account Name</span>
-              <input style={inp()} value={form.bankAccountName} onChange={e => set('bankAccountName', e.target.value)} disabled={!isEnabled} />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: 'auto' }}>
-              <span style={LBL}>Remark</span>
-              <input style={inp()} value={form.remark} onChange={e => set('remark', e.target.value)} disabled={!isEnabled} />
+            {/* Row 2 - Col 2: Holder Name */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ height: '15px' }}></div> {/* Spacer to align with the other column's label height */}
+              <input style={inp({ background: '#f8fafc' })} value={form.holderName} onChange={e => set('holderName', e.target.value)} disabled={true} placeholder="Unit holder name" />
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ── Buttons ─────────────────────────────────────────── */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', alignItems: 'center', padding: '10px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="setup-btn setup-btn-new" onClick={() => setIsEnabled(true)}><span className="setup-btn-icon">+</span>New</button>
-          <button className="setup-btn setup-btn-save"><span className="setup-btn-icon">💾</span>Save</button>
-          <button className="setup-btn setup-btn-delete"><span className="setup-btn-icon">🗑️</span>Delete</button>
-          <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
-          <button className="setup-btn setup-btn-clear" onClick={() => setIsEnabled(false)}><span className="setup-btn-icon">✕</span>Cancel</button>
+        {/* ── Instruction Type ─────────────────────────────────── */}
+        <div style={{ background: '#fff' }}>
+          <RadioGroup
+            label="Instruction Type"
+            redSelection={true}
+            name="instructionType"
+            useFieldset={true}
+            value={form.instructionType}
+            onChange={v => set('instructionType', v)}
+            options={[
+              { label: 'Systemic Investment Plan (SIP)', value: 'SIP' },
+              { label: 'Regular Withdrawal - Customer Account', value: 'RWCA' },
+              { label: 'Regular Withdrawal - Third Party', value: 'RWTP' },
+            ]}
+          />
         </div>
 
-        <div style={{ display: 'flex', gap: '15px', marginLeft: '10px', paddingLeft: '15px', borderLeft: '1px solid #cbd5e1' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
-            <input type="checkbox" checked={form.printReq} onChange={e => set('printReq', e.target.checked)} />
-            Print
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
-            <input type="checkbox" checked={form.activeOnly} onChange={e => set('activeOnly', e.target.checked)} />
-            Active Only
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
-            <input type="checkbox" checked={form.allTypes} onChange={e => set('allTypes', e.target.checked)} />
-            All Types
-          </label>
-        </div>
-      </div>
+        {/* ── Main Details Section ─────────────────────────────── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+          {/* Left Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>Instruction No</span>
+              <input style={inp()} value={form.instructionNo} onChange={e => set('instructionNo', e.target.value)} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>Description</span>
+              <input style={inp()} value={form.description} onChange={e => set('description', e.target.value)} disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>From</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                <DatePicker selected={form.applyFrom} onChange={d => set('applyFrom', d)} className="date-picker-input" disabled={!isEnabled} />
+                <span style={{ fontSize: '10px', fontWeight: 700, color: '#5a6a85', padding: '0 4px', textTransform: 'uppercase' }}>To</span>
+                <DatePicker selected={form.applyTo} onChange={d => set('applyTo', d)} className="date-picker-input" disabled={!isEnabled} />
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>Effect Date</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                <DatePicker selected={form.effectDate} onChange={d => set('effectDate', d)} className="date-picker-input" disabled={!isEnabled} />
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', marginLeft: 'auto', cursor: isEnabled ? 'pointer' : 'not-allowed' }}>
+                  <input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} disabled={!isEnabled} />
+                  Active
+                </label>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={LBL}>Last Processed</span>
+              <DatePicker selected={form.lastProcessedOn} onChange={d => set('lastProcessedOn', d)} className="date-picker-input" disabled={!isEnabled} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 700, color: '#5a6a85', textTransform: 'uppercase', letterSpacing: '0.06em', minWidth: '110px', justifyContent: 'flex-end', cursor: isEnabled ? 'pointer' : 'not-allowed' }}>
+                <input type="checkbox" checked={form.returnBasis} onChange={e => set('returnBasis', e.target.checked)} disabled={!isEnabled} style={{ cursor: isEnabled ? 'pointer' : 'not-allowed' }} />
+                Return Basis
+              </label>
+              <span style={{ ...LBL, minWidth: 'auto', textAlign: 'left', marginLeft: '4px' }}>Amount</span>
+              <input style={inp({ fontWeight: 700, color: '#1e3a8a' })} value={form.amount} onChange={e => set('amount', e.target.value)} disabled={!isEnabled} />
+            </div>
+          </div>
 
-      {/* ── Bottom Table ────────────────────────────────────── */}
-      <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', flex: 1, minHeight: '150px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', maxHeight: '400px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
-              <tr>
-                <th style={tableHeaderStyle}>Instruct No</th>
-                <th style={tableHeaderStyle}>Instruct Type</th>
-                <th style={tableHeaderStyle}>Account No</th>
-                <th style={tableHeaderStyle}>Approved</th>
-                <th style={tableHeaderStyle}>Active</th>
-                <th style={tableHeaderStyle}>Process Date</th>
-                <th style={tableHeaderStyle}>Last Process Date</th>
-                <th style={tableHeaderStyle}>Frequency</th>
-                <th style={tableHeaderStyle}>Amount</th>
-                <th style={tableHeaderStyle}>Bank</th>
-                <th style={tableHeaderStyle}>Account</th>
-                <th style={tableHeaderStyle}>Remark</th>
-                <th style={tableHeaderStyle}>Fund</th>
-                <th style={tableHeaderStyle}>Date From</th>
-                <th style={tableHeaderStyle}>Date To</th>
-                <th style={tableHeaderStyle}>Holder No</th>
-                <th style={tableHeaderStyle}>Account Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Placeholder rows */}
-              {[1, 2, 3, 4, 5].map(i => (
-                <tr key={i} style={{ height: '28px', borderBottom: '1px solid #f1f5f9' }}>
-                  {Array.from({ length: 17 }).map((_, j) => <td key={j} style={{ padding: '6px 10px', fontSize: '11px', borderRight: '1px solid #f1f5f9' }}>&nbsp;</td>)}
+          {/* Right Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ background: '#fff' }}>
+              <RadioGroup
+                label="Frequency"
+                name="frequency"
+                useFieldset={true}
+                value={form.frequency}
+                onChange={v => set('frequency', v)}
+                options={[
+                  { label: 'Monthly', value: 'Monthly' },
+                  { label: 'Quarterly', value: 'Quarterly' },
+                  { label: 'Half-Yearly', value: 'Half-Yearly' },
+                  { label: 'Yearly', value: 'Yearly' },
+                ]}
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end', marginTop: '-4px' }}>
+              <span style={{ ...LBL, color: '#94a3b8', minWidth: 'auto' }}>Frequency (DDD)</span>
+              <input style={inp({ width: '60px', textAlign: 'right', background: '#cbd5e1', color: '#64748b', cursor: 'not-allowed' })} value={form.frequencyDDD} onChange={e => set('frequencyDDD', e.target.value)} disabled={true} />
+            </div>
+            <div style={{ background: '#fefefe', border: '1px dotted #cbd5e1', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={LBL}>Bank Code</span>
+                <TableDropdown
+                  value={form.bankCode}
+                  displayValue={form.bankCode ? `${form.bankCode} - ${agentBankData.find(b => b.agentCode === form.bankCode)?.agentDescription}` : ''}
+                  columns={[{ key: 'agentCode', header: 'Code', width: '30%' }, { key: 'agentDescription', header: 'Name' }]}
+                  rows={agentBankData}
+                  valueKey="agentCode"
+                  onSelect={r => set('bankCode', r.agentCode)}
+                  disabled={!isEnabled}
+                  placeholder="Select Bank"
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={LBL}>Bank Account</span>
+                <input style={inp()} value={form.bankAccount} onChange={e => set('bankAccount', e.target.value)} disabled={!isEnabled} />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={LBL}>Account Name</span>
+                <input style={inp()} value={form.bankAccountName} onChange={e => set('bankAccountName', e.target.value)} disabled={!isEnabled} />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: 'auto' }}>
+                <span style={LBL}>Remark</span>
+                <input style={inp()} value={form.remark} onChange={e => set('remark', e.target.value)} disabled={!isEnabled} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Buttons ─────────────────────────────────────────── */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', alignItems: 'center', padding: '10px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button className="setup-btn setup-btn-new" onClick={() => setIsEnabled(true)}><span className="setup-btn-icon">+</span>New</button>
+            <button className="setup-btn setup-btn-save"><span className="setup-btn-icon">💾</span>Save</button>
+            <button className="setup-btn setup-btn-delete"><span className="setup-btn-icon">🗑️</span>Delete</button>
+            <button className="setup-btn setup-btn-print"><span className="setup-btn-icon">🖨️</span>Print</button>
+            <button className="setup-btn setup-btn-clear" onClick={() => setIsEnabled(false)}><span className="setup-btn-icon">✕</span>Cancel</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '15px', marginLeft: '10px', paddingLeft: '15px', borderLeft: '1px solid #cbd5e1' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
+              <input type="checkbox" checked={form.printReq} onChange={e => set('printReq', e.target.checked)} />
+              Print
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
+              <input type="checkbox" checked={form.activeOnly} onChange={e => set('activeOnly', e.target.checked)} />
+              Active Only
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}>
+              <input type="checkbox" checked={form.allTypes} onChange={e => set('allTypes', e.target.checked)} />
+              All Types
+            </label>
+          </div>
+        </div>
+
+        {/* ── Bottom Table ────────────────────────────────────── */}
+        <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', flex: 1, minHeight: '150px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', maxHeight: '400px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
+                <tr>
+                  <th style={tableHeaderStyle}>Instruct No</th>
+                  <th style={tableHeaderStyle}>Instruct Type</th>
+                  <th style={tableHeaderStyle}>Account No</th>
+                  <th style={tableHeaderStyle}>Approved</th>
+                  <th style={tableHeaderStyle}>Active</th>
+                  <th style={tableHeaderStyle}>Process Date</th>
+                  <th style={tableHeaderStyle}>Last Process Date</th>
+                  <th style={tableHeaderStyle}>Frequency</th>
+                  <th style={tableHeaderStyle}>Amount</th>
+                  <th style={tableHeaderStyle}>Bank</th>
+                  <th style={tableHeaderStyle}>Account</th>
+                  <th style={tableHeaderStyle}>Remark</th>
+                  <th style={tableHeaderStyle}>Fund</th>
+                  <th style={tableHeaderStyle}>Date From</th>
+                  <th style={tableHeaderStyle}>Date To</th>
+                  <th style={tableHeaderStyle}>Holder No</th>
+                  <th style={tableHeaderStyle}>Account Name</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {/* Placeholder rows */}
+                {[1, 2, 3, 4, 5].map(i => (
+                  <tr key={i} style={{ height: '28px', borderBottom: '1px solid #f1f5f9' }}>
+                    {Array.from({ length: 17 }).map((_, j) => <td key={j} style={{ padding: '6px 10px', fontSize: '11px', borderRight: '1px solid #f1f5f9' }}>&nbsp;</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style={{ color: '#2563eb', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }}>
+          Double click to get the selected value
         </div>
       </div>
-      <div style={{ color: '#2563eb', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }}>
-        Double click to get the selected value
-      </div>
-    </div>
+    </>
   );
 }
 

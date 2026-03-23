@@ -68,7 +68,7 @@ const AccountSearchModal: React.FC<AccountSearchModalProps> = ({
         setResults(r);
         setStatusMessage('Search completed');
       } else {
-        const mockResults: SearchResult[] = Array.from({ length: 10 }).map((_, idx) => ({
+        const generated: SearchResult[] = Array.from({ length: 50 }).map((_, idx) => ({
           accountNo: `ACC${String(idx + 1).padStart(4, '0')}`,
           holderName: `Holder ${idx + 1}`,
           holderId: `H${String(idx + 1).padStart(4, '0')}`,
@@ -77,8 +77,24 @@ const AccountSearchModal: React.FC<AccountSearchModalProps> = ({
           otherNo: `O${idx + 1}`,
           fund: fundOptions[idx % fundOptions.length],
         }));
+
+        const match = (val: string | undefined, criteria: string) => {
+          if (!criteria) return true;
+          if (!val) return false;
+          return ignoreCase ? val.toLowerCase().includes(criteria.toLowerCase()) : val.includes(criteria);
+        };
+
+        const mockResults = generated.filter(r =>
+          match(r.holderName, searchCriteria.name || searchCriteria.firstName || searchCriteria.surname || '') &&
+          match(r.holderId, searchCriteria.holderId || '') &&
+          match(r.nic, searchCriteria.nic || '') &&
+          match(r.passport, searchCriteria.passport || '') &&
+          match(r.otherNo, searchCriteria.otherNo || '') &&
+          match(r.fund, searchCriteria.fund || '')
+        );
+
         setResults(mockResults);
-        setStatusMessage('Search completed');
+        setStatusMessage(`Search completed (${mockResults.length} found)`);
       }
     } catch {
       setStatusMessage('Search failed');

@@ -8,6 +8,7 @@ import DocumentPrinting from './pages/DocumentPrinting';
 import Login from './pages/Login';
 import OtpAuth from './pages/OtpAuth';
 import ResetRequest from './pages/ResetRequest';
+import Security from './pages/Security';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/unit-operations" element={<ProtectedRoute><UnitOperations /></ProtectedRoute>} />
           <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
           <Route path="/document-printing" element={<ProtectedRoute><DocumentPrinting /></ProtectedRoute>} />
+          <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />

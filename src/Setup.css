@@ -1,9 +1,9 @@
-/* =============================================
-   SETUP.CSS — Professional White Theme
+﻿/* =============================================
+   SETUP.CSS â€” Professional White Theme
    Clean, crisp financial UI
    ============================================= */
 
-/* ── VARIABLES (extends App.css) ── */
+/* â”€â”€ VARIABLES (extends App.css) â”€â”€ */
 :root {
   --white: #ffffff;
   --surface-0: #f9fafb;
@@ -45,7 +45,7 @@
   --navbar-h: 68px;
 }
 
-/* ── RESET ── */
+/* â”€â”€ RESET â”€â”€ */
 *,
 *::before,
 *::after {
@@ -1059,7 +1059,7 @@ input[type="radio"]:disabled {
 }
 
 /* =============================================
-   CUSTOM DATATABLE — Single table with sticky thead
+   CUSTOM DATATABLE â€” Single table with sticky thead
    ============================================= */
 
 .setup-data-table-container {
@@ -1439,24 +1439,24 @@ input[type="radio"]:disabled {
 }
 
 /* =============================================
-   CHECKBOX — Trustees-style, uniform across ALL modals
-   ─────────────────────────────────────────────────────
+   CHECKBOX â€” Trustees-style, uniform across ALL modals
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Trustees, Custodian, Postal Area, Dividend Type,
    Documents Setup, Institution Category, Blocking
    Category, Customer Zone, Title, Product Type,
-   Other Charges, Administrator tab, Company tab — all
+   Other Charges, Administrator tab, Company tab â€” all
    render the same: horizontal row, custom navy box,
    label to the right. Matches the Trustees modal exactly.
    ============================================= */
 
 /*
   Container: always a horizontal flex row.
-  The label sits to the RIGHT of the box — never above/below.
+  The label sits to the RIGHT of the box â€” never above/below.
 */
 .setup-checkbox-container {
   display: flex;
   flex-direction: row;
-  /* ← key: horizontal, not column */
+  /* â† key: horizontal, not column */
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
@@ -1476,7 +1476,7 @@ input[type="radio"]:disabled {
   -moz-appearance: none;
   appearance: none;
 
-  /* Size — matches Trustees inline style */
+  /* Size â€” matches Trustees inline style */
   width: 15px;
   height: 15px;
   min-width: 15px;
@@ -1497,13 +1497,13 @@ input[type="radio"]:disabled {
   transition: var(--ease);
 }
 
-/* Hover — blue ring */
+/* Hover â€” blue ring */
 .setup-checkbox-input:hover:not(:disabled) {
   border-color: var(--accent-mid);
   box-shadow: 0 0 0 3px rgba(46, 79, 173, 0.12);
 }
 
-/* Checked — solid navy fill */
+/* Checked â€” solid navy fill */
 .setup-checkbox-input:checked {
   background: var(--accent);
   border-color: var(--accent);
@@ -1542,7 +1542,7 @@ input[type="radio"]:disabled {
 }
 
 /*
-  Label — sits to the right, same style as rest of form.
+  Label â€” sits to the right, same style as rest of form.
 */
 .setup-checkbox-label {
   font-size: 12px;
@@ -1558,7 +1558,7 @@ input[type="radio"]:disabled {
 }
 
 /*
-  Stacked group — multiple checkboxes in a column
+  Stacked group â€” multiple checkboxes in a column
   (Administrator tab: email options, approval flags, etc.)
 */
 .setup-checkbox-group {
@@ -1960,4 +1960,126 @@ input[type="radio"]:disabled {
   table {
     min-width: 100%;
   }
+}
+
+.force-search-padding {
+  padding-left: 54px !important;
+  padding-right: 32px !important;
+}
+
+/* Rights Modal Table Action Buttons */
+.rights-action-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  color: #64748b;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 65px;
+  user-select: none;
+}
+
+.rights-action-btn:hover:not(.disabled) {
+  background: #f8fafc;
+  color: var(--accent, #1e3a8a);
+  border-color: var(--accent, #1e3a8a);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(30, 58, 138, 0.1);
+}
+
+/* Hover States per Action - Vibrant Palette */
+.btn-approve:hover:not(.disabled) {
+  background: #f0f9ff;
+  color: #0ea5e9;
+  border-color: #0ea5e9;
+}
+
+.btn-save:hover:not(.disabled) {
+  background: #f0fdf4;
+  color: #22c55e;
+  border-color: #22c55e;
+}
+
+.btn-create:hover:not(.disabled) {
+  background: #f5f3ff;
+  color: #6366f1;
+  border-color: #6366f1;
+}
+
+.btn-delete:hover:not(.disabled) {
+  background: #fff1f2;
+  color: #f43f5e;
+  border-color: #f43f5e;
+}
+
+.btn-print:hover:not(.disabled) {
+  background: #fffbeb;
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+/* Active States per Action - Vibrant Palette */
+.btn-approve.active {
+  background: #0ea5e9 !important;
+  color: #fff !important;
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3) !important;
+}
+
+.btn-save.active {
+  background: #22c55e !important;
+  color: #fff !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3) !important;
+}
+
+.btn-create.active {
+  background: #6366f1 !important;
+  color: #fff !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
+}
+
+.btn-delete.active {
+  background: #f43f5e !important;
+  color: #fff !important;
+  border-color: #f43f5e !important;
+  box-shadow: 0 2px 8px rgba(244, 63, 94, 0.3) !important;
+}
+
+.btn-print.active {
+  background: #f59e0b !important;
+  color: #fff !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3) !important;
+}
+
+.rights-action-btn:active:not(.disabled) {
+  transform: translateY(1px);
+  background: #eff6ff;
+}
+
+.rights-action-btn.active {
+  background: #10b981 !important;
+  /* Success Green for active access */
+  color: #ffffff !important;
+  border-color: #059669 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25) !important;
+}
+
+.rights-action-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #f1f5f9;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+  box-shadow: none;
+  transform: none;
 }

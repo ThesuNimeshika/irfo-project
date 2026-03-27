@@ -2,392 +2,152 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import '../Setup.css';
 
-interface SearchResult {
-  holderName?: string;
-  holderId?: string;
-  nic?: string;
-  passport?: string;
-  otherNo?: string;
-  [key: string]: unknown;
+interface UserSearchResult {
+  fullName?: string;
+  empNo?: string;
+  mobile?: string;
+  email?: string;
+  address?: string;
+  isActive?: boolean;
+  employer?: string;
+  department?: string;
+  otpMethod?: string;
+  userType?: string;
+  [key: string]: any;
 }
 
 interface UserSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect?: (result: SearchResult) => void;
+  onSelect?: (user: UserSearchResult) => void;
   title?: string;
-  searchFields?: {
-    leftColumn?: Array<{
-      label: string;
-      field: string;
-      hasDropdown?: boolean;
-    }>;
-    rightColumn?: Array<{
-      label: string;
-      field: string;
-    }>;
-  };
-  onSearch?: (criteria: Record<string, string>) => Promise<SearchResult[]>;
-  onGet?: (result: SearchResult) => void;
 }
 
 const UserSearchModal: React.FC<UserSearchModalProps> = ({
   isOpen,
   onClose,
   onSelect,
-  title = 'Search',
-  searchFields,
-  onSearch,
-  onGet,
+  title = 'Search User',
 }) => {
-  // Default search fields matching the image
-  const defaultSearchFields = {
-    leftColumn: [
-      { label: 'Name', field: 'name' },
-      { label: 'Title', field: 'title', hasDropdown: true },
-      { label: 'Holder ID', field: 'holderId' },
-      { label: 'Initials', field: 'initials' },
-      { label: 'First Name', field: 'firstName' },
-      { label: 'NIC', field: 'nic' },
-      { label: 'Surname', field: 'surname' },
-      { label: 'City', field: 'city', hasDropdown: true },
-      { label: 'Passport', field: 'passport' },
-      { label: 'Town', field: 'town', hasDropdown: true },
-      { label: 'Street', field: 'street', hasDropdown: true },
-      { label: 'Other No', field: 'otherNo' },
-      { label: 'Fund', field: 'fund', hasDropdown: true },
-    ],
-    rightColumn: [],
-  };
+  const [searchCriteria, setSearchCriteria] = useState<string>('');
+  const [results, setResults] = useState<UserSearchResult[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string>('Ready to search');
 
-  const fields = searchFields || defaultSearchFields;
+  const mockUsers: UserSearchResult[] = [
+    { fullName: 'Anushka Perera', empNo: 'EMP001', mobile: '0712345678', email: 'anushka@irfo.com', address: 'Colombo 03', isActive: true, employer: 'irfo', department: 'it', otpMethod: 'email', userType: 'super_admin' },
+    { fullName: 'Basuru Wickramasinghe', empNo: 'EMP002', mobile: '0771234567', email: 'basuru@irfo.com', address: 'Kandy', isActive: true, employer: 'irfo', department: 'finance', otpMethod: 'sms', userType: 'system_admin' },
+    { fullName: 'Tharindu Silva', empNo: 'EMP003', mobile: '0754567890', email: 'tharindu@irfo.com', address: 'Galle', isActive: false, employer: 'management_systems', department: 'operations', otpMethod: 'authenticator', userType: 'standard' },
+    { fullName: 'Thilina Fernando', empNo: 'EMP004', mobile: '0721122334', email: 'thilina@irfo.com', address: 'Negombo', isActive: true, employer: 'external_contractor', department: 'security', otpMethod: 'email', userType: 'read_only' },
+    { fullName: 'Thushara Bandara', empNo: 'EMP005', mobile: '0789988776', email: 'thushara@irfo.com', address: 'Jaffna', isActive: true, employer: 'irfo', department: 'hr', otpMethod: 'sms', userType: 'standard' },
+  ];
 
-  // State management
-  const [searchCriteria, setSearchCriteria] = useState<Record<string, string>>({});
-  const [ignoreCase, setIgnoreCase] = useState<boolean>(true);
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [selectedResult, setSelectedResult] = useState<SearchResult | null>(null);
-  const [statusMessage, setStatusMessage] = useState<string>('Please Wait..................');
-  
-  // Dropdown data
-  const titleOptions = ['Mr', 'Miss', 'Mrs', 'Dr'];
-  
-  const streetOptions = ['Main Street', 'Park Avenue', 'Ocean Drive', 'First Street', 'Second Street'];
-  
-  const townOptions = ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'];
-  
-  const cityOptions = ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo'];
-  
-  const fundOptions = ['Equity Fund', 'Bond Fund', 'Mixed Fund', 'Growth Fund', 'Income Fund'];
-
-  const handleInputChange = (field: string, value: string) => {
-    setSearchCriteria((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleSearch = () => {
+    setStatusMessage('Searching...');
+    const filtered = mockUsers.filter(u =>
+      u.fullName?.toLowerCase().includes(searchCriteria.toLowerCase()) ||
+      u.empNo?.toLowerCase().includes(searchCriteria.toLowerCase())
+    );
+    setResults(filtered);
+    setStatusMessage(`Search completed (${filtered.length} found)`);
   };
 
   const handleGet = () => {
-    if (selectedResult && onGet) {
-      onGet(selectedResult);
-    } else if (selectedResult && onSelect) {
-      onSelect(selectedResult);
-    }
-    onClose();
-  };
-
-  const handleSearch = async () => {
-    setStatusMessage('Searching...');
-    
-    try {
-      if (onSearch) {
-        const searchResults = await onSearch(searchCriteria);
-        setResults(searchResults);
-        setStatusMessage('Search completed');
-      } else {
-        // Mock data for demonstration
-        const mockResults: SearchResult[] = Array.from({ length: 10 }).map((_, idx) => ({
-          holderName: `Holder ${idx + 1}`,
-          holderId: `H${String(idx + 1).padStart(4, '0')}`,
-          nic: `NIC${idx + 1}`,
-          passport: `P${idx + 1}`,
-          otherNo: `O${idx + 1}`,
-        }));
-        setResults(mockResults);
-        setStatusMessage('Search completed');
-      }
-    } catch (error) {
-      setStatusMessage('Search failed');
-      console.error('Search error:', error);
-    }
-  };
-
-  const handleRowDoubleClick = (result: SearchResult) => {
-    setSelectedResult(result);
-    if (onSelect) {
-      onSelect(result);
+    if (selectedUser && onSelect) {
+      onSelect(selectedUser);
       onClose();
     }
   };
 
-  const handleRowClick = (result: SearchResult) => {
-    setSelectedResult(result);
+  const handleRowDoubleClick = (user: UserSearchResult) => {
+    setSelectedUser(user);
+    if (onSelect) {
+      onSelect(user);
+      onClose();
+    }
   };
 
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="setup-modal-overlay" onClick={onClose}>
-      <div
-        className="setup-modal-container"
-        style={{ width: '90vw', maxWidth: '1000px' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
+    <div className="setup-modal-overlay">
+      <div className="setup-modal-container" style={{ width: '90vw', maxWidth: '800px' }} onClick={e => e.stopPropagation()}>
         <div className="setup-modal-header">
           <div className="setup-modal-header-content">
-            <span className="setup-modal-header-icon">🔍</span>
+            <span className="setup-modal-header-icon">👤</span>
             <span className="setup-modal-header-title">{title}</span>
           </div>
-          <button onClick={onClose} className="setup-modal-close-btn">
-            ×
-          </button>
+          <button onClick={onClose} className="setup-modal-close-btn">×</button>
         </div>
 
-        {/* Content */}
-        <div className="setup-modal-content" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {/* Top Section: Search Criteria */}
-          <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '0' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '32% 32% 32%', gap: '16px', width: '100%' }}>
-              {/* Combine all fields and arrange in 3 columns: 4 rows (12 fields) + 5th row (1 field) */}
-              {(() => {
-                const allFields: Array<{ label: string; field: string; hasDropdown?: boolean; isTitleWithInitials?: boolean; row?: number; col?: number }> = [];
-                
-                // Process leftColumn fields - include all fields
-                fields.leftColumn?.forEach((field) => {
-                  allFields.push(field);
-                });
-                
-                // Add rightColumn fields
-                fields.rightColumn?.forEach((field) => {
-                  allFields.push(field);
-                });
-                
-                // Render fields in 3-column grid (4 rows × 3 columns = 12 fields, then 13th in 5th row)
-                return allFields.map((field, idx) => {
-                  // For 13th field (idx === 12), place it in 5th row, left column only
-                  if (idx === 12) {
-                    return (
-                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', gridColumn: '1 / 2' }}>
-                        <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
-                          {field.label}:
-                        </label>
-                        {field.hasDropdown ? (
-                          <select
-                            value={searchCriteria[field.field] || ''}
-                            onChange={(e) => handleInputChange(field.field, e.target.value)}
-                            className="setup-dropdown-select"
-                            style={{ color: '#000000', flex: 1, minWidth: '120px' }}
-                          >
-                            <option value="">Select {field.label.toLowerCase()}</option>
-                            {(field.field === 'title' ? titleOptions :
-                              field.field === 'street' ? streetOptions :
-                              field.field === 'town' ? townOptions :
-                              field.field === 'city' ? cityOptions :
-                              field.field === 'fund' ? fundOptions : []).map((option, i) => (
-                              <option key={i} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <input
-                            type="text"
-                            value={searchCriteria[field.field] || ''}
-                            onChange={(e) => handleInputChange(field.field, e.target.value)}
-                            className="setup-input-field"
-                            style={{ color: '#000000', flex: 1, minWidth: '120px' }}
-                          />
-                        )}
-                      </div>
-                    );
-                  }
-                  
-                  return (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>
-                      {field.label}:
-                    </label>
-                    {field.hasDropdown ? (
-                      <select
-                        value={searchCriteria[field.field] || ''}
-                        onChange={(e) => handleInputChange(field.field, e.target.value)}
-                        className="setup-dropdown-select"
-                          style={{ color: '#000000', flex: 1, minWidth: '120px' }}
-                      >
-                        <option value="">Select {field.label.toLowerCase()}</option>
-                        {(field.field === 'title' ? titleOptions :
-                          field.field === 'street' ? streetOptions :
-                          field.field === 'town' ? townOptions : cityOptions).map((option, i) => (
-                          <option key={i} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input
-                        type="text"
-                        value={searchCriteria[field.field] || ''}
-                        onChange={(e) => handleInputChange(field.field, e.target.value)}
-                        className="setup-input-field"
-                          style={{ color: '#000000', flex: 1, minWidth: '120px' }}
-                        />
-                    )}
-                  </div>
-                  );
-                });
-              })()}
-            </div>
-          </div>
-
-          {/* Middle Section: Control Bar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '8px 0' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ flex: 1, position: 'relative' }}>
+              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
               <input
-                type="checkbox"
-                checked={ignoreCase}
-                onChange={(e) => setIgnoreCase(e.target.checked)}
-                style={{ accentColor: '#3b82f6' }}
+                type="text"
+                placeholder="Search by Name or Employee No..."
+                value={searchCriteria}
+                onChange={e => setSearchCriteria(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none' }}
               />
-              <span style={{ color: '#000000' }}>ignore Case</span>
-            </label>
-
-            <button
-              onClick={handleSearch}
-              className="setup-btn"
-              style={{
-                backgroundColor: '#2563eb',
-                color: '#ffffff',
-                padding: '6px 16px',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                marginLeft: 'auto',
-              }}
-            >
-              <span style={{ marginRight: '6px' }}>🔍</span>
-              Search
-            </button>
-
-            <button
-              onClick={handleGet}
-              className="setup-btn"
-              style={{
-                backgroundColor: '#10b981',
-                color: '#ffffff',
-                padding: '6px 16px',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              Get
-            </button>
+            </div>
+            <button onClick={handleSearch} style={{ padding: '0 24px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Search</button>
+            <button onClick={handleGet} disabled={!selectedUser} style={{ padding: '0 24px', background: selectedUser ? '#10b981' : '#cbd5e1', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: selectedUser ? 'pointer' : 'not-allowed' }}>Get</button>
           </div>
 
-          {/* Bottom Section: Results Display */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {/* Results Grid */}
-            <div
-              style={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #cbd5e1',
-                borderRadius: '4px',
-                minHeight: '300px',
-                maxHeight: '400px',
-                overflowY: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              {results.length > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <thead>
-                    <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Holder Name</th>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Holder ID</th>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>NIC</th>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Passport</th>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Other No</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.map((result, idx) => (
-                      <tr
-                        key={idx}
-                        onClick={() => handleRowClick(result)}
-                        onDoubleClick={() => handleRowDoubleClick(result)}
-                        style={{
-                          borderBottom: '1px solid #e2e8f0',
-                          cursor: 'pointer',
-                          backgroundColor: selectedResult === result ? '#e0e7ff' : 'transparent',
-                        }}
-                        onMouseEnter={(e) => {
-                          if (selectedResult !== result) {
-                            e.currentTarget.style.backgroundColor = '#f1f5f9';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (selectedResult !== result) {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                          }
-                        }}
-                      >
-                        <td style={{ padding: '8px', color: '#000000' }}>{result.holderName || '-'}</td>
-                        <td style={{ padding: '8px', color: '#000000' }}>{result.holderId || '-'}</td>
-                        <td style={{ padding: '8px', color: '#000000' }}>{result.nic || '-'}</td>
-                        <td style={{ padding: '8px', color: '#000000' }}>{result.passport || '-'}</td>
-                        <td style={{ padding: '8px', color: '#000000' }}>{result.otherNo || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '16px' }}>
-                  {Array.from({ length: 15 }).map((_, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        height: '24px',
-                        borderBottom: '1px solid #e2e8f0',
-                        backgroundColor: '#ffffff',
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+          <div style={{ minHeight: '300px', maxHeight: '400px', overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+              <thead>
+                <tr style={{ background: '#f8fafc', position: 'sticky', top: 0, borderBottom: '2px solid #e2e8f0' }}>
+                  <th style={{ padding: '12px', textAlign: 'left', fontWeight: 'bold', color: '#64748b' }}>Full Name</th>
+                  <th style={{ padding: '12px', textAlign: 'left', fontWeight: 'bold', color: '#64748b' }}>Employee No</th>
+                  <th style={{ padding: '12px', textAlign: 'left', fontWeight: 'bold', color: '#64748b' }}>Email</th>
+                  <th style={{ padding: '12px', textAlign: 'left', fontWeight: 'bold', color: '#64748b' }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.length > 0 ? results.map((u, idx) => (
+                  <tr
+                    key={idx}
+                    onClick={() => setSelectedUser(u)}
+                    onDoubleClick={() => handleRowDoubleClick(u)}
+                    style={{
+                      cursor: 'pointer',
+                      borderBottom: '1px solid #f1f5f9',
+                      background: selectedUser === u ? '#eff6ff' : 'transparent'
+                    }}
+                  >
+                    <td style={{ padding: '12px' }}>{u.fullName}</td>
+                    <td style={{ padding: '12px' }}>{u.empNo}</td>
+                    <td style={{ padding: '12px' }}>{u.email}</td>
+                    <td style={{ padding: '12px' }}>
+                      <span style={{
+                        padding: '4px 8px',
+                        borderRadius: '12px',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        background: u.isActive ? '#dcfce7' : '#fee2e2',
+                        color: u.isActive ? '#16a34a' : '#ef4444'
+                      }}>
+                        {u.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: '#94a3b8' }}>
+                      {statusMessage === 'Ready to search' ? 'Enter a name or employee number to search' : 'No users found matching your criteria'}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-            {/* Instructions */}
-            <div style={{ padding: '4px 0' }}>
-              <span style={{ color: '#2563eb', fontSize: '14px' }}>
-                Double click or press [Get] button to get the selected value
-              </span>
-            </div>
-
-            {/* Status Bar */}
-            <div
-              style={{
-                backgroundColor: '#e5e7eb',
-                padding: '6px 12px',
-                textAlign: 'center',
-                color: '#000000',
-                fontSize: '14px',
-                borderRadius: '4px',
-              }}
-            >
-              {statusMessage}
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '12px', color: '#64748b' }}>
+            {statusMessage}
           </div>
         </div>
       </div>
@@ -397,4 +157,3 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
 };
 
 export default UserSearchModal;
-

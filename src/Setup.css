@@ -1995,66 +1995,66 @@ input[type="radio"]:disabled {
 }
 
 /* Hover States per Action - Vibrant Palette */
-.btn-approve:hover:not(.disabled) {
+.rights-btn-approve:hover:not(.disabled) {
   background: #f0f9ff;
   color: #0ea5e9;
   border-color: #0ea5e9;
 }
 
-.btn-save:hover:not(.disabled) {
+.rights-btn-save:hover:not(.disabled) {
   background: #f0fdf4;
   color: #22c55e;
   border-color: #22c55e;
 }
 
-.btn-create:hover:not(.disabled) {
+.rights-btn-create:hover:not(.disabled) {
   background: #f5f3ff;
   color: #6366f1;
   border-color: #6366f1;
 }
 
-.btn-delete:hover:not(.disabled) {
+.rights-btn-delete:hover:not(.disabled) {
   background: #fff1f2;
   color: #f43f5e;
   border-color: #f43f5e;
 }
 
-.btn-print:hover:not(.disabled) {
+.rights-btn-print:hover:not(.disabled) {
   background: #fffbeb;
   color: #f59e0b;
   border-color: #f59e0b;
 }
 
 /* Active States per Action - Vibrant Palette */
-.btn-approve.active {
+.rights-btn-approve.active {
   background: #0ea5e9 !important;
   color: #fff !important;
   border-color: #0ea5e9 !important;
   box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3) !important;
 }
 
-.btn-save.active {
+.rights-btn-save.active {
   background: #22c55e !important;
   color: #fff !important;
   border-color: #22c55e !important;
   box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3) !important;
 }
 
-.btn-create.active {
+.rights-btn-create.active {
   background: #6366f1 !important;
   color: #fff !important;
   border-color: #6366f1 !important;
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
 }
 
-.btn-delete.active {
+.rights-btn-delete.active {
   background: #f43f5e !important;
   color: #fff !important;
   border-color: #f43f5e !important;
   box-shadow: 0 2px 8px rgba(244, 63, 94, 0.3) !important;
 }
 
-.btn-print.active {
+.rights-btn-print.active {
   background: #f59e0b !important;
   color: #fff !important;
   border-color: #f59e0b !important;
@@ -2066,13 +2066,7 @@ input[type="radio"]:disabled {
   background: #eff6ff;
 }
 
-.rights-action-btn.active {
-  background: #10b981 !important;
-  /* Success Green for active access */
-  color: #ffffff !important;
-  border-color: #059669 !important;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25) !important;
-}
+/* Generic active rule removed to allow specific rights-btn-* active colors */
 
 .rights-action-btn.disabled {
   opacity: 0.35;

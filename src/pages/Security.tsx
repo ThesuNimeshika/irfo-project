@@ -91,7 +91,7 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
   };
 
   const menuItems = [
-    { title: 'Member Master Set Up', total: 14, active: 0 },
+    { title: 'Member Master Set Up', total: 7, active: 0 },
     { title: 'Member Master Uploads', total: 2, active: 0 },
     { title: 'EFMS User Manage', total: 5, active: 0 },
     { title: 'Common Set Up', total: 2, active: 0 },
@@ -102,26 +102,35 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
   ];
 
   const subMenus = [
-    'Company', 'Employer', 'Department', 'Designation', 'PayRoll Category',
-    'Emp Grade', 'Pay Unit', 'Cost Center', 'Location', 'PayRoll Sub Category',
-    'Staff Type', 'Sub Company', 'Sub Cost Center', 'Nominee'
+    'Dashboard', 'Setup', 'Registration', 'Unit Operation', 'Approval',
+    'Doc Printing', 'Reports'
   ];
 
   const [enabledRows, setEnabledRows] = useState<number[]>([]);
   const [rowPermissions, setRowPermissions] = useState<Record<number, string[]>>({});
+  const [filterText, setFilterText] = useState('');
 
   const toggleRow = (idx: number) => {
     setEnabledRows(prev => {
       const isEnabling = !prev.includes(idx);
-      if (!isEnabling) {
-        setRowPermissions(inner => {
-          const next = { ...inner };
-          delete next[idx];
-          return next;
-        });
-      }
+      // Always clear permissions for the row when toggling to ensure a clean default state
+      setRowPermissions(inner => {
+        const next = { ...inner };
+        delete next[idx];
+        return next;
+      });
       return isEnabling ? [...prev, idx] : prev.filter(i => i !== idx);
     });
+  };
+
+  const toggleAllRows = () => {
+    if (enabledRows.length === subMenus.length) {
+      setEnabledRows([]);
+      setRowPermissions({});
+    } else {
+      setEnabledRows(subMenus.map((_, i) => i));
+      setRowPermissions({});
+    }
   };
 
   const togglePermission = (rowIdx: number, perm: string) => {
@@ -145,8 +154,12 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: isMobile ? '12px' : '24px', background: '#fdfbfa', minHeight: '600px', borderRadius: '8px', fontFamily: 'var(--font-body, system-ui, sans-serif)' }}>
-
+    <div id="sec-rights-modal" style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: isMobile ? '12px' : '24px', background: '#fdfbfa', minHeight: '600px', borderRadius: '8px', fontFamily: 'var(--font-body, system-ui, sans-serif)' }}>
+      <style>{`
+        #sec-rights-modal input[type="text"][placeholder="Filter..."] {
+          padding: 6px 12px 6px 32px !important;
+        }
+      `}</style>
 
       {/* Top Cards Row */}
       <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '24px', marginBottom: '10px' }}>
@@ -235,22 +248,22 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
             <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
               <div>
                 <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>Member Master Set Up</h3>
-                <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>0 of 14 sub-menus active</p>
+                <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {subMenus.length} menus active</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{ position: 'relative' }}>
                   <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.6, fontSize: '12px' }}>🔍</span>
-                  <input type="text" placeholder="Filter..." style={{ padding: '6px 12px 6px 30px', borderRadius: '20px', border: 'none', outline: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '12px', width: '140px' }} />
+                  <input type="text" placeholder="Filter..." value={filterText} onChange={e => setFilterText(e.target.value)} style={{ padding: '6px 12px 6px 32px', borderRadius: '20px', border: 'none', outline: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '12px', width: '140px' }} />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold' }}>
-                  Select All <Toggle active={false} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>
+                  Select All <Toggle active={enabledRows.length === subMenus.length && subMenus.length > 0} onClick={toggleAllRows} />
                 </div>
               </div>
             </div>
 
             {/* Table Headers */}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              <div>SUB MENU</div>
+              <div>MENU</div>
               <div style={{ textAlign: 'center' }}>ENABLE</div>
               <div style={{ textAlign: 'center' }}>APPROVE</div>
               <div style={{ textAlign: 'center' }}>SAVE</div>
@@ -261,61 +274,69 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
 
             {/* Table Rows */}
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {subMenus.map((menu, idx) => (
-                <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500 }}>
-                    <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
-                    {menu}
+              {subMenus
+                .map((menu, originalIdx) => ({ menu, originalIdx }))
+                .filter(item => !filterText || item.menu.toLowerCase().includes(filterText.toLowerCase()))
+                .map(({ menu, originalIdx: idx }) => (
+                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500 }}>
+                      <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
+                      {menu}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <button
+                        className={`rights-action-btn rights-btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`}
+                        onClick={() => togglePermission(idx, 'approve')}
+                        disabled={!enabledRows.includes(idx)}
+                      >
+                        {(rowPermissions[idx] || []).includes('approve') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Approve'}
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <button
+                        className={`rights-action-btn rights-btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`}
+                        onClick={() => togglePermission(idx, 'save')}
+                        disabled={!enabledRows.includes(idx)}
+                      >
+                        {(rowPermissions[idx] || []).includes('save') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Save'}
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <button
+                        className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`}
+                        onClick={() => togglePermission(idx, 'create')}
+                        disabled={!enabledRows.includes(idx)}
+                      >
+                        {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <button
+                        className={`rights-action-btn rights-btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`}
+                        onClick={() => togglePermission(idx, 'delete')}
+                        disabled={!enabledRows.includes(idx)}
+                      >
+                        {(rowPermissions[idx] || []).includes('delete') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Delete'}
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <button
+                        className={`rights-action-btn rights-btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`}
+                        onClick={() => togglePermission(idx, 'print')}
+                        disabled={!enabledRows.includes(idx)}
+                      >
+                        {(rowPermissions[idx] || []).includes('print') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Print'}
+                      </button>
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <button
-                      className={`rights-action-btn btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`}
-                      onClick={() => togglePermission(idx, 'approve')}
-                    >
-                      Approve
-                    </button>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <button
-                      className={`rights-action-btn btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`}
-                      onClick={() => togglePermission(idx, 'save')}
-                    >
-                      Save
-                    </button>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <button
-                      className={`rights-action-btn btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`}
-                      onClick={() => togglePermission(idx, 'create')}
-                    >
-                      Create
-                    </button>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <button
-                      className={`rights-action-btn btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`}
-                      onClick={() => togglePermission(idx, 'delete')}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <button
-                      className={`rights-action-btn btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`}
-                      onClick={() => togglePermission(idx, 'print')}
-                    >
-                      Print
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <div style={{ padding: '12px 20px', background: '#f8fafc', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', fontWeight: 'bold' }}>
-              14 of 14 sub-menus
+              {subMenus.length} of {subMenus.length} menus
             </div>
 
           </div>
@@ -327,8 +348,10 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
   );
 };
 
-const inputStyle = { padding: '12px 14px 12px 44px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px', width: '100%', boxSizing: 'border-box' as const, outline: 'none', color: '#334155', minHeight: '42px', fontFamily: 'inherit' };
-const textareaStyle = { padding: '12px 14px 12px 44px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px', width: '100%', boxSizing: 'border-box' as const, outline: 'none', color: '#334155', minHeight: '80px', resize: 'vertical' as const, fontFamily: 'inherit' };
+const inputStyle: React.CSSProperties = { border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px', width: '100%', boxSizing: 'border-box', outline: 'none', color: '#334155', height: '42px', fontFamily: 'inherit', background: '#fff' };
+const textareaStyle: React.CSSProperties = { padding: '12px 14px 12px 44px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px', width: '100%', boxSizing: 'border-box', outline: 'none', color: '#334155', minHeight: '80px', resize: 'vertical', fontFamily: 'inherit', background: '#fff' };
+
+const secInputClass = "sec-input-override";
 
 const Section = ({ title, icon, children }: any) => (
   <div style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
@@ -342,10 +365,24 @@ const Section = ({ title, icon, children }: any) => (
 );
 
 const IconWrapper = ({ children, top = '50%' }: any) => (
-  <span style={{ position: 'absolute', left: '14px', top: top, transform: top === '50%' ? 'translateY(-50%)' : 'none', color: '#94a3b8', pointerEvents: 'none', fontSize: '14px', zIndex: 1 }}>
+  <span style={{ position: 'absolute', left: '12px', top: top, transform: top === '50%' ? 'translateY(-50%)' : 'none', color: '#94a3b8', pointerEvents: 'none', zIndex: 1, display: 'flex', alignItems: 'center' }}>
     {children}
   </span>
 );
+
+// SVG icons — 16x16, predictable width, no emoji rendering issues
+const IcoUser = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>;
+const IcoBadge = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>;
+const IcoBriefcase = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>;
+const IcoCalendar = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>;
+const IcoPhone = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.14 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2 4.11 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>;
+const IcoMail = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>;
+const IcoMapPin = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>;
+const IcoBuilding = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
+const IcoOffice = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8" /><path d="M12 17v4" /></svg>;
+const IcoLock = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>;
+const IcoDevice = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>;
+const IcoStar = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>;
 
 const CustomDateInput = forwardRef(({ value, onClick, placeholder }: any, ref: any) => (
   <input
@@ -353,8 +390,9 @@ const CustomDateInput = forwardRef(({ value, onClick, placeholder }: any, ref: a
     value={value}
     placeholder={placeholder}
     ref={ref}
-    style={{ ...inputStyle, width: '100%' }}
-    className="setup-input-field"
+    style={{ ...inputStyle, cursor: 'pointer', backgroundColor: '#fff' }}
+    readOnly
+    className={`setup-input-field ${secInputClass}`}
   />
 ));
 
@@ -506,7 +544,29 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
 
 
   return (
-    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '24px', padding: isMobile ? '12px' : '24px', background: '#fdfbfa', minHeight: '600px', borderRadius: '8px', fontFamily: 'var(--font-body, system-ui, sans-serif)', flexWrap: 'wrap', position: 'relative' }}>
+    <div id="sec-user-modal" style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '24px', padding: isMobile ? '12px' : '24px', background: '#fdfbfa', minHeight: '600px', borderRadius: '8px', fontFamily: 'var(--font-body, system-ui, sans-serif)', flexWrap: 'wrap', position: 'relative' }}>
+      <style>{`
+        #sec-user-modal input[type="text"],
+        #sec-user-modal input[type="password"],
+        #sec-user-modal input[type="email"],
+        #sec-user-modal input[type="tel"],
+        #sec-user-modal select,
+        #sec-user-modal textarea,
+        #sec-user-modal .setup-input-field {
+          padding-left: 44px !important;
+          padding-right: 14px !important;
+          height: 42px !important;
+        }
+        #sec-user-modal textarea {
+          min-height: 80px !important;
+          height: auto !important;
+        }
+        #sec-user-modal .react-datepicker-wrapper,
+        #sec-user-modal .date-picker-wrapper {
+          width: 100%;
+          display: block;
+        }
+      `}</style>
 
       {/* Toast Notification */}
       {toast && (
@@ -612,8 +672,8 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
         <Section title="User Lookup" icon="👤">
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
             <div style={{ flex: 1, position: 'relative', width: '100%' }}>
-              <IconWrapper>👤</IconWrapper>
-              <input type="text" placeholder="User Name *" style={inputStyle} value={fullName} onChange={e => setFullName(e.target.value)} />
+              <IconWrapper><IcoUser /></IconWrapper>
+              <input type="text" placeholder="User Name *" style={inputStyle} className={secInputClass} value={fullName} onChange={e => setFullName(e.target.value)} />
             </div>
             <button onClick={() => setIsSearchModalOpen(true)} style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '12px 28px', borderRadius: '6px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', width: isMobile ? '100%' : 'auto', justifyContent: 'center' }}>
               📥 Load
@@ -625,22 +685,22 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>👤</IconWrapper>
-                <input type="text" placeholder="Full Name *" style={inputStyle} value={fullName} onChange={e => setFullName(e.target.value)} />
+                <IconWrapper><IcoUser /></IconWrapper>
+                <input type="text" placeholder="Full Name *" style={inputStyle} className={secInputClass} value={fullName} onChange={e => setFullName(e.target.value)} />
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>📛</IconWrapper>
-                <input type="text" placeholder="Employee No" style={inputStyle} value={empNo} onChange={e => setEmpNo(e.target.value)} />
+                <IconWrapper><IcoBadge /></IconWrapper>
+                <input type="text" placeholder="Employee No" style={inputStyle} className={secInputClass} value={empNo} onChange={e => setEmpNo(e.target.value)} />
               </div>
             </div>
             {/* Designation & DOB */}
             <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>💼</IconWrapper>
-                <input type="text" placeholder="Designation" style={inputStyle} value={designation} onChange={e => setDesignation(e.target.value)} />
+                <IconWrapper><IcoBriefcase /></IconWrapper>
+                <input type="text" placeholder="Designation" style={inputStyle} className={secInputClass} value={designation} onChange={e => setDesignation(e.target.value)} />
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>🎂</IconWrapper>
+                <IconWrapper><IcoCalendar /></IconWrapper>
                 <DatePicker
                   selected={dateOfBirth}
                   onChange={(date) => setDateOfBirth(date)}
@@ -657,21 +717,21 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
             <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
               <div style={{ flex: 1 }}>
                 <div style={{ position: 'relative' }}>
-                  <IconWrapper>📞</IconWrapper>
-                  <input type="text" placeholder="Mobile Number" style={{ ...inputStyle, borderColor: errors.mobile ? '#ef4444' : '#e2e8f0' }} value={mobile} onChange={e => setMobile(e.target.value)} />
+                  <IconWrapper><IcoPhone /></IconWrapper>
+                  <input type="text" placeholder="Mobile Number" style={{ ...inputStyle, borderColor: errors.mobile ? '#ef4444' : '#e2e8f0' }} className={secInputClass} value={mobile} onChange={e => setMobile(e.target.value)} />
                 </div>
                 {errors.mobile && <p style={{ color: '#ef4444', fontSize: '10px', margin: '4px 0 0 14px' }}>{errors.mobile}</p>}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ position: 'relative' }}>
-                  <IconWrapper>✉️</IconWrapper>
-                  <input type="text" placeholder="Email Address" style={{ ...inputStyle, borderColor: errors.email ? '#ef4444' : '#e2e8f0' }} value={email} onChange={e => setEmail(e.target.value)} />
+                  <IconWrapper><IcoMail /></IconWrapper>
+                  <input type="text" placeholder="Email Address" style={{ ...inputStyle, borderColor: errors.email ? '#ef4444' : '#e2e8f0' }} className={secInputClass} value={email} onChange={e => setEmail(e.target.value)} />
                 </div>
                 {errors.email && <p style={{ color: '#ef4444', fontSize: '10px', margin: '4px 0 0 14px' }}>{errors.email}</p>}
               </div>
             </div>
             <div style={{ position: 'relative' }}>
-              <IconWrapper top="14px">📍</IconWrapper>
+              <IconWrapper top="14px"><IcoMapPin /></IconWrapper>
               <textarea placeholder="Address" style={textareaStyle} value={address} onChange={e => setAddress(e.target.value)} />
             </div>
 
@@ -688,8 +748,8 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
         <Section title="Organisation" icon="🏢">
           <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
             <div style={{ flex: 1, position: 'relative' }}>
-              <IconWrapper>🏢</IconWrapper>
-              <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} value={employer} onChange={e => setEmployer(e.target.value)}>
+              <IconWrapper><IcoBuilding /></IconWrapper>
+              <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} className={secInputClass} value={employer} onChange={e => setEmployer(e.target.value)}>
                 <option value="">Employer</option>
                 <option value="irfo">IRFO (Internal)</option>
                 <option value="management_systems">Management Systems (Pvt) Ltd</option>
@@ -698,8 +758,8 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
               <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none', fontSize: '10px' }}>▼</span>
             </div>
             <div style={{ flex: 1, position: 'relative' }}>
-              <IconWrapper>🏛️</IconWrapper>
-              <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} value={department} onChange={e => setDepartment(e.target.value)}>
+              <IconWrapper><IcoOffice /></IconWrapper>
+              <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} className={secInputClass} value={department} onChange={e => setDepartment(e.target.value)}>
                 <option value="">Department</option>
                 <option value="it">Information Technology (IT)</option>
                 <option value="hr">Human Resources</option>
@@ -716,20 +776,20 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>🔒</IconWrapper>
-                <input type="password" placeholder="Password" style={inputStyle} value={password} onChange={e => setPassword(e.target.value)} />
+                <IconWrapper><IcoLock /></IconWrapper>
+                <input type="password" placeholder="Password" style={inputStyle} className={secInputClass} value={password} onChange={e => setPassword(e.target.value)} />
                 <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#94a3b8', zIndex: 1 }}>👁️</span>
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>🔒</IconWrapper>
-                <input type="password" placeholder="Confirm Password" style={inputStyle} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                <IconWrapper><IcoLock /></IconWrapper>
+                <input type="password" placeholder="Confirm Password" style={inputStyle} className={secInputClass} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
                 <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#94a3b8', zIndex: 1 }}>👁️</span>
               </div>
             </div>
             <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>📱</IconWrapper>
-                <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} value={otpMethod} onChange={e => setOtpMethod(e.target.value)}>
+                <IconWrapper><IcoDevice /></IconWrapper>
+                <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} className={secInputClass} value={otpMethod} onChange={e => setOtpMethod(e.target.value)}>
                   <option value="">OTP Method</option>
                   <option value="email">Email</option>
                   <option value="sms">SMS Text Message</option>
@@ -738,7 +798,7 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
                 <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none', fontSize: '10px' }}>▼</span>
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
-                <IconWrapper>⭐</IconWrapper>
+                <IconWrapper><IcoStar /></IconWrapper>
                 <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} value={userType} onChange={e => setUserType(e.target.value)}>
                   <option value="">User Type</option>
                   <option value="super_admin">Super Admin</option>
@@ -972,7 +1032,12 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: isMobile ? '12px' : '20px', background: '#fdfbfa', borderRadius: '12px' }}>
+    <div id="sec-assign-modal" style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: isMobile ? '12px' : '20px', background: '#fdfbfa', borderRadius: '12px' }}>
+      <style>{`
+        #sec-assign-modal input[type="text"] {
+          padding-left: 54px !important;
+        }
+      `}</style>
 
       {/* Filters Row */}
       <div style={topCardStyle}>
@@ -1175,7 +1240,15 @@ const PasswordChangerModal = () => {
   const fieldStyle: React.CSSProperties = { paddingLeft: '44px', height: '44px', borderRadius: '8px', fontSize: '13px', width: '100%', boxSizing: 'border-box', outline: 'none', paddingRight: '40px', border: '1.5px solid #e2e8f0', color: '#334155', fontFamily: 'inherit' };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '20px', position: 'relative' }}>
+    <div id="sec-pwd-modal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '20px', position: 'relative' }}>
+      <style>{`
+        #sec-pwd-modal input[type="text"],
+        #sec-pwd-modal input[type="password"] {
+          padding-left: 44px !important;
+          padding-right: 40px !important;
+          height: 44px !important;
+        }
+      `}</style>
       {toast && (
         <div style={{ position: 'fixed', top: '24px', right: '24px', zIndex: 9999, padding: '14px 20px', borderRadius: '10px', fontSize: '13px', fontWeight: '600', color: '#fff', maxWidth: '320px', boxShadow: '0 8px 24px rgba(0,0,0,0.15)', background: toast.type === 'success' ? '#10b981' : toast.type === 'error' ? '#ef4444' : '#f59e0b', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span>{toast.type === 'success' ? '✅' : toast.type === 'error' ? '❌' : '⚠️'}</span>

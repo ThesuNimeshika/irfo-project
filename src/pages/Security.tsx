@@ -21,6 +21,186 @@ const moduleData = [
 
 const modules = moduleData.map(m => ({ title: m.title, icon: m.icon }));
 
+const SETUP_SUB_MENU_ITEMS = [
+  'Bank', 'Transaction Type', 'System calendar', 'Trustees', 'Custodian',
+  'Postal Area', 'Dividend Type', 'Funds', 'Company', 'Promotional Activity',
+  'Unit Fee Codes', 'Agency Type', 'Agency', 'Sub Agency', 'Agents',
+  'Territory', 'Commission Type', 'Commission Level', 'Agent Commission Definition',
+  'Assign Agent to Commission Definition', 'Institution Category', 'Documents Setup',
+  'Institution', 'Blocking Category', 'Customer Zone', 'Join Sale Agent',
+  'Compliance MSG Setup', 'Product Type', 'Title', 'Source of Income',
+  'Annual Income', 'Risk Category', 'Politically Exposed'
+];
+
+const REGISTRATION_SUB_MENU_ITEMS = [
+  'Application Entry', 'Registration Unit Holders Profiles',
+  'Unit Holder Accounts', 'Holder Document Handling'
+];
+
+const UNIT_OPERATION_SUB_MENU_ITEMS = [
+  'Unit Fees', 'Unit Creation', 'Unit Redemption', 'Unit Transfer/Switching',
+  'Unit Consolidation', 'Cheque Re Printing', 'Web Data Downloading',
+  'Standing Instruction', 'Standing Instruction Processing', 'Bank Slip Transfer',
+  'Reminders', 'Unit Transfer-Suspense Account', 'Change Agent for Transaction',
+  'Acknowledgement Printing', 'Fund Price E-Statement', 'Upload and Download Data Web-Automated',
+  'WHT Per Unit Entry', 'Data Upload', 'Transaction Upload'
+];
+
+const APPROVAL_SUB_MENU_ITEMS = [
+  'Application Conformation', 'Application Approval', 'Account Confirmation',
+  'Account Approval', 'Unit Fee Confirmation', 'Unit Price Approval',
+  'Transaction Conformation', 'Transaction Approval', 'Certificate Approval',
+  'Holder Registration Approval', 'Cheque Clear', 'Dividend Confirmation',
+  'Standing Instruction Approval', 'Dividend Approval', 'User Rights Approval'
+];
+
+const DOC_PRINTING_SUB_MENU_ITEMS = [
+  'Certificate Print', 'Inquiry on Unit Holders', 'Audit Inquiry',
+  'WHT Certificate Printing'
+];
+
+const SECURITY_SUB_MENU_ITEMS = [
+  'Create User', 'Password Changer', 'User Rights', 'Assign User Role'
+];
+
+const getSubMenuItems = (menu: string) => {
+  if (menu === 'Registration') return REGISTRATION_SUB_MENU_ITEMS;
+  if (menu === 'Unit Operation') return UNIT_OPERATION_SUB_MENU_ITEMS;
+  if (menu === 'Approval') return APPROVAL_SUB_MENU_ITEMS;
+  if (menu === 'Doc Printing') return DOC_PRINTING_SUB_MENU_ITEMS;
+  if (menu === 'Security') return SECURITY_SUB_MENU_ITEMS;
+  return SETUP_SUB_MENU_ITEMS;
+};
+
+function SubMenuRightsModal({ isOpen, onClose, title, items }: { isOpen: boolean; onClose: () => void; title: string; items: string[] }) {
+  const [enabledRows, setEnabledRows] = useState<number[]>([]);
+  const [rowPermissions, setRowPermissions] = useState<Record<number, string[]>>({});
+
+  useEffect(() => {
+    if (isOpen) {
+      setEnabledRows([]);
+      setRowPermissions({});
+    }
+  }, [isOpen, title]);
+
+  if (!isOpen) return null;
+
+  const toggleRow = (idx: number) => {
+    setEnabledRows(prev => {
+      const isEnabling = !prev.includes(idx);
+      setRowPermissions(inner => {
+        const next = { ...inner };
+        delete next[idx];
+        return next;
+      });
+      return isEnabling ? [...prev, idx] : prev.filter(i => i !== idx);
+    });
+  };
+
+  const toggleAllRows = () => {
+    if (enabledRows.length === items.length) {
+      setEnabledRows([]);
+      setRowPermissions({});
+    } else {
+      setEnabledRows(items.map((_, i) => i));
+      setRowPermissions({});
+    }
+  };
+
+  const togglePermission = (rowIdx: number, perm: string) => {
+    if (!enabledRows.includes(rowIdx)) return;
+    setRowPermissions(prev => {
+      const current = prev[rowIdx] || [];
+      const updated = current.includes(perm)
+        ? current.filter(p => p !== perm)
+        : [...current, perm];
+      return { ...prev, [rowIdx]: updated };
+    });
+  };
+
+  const Toggle = ({ active, onClick }: { active?: boolean; onClick?: () => void }) => (
+    <div
+      onClick={onClick}
+      style={{ width: '36px', height: '20px', borderRadius: '10px', background: active ? 'var(--accent, #1e3a8a)' : '#e2e8f0', position: 'relative', cursor: 'pointer', transition: 'all 0.2s', alignSelf: 'center', boxShadow: active ? 'inset 0 1px 3px rgba(0,0,0,0.2)' : 'inset 0 1px 3px rgba(0,0,0,0.1)' }}
+    >
+      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#fff', position: 'absolute', top: '2px', left: active ? '18px' : '2px', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.2)' }} />
+    </div>
+  );
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ background: '#fff', borderRadius: '12px', width: '900px', maxWidth: '95vw', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
+            <div>
+              <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>{title} Sub-Menus</h3>
+              <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {items.length} sub-menus active</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>
+                Select All <Toggle active={enabledRows.length === items.length && items.length > 0} onClick={toggleAllRows} />
+              </div>
+              <button title="Close" onClick={onClose} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', width: '28px', height: '28px', color: '#fff', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'} onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}>&times;</button>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div>SUB MENU</div>
+            <div style={{ textAlign: 'center' }}>ENABLE</div>
+            <div style={{ textAlign: 'center' }}>APPROVE</div>
+            <div style={{ textAlign: 'center' }}>SAVE</div>
+            <div style={{ textAlign: 'center' }}>CREATE</div>
+            <div style={{ textAlign: 'center' }}>DELETE</div>
+            <div style={{ textAlign: 'center' }}>PRINT</div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {items.map((menu, idx) => (
+              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500 }}>
+                  <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
+                  {menu}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'approve')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('approve') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Approve'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'save')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('save') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Save'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'delete')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('delete') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Delete'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'print')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('print') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Print'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ padding: '12px 20px', background: '#f8fafc', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', fontWeight: 'bold' }}>
+            {items.length} of {items.length} sub-menus
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
   const [activeMenu, setActiveMenu] = useState('Member Master Set Up');
 
@@ -109,6 +289,8 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
   const [enabledRows, setEnabledRows] = useState<number[]>([]);
   const [rowPermissions, setRowPermissions] = useState<Record<number, string[]>>({});
   const [filterText, setFilterText] = useState('');
+
+  const [selectedSubMenu, setSelectedSubMenu] = useState<{ title: string, items: string[] } | null>(null);
 
   const toggleRow = (idx: number) => {
     setEnabledRows(prev => {
@@ -279,9 +461,16 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
                 .filter(item => !filterText || item.menu.toLowerCase().includes(filterText.toLowerCase()))
                 .map(({ menu, originalIdx: idx }) => (
                   <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500 }}>
+                    <div
+                      style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500, cursor: 'pointer' }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedSubMenu({ title: menu, items: getSubMenuItems(menu) });
+                      }}
+                    >
                       <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
-                      {menu}
+                      <span style={{ textDecoration: 'underline', color: 'var(--accent, #1e3a8a)' }}>{menu}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
@@ -344,6 +533,14 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
         </div>
 
       </div>
+      {selectedSubMenu && (
+        <SubMenuRightsModal
+          isOpen={!!selectedSubMenu}
+          onClose={() => setSelectedSubMenu(null)}
+          title={selectedSubMenu.title}
+          items={selectedSubMenu.items}
+        />
+      )}
     </div>
   );
 };
@@ -893,103 +1090,90 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
   );
 };
 
-const FUND_DATA: Record<string, string> = {
-  'C001': 'Ceylon Provident Fund',
-  'C002': 'Ceylon Retirement Benefit Fund',
-  'C003': 'National Provident Fund',
-  'C004': 'Employees Trust Fund',
-  'C005': 'Widows & Orphans Pension Scheme',
-};
-
 const ROLES = ['R001', 'R002', 'R003', 'R004', 'R005'];
 
 const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
-  const [searchUser, setSearchUser] = useState('');
-  const [selectedFundCode, setSelectedFundCode] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
-  const [tableSearch, setTableSearch] = useState('');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [roleDescription, setRoleDescription] = useState('');
+  const [showTable, setShowTable] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warn' } | null>(null);
 
-  const [assignmentsList, setAssignmentsList] = useState([
-    { id: 1, name: 'Anushka Perera', fundCode: 'C001', fundDesc: FUND_DATA['C001'], role: 'R003', avatar: 'A', color: '#3b82f6' },
-    { id: 2, name: 'Anushka Perera', fundCode: 'C002', fundDesc: FUND_DATA['C002'], role: 'R003', avatar: 'A', color: '#10b981' },
-    { id: 3, name: 'Basuru Silva', fundCode: 'C001', fundDesc: FUND_DATA['C001'], role: 'R004', avatar: 'B', color: '#8b5cf6' },
-    { id: 4, name: 'Tharindu Perera', fundCode: 'C003', fundDesc: FUND_DATA['C003'], role: 'R005', avatar: 'T', color: '#f43f5e' },
-    { id: 5, name: 'Thilina Fernando', fundCode: 'C002', fundDesc: FUND_DATA['C002'], role: 'R001', avatar: 'T', color: '#f59e0b' },
-    { id: 6, name: 'Thilina Fernando', fundCode: 'C001', fundDesc: FUND_DATA['C001'], role: 'R003', avatar: 'T', color: '#06b6d4' },
-    { id: 7, name: 'Thushara Kumara', fundCode: 'C004', fundDesc: FUND_DATA['C004'], role: 'R002', avatar: 'T', color: '#6366f1' },
-    { id: 8, name: 'Nimasha Sanduni', fundCode: 'C005', fundDesc: FUND_DATA['C005'], role: 'R004', avatar: 'N', color: '#ec4899' },
-    { id: 9, name: 'Ravindu Madhawa', fundCode: 'C003', fundDesc: FUND_DATA['C003'], role: 'R003', avatar: 'R', color: '#14b8a6' },
-  ]);
+  const [enabledRows, setEnabledRows] = useState<number[]>([]);
+  const [rowPermissions, setRowPermissions] = useState<Record<number, string[]>>({});
+  const [selectedSubMenu, setSelectedSubMenu] = useState<{ title: string, items: string[] } | null>(null);
 
   const showToast = (msg: string, type: 'success' | 'error' | 'warn' = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3500);
   };
 
-  const fundDescription = selectedFundCode ? FUND_DATA[selectedFundCode] : '';
+  const subMenus = [
+    'Dashboard', 'Setup', 'Registration', 'Unit Operation', 'Approval',
+    'Doc Printing', 'Reports'
+  ];
+
+  const handleLoad = () => {
+    if (!selectedRole) {
+      showToast('Please select a User Role first to load data.', 'warn');
+      return;
+    }
+    if (!roleDescription) setRoleDescription(`Description for ${selectedRole}`);
+    setShowTable(true);
+  };
 
   const handleCreate = () => {
-    if (!searchUser.trim()) {
-      showToast('Please enter or load a user name.', 'error');
-      return;
-    }
-    if (!selectedFundCode) {
-      showToast('Please select a fund.', 'error');
-      return;
-    }
     if (!selectedRole) {
-      showToast('Please select a user role.', 'error');
+      showToast('Please select a User Role.', 'error');
       return;
     }
-
-    const newAssignment = {
-      id: Math.max(0, ...assignmentsList.map(a => a.id)) + 1,
-      name: searchUser,
-      fundCode: selectedFundCode,
-      fundDesc: FUND_DATA[selectedFundCode],
-      role: selectedRole,
-      avatar: searchUser.charAt(0).toUpperCase(),
-      color: `hsl(${Math.random() * 360}, 70%, 50%)`
-    };
-
-    setAssignmentsList([newAssignment, ...assignmentsList]);
-    showToast(`Role assigned successfully to ${searchUser}!`, 'success');
-
-    // Clear inputs
-    setSearchUser('');
-    setSelectedFundCode('');
-    setSelectedRole('');
+    if (!roleDescription) {
+      showToast('Please enter a role description.', 'error');
+      return;
+    }
+    showToast(`Role "${selectedRole}" saved successfully!`, 'success');
   };
 
-  const handleLoad = () => setIsSearchOpen(true);
-
-  const onUserSelect = (user: any) => {
-    setSearchUser(user.fullName || '');
-    setIsSearchOpen(false);
+  const toggleRow = (idx: number) => {
+    setEnabledRows(prev => {
+      const isEnabling = !prev.includes(idx);
+      setRowPermissions(inner => {
+        const next = { ...inner };
+        delete next[idx];
+        return next;
+      });
+      return isEnabling ? [...prev, idx] : prev.filter(i => i !== idx);
+    });
   };
 
-  const assignments = assignmentsList.filter(a => {
-    const matchesUser = !searchUser || a.name.toLowerCase().includes(searchUser.toLowerCase());
-    const matchesFund = !selectedFundCode || a.fundCode === selectedFundCode;
-    const matchesRole = !selectedRole || a.role === selectedRole;
-    const matchesTable = !tableSearch || [
-      a.name, a.fundCode, a.fundDesc, a.role
-    ].some(val => val.toLowerCase().includes(tableSearch.toLowerCase()));
-    return matchesUser && matchesFund && matchesRole && matchesTable;
-  });
+  const toggleAllRows = () => {
+    if (enabledRows.length === subMenus.length) {
+      setEnabledRows([]);
+      setRowPermissions({});
+    } else {
+      setEnabledRows(subMenus.map((_, i) => i));
+      setRowPermissions({});
+    }
+  };
 
-  const uniqueFunds = Object.keys(FUND_DATA).length;
-  const uniqueUsers = [...new Set(assignmentsList.map(a => a.name))].length;
-  const uniqueRoles = [...new Set(assignmentsList.map(a => a.role))].length;
+  const togglePermission = (rowIdx: number, perm: string) => {
+    if (!enabledRows.includes(rowIdx)) return;
+    setRowPermissions(prev => {
+      const current = prev[rowIdx] || [];
+      const updated = current.includes(perm)
+        ? current.filter(p => p !== perm)
+        : [...current, perm];
+      return { ...prev, [rowIdx]: updated };
+    });
+  };
 
-  const stats = [
-    { label: 'Total Records', value: assignments.length, color: '#3b82f6', bg: '#eff6ff' },
-    { label: 'Users', value: uniqueUsers, color: '#8b5cf6', bg: '#f5f3ff' },
-    { label: 'Funds', value: uniqueFunds, color: '#10b981', bg: '#ecfdf5' },
-    { label: 'Roles', value: uniqueRoles, color: '#f59e0b', bg: '#fffbeb' },
-  ];
+  const Toggle = ({ active, onClick }: { active?: boolean; onClick?: () => void }) => (
+    <div
+      onClick={onClick}
+      style={{ width: '36px', height: '20px', borderRadius: '10px', background: active ? 'var(--accent, #1e3a8a)' : '#e2e8f0', position: 'relative', cursor: 'pointer', transition: 'all 0.2s', alignSelf: 'center', boxShadow: active ? 'inset 0 1px 3px rgba(0,0,0,0.2)' : 'inset 0 1px 3px rgba(0,0,0,0.1)' }}
+    >
+      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#fff', position: 'absolute', top: '2px', left: active ? '18px' : '2px', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.2)' }} />
+    </div>
+  );
 
   const topCardStyle = {
     padding: '24px',
@@ -1033,63 +1217,26 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
 
   return (
     <div id="sec-assign-modal" style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: isMobile ? '12px' : '20px', background: '#fdfbfa', borderRadius: '12px' }}>
-      <style>{`
-        #sec-assign-modal input[type="text"] {
-          padding-left: 54px !important;
-        }
-      `}</style>
-
       {/* Filters Row */}
       <div style={topCardStyle}>
-        {/* Search */}
-        <div style={{ flex: 2, minWidth: '160px' }}>
-          <input
-            type="text"
-            placeholder="User name"
-            value={searchUser}
-            onChange={e => setSearchUser(e.target.value)}
-            style={{
-              ...selStyle,
-              width: '100%',
-              paddingLeft: '54px',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E")`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: '12px center',
-              backgroundSize: '16px',
-            }}
-          />
-        </div>
-
-        {/* Fund Code */}
-        <div style={{ flex: 1, minWidth: '120px' }}>
-          <select value={selectedFundCode} onChange={e => setSelectedFundCode(e.target.value)} style={{ ...selStyle, width: '100%' }}>
-            <option value="">Fund Code</option>
-            {Object.keys(FUND_DATA).map(code => (
-              <option key={code} value={code}>{code}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Fund Description — linked to Fund Code */}
-        <div style={{ flex: 2, minWidth: '180px' }}>
-          <select value={selectedFundCode} onChange={e => setSelectedFundCode(e.target.value)} style={{ ...selStyle, width: '100%', color: fundDescription ? '#1e293b' : '#94a3b8' }}>
-            <option value="">Fund Description</option>
-            {Object.entries(FUND_DATA).map(([code, name]) => (
-              <option key={code} value={code}>{name}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* User Role */}
-        <div style={{ flex: 1, minWidth: '120px' }}>
+        <div style={{ flex: 1, minWidth: '160px' }}>
           <select value={selectedRole} onChange={e => setSelectedRole(e.target.value)} style={{ ...selStyle, width: '100%' }}>
             <option value="">User Role</option>
             {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
         </div>
+        <div style={{ flex: 2, minWidth: '160px' }}>
+          <input
+            type="text"
+            placeholder="Role Description"
+            value={roleDescription}
+            onChange={e => setRoleDescription(e.target.value)}
+            style={{ ...selStyle, width: '100%' }}
+          />
+        </div>
 
-        <button onClick={handleCreate} style={btnPrimary}>Create</button>
         <button onClick={handleLoad} style={{ ...btnPrimary, background: '#fff', color: '#1e3a8a', border: '1.5px solid #dbeafe', boxShadow: 'none' }}>Load</button>
+        <button onClick={handleCreate} style={btnPrimary}>Save</button>
       </div>
 
       {toast && (
@@ -1099,88 +1246,91 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
         </div>
       )}
 
-      <UserSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onSelect={onUserSelect} />
-
-      {/* Stats Row */}
-      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-        {stats.map((s, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '12px', background: s.bg, border: `1px solid ${s.color}20` }}>
-            <span style={{ fontWeight: '800', color: s.color, fontSize: '15px' }}>{s.value}</span>
-            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: '600' }}>{s.label}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Table Section */}
-      <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#fff', gap: '16px', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👥</div>
+      {showTable ? (
+        <div style={{ borderRadius: '12px', background: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+          <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '700' }}>User Role Assignments</h3>
-              <span style={{ fontSize: '11px', opacity: 0.8 }}>{assignments.length} records found</span>
+              <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>Member Master Set Up</h3>
+              <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {subMenus.length} menus active</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>
+              Select All <Toggle active={enabledRows.length === subMenus.length && subMenus.length > 0} onClick={toggleAllRows} />
             </div>
           </div>
-          {/* Table Search */}
-          <div style={{ position: 'relative', minWidth: '200px', flex: '0 1 240px' }}>
-            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.7, fontSize: '13px' }}>🔍</span>
-            <input
-              type="text"
-              placeholder="Search table..."
-              value={tableSearch}
-              onChange={e => setTableSearch(e.target.value)}
-              style={{ width: '100%', height: '34px', borderRadius: '20px', border: 'none', background: 'rgba(255,255,255,0.15)', color: '#fff', paddingLeft: '54px', fontSize: '12px', outline: 'none', boxSizing: 'border-box' as const }}
-            />
-            {tableSearch && (
-              <span onClick={() => setTableSearch('')} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', opacity: 0.7, fontSize: '13px' }}>✕</span>
-            )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', overflowX: 'auto' }}>
+            <div>MENU</div>
+            <div style={{ textAlign: 'center' }}>ENABLE</div>
+            <div style={{ textAlign: 'center' }}>APPROVE</div>
+            <div style={{ textAlign: 'center' }}>SAVE</div>
+            <div style={{ textAlign: 'center' }}>CREATE</div>
+            <div style={{ textAlign: 'center' }}>DELETE</div>
+            <div style={{ textAlign: 'center' }}>PRINT</div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', overflowX: 'auto' }}>
+            {subMenus.map((menu, idx) => (
+              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center', minWidth: '600px' }}>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500, cursor: 'pointer' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelectedSubMenu({ title: menu, items: getSubMenuItems(menu) });
+                  }}
+                >
+                  <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
+                  <span style={{ textDecoration: 'underline', color: 'var(--accent, #1e3a8a)' }}>{menu}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'approve')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('approve') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Approve'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'save')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('save') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Save'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'delete')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('delete') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Delete'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className={`rights-action-btn rights-btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'print')} disabled={!enabledRows.includes(idx)}>
+                    {(rowPermissions[idx] || []).includes('print') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Print'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ padding: '12px 20px', background: '#f8fafc', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', fontWeight: 'bold' }}>
+            {subMenus.length} of {subMenus.length} menus
           </div>
         </div>
-
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '650px' }}>
-            <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                {['#', 'USER NAME', 'FUND CODE', 'FUND DESCRIPTION', 'ROLE'].map((h, i) => (
-                  <th key={i} style={{ padding: '14px 18px', fontSize: '11px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {assignments.length === 0 ? (
-                <tr><td colSpan={5} style={{ padding: '32px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>No records found matching your filter.</td></tr>
-              ) : assignments.map((a, i) => (
-                <tr key={a.id} style={{ borderBottom: i === assignments.length - 1 ? 'none' : '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#fcfdfe' }}>
-                  <td style={{ padding: '14px 18px', fontSize: '13px', color: '#94a3b8' }}>{a.id}</td>
-                  <td style={{ padding: '14px 18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: a.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px', flexShrink: 0 }}>{a.avatar}</div>
-                      <span style={{ fontSize: '13px', color: '#1e293b', fontWeight: '600' }}>{a.name}</span>
-                    </div>
-                  </td>
-                  <td style={{ padding: '14px 18px' }}>
-                    <span style={{ padding: '4px 10px', background: '#fffbeb', color: '#b45309', borderRadius: '6px', fontSize: '11px', fontWeight: '700', border: '1px solid #fef3c7' }}>{a.fundCode}</span>
-                  </td>
-                  <td style={{ padding: '14px 18px', fontSize: '13px', color: '#475569', maxWidth: '200px' }}>{a.fundDesc}</td>
-                  <td style={{ padding: '14px 18px' }}>
-                    <span style={{ padding: '4px 10px', background: '#eff6ff', color: '#1d4ed8', borderRadius: '6px', fontSize: '11px', fontWeight: '700', border: '1px solid #dbeafe' }}>{a.role}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      ) : (
+        <div style={{ padding: '40px', textAlign: 'center', background: '#fff', borderRadius: '12px', border: '1px dashed #cbd5e1', color: '#64748b', fontSize: '14px', fontWeight: '500' }}>
+          Please select a User Role and click Load to view assigning options.
         </div>
-
-        <div style={{ padding: '14px 20px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: '#64748b' }}>
-          <div>Showing {assignments.length} of {assignmentsList.length} records</div>
-          <div style={{ display: 'flex', gap: '4px' }}>
-            <button style={{ width: '28px', height: '28px', borderRadius: '6px', border: '1px solid #e2e8f0', background: '#fff', cursor: 'pointer' }}>{'<'}</button>
-            <button style={{ width: '28px', height: '28px', borderRadius: '6px', border: 'none', background: 'var(--accent, #1e3a8a)', color: '#fff', cursor: 'pointer' }}>1</button>
-            <button style={{ width: '28px', height: '28px', borderRadius: '6px', border: '1px solid #e2e8f0', background: '#fff', cursor: 'pointer' }}>{'>'}</button>
-          </div>
-        </div>
-      </div>
-
+      )}
+      {selectedSubMenu && (
+        <SubMenuRightsModal
+          isOpen={!!selectedSubMenu}
+          onClose={() => setSelectedSubMenu(null)}
+          title={selectedSubMenu.title}
+          items={selectedSubMenu.items}
+        />
+      )}
     </div>
   );
 };

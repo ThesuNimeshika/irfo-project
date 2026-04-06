@@ -4,6 +4,13 @@ import '../App.css';
 import '../Setup.css';
 import { useState, useEffect, forwardRef, useRef } from 'react';
 import { createPortal } from 'react-dom';
+
+interface UserRole {
+  code: string;
+  name: string;
+  enabledRows: number[];
+  rowPermissions: Record<number, string[]>;
+}
 import UserSearchModal from '../components/UserSearchModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -72,49 +79,78 @@ const getSubMenuItems = (menu: string) => {
   return SETUP_SUB_MENU_ITEMS;
 };
 
-function SubMenuRightsModal({ isOpen, onClose, title, items }: { isOpen: boolean; onClose: () => void; title: string; items: string[] }) {
-  const [enabledRows, setEnabledRows] = useState<number[]>([]);
-  const [rowPermissions, setRowPermissions] = useState<Record<number, string[]>>({});
-
-  useEffect(() => {
-    if (isOpen) {
-      setEnabledRows([]);
-      setRowPermissions({});
-    }
-  }, [isOpen, title]);
-
+function SubMenuRightsModal({
+  isOpen,
+  onClose,
+  title,
+  items,
+  enabledRows = [],
+  setEnabledRows,
+  rowPermissions = {},
+  setRowPermissions
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  items: string[];
+  enabledRows: number[];
+  setEnabledRows: React.Dispatch<React.SetStateAction<Record<string, number[]>>>;
+  rowPermissions: Record<number, string[]>;
+  setRowPermissions: React.Dispatch<React.SetStateAction<Record<string, Record<number, string[]>>>>;
+}) {
   if (!isOpen) return null;
 
   const toggleRow = (idx: number) => {
     setEnabledRows(prev => {
-      const isEnabling = !prev.includes(idx);
+      const currentRows = prev[title] || [];
+      const isEnabling = !currentRows.includes(idx);
       setRowPermissions(inner => {
         const next = { ...inner };
-        delete next[idx];
+        const currentPerms = { ...(next[title] || {}) };
+        if (isEnabling) {
+          currentPerms[idx] = ['approve', 'save', 'create', 'delete', 'print'];
+        } else {
+          delete currentPerms[idx];
+        }
+        next[title] = currentPerms;
         return next;
       });
-      return isEnabling ? [...prev, idx] : prev.filter(i => i !== idx);
+      return {
+        ...prev,
+        [title]: isEnabling ? [...currentRows, idx] : currentRows.filter(i => i !== idx)
+      };
     });
   };
 
   const toggleAllRows = () => {
-    if (enabledRows.length === items.length) {
-      setEnabledRows([]);
-      setRowPermissions({});
+    const currentRows = enabledRows || [];
+    if (currentRows.length === items.length) {
+      setEnabledRows(prev => ({ ...prev, [title]: [] }));
+      setRowPermissions(prev => ({ ...prev, [title]: {} }));
     } else {
-      setEnabledRows(items.map((_, i) => i));
-      setRowPermissions({});
+      setEnabledRows(prev => ({ ...prev, [title]: items.map((_, i) => i) }));
+      setRowPermissions(prev => ({
+        ...prev,
+        [title]: items.reduce((acc, _, i) => {
+          acc[i] = ['approve', 'save', 'create', 'delete', 'print'];
+          return acc;
+        }, {} as Record<number, string[]>)
+      }));
     }
   };
 
   const togglePermission = (rowIdx: number, perm: string) => {
     if (!enabledRows.includes(rowIdx)) return;
     setRowPermissions(prev => {
-      const current = prev[rowIdx] || [];
+      const next = { ...prev };
+      const currentPerms = { ...(next[title] || {}) };
+      const current = currentPerms[rowIdx] || [];
       const updated = current.includes(perm)
         ? current.filter(p => p !== perm)
         : [...current, perm];
-      return { ...prev, [rowIdx]: updated };
+      currentPerms[rowIdx] = updated;
+      next[title] = currentPerms;
+      return next;
     });
   };
 
@@ -130,71 +166,69 @@ function SubMenuRightsModal({ isOpen, onClose, title, items }: { isOpen: boolean
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ background: '#fff', borderRadius: '12px', width: '900px', maxWidth: '95vw', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
-            <div>
-              <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>{title} Sub-Menus</h3>
-              <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {items.length} sub-menus active</p>
+        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
+          <div>
+            <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>{title} Sub-Menus</h3>
+            <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {items.length} sub-menus active</p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>
+              Select All <Toggle active={enabledRows.length === items.length && items.length > 0} onClick={toggleAllRows} />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>
-                Select All <Toggle active={enabledRows.length === items.length && items.length > 0} onClick={toggleAllRows} />
+            <button title="Close" onClick={onClose} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', width: '28px', height: '28px', color: '#fff', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'} onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}>&times;</button>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div>SUB MENU</div>
+          <div style={{ textAlign: 'center' }}>ENABLE</div>
+          <div style={{ textAlign: 'center' }}>APPROVE</div>
+          <div style={{ textAlign: 'center' }}>SAVE</div>
+          <div style={{ textAlign: 'center' }}>CREATE</div>
+          <div style={{ textAlign: 'center' }}>DELETE</div>
+          <div style={{ textAlign: 'center' }}>PRINT</div>
+        </div>
+
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+          {items.map((menu, idx) => (
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500 }}>
+                <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
+                {menu}
               </div>
-              <button title="Close" onClick={onClose} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', width: '28px', height: '28px', color: '#fff', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'} onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}>&times;</button>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'approve')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('approve') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Approve'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'save')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('save') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Save'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'delete')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('delete') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Delete'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'print')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('print') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Print'}
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            <div>SUB MENU</div>
-            <div style={{ textAlign: 'center' }}>ENABLE</div>
-            <div style={{ textAlign: 'center' }}>APPROVE</div>
-            <div style={{ textAlign: 'center' }}>SAVE</div>
-            <div style={{ textAlign: 'center' }}>CREATE</div>
-            <div style={{ textAlign: 'center' }}>DELETE</div>
-            <div style={{ textAlign: 'center' }}>PRINT</div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {items.map((menu, idx) => (
-              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500 }}>
-                  <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
-                  {menu}
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'approve')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('approve') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Approve'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'save')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('save') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Save'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'delete')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('delete') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Delete'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'print')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('print') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Print'}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div style={{ padding: '12px 20px', background: '#f8fafc', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', fontWeight: 'bold' }}>
-            {items.length} of {items.length} sub-menus
-          </div>
+          ))}
+        </div>
+        <div style={{ padding: '12px 20px', background: '#f8fafc', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', fontWeight: 'bold' }}>
+          {items.length} of {items.length} sub-menus
         </div>
       </div>
     </div>
@@ -289,18 +323,53 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
   const [enabledRows, setEnabledRows] = useState<number[]>([]);
   const [rowPermissions, setRowPermissions] = useState<Record<number, string[]>>({});
   const [filterText, setFilterText] = useState('');
-
   const [selectedSubMenu, setSelectedSubMenu] = useState<{ title: string, items: string[] } | null>(null);
+
+  const [subMenuEnabledRows, setSubMenuEnabledRows] = useState<Record<string, number[]>>({});
+  const [subMenuRowPermissions, setSubMenuRowPermissions] = useState<Record<string, Record<number, string[]>>>({});
 
   const toggleRow = (idx: number) => {
     setEnabledRows(prev => {
       const isEnabling = !prev.includes(idx);
-      // Always clear permissions for the row when toggling to ensure a clean default state
+      const menuTitle = subMenus[idx];
+      // Automatically enable all permissions when a row is enabled
       setRowPermissions(inner => {
         const next = { ...inner };
-        delete next[idx];
+        if (isEnabling) {
+          next[idx] = ['approve', 'save', 'create', 'delete', 'print'];
+        } else {
+          delete next[idx];
+        }
         return next;
       });
+
+      // Automatically enable all sub-menu items when a main menu is enabled
+      if (isEnabling) {
+        const subItems = getSubMenuItems(menuTitle);
+        setSubMenuEnabledRows(prev => ({
+          ...prev,
+          [menuTitle]: subItems.map((_, i) => i)
+        }));
+        setSubMenuRowPermissions(prev => ({
+          ...prev,
+          [menuTitle]: subItems.reduce((acc, _, i) => {
+            acc[i] = ['approve', 'save', 'create', 'delete', 'print'];
+            return acc;
+          }, {} as Record<number, string[]>)
+        }));
+      } else {
+        setSubMenuEnabledRows(prev => {
+          const next = { ...prev };
+          delete next[menuTitle];
+          return next;
+        });
+        setSubMenuRowPermissions(prev => {
+          const next = { ...prev };
+          delete next[menuTitle];
+          return next;
+        });
+      }
+
       return isEnabling ? [...prev, idx] : prev.filter(i => i !== idx);
     });
   };
@@ -309,19 +378,54 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
     if (enabledRows.length === subMenus.length) {
       setEnabledRows([]);
       setRowPermissions({});
+      setSubMenuEnabledRows({});
+      setSubMenuRowPermissions({});
     } else {
       setEnabledRows(subMenus.map((_, i) => i));
-      setRowPermissions({});
+      const newRowPermissions: Record<number, string[]> = {};
+      const newSubMenuEnabledRows: Record<string, number[]> = {};
+      const newSubMenuRowPermissions: Record<string, Record<number, string[]>> = {};
+
+      subMenus.forEach((menu, i) => {
+        newRowPermissions[i] = ['approve', 'save', 'create', 'delete', 'print'];
+        const subItems = getSubMenuItems(menu);
+        newSubMenuEnabledRows[menu] = subItems.map((_, si) => si);
+        newSubMenuRowPermissions[menu] = subItems.reduce((acc, _, si) => {
+          acc[si] = ['approve', 'save', 'create', 'delete', 'print'];
+          return acc;
+        }, {} as Record<number, string[]>);
+      });
+
+      setRowPermissions(newRowPermissions);
+      setSubMenuEnabledRows(newSubMenuEnabledRows);
+      setSubMenuRowPermissions(newSubMenuRowPermissions);
     }
   };
 
   const togglePermission = (rowIdx: number, perm: string) => {
     if (!enabledRows.includes(rowIdx)) return;
+    const menuTitle = subMenus[rowIdx];
+    const subItems = getSubMenuItems(menuTitle);
+
     setRowPermissions(prev => {
       const current = prev[rowIdx] || [];
       const updated = current.includes(perm)
         ? current.filter(p => p !== perm)
         : [...current, perm];
+
+      // Sync to all sub-menu items for this menu
+      setSubMenuRowPermissions(subPrev => {
+        const nextSubPerms = { ...subPrev };
+        const menuSubPerms = { ...(nextSubPerms[menuTitle] || {}) };
+
+        subItems.forEach((_, i) => {
+          menuSubPerms[i] = updated;
+        });
+
+        nextSubPerms[menuTitle] = menuSubPerms;
+        return nextSubPerms;
+      });
+
       return { ...prev, [rowIdx]: updated };
     });
   };
@@ -470,7 +574,7 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
                       }}
                     >
                       <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
-                      <span style={{ textDecoration: 'underline', color: 'var(--accent, #1e3a8a)' }}>{menu}</span>
+                      <span style={{ color: 'var(--accent, #1e3a8a)' }}>{menu}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
@@ -539,6 +643,10 @@ const UserRightsModal = ({ isMobile }: { isMobile: boolean }) => {
           onClose={() => setSelectedSubMenu(null)}
           title={selectedSubMenu.title}
           items={selectedSubMenu.items}
+          enabledRows={subMenuEnabledRows[selectedSubMenu.title] || []}
+          setEnabledRows={setSubMenuEnabledRows}
+          rowPermissions={subMenuRowPermissions[selectedSubMenu.title] || {}}
+          setRowPermissions={setSubMenuRowPermissions}
         />
       )}
     </div>
@@ -997,7 +1105,7 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
               <div style={{ flex: 1, position: 'relative' }}>
                 <IconWrapper><IcoStar /></IconWrapper>
                 <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} value={userType} onChange={e => setUserType(e.target.value)}>
-                  <option value="">User Type</option>
+                  <option value="">User Role</option>
                   <option value="super_admin">Super Admin</option>
                   <option value="system_admin">System Admin</option>
                   <option value="standard">Standard User</option>
@@ -1090,17 +1198,63 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
   );
 };
 
-const ROLES = ['R001', 'R002', 'R003', 'R004', 'R005'];
+const UpdateUserRoleModal = ({ isOpen, onClose, onSelect, roles }: { isOpen: boolean; onClose: () => void; onSelect: (role: UserRole) => void; roles: UserRole[] }) => {
+  if (!isOpen) return null;
+
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, backdropFilter: 'blur(4px)' }}>
+      <div style={{ background: '#fff', borderRadius: '16px', width: '90%', maxWidth: '600px', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
+        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '20px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ margin: 0, fontSize: '18px' }}>Select Existing User Role</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
+        </div>
+        <div style={{ padding: '20px', overflowY: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #f1f5f9', color: '#64748b', textAlign: 'left' }}>
+                <th style={{ padding: '12px' }}>Code</th>
+                <th style={{ padding: '12px' }}>Role Name</th>
+                <th style={{ padding: '12px', textAlign: 'center' }}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roles.map((role, idx) => (
+                <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9', color: '#334155' }}>
+                  <td style={{ padding: '12px', fontWeight: 'bold' }}>{role.code}</td>
+                  <td style={{ padding: '12px' }}>{role.name}</td>
+                  <td style={{ padding: '12px', textAlign: 'center' }}>
+                    <button onClick={() => onSelect(role)} style={{ padding: '6px 16px', borderRadius: '6px', border: 'none', background: 'var(--accent, #1e3a8a)', color: '#fff', cursor: 'pointer', fontSize: '12px' }}>Select</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
   const [selectedRole, setSelectedRole] = useState('');
   const [roleDescription, setRoleDescription] = useState('');
-  const [showTable, setShowTable] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [roles, setRoles] = useState<UserRole[]>([
+    { code: '001', name: 'Project Manager', enabledRows: [0, 1, 6], rowPermissions: { 0: ['approve', 'save'], 1: ['save', 'create'], 6: ['print'] } },
+    { code: '002', name: 'System Admin', enabledRows: [0, 1, 2, 3, 4, 5, 6], rowPermissions: { 0: ['approve', 'save', 'create', 'delete', 'print'], 1: ['approve', 'save', 'create', 'delete', 'print'], 6: ['approve', 'save', 'create', 'delete', 'print'] } },
+    { code: '003', name: 'Developer', enabledRows: [1, 2, 3], rowPermissions: { 1: ['save', 'create'], 2: ['save'], 3: ['save'] } },
+  ] as UserRole[]);
+
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warn' } | null>(null);
 
   const [enabledRows, setEnabledRows] = useState<number[]>([]);
   const [rowPermissions, setRowPermissions] = useState<Record<number, string[]>>({});
   const [selectedSubMenu, setSelectedSubMenu] = useState<{ title: string, items: string[] } | null>(null);
+
+  const [subMenuEnabledRows, setSubMenuEnabledRows] = useState<Record<string, number[]>>({});
+  const [subMenuRowPermissions, setSubMenuRowPermissions] = useState<Record<string, Record<number, string[]>>>({});
 
   const showToast = (msg: string, type: 'success' | 'error' | 'warn' = 'success') => {
     setToast({ msg, type });
@@ -1112,35 +1266,75 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
     'Doc Printing', 'Reports'
   ];
 
-  const handleLoad = () => {
-    if (!selectedRole) {
-      showToast('Please select a User Role first to load data.', 'warn');
-      return;
-    }
-    if (!roleDescription) setRoleDescription(`Description for ${selectedRole}`);
-    setShowTable(true);
-  };
-
   const handleCreate = () => {
     if (!selectedRole) {
-      showToast('Please select a User Role.', 'error');
+      showToast('Please enter a User Role Code.', 'error');
       return;
     }
     if (!roleDescription) {
-      showToast('Please enter a role description.', 'error');
+      showToast('Please enter a User Role.', 'error');
       return;
     }
-    showToast(`Role "${selectedRole}" saved successfully!`, 'success');
+    const newRole = {
+      code: selectedRole,
+      name: roleDescription,
+      enabledRows,
+      rowPermissions
+    };
+    setRoles(prev => [...prev, newRole]);
+    showToast(`Role "${selectedRole}" created and added to selection list successfully!`, 'success');
+
+    // Clear form after creation
+    setSelectedRole('');
+    setRoleDescription('');
+    setEnabledRows([]);
+    setRowPermissions({});
+    setSubMenuEnabledRows({});
+    setSubMenuRowPermissions({});
   };
 
   const toggleRow = (idx: number) => {
     setEnabledRows(prev => {
       const isEnabling = !prev.includes(idx);
+      const menuTitle = subMenus[idx];
+      // Automatically enable all permissions when a row is enabled
       setRowPermissions(inner => {
         const next = { ...inner };
-        delete next[idx];
+        if (isEnabling) {
+          next[idx] = ['approve', 'save', 'create', 'delete', 'print'];
+        } else {
+          delete next[idx];
+        }
         return next;
       });
+
+      // Automatically enable all sub-menu items when a main menu is enabled
+      if (isEnabling) {
+        const subItems = getSubMenuItems(menuTitle);
+        setSubMenuEnabledRows(prev => ({
+          ...prev,
+          [menuTitle]: subItems.map((_, i) => i)
+        }));
+        setSubMenuRowPermissions(prev => ({
+          ...prev,
+          [menuTitle]: subItems.reduce((acc, _, i) => {
+            acc[i] = ['approve', 'save', 'create', 'delete', 'print'];
+            return acc;
+          }, {} as Record<number, string[]>)
+        }));
+      } else {
+        setSubMenuEnabledRows(prev => {
+          const next = { ...prev };
+          delete next[menuTitle];
+          return next;
+        });
+        setSubMenuRowPermissions(prev => {
+          const next = { ...prev };
+          delete next[menuTitle];
+          return next;
+        });
+      }
+
       return isEnabling ? [...prev, idx] : prev.filter(i => i !== idx);
     });
   };
@@ -1149,19 +1343,54 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
     if (enabledRows.length === subMenus.length) {
       setEnabledRows([]);
       setRowPermissions({});
+      setSubMenuEnabledRows({});
+      setSubMenuRowPermissions({});
     } else {
       setEnabledRows(subMenus.map((_, i) => i));
-      setRowPermissions({});
+      const newRowPermissions: Record<number, string[]> = {};
+      const newSubMenuEnabledRows: Record<string, number[]> = {};
+      const newSubMenuRowPermissions: Record<string, Record<number, string[]>> = {};
+
+      subMenus.forEach((menu, i) => {
+        newRowPermissions[i] = ['approve', 'save', 'create', 'delete', 'print'];
+        const subItems = getSubMenuItems(menu);
+        newSubMenuEnabledRows[menu] = subItems.map((_, si) => si);
+        newSubMenuRowPermissions[menu] = subItems.reduce((acc, _, si) => {
+          acc[si] = ['approve', 'save', 'create', 'delete', 'print'];
+          return acc;
+        }, {} as Record<number, string[]>);
+      });
+
+      setRowPermissions(newRowPermissions);
+      setSubMenuEnabledRows(newSubMenuEnabledRows);
+      setSubMenuRowPermissions(newSubMenuRowPermissions);
     }
   };
 
   const togglePermission = (rowIdx: number, perm: string) => {
     if (!enabledRows.includes(rowIdx)) return;
+    const menuTitle = subMenus[rowIdx];
+    const subItems = getSubMenuItems(menuTitle);
+
     setRowPermissions(prev => {
       const current = prev[rowIdx] || [];
       const updated = current.includes(perm)
         ? current.filter(p => p !== perm)
         : [...current, perm];
+
+      // Sync to all sub-menu items for this menu
+      setSubMenuRowPermissions(subPrev => {
+        const nextSubPerms = { ...subPrev };
+        const menuSubPerms = { ...(nextSubPerms[menuTitle] || {}) };
+
+        subItems.forEach((_, i) => {
+          menuSubPerms[i] = updated;
+        });
+
+        nextSubPerms[menuTitle] = menuSubPerms;
+        return nextSubPerms;
+      });
+
       return { ...prev, [rowIdx]: updated };
     });
   };
@@ -1220,23 +1449,58 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
       {/* Filters Row */}
       <div style={topCardStyle}>
         <div style={{ flex: 1, minWidth: '160px' }}>
-          <select value={selectedRole} onChange={e => setSelectedRole(e.target.value)} style={{ ...selStyle, width: '100%' }}>
-            <option value="">User Role</option>
-            {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-          </select>
+          <input
+            type="text"
+            placeholder="User Role Code"
+            value={selectedRole}
+            onChange={e => setSelectedRole(e.target.value)}
+            style={{ ...selStyle, width: '100%' }}
+          />
         </div>
         <div style={{ flex: 2, minWidth: '160px' }}>
           <input
             type="text"
-            placeholder="Role Description"
+            placeholder="User Role"
             value={roleDescription}
             onChange={e => setRoleDescription(e.target.value)}
             style={{ ...selStyle, width: '100%' }}
           />
         </div>
 
-        <button onClick={handleLoad} style={{ ...btnPrimary, background: '#fff', color: '#1e3a8a', border: '1.5px solid #dbeafe', boxShadow: 'none' }}>Load</button>
-        <button onClick={handleCreate} style={btnPrimary}>Save</button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={() => setIsUpdateModalOpen(true)} style={{ ...btnPrimary, background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', boxShadow: '0 4px 12px rgba(217, 119, 6, 0.2)' }}>
+            Load Role
+          </button>
+          {isEditing ? (
+            <>
+              <button
+                onClick={() => {
+                  setRoles(prev => prev.map(r => r.code === selectedRole ? { ...r, name: roleDescription, enabledRows, rowPermissions } : r));
+                  showToast(`Rights for "${selectedRole}" successfully updated!`, 'success');
+                }}
+                style={{ ...btnPrimary, background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)' }}
+              >
+                Update Rights
+              </button>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setSelectedRole('');
+                  setRoleDescription('');
+                  setEnabledRows([]);
+                  setRowPermissions({});
+                  setSubMenuEnabledRows({});
+                  setSubMenuRowPermissions({});
+                }}
+                style={{ ...btnPrimary, background: '#64748b', boxShadow: '0 4px 12px rgba(100, 116, 139, 0.2)' }}
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button onClick={handleCreate} style={btnPrimary}>Create</button>
+          )}
+        </div>
       </div>
 
       {toast && (
@@ -1246,91 +1510,118 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
         </div>
       )}
 
-      {/* Table Section */}
-      {showTable ? (
-        <div style={{ borderRadius: '12px', background: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-          <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
-            <div>
-              <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>Member Master Set Up</h3>
-              <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {subMenus.length} menus active</p>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>
-              Select All <Toggle active={enabledRows.length === subMenus.length && subMenus.length > 0} onClick={toggleAllRows} />
-            </div>
+      <div style={{ borderRadius: '12px', background: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
+          <div>
+            <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>Member Master Set Up</h3>
+            <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {subMenus.length} menus active</p>
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', overflowX: 'auto' }}>
-            <div>MENU</div>
-            <div style={{ textAlign: 'center' }}>ENABLE</div>
-            <div style={{ textAlign: 'center' }}>APPROVE</div>
-            <div style={{ textAlign: 'center' }}>SAVE</div>
-            <div style={{ textAlign: 'center' }}>CREATE</div>
-            <div style={{ textAlign: 'center' }}>DELETE</div>
-            <div style={{ textAlign: 'center' }}>PRINT</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>
+            Select All <Toggle active={enabledRows.length === subMenus.length && subMenus.length > 0} onClick={toggleAllRows} />
           </div>
+        </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', overflowX: 'auto' }}>
-            {subMenus.map((menu, idx) => (
-              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center', minWidth: '600px' }}>
-                <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500, cursor: 'pointer' }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSelectedSubMenu({ title: menu, items: getSubMenuItems(menu) });
-                  }}
-                >
-                  <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
-                  <span style={{ textDecoration: 'underline', color: 'var(--accent, #1e3a8a)' }}>{menu}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'approve')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('approve') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Approve'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'save')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('save') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Save'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'delete')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('delete') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Delete'}
-                  </button>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button className={`rights-action-btn rights-btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'print')} disabled={!enabledRows.includes(idx)}>
-                    {(rowPermissions[idx] || []).includes('print') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Print'}
-                  </button>
-                </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', overflowX: 'auto' }}>
+          <div>MENU</div>
+          <div style={{ textAlign: 'center' }}>ENABLE</div>
+          <div style={{ textAlign: 'center' }}>APPROVE</div>
+          <div style={{ textAlign: 'center' }}>SAVE</div>
+          <div style={{ textAlign: 'center' }}>CREATE</div>
+          <div style={{ textAlign: 'center' }}>DELETE</div>
+          <div style={{ textAlign: 'center' }}>PRINT</div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', overflowX: 'auto' }}>
+          {subMenus.map((menu, idx) => (
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center', minWidth: '600px' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500, cursor: 'pointer' }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedSubMenu({ title: menu, items: getSubMenuItems(menu) });
+                }}
+              >
+                <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
+                <span style={{ color: 'var(--accent, #1e3a8a)' }}>{menu}</span>
               </div>
-            ))}
-          </div>
-          <div style={{ padding: '12px 20px', background: '#f8fafc', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', fontWeight: 'bold' }}>
-            {subMenus.length} of {subMenus.length} menus
-          </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Toggle active={enabledRows.includes(idx)} onClick={() => toggleRow(idx)} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-approve ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('approve') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'approve')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('approve') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Approve'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-save ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('save') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'save')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('save') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Save'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-delete ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('delete') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'delete')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('delete') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Delete'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className={`rights-action-btn rights-btn-print ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('print') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'print')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('print') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Print'}
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      ) : (
-        <div style={{ padding: '40px', textAlign: 'center', background: '#fff', borderRadius: '12px', border: '1px dashed #cbd5e1', color: '#64748b', fontSize: '14px', fontWeight: '500' }}>
-          Please select a User Role and click Load to view assigning options.
-        </div>
-      )}
+      </div>
+
       {selectedSubMenu && (
         <SubMenuRightsModal
           isOpen={!!selectedSubMenu}
           onClose={() => setSelectedSubMenu(null)}
           title={selectedSubMenu.title}
           items={selectedSubMenu.items}
+          enabledRows={subMenuEnabledRows[selectedSubMenu.title] || []}
+          setEnabledRows={setSubMenuEnabledRows}
+          rowPermissions={subMenuRowPermissions[selectedSubMenu.title] || {}}
+          setRowPermissions={setSubMenuRowPermissions}
         />
       )}
+
+      <UpdateUserRoleModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        roles={roles}
+        onSelect={(role) => {
+          setSelectedRole(role.code);
+          setRoleDescription(role.name);
+          setEnabledRows(role.enabledRows);
+          setRowPermissions(role.rowPermissions);
+
+          // Simple automation for sub-menus based on main selection
+          const newSubEnabled: Record<string, number[]> = {};
+          const newSubPerms: Record<string, Record<number, string[]>> = {};
+
+          role.enabledRows.forEach((idx: number) => {
+            const menuTitle = subMenus[idx];
+            const subItems = getSubMenuItems(menuTitle);
+            newSubEnabled[menuTitle] = subItems.map((_, i) => i);
+            newSubPerms[menuTitle] = subItems.reduce((acc, _, i) => {
+              acc[i] = role.rowPermissions[idx] || [];
+              return acc;
+            }, {} as Record<number, string[]>);
+          });
+
+          setSubMenuEnabledRows(newSubEnabled);
+          setSubMenuRowPermissions(newSubPerms);
+          setIsEditing(true); // Enable editing mode
+          setIsUpdateModalOpen(false);
+          showToast(`Role "${role.name}" loaded for editing.`, 'success');
+        }}
+      />
     </div>
   );
 };

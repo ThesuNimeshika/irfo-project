@@ -25,7 +25,7 @@ const moduleData = [
   { title: 'Dividend Confirmation', icon: '💸' },
   { title: 'Standing Instructions Approval', icon: '📋' },
   { title: 'Dividend Approval', icon: '✅' },
-  { title: 'User Rights Approval', icon: '🔐' },
+  { title: 'User Role Approval', icon: '🔐' },
 ];
 
 const modules = moduleData.map(m => ({
@@ -144,6 +144,8 @@ function Approval() {
                       <ApplicationConfirmationModal onViewDetails={handleViewDetails} />
                     ) : modules[modalIdx].title === 'Application Approval' ? (
                       <ApplicationApprovalModal onViewDetails={handleViewDetails} />
+                    ) : modules[modalIdx].title === 'User Role Approval' ? (
+                      <UserRoleApprovalModal />
                     ) : (
                       <div className="empty-content">
                         <p>Content for {modules[modalIdx].title} will be implemented here.</p>
@@ -600,6 +602,381 @@ function ApplicationApprovalModal({ onViewDetails }: { onViewDetails: (regNo: st
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+
+// ========================================
+// USER ROLE APPROVAL MODAL
+// ========================================
+
+function UserRoleApprovalModal() {
+  interface RoleRowData {
+    id: number;
+    roleCode: string;
+    roleName: string;
+    createdBy: string;
+    date: string;
+    status: 'approved' | 'rejected' | null;
+  }
+
+  const [data, setData] = useState<RoleRowData[]>([
+    { id: 1, roleCode: '001', roleName: 'Project Manager', createdBy: 'Admin', date: '2026-04-01', status: null },
+    { id: 2, roleCode: '002', roleName: 'System Admin', createdBy: 'SuperAdmin', date: '2026-04-02', status: 'approved' },
+    { id: 3, roleCode: '003', roleName: 'Developer', createdBy: 'Admin', date: '2026-04-03', status: 'rejected' },
+    { id: 4, roleCode: '004', roleName: 'Accountant', createdBy: 'FinManager', date: '2026-04-04', status: null },
+    { id: 5, roleCode: '005', roleName: 'Sales Rep', createdBy: 'Admin', date: '2026-04-05', status: null },
+  ]);
+
+  const [viewingRights, setViewingRights] = useState<RoleRowData | null>(null);
+
+  const handleStatusChange = (id: number, status: 'approved' | 'rejected') => {
+    setData(prev => prev.map(row => row.id === id ? { ...row, status } : row));
+  };
+
+  const tableHeaderStyle: React.CSSProperties = {
+    padding: '14px 20px',
+    background: '#f8fafc',
+    fontWeight: 600,
+    fontSize: '12px',
+    color: '#475569',
+    textAlign: 'center',
+    borderBottom: '1px solid #e2e8f0',
+    whiteSpace: 'nowrap',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+  };
+
+  const tableCellStyle: React.CSSProperties = {
+    padding: '12px 20px',
+    fontSize: '13px',
+    color: '#334155',
+    borderBottom: '1px solid #f1f5f9',
+    verticalAlign: 'middle',
+    textAlign: 'center',
+  };
+
+  return (
+    <div style={{ overflowX: 'auto', borderRadius: '10px', border: '1px solid #cbd5e1', boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.05)', backgroundColor: '#ffffff' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#ffffff' }}>
+        <thead>
+          <tr>
+            <th style={{ ...tableHeaderStyle, width: '15%' }}>Role Code</th>
+            <th style={{ ...tableHeaderStyle, width: '25%' }}>Role Name</th>
+            <th style={{ ...tableHeaderStyle, width: '30%' }}>Status</th>
+            <th style={{ ...tableHeaderStyle, width: '15%' }}>Rights</th>
+            <th style={{ ...tableHeaderStyle, width: '15%' }}>Created By</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row) => (
+            <tr key={row.id} style={{ transition: 'background-color 0.2s' }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f8fafc'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+            >
+              <td style={{ ...tableCellStyle, fontWeight: 600, color: '#1e40af' }}>{row.roleCode}</td>
+              <td style={{ ...tableCellStyle, textAlign: 'left' }}>{row.roleName}</td>
+              <td style={{ ...tableCellStyle }}>
+                <div style={{
+                  display: 'inline-flex',
+                  background: '#f1f5f9',
+                  padding: '4px',
+                  borderRadius: '24px',
+                  gap: '4px'
+                }}>
+                  <button
+                    onClick={() => handleStatusChange(row.id, 'approved')}
+                    style={{
+                      padding: '6px 14px',
+                      borderRadius: '20px',
+                      border: 'none',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      backgroundColor: row.status === 'approved' ? '#10b981' : 'transparent',
+                      color: row.status === 'approved' ? '#ffffff' : '#64748b',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <span>{row.status === 'approved' ? '✓' : '○'}</span>
+                    APPROVE
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange(row.id, 'rejected')}
+                    style={{
+                      padding: '6px 14px',
+                      borderRadius: '20px',
+                      border: 'none',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      backgroundColor: row.status === 'rejected' ? '#ef4444' : 'transparent',
+                      color: row.status === 'rejected' ? '#ffffff' : '#64748b',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <span>{row.status === 'rejected' ? '✕' : '○'}</span>
+                    REJECT
+                  </button>
+                </div>
+              </td>
+              <td style={{ ...tableCellStyle }}>
+                <button
+                  onClick={() => setViewingRights(row)}
+                  style={{
+                    padding: '6px 12px',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    color: '#1e3a8a',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  👁 VIEW
+                </button>
+              </td>
+              <td style={{ ...tableCellStyle, fontSize: '11px', color: '#64748b' }}>
+                <div style={{ fontWeight: 600, color: '#475569' }}>{row.createdBy}</div>
+                <div>{row.date}</div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {viewingRights && createPortal(
+        <ViewRightsModal
+          roleName={viewingRights.roleName}
+          onClose={() => setViewingRights(null)}
+        />,
+        document.body
+      )}
+    </div>
+  );
+}
+
+// ========================================
+// VIEW RIGHTS MODAL (READ-ONLY)
+// ========================================
+
+function ViewRightsModal({ roleName, onClose }: { roleName: string; onClose: () => void }) {
+  const [selectedSubMenu, setSelectedSubMenu] = useState<string | null>(null);
+  const subMenus = [
+    'Dashboard', 'Setup', 'Registration', 'Unit Operation', 'Approval',
+    'Doc Printing', 'Reports'
+  ];
+
+  // Mock permissions
+  const mockPermissions: Record<number, string[]> = {
+    0: ['approve', 'save'],
+    1: ['save', 'create', 'print'],
+    2: ['approve', 'save', 'create', 'delete', 'print'],
+    3: ['save'],
+    4: ['approve', 'print']
+  };
+
+  const actionLabels = ['APPROVE', 'SAVE', 'CREATE', 'DELETE', 'PRINT'];
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 100000001, background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={onClose}>
+      <div
+        style={{ background: '#ffffff', borderRadius: '24px', width: '900px', maxWidth: '95vw', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)', padding: '12px 32px', color: '#ffffff', position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>🔐</div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, letterSpacing: '-0.02em' }}>User Rights — {roleName}</h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '12px', opacity: 0.9 }}>Granular Permission Matrix (Read-Only View)</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            style={{ position: 'absolute', top: '16px', right: '32px', background: 'rgba(255, 255, 255, 0.2)', border: 'none', borderRadius: '10px', width: '32px', height: '32px', color: '#ffffff', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Content */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr', padding: '16px 32px', borderBottom: '2px solid #f1f5f9', background: '#f8fafc', fontSize: '11px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            <div>MENU CATEGORY</div>
+            <div style={{ textAlign: 'center' }}>APPROVE</div>
+            <div style={{ textAlign: 'center' }}>SAVE</div>
+            <div style={{ textAlign: 'center' }}>CREATE</div>
+            <div style={{ textAlign: 'center' }}>DELETE</div>
+            <div style={{ textAlign: 'center' }}>PRINT</div>
+          </div>
+
+          {subMenus.map((menu, idx) => (
+            <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 32px', borderBottom: '1px solid #f1f5f9', alignItems: 'center', opacity: mockPermissions[idx] ? 1 : 0.5 }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '14px', fontWeight: 600, color: '#1e293b', cursor: 'pointer' }}
+                onClick={() => setSelectedSubMenu(menu)}
+              >
+                <span style={{ width: '24px', height: '24px', borderRadius: '8px', background: mockPermissions[idx] ? '#eff6ff' : '#f1f5f9', color: mockPermissions[idx] ? '#3b82f6' : '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 800 }}>{idx + 1}</span>
+                <span style={{ color: '#1e3a8a' }}>{menu}</span>
+              </div>
+              {actionLabels.map(label => {
+                const isActive = (mockPermissions[idx] || []).includes(label.toLowerCase());
+                return (
+                  <div key={label} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '6px',
+                      background: isActive ? '#10b981' : '#f1f5f9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: isActive ? '#fff' : '#cbd5e1',
+                      fontSize: '12px',
+                      fontWeight: 900
+                    }}>
+                      {isActive ? '✓' : '•'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+
+        {selectedSubMenu && createPortal(
+          <SubMenuViewRightsModal
+            title={selectedSubMenu}
+            onClose={() => setSelectedSubMenu(null)}
+          />,
+          document.body
+        )}
+
+        {/* Footer */}
+        <div style={{ padding: '20px 32px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <p style={{ margin: 0, fontSize: '12px', color: '#64748b', fontWeight: 600 }}>This is a read-only view. Rights can only be modified in Security Management.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========================================
+// SUB-MENU VIEW (READ-ONLY)
+// ========================================
+
+function SubMenuViewRightsModal({ title, onClose }: { title: string; onClose: () => void }) {
+  const getSubMenuItems = (menu: string) => {
+    if (menu === 'Registration') return ['Application Entry', 'Registration Unit Holders Profiles', 'Unit Holder Accounts', 'Holder Document Handling'];
+    if (menu === 'Unit Operation') return ['Unit Fees', 'Unit Creation', 'Unit Redemption', 'Unit Transfer/Switching', 'Unit Consolidation', 'Cheque Re Printing', 'Web Data Downloading', 'Standing Instruction', 'Standing Instruction Processing', 'Bank Slip Transfer', 'Reminders', 'Unit Transfer-Suspense Account', 'Change Agent for Transaction', 'Acknowledgement Printing', 'Fund Price E-Statement', 'Upload and Download Data Web-Automated', 'WHT Per Unit Entry', 'Data Upload', 'Transaction Upload'];
+    if (menu === 'Approval') return ['Application Confirmation', 'Application Approval', 'Account Confirmation', 'Account Approval', 'Unit Fee Confirmation', 'Unit Price Approval', 'Transaction Confirmation', 'Transaction Approval', 'Certificate Approval', 'Holder Registration Approval', 'Cheque Clear', 'Dividend Confirmation', 'Standing Instruction Approval', 'Dividend Approval', 'User Role Approval'];
+    if (menu === 'Doc Printing') return ['Certificate Print', 'Inquiry on Unit Holders', 'Audit Inquiry', 'WHT Certificate Printing'];
+    if (menu === 'Reports') return ['Daily Reports', 'Monthly Reports', 'Quarterly Reports', 'Annual Reports'];
+    if (menu === 'Dashboard') return ['Summary', 'Statistics', 'Recent Activities'];
+    return ['Bank', 'Transaction Type', 'System calendar', 'Trustees', 'Custodian', 'Postal Area', 'Dividend Type', 'Funds', 'Company', 'Promotional Activity', 'Unit Fee Codes', 'Agency Type', 'Agency', 'Sub Agency', 'Agents', 'Territory', 'Commission Type', 'Commission Level', 'Agent Commission Definition', 'Assign Agent to Commission Definition', 'Institution Category', 'Documents Setup', 'Institution', 'Blocking Category', 'Customer Zone', 'Join Sale Agent', 'Compliance MSG Setup', 'Product Type', 'Title', 'Source of Income', 'Annual Income', 'Risk Category', 'Politically Exposed'];
+  };
+
+  const items = getSubMenuItems(title);
+  const actionLabels = ['APPROVE', 'SAVE', 'CREATE', 'DELETE', 'PRINT'];
+
+  // Mock permissions for sub-menus
+  const mockSubPermissions: Record<number, string[]> = {
+    0: ['approve', 'save', 'create', 'delete', 'print'],
+    1: ['save', 'create'],
+    2: ['approve', 'print']
+  };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 100000002, background: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={onClose}>
+      <div
+        style={{ background: '#ffffff', borderRadius: '24px', width: '800px', maxWidth: '90vw', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.6)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)', padding: '12px 28px', color: '#ffffff', position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>📂</div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>{title} Sub-Menus</h3>
+              <p style={{ margin: '1px 0 0 0', fontSize: '10px', opacity: 0.8 }}>Granular permissions for {title} items</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            style={{ position: 'absolute', top: '12px', right: '28px', background: 'rgba(255, 255, 255, 0.2)', border: 'none', borderRadius: '8px', width: '28px', height: '28px', color: '#ffffff', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Content Table */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 28px', borderBottom: '2px solid #f1f5f9', background: '#f8fafc', fontSize: '10px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            <div>SUB-MENU ITEM</div>
+            <div style={{ textAlign: 'center' }}>APPROVE</div>
+            <div style={{ textAlign: 'center' }}>SAVE</div>
+            <div style={{ textAlign: 'center' }}>CREATE</div>
+            <div style={{ textAlign: 'center' }}>DELETE</div>
+            <div style={{ textAlign: 'center' }}>PRINT</div>
+          </div>
+
+          {items.map((item, idx) => {
+            const perms = mockSubPermissions[idx % 3] || [];
+            return (
+              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr', padding: '10px 28px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', fontWeight: 600, color: '#334155' }}>
+                  <span style={{ width: '20px', height: '20px', borderRadius: '6px', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 800 }}>{idx + 1}</span>
+                  {item}
+                </div>
+                {actionLabels.map(label => {
+                  const isActive = perms.includes(label.toLowerCase());
+                  return (
+                    <div key={label} style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div style={{
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '4px',
+                        background: isActive ? '#10b981' : '#f1f5f9',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: isActive ? '#fff' : '#cbd5e1',
+                        fontSize: '10px',
+                        fontWeight: 900
+                      }}>
+                        {isActive ? '✓' : '•'}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div style={{ padding: '16px 28px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center' }}>
+          <button
+            onClick={onClose}
+            style={{ padding: '8px 48px', background: '#1e3a8a', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+          >
+            Back to Role Rights
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

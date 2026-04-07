@@ -10,6 +10,7 @@ interface UserRole {
   name: string;
   enabledRows: number[];
   rowPermissions: Record<number, string[]>;
+  createdBy?: string;
 }
 import UserSearchModal from '../components/UserSearchModal';
 import DatePicker from 'react-datepicker';
@@ -1205,7 +1206,7 @@ const UpdateUserRoleModal = ({ isOpen, onClose, onSelect, roles }: { isOpen: boo
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, backdropFilter: 'blur(4px)' }}>
       <div style={{ background: '#fff', borderRadius: '16px', width: '90%', maxWidth: '600px', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '20px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '14px 20px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: '18px' }}>Select Existing User Role</h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
         </div>
@@ -1239,12 +1240,13 @@ const UpdateUserRoleModal = ({ isOpen, onClose, onSelect, roles }: { isOpen: boo
 const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
   const [selectedRole, setSelectedRole] = useState('');
   const [roleDescription, setRoleDescription] = useState('');
+  const [createdBy, setCreatedBy] = useState('');
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [roles, setRoles] = useState<UserRole[]>([
-    { code: '001', name: 'Project Manager', enabledRows: [0, 1, 6], rowPermissions: { 0: ['approve', 'save'], 1: ['save', 'create'], 6: ['print'] } },
-    { code: '002', name: 'System Admin', enabledRows: [0, 1, 2, 3, 4, 5, 6], rowPermissions: { 0: ['approve', 'save', 'create', 'delete', 'print'], 1: ['approve', 'save', 'create', 'delete', 'print'], 6: ['approve', 'save', 'create', 'delete', 'print'] } },
-    { code: '003', name: 'Developer', enabledRows: [1, 2, 3], rowPermissions: { 1: ['save', 'create'], 2: ['save'], 3: ['save'] } },
+    { code: '001', name: 'Project Manager', enabledRows: [0, 1, 6], rowPermissions: { 0: ['approve', 'save'], 1: ['save', 'create'], 6: ['print'] }, createdBy: 'Admin' },
+    { code: '002', name: 'System Admin', enabledRows: [0, 1, 2, 3, 4, 5, 6], rowPermissions: { 0: ['approve', 'save', 'create', 'delete', 'print'], 1: ['approve', 'save', 'create', 'delete', 'print'], 6: ['approve', 'save', 'create', 'delete', 'print'] }, createdBy: 'Director' },
+    { code: '003', name: 'Developer', enabledRows: [1, 2, 3], rowPermissions: { 1: ['save', 'create'], 2: ['save'], 3: ['save'] }, createdBy: 'Lead Dev' },
   ] as UserRole[]);
 
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warn' } | null>(null);
@@ -1275,11 +1277,16 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
       showToast('Please enter a User Role.', 'error');
       return;
     }
+    if (enabledRows.length === 0) {
+      showToast('Please select at least one menu right.', 'error');
+      return;
+    }
     const newRole = {
       code: selectedRole,
       name: roleDescription,
       enabledRows,
-      rowPermissions
+      rowPermissions,
+      createdBy
     };
     setRoles(prev => [...prev, newRole]);
     showToast(`Role "${selectedRole}" created and added to selection list successfully!`, 'success');
@@ -1287,6 +1294,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
     // Clear form after creation
     setSelectedRole('');
     setRoleDescription('');
+    setCreatedBy('');
     setEnabledRows([]);
     setRowPermissions({});
     setSubMenuEnabledRows({});
@@ -1457,12 +1465,21 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
             style={{ ...selStyle, width: '100%' }}
           />
         </div>
-        <div style={{ flex: 2, minWidth: '160px' }}>
+        <div style={{ flex: 1.5, minWidth: '160px' }}>
           <input
             type="text"
             placeholder="User Role"
             value={roleDescription}
             onChange={e => setRoleDescription(e.target.value)}
+            style={{ ...selStyle, width: '100%' }}
+          />
+        </div>
+        <div style={{ flex: 1.5, minWidth: '120px' }}>
+          <input
+            type="text"
+            placeholder="Created By"
+            value={createdBy}
+            onChange={e => setCreatedBy(e.target.value)}
             style={{ ...selStyle, width: '100%' }}
           />
         </div>
@@ -1475,7 +1492,11 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
             <>
               <button
                 onClick={() => {
-                  setRoles(prev => prev.map(r => r.code === selectedRole ? { ...r, name: roleDescription, enabledRows, rowPermissions } : r));
+                  if (enabledRows.length === 0) {
+                    showToast('Please select at least one menu right.', 'error');
+                    return;
+                  }
+                  setRoles(prev => prev.map(r => r.code === selectedRole ? { ...r, name: roleDescription, createdBy, enabledRows, rowPermissions } : r));
                   showToast(`Rights for "${selectedRole}" successfully updated!`, 'success');
                 }}
                 style={{ ...btnPrimary, background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)' }}
@@ -1487,6 +1508,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
                   setIsEditing(false);
                   setSelectedRole('');
                   setRoleDescription('');
+                  setCreatedBy('');
                   setEnabledRows([]);
                   setRowPermissions({});
                   setSubMenuEnabledRows({});
@@ -1598,6 +1620,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
         onSelect={(role) => {
           setSelectedRole(role.code);
           setRoleDescription(role.name);
+          setCreatedBy(role.createdBy || '');
           setEnabledRows(role.enabledRows);
           setRowPermissions(role.rowPermissions);
 

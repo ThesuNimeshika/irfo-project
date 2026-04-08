@@ -131,77 +131,55 @@ export default function OtpAuth() {
                 ))}
             </div>
 
-            {/* Card */}
-            <div className="login-card">
-                {/* ── LEFT: Branding ── */}
-                <div className="login-left">
-                    <div className="login-logo-circle">
-                        <span className="login-logo-text">IRFO</span>
-                    </div>
+            <div className="login-right">
+                <div className="login-form-card">
+                    <div className="login-welcome-title">Authentication</div>
+                    <div className="login-subtitle">OTP Verification</div>
 
-                    <div className="login-app-name">IRFO</div>
-                    <div className="login-app-desc">
-                        Investor Registration and<br />Service Solution for<br />Fund Operation
-                    </div>
+                    <p className="otp-instructions" style={{ textAlign: 'center', fontSize: '13px', color: '#64748b', marginBottom: '20px', lineHeight: '1.5' }}>
+                        Code sent to your {otpMethod === 'email' ? 'email' : 'mobile'}.<br />
+                        Please enter the {OTP_LENGTH}-digit code.
+                    </p>
 
-                    <div className="login-brand-badge">
-                        <span style={{ fontSize: 18, color: '#1565c0' }}>🛡️</span>
-                        <span className="login-brand-badge-text">Secure Access</span>
-                    </div>
+                    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                        <div className="otp-boxes">
+                            {digits.map((d, i) => (
+                                <input
+                                    key={i}
+                                    id={`otp-box-${i}`}
+                                    ref={el => { inputRefs.current[i] = el; }}
+                                    className={`otp-box${d ? ' filled' : ''}`}
+                                    type="text"
+                                    inputMode="numeric"
+                                    maxLength={1}
+                                    value={d}
+                                    onChange={e => handleChange(i, e.target.value)}
+                                    onKeyDown={e => handleKeyDown(i, e)}
+                                    onPaste={handlePaste}
+                                    autoFocus={i === 0}
+                                />
+                            ))}
+                        </div>
+
+                        <div className="login-bottom-note">
+                            Didn't receive the code?{' '}
+                            <span onClick={handleResend} className="otp-resend-link">Resend OTP</span>
+                        </div>
+
+                        <button
+                            id="irfo-otp-submit"
+                            className="login-btn"
+                            type="submit"
+                            disabled={loading}
+                        >
+                            {loading && <span className="login-spinner" />}
+                            {loading ? 'Verifying…' : 'Submit Verification'}
+                        </button>
+                    </form>
                 </div>
 
-                {/* ── RIGHT: OTP Form ── */}
-                <div className="login-right">
-                    <div style={{ width: '100%' }}>
-                        <div className="login-welcome-title">Authentication</div>
-                        <div className="login-subtitle" style={{ marginBottom: 12 }}>OTP Verification</div>
-
-
-                        <p className="otp-instructions">
-                            Code sent to your {otpMethod === 'email' ? 'email' : 'mobile'}.<br />
-                            Please enter the {OTP_LENGTH}-digit code.
-                        </p>
-
-                        <form onSubmit={handleSubmit}>
-                            <div className="otp-boxes" style={{ marginBottom: 14 }}>
-                                {digits.map((d, i) => (
-                                    <input
-                                        key={i}
-                                        id={`otp-box-${i}`}
-                                        ref={el => { inputRefs.current[i] = el; }}
-                                        className={`otp-box${d ? ' filled' : ''}`}
-                                        type="text"
-                                        inputMode="numeric"
-                                        maxLength={1}
-                                        value={d}
-                                        onChange={e => handleChange(i, e.target.value)}
-                                        onKeyDown={e => handleKeyDown(i, e)}
-                                        onPaste={handlePaste}
-                                        autoFocus={i === 0}
-                                    />
-                                ))}
-                            </div>
-
-                            <div className="otp-resend" style={{ marginBottom: 20 }}>
-                                Didn't receive the code?{' '}
-                                <span onClick={handleResend}>Resend OTP</span>
-                            </div>
-
-                            <button
-                                id="irfo-otp-submit"
-                                className="login-btn"
-                                type="submit"
-                                disabled={loading}
-                            >
-                                {loading && <span className="login-spinner" />}
-                                {loading ? 'Verifying…' : 'Submit'}
-                            </button>
-                        </form>
-                    </div>
-
-                    <div className="login-copyright">
-                        © 2025 Management Systems (Pvt) Ltd
-                    </div>
+                <div className="login-copyright">
+                    © 2025 Management Systems (Pvt) Ltd - All rights reserved
                 </div>
             </div>
         </div>

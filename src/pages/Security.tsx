@@ -67,6 +67,10 @@ const DOC_PRINTING_SUB_MENU_ITEMS = [
   'WHT Certificate Printing'
 ];
 
+const REPORTS_SUB_MENU_ITEMS = [
+  'MIS', 'Dividend Reports', 'Other Reports'
+];
+
 const SECURITY_SUB_MENU_ITEMS = [
   'Create User', 'Password Changer', 'User Rights', 'Assign User Role'
 ];
@@ -77,6 +81,7 @@ const getSubMenuItems = (menu: string) => {
   if (menu === 'Approval') return APPROVAL_SUB_MENU_ITEMS;
   if (menu === 'Doc Printing') return DOC_PRINTING_SUB_MENU_ITEMS;
   if (menu === 'Security') return SECURITY_SUB_MENU_ITEMS;
+  if (menu === 'Reports') return REPORTS_SUB_MENU_ITEMS;
   return SETUP_SUB_MENU_ITEMS;
 };
 
@@ -169,7 +174,7 @@ function SubMenuRightsModal({
       <div style={{ background: '#fff', borderRadius: '12px', width: '900px', maxWidth: '95vw', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
         <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
           <div>
-            <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>{title} Sub-Menus</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0', color: '#fff' }}>{title} Sub-Menus</h3>
             <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {items.length} sub-menus active</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -1206,9 +1211,9 @@ const UpdateUserRoleModal = ({ isOpen, onClose, onSelect, roles }: { isOpen: boo
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, backdropFilter: 'blur(4px)' }}>
       <div style={{ background: '#fff', borderRadius: '16px', width: '90%', maxWidth: '600px', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '14px 20px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, fontSize: '18px' }}>Select Existing User Role</h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
+        <div style={{ background: 'var(--accent, #1e3a8a)', padding: '8px 20px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '600', color: '#fff' }}>Select Existing User Role</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '18px', cursor: 'pointer', lineHeight: 1, padding: '0' }}>&times;</button>
         </div>
         <div style={{ padding: '20px', overflowY: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
@@ -1535,7 +1540,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
       <div style={{ borderRadius: '12px', background: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
         <div style={{ background: 'var(--accent, #1e3a8a)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
           <div>
-            <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0' }}>Member Master Set Up</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0', color: '#fff' }}>Member Master Set Up</h3>
             <p style={{ fontSize: '11px', margin: 0, opacity: 0.8 }}>{enabledRows.length} of {subMenus.length} menus active</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }} onClick={toggleAllRows}>

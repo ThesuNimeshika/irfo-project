@@ -56,56 +56,44 @@ export default function ResetRequest() {
                 ))}
             </div>
 
-            <div className="login-card">
-                {/* ── LEFT: Branding ── */}
-                <div className="login-left">
-                    <div className="login-logo-circle">
-                        <span className="login-logo-text">IRFO</span>
-                    </div>
-                    <div className="login-app-name">IRFO</div>
-                    <div className="login-app-desc">
-                        Security Support Center<br />
-                        Investor Registration and<br />
-                        Service Solution
-                    </div>
-                    <div className="login-brand-badge">
-                        <span style={{ fontSize: 18, color: '#1565c0' }}>🛡️</span>
-                        <span className="login-brand-badge-text">Admin Approval Desk</span>
-                    </div>
-                </div>
+            <div className="login-right">
+                <div className="login-form-card">
+                    <div className="login-welcome-title">Reset Password</div>
+                    <div className="login-subtitle">Request admin for password reset</div>
 
-                {/* ── RIGHT: Reset Form ── */}
-                <div className="login-right">
-                    <div style={{ width: '100%' }}>
-                        <div className="login-welcome-title">Reset Password</div>
-                        <div className="login-subtitle">Request admin for password reset</div>
-
-                        <form className="login-form" onSubmit={handleSubmit}>
-                            <div className="login-input-group">
-                                <span className="login-input-icon"><FiMail /></span>
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        <div className="login-input-group">
+                            <label className="login-input-label">Username or Email</label>
+                            <div className="login-input-wrapper">
                                 <input
                                     className="login-input"
                                     type="text"
-                                    placeholder="Username or Email"
+                                    placeholder="Enter identifier"
                                     value={identifier}
                                     onChange={e => setIdentifier(e.target.value)}
                                     autoComplete="off"
                                 />
+                                <span className="login-eye-btn" style={{ pointerEvents: 'none' }}>
+                                    <FiMail />
+                                </span>
                             </div>
+                        </div>
 
-                            <button className="login-btn" type="submit" disabled={loading}>
-                                {loading ? 'Sending Request...' : 'Send Request to Admin'}
-                            </button>
+                        <button className="login-btn" type="submit" disabled={loading}>
+                            {loading && <span className="login-spinner" />}
+                            {loading ? 'Sending Request...' : 'Send Request to Admin'}
+                        </button>
+                    </form>
 
-                            <Link to="/login" className="otp-resend" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', textDecoration: 'none' }}>
-                                <FiArrowLeft /> <span>Back to Login</span>
-                            </Link>
-                        </form>
+                    <div className="login-bottom-note">
+                        <Link to="/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
+                            <FiArrowLeft /> <span>Back to Login</span>
+                        </Link>
                     </div>
+                </div>
 
-                    <div className="login-copyright">
-                        © 2025 Management Systems (Pvt) Ltd
-                    </div>
+                <div className="login-copyright">
+                    © 2025 Management Systems (Pvt) Ltd - All rights reserved
                 </div>
             </div>
         </div>

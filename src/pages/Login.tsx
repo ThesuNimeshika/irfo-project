@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FiUser, FiLock, FiEye, FiEyeOff, FiCheckCircle, FiXCircle, FiX } from 'react-icons/fi';
+import { FiEye, FiEyeOff, FiCheckCircle, FiXCircle, FiX } from 'react-icons/fi';
 import '../Login.css';
 
 interface Toast {
@@ -24,34 +24,28 @@ export default function Login() {
         setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
     };
 
-    const removeToast = (id: number) => {
-        setToasts(prev => prev.filter(t => t.id !== id));
-    };
+    const removeToast = (id: number) => setToasts(prev => prev.filter(t => t.id !== id));
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!username.trim()) { addToast('error', 'Please enter your username.'); return; }
         if (!password.trim()) { addToast('error', 'Please enter your password.'); return; }
-
         setLoading(true);
         try {
-            // Call the real login endpoint
             const res = await fetch('http://localhost:5095/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
-
             if (res.ok) {
-                addToast('success', 'Login successful! Get your OTP.');
+                addToast('success', 'Login successful! Redirecting…');
                 setTimeout(() => navigate('/auth', { state: { otpMethod } }), 1200);
             } else {
                 const data = await res.json().catch(() => null);
                 addToast('error', data?.message || 'Invalid username or password.');
             }
         } catch {
-            // Backend unreachable – allow demo login
-            addToast('success', 'Login successful! Get your OTP.');
+            addToast('success', 'Login successful! Redirecting…');
             setTimeout(() => navigate('/auth', { state: { otpMethod } }), 1200);
         } finally {
             setLoading(false);
@@ -61,7 +55,7 @@ export default function Login() {
     return (
         <div className="login-bg">
 
-            {/* Toast notifications */}
+            {/* Toasts */}
             <div className="login-toast-container">
                 {toasts.map(t => (
                     <div key={t.id} className={`login-toast ${t.type}`}>
@@ -74,118 +68,96 @@ export default function Login() {
                 ))}
             </div>
 
-            {/* Card */}
-            <div className="login-card">
+            {/* ── CARD ── */}
+            <div className="login-right">
+                <div className="login-form-card">
 
-                {/* ── LEFT: Branding ── */}
-                <div className="login-left">
-                    <div className="login-logo-circle">
-                        <span className="login-logo-text">IRFO</span>
-                    </div>
+                    {/* Brand text */}
+                    <div className="login-brand-text">MSL Investor Registration &amp; Fund Operation</div>
 
+                    <div className="login-welcome-title">Log in</div>
+                    <div className="login-subtitle">Welcome back — enter your credentials below</div>
 
-                    <div className="login-app-name">IRFO</div>
-                    <div className="login-app-desc">
-                        Investor Registration and<br />Service Solution for<br />Fund Operation
-                    </div>
+                    <form className="login-form" onSubmit={handleSubmit} autoComplete="off">
 
-                    <div className="login-brand-badge">
-                        <span style={{ fontSize: 18, color: '#1565c0' }}>🏦</span>
-                        <span className="login-brand-badge-text">MSL Management Systems</span>
-                    </div>
-                </div>
-
-                {/* ── RIGHT: Form ── */}
-                <div className="login-right">
-                    <div style={{ width: '100%' }}>
-                        <div className="login-welcome-title">Welcome to IRFO</div>
-                        <div className="login-subtitle">Login</div>
-
-                        <form className="login-form" onSubmit={handleSubmit} autoComplete="off">
-                            {/* Username */}
-                            <div className="login-input-group">
-                                <span className="login-input-icon"><FiUser /></span>
+                        {/* Username */}
+                        <div className="login-input-group">
+                            <label className="login-input-label">Username</label>
+                            <div className="login-input-wrapper">
                                 <input
                                     id="irfo-username"
-                                    className="login-input"
+                                    className={`login-input${username ? ' valid' : ''}`}
                                     type="text"
-                                    placeholder="Username"
+                                    placeholder="Enter your username"
                                     value={username}
                                     onChange={e => setUsername(e.target.value)}
                                     autoComplete="off"
                                     spellCheck={false}
                                 />
+                                {username && (
+                                    <span className="login-eye-btn" style={{ color: '#22c55e', pointerEvents: 'none' }}>
+                                        <FiCheckCircle />
+                                    </span>
+                                )}
                             </div>
+                        </div>
 
-                            {/* Password */}
-                            <div className="login-input-group">
-                                <span className="login-input-icon"><FiLock /></span>
+                        {/* Password */}
+                        <div className="login-input-group">
+                            <label className="login-input-label">Password</label>
+                            <div className="login-input-wrapper">
                                 <input
                                     id="irfo-password"
                                     className="login-input"
                                     type={showPassword ? 'text' : 'password'}
-                                    placeholder="Password"
+                                    placeholder="••••••••••"
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     autoComplete="current-password"
-                                    style={{ paddingRight: '44px' }}
                                 />
-                                <button
-                                    type="button"
-                                    className="login-eye-btn"
-                                    onClick={() => setShowPassword(p => !p)}
-                                    tabIndex={-1}
-                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                >
+                                <button type="button" className="login-eye-btn"
+                                    onClick={() => setShowPassword(p => !p)} tabIndex={-1}>
                                     {showPassword ? <FiEyeOff /> : <FiEye />}
                                 </button>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-12px' }}>
-                                <Link to="/reset-request" style={{ fontSize: '13px', fontWeight: 600, color: '#3b82f6', textDecoration: 'none' }}>
-                                    Forgot Password?
-                                </Link>
-                            </div>
+                        </div>
 
-                            {/* OTP Method Selection */}
-                            <div style={{ marginTop: 20 }}>
-                                <p className="otp-selection-question">Where should we send your OTP?</p>
-                                <div className="otp-method-selection">
-                                    <label className="otp-method-option">
-                                        <input
-                                            type="checkbox"
-                                            checked={otpMethod === 'email'}
-                                            onChange={() => setOtpMethod('email')}
-                                        />
-                                        <span>Email</span>
-                                    </label>
-                                    <label className="otp-method-option">
-                                        <input
-                                            type="checkbox"
-                                            checked={otpMethod === 'mobile'}
-                                            onChange={() => setOtpMethod('mobile')}
-                                        />
-                                        <span>Mobile Number</span>
-                                    </label>
-                                </div>
-                            </div>
-                            {/* Submit */}
-                            <button
-                                id="irfo-signin-btn"
-                                className="login-btn"
-                                type="submit"
-                                disabled={loading}
-                            >
-                                {loading && <span className="login-spinner" />}
-                                {loading ? 'Signing in…' : 'Sign In'}
-                            </button>
-                        </form>
-                    </div>
+                        {/* Forgot */}
+                        <div className="login-pass-row">
+                            <Link to="/reset-request" className="login-forgot-link">Forgot password?</Link>
+                        </div>
 
-                    <div className="login-copyright">
-                        © 2025 Management Systems (Pvt) Ltd
-                    </div>
+                        {/* OTP */}
+                        <div className="otp-block">
+                            <p className="otp-selection-question">Where should we send your OTP?</p>
+                            <div className="otp-method-selection">
+                                <label className="otp-method-option">
+                                    <input type="checkbox" checked={otpMethod === 'email'}
+                                        onChange={() => setOtpMethod('email')} />
+                                    <span>Email</span>
+                                </label>
+                                <label className="otp-method-option">
+                                    <input type="checkbox" checked={otpMethod === 'mobile'}
+                                        onChange={() => setOtpMethod('mobile')} />
+                                    <span>Mobile Number</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Submit */}
+                        <button id="irfo-signin-btn" className="login-btn" type="submit" disabled={loading}>
+                            {loading && <span className="login-spinner" />}
+                            {loading ? 'Signing in…' : 'Log in →'}
+                        </button>
+                    </form>
+
+
                 </div>
-            </div >
-        </div >
+
+                <div className="login-copyright">
+                    © 2025 Management Systems (Pvt) Ltd · All rights reserved
+                </div>
+            </div>
+        </div>
     );
 }

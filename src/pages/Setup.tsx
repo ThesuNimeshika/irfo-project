@@ -251,6 +251,12 @@ interface FormData {
   // Politically Exposed fields
   politicallyExposedStatus: 'yes' | 'no' | '';
   politicallyExposedType: string;
+  companyCcEmail1: string;
+  companyCcEmail2: string;
+  companyCcEmail3: string;
+  companyCcEmail4: string;
+  companyCcEmail5: string;
+  companyCcEmail6: string;
 }
 
 // ========================================
@@ -1117,6 +1123,12 @@ function Setup() {
     // Politically Exposed fields
     politicallyExposedStatus: '',
     politicallyExposedType: '',
+    companyCcEmail1: '',
+    companyCcEmail2: '',
+    companyCcEmail3: '',
+    companyCcEmail4: '',
+    companyCcEmail5: '',
+    companyCcEmail6: '',
   });
 
   // Reset form data function
@@ -1361,6 +1373,12 @@ function Setup() {
       // Politically Exposed fields
       politicallyExposedStatus: '',
       politicallyExposedType: '',
+      companyCcEmail1: '',
+      companyCcEmail2: '',
+      companyCcEmail3: '',
+      companyCcEmail4: '',
+      companyCcEmail5: '',
+      companyCcEmail6: '',
     });
   };
 
@@ -2724,179 +2742,181 @@ function CompanyDetailsTabs({
             )}
             {activeTab === 'email-sms' && (
               <div className="setup-email-sms-tab" style={{ width: '100%', maxWidth: '100%' }}>
-                {/* Email Parameter Setting Box */}
-                <div className="setup-ash-box" style={{ marginBottom: '24px' }}>
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Email Parameter Setting</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                    {/* Left Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="sendEmailsOn"
-                          checked={formData.sendEmailsOn || false}
-                          onChange={e => handleInputChange('sendEmailsOn', e.target.checked.toString())}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="sendEmailsOn" className="setup-checkbox-label">Send Emails On</label>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Sender Address</label>
-                        <input
-                          type="text"
-                          value={formData.senderAddress || ''}
-                          onChange={e => handleInputChange('senderAddress', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter sender address"
-                        />
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP Server</label>
-                        <input
-                          type="text"
-                          value={formData.smtpServer || ''}
-                          onChange={e => handleInputChange('smtpServer', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter SMTP server"
-                        />
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP User</label>
-                        <input
-                          type="text"
-                          value={formData.smtpUser || ''}
-                          onChange={e => handleInputChange('smtpUser', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter SMTP user"
-                        />
-                      </div>
-                    </div>
-                    {/* Right Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Password</label>
-                        <input
-                          type="password"
-                          value={formData.smtpPassword || ''}
-                          onChange={e => handleInputChange('smtpPassword', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter password"
-                        />
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Email Sending Method</label>
-                        <select
-                          value={formData.emailSendingMethod || ''}
-                          onChange={e => handleInputChange('emailSendingMethod', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                        >
-                          <option value="">Select method</option>
-                          <option value="smtp">SMTP</option>
-                          <option value="api">API</option>
-                        </select>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Port Number</label>
-                        <input
-                          type="text"
-                          value={formData.smtpPort || ''}
-                          onChange={e => handleInputChange('smtpPort', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter port number"
-                        />
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Use Default Credentials</label>
-                        <select
-                          value={formData.useDefaultCredentials || ''}
-                          onChange={e => handleInputChange('useDefaultCredentials', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                        >
-                          <option value="">Select</option>
-                          <option value="true">True</option>
-                          <option value="false">False</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* SMS Provider and Parameter Setting Box */}
-                <div className="setup-ash-box">
-                  <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>SMS Provider and Parameter Setting</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                    {/* Left Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <div className="setup-checkbox-container">
-                        <input
-                          type="checkbox"
-                          id="sendSmsOn"
-                          checked={formData.sendSmsOn || false}
-                          onChange={e => handleInputChange('sendSmsOn', e.target.checked.toString())}
-                          disabled={!isFormEditable}
-                          className="setup-checkbox-input"
-                        />
-                        <label htmlFor="sendSmsOn" className="setup-checkbox-label">Send SMS On</label>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>SMS Provider</label>
-                        <select
-                          value={formData.smsProvider || ''}
-                          onChange={e => handleInputChange('smsProvider', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                        >
-                          <option value="">Select provider</option>
-                          <option value="twilio">Twilio</option>
-                          <option value="nexmo">Nexmo</option>
-                        </select>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>User Name</label>
-                        <input
-                          type="text"
-                          value={formData.smsUserName || ''}
-                          onChange={e => handleInputChange('smsUserName', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter user name"
-                        />
+                <>
+                    {/* Email Parameter Setting Box */}
+                    <div className="setup-ash-box" style={{ marginBottom: '24px' }}>
+                      <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>Email Parameter Setting</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                        {/* Left Column */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              id="sendEmailsOn"
+                              checked={formData.sendEmailsOn || false}
+                              onChange={e => handleInputChange('sendEmailsOn', e.target.checked.toString())}
+                              disabled={!isFormEditable}
+                              className="setup-checkbox-input"
+                            />
+                            <label htmlFor="sendEmailsOn" className="setup-checkbox-label">Send Emails On</label>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>Sender Address</label>
+                            <input
+                              type="text"
+                              value={formData.senderAddress || ''}
+                              onChange={e => handleInputChange('senderAddress', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter sender address"
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP Server</label>
+                            <input
+                              type="text"
+                              value={formData.smtpServer || ''}
+                              onChange={e => handleInputChange('smtpServer', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter SMTP server"
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>SMTP User</label>
+                            <input
+                              type="text"
+                              value={formData.smtpUser || ''}
+                              onChange={e => handleInputChange('smtpUser', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter SMTP user"
+                            />
+                          </div>
+                        </div>
+                        {/* Right Column */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>Password</label>
+                            <input
+                              type="password"
+                              value={formData.smtpPassword || ''}
+                              onChange={e => handleInputChange('smtpPassword', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter password"
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>Email Sending Method</label>
+                            <select
+                              value={formData.emailSendingMethod || ''}
+                              onChange={e => handleInputChange('emailSendingMethod', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                            >
+                              <option value="">Select method</option>
+                              <option value="smtp">SMTP</option>
+                              <option value="api">API</option>
+                            </select>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>Port Number</label>
+                            <input
+                              type="text"
+                              value={formData.smtpPort || ''}
+                              onChange={e => handleInputChange('smtpPort', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter port number"
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>Use Default Credentials</label>
+                            <select
+                              value={formData.useDefaultCredentials || ''}
+                              onChange={e => handleInputChange('useDefaultCredentials', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                            >
+                              <option value="">Select</option>
+                              <option value="true">True</option>
+                              <option value="false">False</option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    {/* Right Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>Alias</label>
-                        <input
-                          type="text"
-                          value={formData.smsAlias || ''}
-                          onChange={e => handleInputChange('smsAlias', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter alias"
-                        />
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
-                        <label className="setup-input-label" style={{ marginBottom: 0 }}>API Key</label>
-                        <input
-                          type="text"
-                          value={formData.smsApiKey || ''}
-                          onChange={e => handleInputChange('smsApiKey', e.target.value)}
-                          disabled={!isFormEditable}
-                          className="setup-input-field"
-                          placeholder="Enter API key"
-                        />
+                    {/* SMS Provider and Parameter Setting Box */}
+                    <div className="setup-ash-box">
+                      <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '16px' }}>SMS Provider and Parameter Setting</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                        {/* Left Column */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                          <div className="setup-checkbox-container">
+                            <input
+                              type="checkbox"
+                              id="sendSmsOn"
+                              checked={formData.sendSmsOn || false}
+                              onChange={e => handleInputChange('sendSmsOn', e.target.checked.toString())}
+                              disabled={!isFormEditable}
+                              className="setup-checkbox-input"
+                            />
+                            <label htmlFor="sendSmsOn" className="setup-checkbox-label">Send SMS On</label>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>SMS Provider</label>
+                            <select
+                              value={formData.smsProvider || ''}
+                              onChange={e => handleInputChange('smsProvider', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                            >
+                              <option value="">Select provider</option>
+                              <option value="twilio">Twilio</option>
+                              <option value="nexmo">Nexmo</option>
+                            </select>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>User Name</label>
+                            <input
+                              type="text"
+                              value={formData.smsUserName || ''}
+                              onChange={e => handleInputChange('smsUserName', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter user name"
+                            />
+                          </div>
+                        </div>
+                        {/* Right Column */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>Alias</label>
+                            <input
+                              type="text"
+                              value={formData.smsAlias || ''}
+                              onChange={e => handleInputChange('smsAlias', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter alias"
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', alignItems: 'center', gap: '8px' }}>
+                            <label className="setup-input-label" style={{ marginBottom: 0 }}>API Key</label>
+                            <input
+                              type="text"
+                              value={formData.smsApiKey || ''}
+                              onChange={e => handleInputChange('smsApiKey', e.target.value)}
+                              disabled={!isFormEditable}
+                              className="setup-input-field"
+                              placeholder="Enter API key"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                </>
               </div>
             )}
           </div>

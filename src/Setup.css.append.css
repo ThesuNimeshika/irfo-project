@@ -1,0 +1,14 @@
+.setup-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.setup-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    padding-top: 1px;
+}
+
+.setup-input-group-naked {
+    margin-bottom: 16px;
+}

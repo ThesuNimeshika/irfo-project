@@ -603,9 +603,9 @@ function FourCardsWithModal() {
     const isOpen = addrDropdown[dropKey];
     const filtered = options.filter(o => o.toLowerCase().includes(value.toLowerCase()));
     return (
-      <div style={{ position: 'relative', flex: 1, minWidth: minWidth || '0' }} data-addr-combo>
+      <div className="reg-addr-combo-wrapper" style={{ minWidth: minWidth || '0' }} data-addr-combo>
         {/* Input + chevron button */}
-        <div style={{ display: 'flex', border: '1px solid #cbd5e1', borderRadius: '4px', overflow: 'visible', backgroundColor: '#ffffff' }}>
+        <div className="reg-addr-input-container">
           <input
             type="text"
             value={value}
@@ -613,49 +613,25 @@ function FourCardsWithModal() {
             onFocus={() => { if (!isOpen) toggleAddrDropdown(dropKey); }}
             disabled={!isFormEditable}
             placeholder={placeholder}
-            style={{
-              flex: 1, border: 'none', outline: 'none', padding: '6px 8px',
-              fontSize: '13px', color: '#000000', background: 'transparent',
-              minWidth: 0,
-            }}
+            className="reg-addr-input"
           />
           <button
             type="button"
             onClick={() => isFormEditable && toggleAddrDropdown(dropKey)}
             disabled={!isFormEditable}
-            style={{
-              border: 'none', background: '#1e3a8a', color: '#fff',
-              padding: '0 8px', cursor: isFormEditable ? 'pointer' : 'default',
-              fontSize: '10px', borderRadius: '0 4px 4px 0', flexShrink: 0,
-            }}
+            className="reg-addr-chevron"
           >▼</button>
         </div>
         {/* Dropdown panel */}
         {isOpen && (
-          <div
-            style={{
-              position: 'absolute', top: '100%', left: 0, zIndex: 9999,
-              background: '#ffffff', borderRadius: '6px',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08)',
-              border: '1px solid #e2e8f0',
-              minWidth: '220px', maxHeight: '260px', overflowY: 'auto',
-              marginTop: '2px',
-            }}
-          >
+          <div className="reg-addr-dropdown-panel">
             {filtered.length === 0 ? (
-              <div style={{ padding: '10px 16px', color: '#94a3b8', fontSize: '13px' }}>No matches</div>
+              <div className="reg-addr-no-matches">No matches</div>
             ) : filtered.map((opt, i) => (
               <div
                 key={i}
                 onMouseDown={e => { e.preventDefault(); handleInputChange(field, opt); closeAllAddrDropdowns(); }}
-                style={{
-                  padding: '9px 16px', color: '#0f172a', fontSize: '13px',
-                  cursor: 'pointer', borderBottom: '1px solid #f1f5f9',
-                  background: opt === value ? '#e8eef8' : '#ffffff',
-                  transition: 'background 0.12s',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = opt === value ? '#dce6f5' : '#f8fafc')}
-                onMouseLeave={e => (e.currentTarget.style.background = opt === value ? '#e8eef8' : '#ffffff')}
+                className={`reg-addr-option ${opt === value ? 'active' : ''}`}
               >
                 {opt}
               </div>
@@ -1063,27 +1039,25 @@ function FourCardsWithModal() {
     if (modalTitle === 'Application Entry') {
       return (
         <div className="setup-input-section">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="reg-flex-center-gap16">
             {/* Single unified card: Application No + Compulsory + Auto Number + STATUS all in one row */}
-            <div className="setup-ash-box" style={{ padding: '16px', flex: '1 1 0', minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'nowrap' }}>
+            <div className="setup-ash-box reg-ash-box-padded">
+              <div className="reg-flex-nowrap-gap16">
                 {/* Application No + Input + Button */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 auto', minWidth: 0 }}>
-                  <label className="setup-input-label" style={{ minWidth: '120px', flexShrink: 0 }}>Application No</label>
+                <div className="reg-app-no-wrapper">
+                  <label className="setup-input-label reg-app-no-label">Application No</label>
                   <input
                     type="text"
                     value={formData.applicationNo}
                     onChange={(e) => handleInputChange('applicationNo', e.target.value)}
                     disabled={!isFormEditable}
-                    className="setup-input-field"
+                    className="setup-input-field reg-app-no-input"
                     placeholder="Enter application number"
-                    style={{ color: '#000000', width: '33%', minWidth: '140px' }}
                   />
-                  <div style={{ position: 'relative' }} ref={appNoBtnRef}>
+                  <div className="reg-relative" ref={appNoBtnRef}>
                     <button
-                      className="setup-btn setup-btn-new"
+                      className="setup-btn setup-btn-new reg-btn-padded"
                       title="Select Application"
-                      style={{ padding: '8px 12px' }}
                       onClick={() => {
                         if (!isFormEditable) return;
                         if (!showApplicationNoTable && appNoBtnRef.current) {
@@ -1099,71 +1073,59 @@ function FourCardsWithModal() {
                     {showApplicationNoTable && isFormEditable && appNoTablePos && createPortal(
                       <div
                         data-table="applicationNo"
+                        className="reg-portal-table-container"
                         style={{
-                          position: 'absolute',
                           top: appNoTablePos.top,
                           left: appNoTablePos.left,
-                          backgroundColor: '#ffffff',
-                          border: '1px solid #cbd5e1',
-                          borderRadius: '4px',
-                          boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
-                          zIndex: 99999,
-                          maxHeight: '400px',
-                          height: '400px',
-                          overflowY: 'auto',
-                          overflowX: 'auto',
-                          minWidth: '50vw',
-                          width: '50vw',
-                          maxWidth: '90vw'
                         }}
                       >
-                        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
-                          <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
-                            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                        <table className="reg-portal-table">
+                          <thead className="reg-portal-thead">
+                            <tr className="reg-portal-tr-header">
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th"
                                 onClick={() => handleTableSort('applicationNo', 'appNo')}
                               >
                                 Application No{renderSortIndicator('applicationNo', 'appNo')}
                               </th>
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th"
                                 onClick={() => handleTableSort('applicationNo', 'approved')}
                               >
                                 Approved{renderSortIndicator('applicationNo', 'approved')}
                               </th>
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th"
                                 onClick={() => handleTableSort('applicationNo', 'name')}
                               >
                                 Name{renderSortIndicator('applicationNo', 'name')}
                               </th>
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th"
                                 onClick={() => handleTableSort('applicationNo', 'regNo')}
                               >
                                 Registration_No{renderSortIndicator('applicationNo', 'regNo')}
                               </th>
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th"
                                 onClick={() => handleTableSort('applicationNo', 'street')}
                               >
                                 Street{renderSortIndicator('applicationNo', 'street')}
                               </th>
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th"
                                 onClick={() => handleTableSort('applicationNo', 'town')}
                               >
                                 Town{renderSortIndicator('applicationNo', 'town')}
                               </th>
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th"
                                 onClick={() => handleTableSort('applicationNo', 'city')}
                               >
                                 City{renderSortIndicator('applicationNo', 'city')}
                               </th>
                               <th
-                                style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                className="reg-portal-th-last"
                                 onClick={() => handleTableSort('applicationNo', 'status')}
                               >
                                 Status{renderSortIndicator('applicationNo', 'status')}
@@ -1187,10 +1149,7 @@ function FourCardsWithModal() {
                                   handleInputChange('applicationNo', item.appNo);
                                   setShowApplicationNoTable(false);
                                 }}
-                                style={{
-                                  cursor: 'pointer',
-                                  borderBottom: '1px solid #e2e8f0',
-                                }}
+                                className="reg-portal-tr-row"
                                 onMouseEnter={(e) => {
                                   e.currentTarget.style.backgroundColor = '#f8fafc';
                                 }}
@@ -1198,14 +1157,14 @@ function FourCardsWithModal() {
                                   e.currentTarget.style.backgroundColor = '#ffffff';
                                 }}
                               >
-                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.appNo}</td>
-                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.approved}</td>
-                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.name}</td>
-                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.regNo}</td>
-                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.street}</td>
-                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.town}</td>
-                                <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{item.city}</td>
-                                <td style={{ padding: '8px 12px', color: '#000000' }}>{item.status}</td>
+                                <td className="reg-portal-td">{item.appNo}</td>
+                                <td className="reg-portal-td">{item.approved}</td>
+                                <td className="reg-portal-td">{item.name}</td>
+                                <td className="reg-portal-td">{item.regNo}</td>
+                                <td className="reg-portal-td">{item.street}</td>
+                                <td className="reg-portal-td">{item.town}</td>
+                                <td className="reg-portal-td">{item.city}</td>
+                                <td className="reg-portal-td-last">{item.status}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -1217,28 +1176,28 @@ function FourCardsWithModal() {
                 </div>
 
                 {/* Compulsory Data Fields */}
-                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                <div className="reg-flex-shrink0">
                   <div className="registration-setup-compulsory-data-fields-note">Compulsory Data Fields</div>
                 </div>
 
                 {/* Auto Number Button */}
-                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                <div className="reg-flex-shrink0">
                   <button
-                    className="setup-btn setup-btn-save"
+                    className="setup-btn setup-btn-save reg-btn-padded"
                     disabled={!isFormEditable}
-                    style={{ padding: '6px 12px', whiteSpace: 'nowrap' }}
+                    style={{ whiteSpace: 'nowrap' }}
                   >
                     Auto Number
                   </button>
                 </div>
 
                 {/* Divider */}
-                <div style={{ width: '1px', height: '36px', backgroundColor: '#e2e8f0', flexShrink: 0 }} />
+                <div className="reg-divider-vertical" />
 
                 {/* STATUS — inline on the right */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
-                  <span className="setup-input-label" style={{ fontWeight: 700, margin: 0, whiteSpace: 'nowrap' }}>STATUS</span>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#000000', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                <div className="reg-flex-shrink0-gap14">
+                  <span className="setup-input-label reg-status-radio-text">STATUS</span>
+                  <label className="reg-status-radio-label">
                     <input
                       type="radio"
                       name="applicationStatus"
@@ -1247,9 +1206,9 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       style={{ accentColor: '#d97706' }}
                     />
-                    <span style={{ color: '#d97706', fontWeight: 600 }}>Pending</span>
+                    <span style={{ color: '#d97706' }} className="reg-status-radio-text">Pending</span>
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#000000', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  <label className="reg-status-radio-label">
                     <input
                       type="radio"
                       name="applicationStatus"
@@ -1258,9 +1217,9 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       style={{ accentColor: '#16a34a' }}
                     />
-                    <span style={{ color: '#16a34a', fontWeight: 600 }}>Approved</span>
+                    <span style={{ color: '#16a34a' }} className="reg-status-radio-text">Approved</span>
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#000000', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  <label className="reg-status-radio-label">
                     <input
                       type="radio"
                       name="applicationStatus"
@@ -1269,7 +1228,7 @@ function FourCardsWithModal() {
                       disabled={!isFormEditable}
                       style={{ accentColor: '#1e3a8a' }}
                     />
-                    <span style={{ color: '#334155', fontWeight: 600 }}>All</span>
+                    <span style={{ color: '#334155' }} className="reg-status-radio-text">All</span>
                   </label>
                 </div>
               </div>
@@ -1312,7 +1271,7 @@ function FourCardsWithModal() {
           <UserSearchModal
             isOpen={isRegistrationProfilesSearchModalOpen}
             onClose={() => setIsRegistrationProfilesSearchModalOpen(false)}
-            onGet={(result) => {
+            onSelect={(result) => {
               if (result.holderId) {
                 handleInputChange('applicationNo', result.holderId);
               }
@@ -1370,7 +1329,7 @@ function FourCardsWithModal() {
           <UserSearchModal
             isOpen={isUnitHoldersSearchModalOpen}
             onClose={() => setIsUnitHoldersSearchModalOpen(false)}
-            onGet={(result) => {
+            onSelect={(result) => {
               if (result.holderId) {
                 handleInputChange('applicationNo', result.holderId);
               }
@@ -1381,7 +1340,7 @@ function FourCardsWithModal() {
           <UserSearchModal
             isOpen={isNomineeSearchModalOpen}
             onClose={() => setIsNomineeSearchModalOpen(false)}
-            onGet={(result) => {
+            onSelect={(result) => {
               if (result.holderId || result.holderName) {
                 handleInputChange('nomineeInput', result.holderName || result.holderId || '');
               }
@@ -1392,7 +1351,7 @@ function FourCardsWithModal() {
           <UserSearchModal
             isOpen={isJointHolderSearchModalOpen}
             onClose={() => setIsJointHolderSearchModalOpen(false)}
-            onGet={(result) => {
+            onSelect={(result) => {
               if (result.holderId || result.holderName) {
                 handleInputChange('jointHolderInput', result.holderName || result.holderId || '');
               }
@@ -1403,7 +1362,7 @@ function FourCardsWithModal() {
           <UserSearchModal
             isOpen={isGuardianSearchModalOpen}
             onClose={() => setIsGuardianSearchModalOpen(false)}
-            onGet={(result) => {
+            onSelect={(result) => {
               if (result.holderId || result.holderName) {
                 handleInputChange('guardianInput', result.holderName || result.holderId || '');
               }
@@ -1425,7 +1384,7 @@ function FourCardsWithModal() {
           <UserSearchModal
             isOpen={isReinvestAccountSearchModalOpen}
             onClose={() => setIsReinvestAccountSearchModalOpen(false)}
-            onGet={(result) => {
+            onSelect={(result) => {
               if (result.holderId) {
                 handleInputChange('reinvestAccountNo', result.holderId);
               }
@@ -1439,67 +1398,52 @@ function FourCardsWithModal() {
 
     if (modalTitle === 'Holder Document Handling') {
       return (
-        <div className="setup-input-section" style={{ height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'transparent', boxShadow: 'none', padding: 0 }}>
+        <div className="setup-input-section reg-height100-flex-col">
           {/* White Background Wrapper - Contains all content */}
-          <div style={{ backgroundColor: '#ffffff', padding: '16px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+          <div className="reg-white-card">
             {/* Top Control Bar */}
-            <div className="setup-ash-box" style={{ marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+            <div className="setup-ash-box reg-margin-bottom12">
+              <div className="reg-flex-width100">
                 {/* Column 1: Registration No */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                  <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Registration No</label>
+                <div className="reg-grid-col1-2 reg-flex-shrink0">
+                  <label className="setup-input-label reg-label-black-600">Registration No</label>
                   <input
                     type="text"
                     value={formData.applicationNo}
                     onChange={(e) => handleInputChange('applicationNo', e.target.value)}
                     disabled={!isFormEditable}
-                    className="setup-input-field"
+                    className="setup-input-field reg-flex1"
                     placeholder="Enter registration number"
-                    style={{ color: '#000000', flex: 1 }}
                   />
                 </div>
                 {/* Column 2: Search button */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                <div className="reg-grid-col1-2 reg-flex-shrink0">
                   <button
-                    className="setup-btn"
+                    className="setup-btn reg-btn-search-outline"
                     title="Search"
                     onClick={() => setIsSearchModalOpen(true)}
-                    style={{
-                      padding: '8px 12px',
-                      backgroundColor: '#ffffff',
-                      color: '#000000',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '4px',
-                      cursor: isFormEditable ? 'pointer' : 'default',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: '40px'
-                    }}
                     disabled={!isFormEditable}
                   >
-                    <span style={{ color: '#000000', fontSize: '16px' }}>🔍</span>
+                    <span className="reg-search-icon-text">🔍</span>
                   </button>
                 </div>
                 {/* Column 3: Another input field */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                <div className="reg-grid-col1-2 reg-flex-shrink0">
                   <input
                     type="text"
                     disabled={!isFormEditable}
-                    className="setup-input-field"
+                    className="setup-input-field reg-flex1"
                     placeholder=""
-                    style={{ color: '#000000', flex: 1 }}
                   />
                 </div>
                 {/* Column 4: Zoom Level */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                  <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Zoom Level</label>
+                <div className="reg-grid-col1-2 reg-flex-shrink0">
+                  <label className="setup-input-label reg-label-black-600">Zoom Level</label>
                   <select
                     value={documentZoomLevel}
                     onChange={(e) => setDocumentZoomLevel(e.target.value)}
                     disabled={!isFormEditable}
-                    className="setup-select-field"
-                    style={{ color: '#000000', flex: 1 }}
+                    className="setup-select-field reg-flex1"
                   >
                     <option value="50%">50%</option>
                     <option value="75%">75%</option>
@@ -1514,7 +1458,7 @@ function FourCardsWithModal() {
             {/* End of Top Control Bar ash-box */}
 
             {/* Button Palette */}
-            <div className="setup-action-buttons" style={{ marginBottom: '12px' }}>
+            <div className="setup-action-buttons reg-margin-bottom12">
               <button
                 onClick={handleNewButtonClick}
                 className="setup-btn setup-btn-new"
@@ -1711,33 +1655,16 @@ function FourCardsWithModal() {
             </div>
 
             {/* Bottom Card: Main Content Area (Left Panel + Right Panel) + Input Rows */}
-            <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '12px' }}>
+            <div className="setup-ash-box reg-ash-box-padded reg-margin-bottom12">
               {/* Main Content Area: Left Panel + Right Panel */}
-              <div style={{ display: 'flex', gap: '12px', flex: 1, minHeight: '500px', height: '100%', marginBottom: '12px' }}>
+              <div className="reg-main-content-area">
                 {/* Left Panel (List/Preview Area) */}
-                <div style={{
-                  width: '33.33%',
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #cbd5e1',
-                  borderRadius: '4px',
-                  padding: '0',
-                  overflowY: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0'
-                }}>
+                <div className="reg-panel-left">
                   {/* Horizontal lines to simulate list/preview */}
                   {Array.from({ length: 20 }).map((_, idx) => (
                     <div
                       key={idx}
-                      style={{
-                        height: '28px',
-                        borderBottom: '1px solid #e2e8f0',
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '4px 8px',
-                        color: '#64748b'
-                      }}
+                      className="reg-list-item-sim"
                     >
                       {/* Empty row - can be filled with document list items */}
                     </div>
@@ -1745,70 +1672,56 @@ function FourCardsWithModal() {
                 </div>
 
                 {/* Right Panel (Content Display Area) */}
-                <div style={{
-                  width: '66.67%',
-                  backgroundColor: '#f1f5f9',
-                  border: '1px solid #cbd5e1',
-                  borderRadius: '4px',
-                  padding: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#94a3b8',
-                  fontSize: '14px'
-                }}>
+                <div className="reg-panel-right">
                   {/* Empty content area for displaying documents */}
                 </div>
               </div>
 
               {/* Input Rows Inside Card */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="reg-flex-col-gap12">
                 {/* First Row: 4 columns - Document Code | Document | Browse button | Document Type */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                <div className="reg-flex-width100">
                   {/* Column 1: Document Code */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Document Code</label>
+                  <div className="reg-grid-col1-2 reg-flex-shrink0">
+                    <label className="setup-input-label reg-label-black-600">Document Code</label>
                     <input
                       type="text"
                       value={formData.documentCode}
                       onChange={(e) => handleInputChange('documentCode', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter document code"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
                   {/* Column 2: Document */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Document</label>
+                  <div className="reg-grid-col1-2 reg-flex-shrink0">
+                    <label className="setup-input-label reg-label-black-600">Document</label>
                     <input
                       type="text"
                       value={formData.document}
                       onChange={(e) => handleInputChange('document', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter document"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
                   {/* Column 3: Browse button */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <div className="reg-grid-col1-2 reg-flex-shrink0">
                     <button
-                      className="setup-btn setup-btn-new"
+                      className="setup-btn setup-btn-new reg-btn-padded"
                       disabled={!isFormEditable}
-                      style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}
+                      style={{ whiteSpace: 'nowrap' }}
                     >
                       Browse
                     </button>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '100px', color: '#000000', fontWeight: 600 }}>Document Type</label>
+                  <div className="reg-grid-col1-2 reg-flex-shrink0">
+                    <label className="setup-input-label reg-label-black-600" style={{ minWidth: '100px' }}>Document Type</label>
                     <select
                       value={formData.documentType}
                       onChange={(e) => handleInputChange('documentType', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-select-field"
-                      style={{ color: '#000000', flex: 1 }}
+                      className="setup-select-field reg-flex1"
                     >
                       <option value="">Select document type</option>
                       <option value="Image">Image</option>
@@ -1818,25 +1731,22 @@ function FourCardsWithModal() {
                 </div>
 
                 {/* Second Row: 4 columns - documentInput | Empty | Empty | Empty */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                <div className="reg-flex-width100">
                   {/* Column 1: documentInput */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
+                  <div className="reg-grid-col1-2 reg-flex-shrink0">
                     <input
                       type="text"
                       value={formData.documentInput}
                       onChange={(e) => handleInputChange('documentInput', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter document"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  {/* Column 2: Empty */}
-                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
-                  {/* Column 3: Empty */}
-                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
-                  {/* Column 4: Empty */}
-                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                  {/* Column 2, 3, 4: Empty */}
+                  <div className="reg-grid-col1-2 reg-flex-shrink0"></div>
+                  <div className="reg-grid-col1-2 reg-flex-shrink0"></div>
+                  <div className="reg-grid-col1-2 reg-flex-shrink0"></div>
                 </div>
               </div>
             </div>
@@ -1847,7 +1757,7 @@ function FourCardsWithModal() {
           <UserSearchModal
             isOpen={isSearchModalOpen}
             onClose={() => setIsSearchModalOpen(false)}
-            onGet={(result) => {
+            onSelect={(result) => {
               if (result.holderId) {
                 handleInputChange('applicationNo', result.holderId);
               }
@@ -1898,35 +1808,31 @@ function FourCardsWithModal() {
     switch (activeTab) {
       case 'Personal Details':
         return (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', width: '100%' }}>
-            <div style={{ width: '100%', gridColumn: '1 / -1' }}>
+          <div className="reg-grid-2col">
+            <div className="reg-grid-full-width">
               {/* Full Name of Applicant Section */}
-              <div style={{ marginBottom: '24px' }}>
-                <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '12px' }}>Full Name of Applicant</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
+              <div className="reg-margin-bottom24">
+                <div className="setup-input-label registration-setup-compulsory-label reg-label-bold-mb12">Full Name of Applicant</div>
+                <div className="reg-flex-wrap-gap16-mb16">
                   {(formData.applicantType !== 'Corporate') && (
-                    <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <label className="registration-setup-compulsory-label reg-status-radio-label">
                       <input
                         type="radio"
                         name="applicantType"
                         checked={formData.applicantType === 'Individual'}
                         onChange={() => handleInputChange('applicantType', 'Individual')}
                         disabled={!isFormEditable}
-                        style={{
-                          accentColor: '#9333ea',
-                          cursor: isFormEditable ? 'pointer' : 'default'
-                        }}
+                        className="reg-radio-purple"
                       />
                       Individual
                     </label>
                   )}
                   {formData.applicantType === 'Individual' && (
                     <>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 auto' }}>
+                      <div className="reg-flex-auto-shrink0">
                         <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>Title</label>
                         <select
-                          className="setup-select-field"
-                          style={{ color: '#000000', flex: 1 }}
+                          className="setup-select-field reg-flex1"
                           value={formData.title}
                           onChange={e => handleInputChange('title', e.target.value)}
                           disabled={!isFormEditable}
@@ -1939,48 +1845,40 @@ function FourCardsWithModal() {
                           <option value="Prof">Prof</option>
                         </select>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 auto' }}>
+                      <div className="reg-flex-auto-shrink0">
                         <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>Initials</label>
                         <input
                           type="text"
                           value={formData.initials}
                           onChange={(e) => handleInputChange('initials', e.target.value)}
                           disabled={!isFormEditable}
-                          className="setup-input-field"
+                          className="setup-input-field reg-flex1 reg-input-min-height32"
                           placeholder="K. L. C."
-                          style={{ color: '#000000', flex: 1, minHeight: '32px' }}
                         />
                       </div>
                     </>
                   )}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="reg-flex-center-gap16">
                     {(formData.applicantType !== 'Individual') && (
-                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <label className="registration-setup-compulsory-label reg-status-radio-label">
                         <input
                           type="radio"
                           name="applicantType"
                           checked={formData.applicantType === 'Corporate'}
                           onChange={() => handleInputChange('applicantType', 'Corporate')}
                           disabled={!isFormEditable}
-                          style={{
-                            accentColor: '#9333ea',
-                            cursor: isFormEditable ? 'pointer' : 'default'
-                          }}
+                          className="reg-radio-purple"
                         />
                         Corporate
                       </label>
                     )}
                     {formData.applicantType === 'Corporate' && (
-                      <div style={{ position: 'relative', width: '100%', minWidth: '600px' }} data-company-table>
+                      <div className="reg-company-table-wrapper" data-company-table>
                         <div
-                          className="setup-input-field"
+                          className="setup-input-field reg-company-select-box"
                           onClick={() => isFormEditable && setShowCompanyTable(!showCompanyTable)}
                           style={{
-                            cursor: isFormEditable ? 'pointer' : 'default',
-                            color: formData.description ? '#000000' : '#64748b',
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontSize: '14px'
+                            color: formData.description ? '#000000' : '#64748b'
                           }}
                         >
                           {formData.description || 'Select company '}
@@ -1988,32 +1886,19 @@ function FourCardsWithModal() {
                         {showCompanyTable && isFormEditable && (
                           <div
                             data-company-table
-                            style={{
-                              position: 'absolute',
-                              top: '100%',
-                              left: 0,
-                              right: 0,
-                              backgroundColor: '#ffffff',
-                              border: '1px solid #cbd5e1',
-                              borderRadius: '4px',
-                              marginTop: '4px',
-                              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                              zIndex: 1000,
-                              maxHeight: '200px',
-                              overflowY: 'auto'
-                            }}
+                            className="reg-company-dropdown"
                           >
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <table className="reg-company-table">
                               <thead>
-                                <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                <tr className="reg-bg-header reg-border-bottom-gray">
                                   <th
-                                    style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1', cursor: 'pointer', userSelect: 'none' }}
+                                    className="reg-company-th"
                                     onClick={() => handleTableSort('company', 'code')}
                                   >
                                     Code{renderSortIndicator('company', 'code')}
                                   </th>
                                   <th
-                                    style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', cursor: 'pointer', userSelect: 'none' }}
+                                    className="reg-company-th-last"
                                     onClick={() => handleTableSort('company', 'description')}
                                   >
                                     Description{renderSortIndicator('company', 'description')}
@@ -2028,9 +1913,8 @@ function FourCardsWithModal() {
                                       handleInputChange('description', `${company.code} - ${company.description}`);
                                       setShowCompanyTable(false);
                                     }}
+                                    className="reg-company-tr"
                                     style={{
-                                      cursor: 'pointer',
-                                      borderBottom: '1px solid #e2e8f0',
                                       backgroundColor: formData.description === `${company.code} - ${company.description}` ? '#f3e8ff' : '#ffffff'
                                     }}
                                     onMouseEnter={(e) => {
@@ -2044,8 +1928,8 @@ function FourCardsWithModal() {
                                       }
                                     }}
                                   >
-                                    <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{company.code}</td>
-                                    <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a' }}>{company.description}</td>
+                                    <td className="reg-company-td">{company.code}</td>
+                                    <td className="reg-company-td-last">{company.description}</td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -2059,29 +1943,27 @@ function FourCardsWithModal() {
 
                 {/* Name Denoted by Initials and Surname (for Individual) */}
                 {formData.applicantType === 'Individual' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr', gap: '16px', marginTop: '16px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+                  <div className="reg-grid-2fr-2fr">
+                    <div className="reg-grid-col1-2 reg-flex-shrink0 reg-flex-nowrap-gap16">
                       <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>Name Denoted by Initials</label>
                       <input
                         type="text"
                         value={formData.nameByInitials}
                         onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1 reg-input-min-height32"
                         placeholder="Kankanamge Lakshan Chathuranga."
-                        style={{ color: '#000000', flex: 1, minHeight: '32px' }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+                    <div className="reg-grid-col1-2 reg-flex-shrink0 reg-flex-nowrap-gap16">
                       <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>Surname</label>
                       <input
                         type="text"
                         value={formData.surname}
                         onChange={(e) => handleInputChange('surname', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-input-flex05"
                         placeholder="Fernando."
-                        style={{ color: '#000000', flex: 0.5 }}
                       />
                     </div>
                   </div>
@@ -2089,29 +1971,27 @@ function FourCardsWithModal() {
 
                 {/* Company Name and Business (for Corporate) */}
                 {formData.applicantType === 'Corporate' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '24px', marginTop: '16px', width: '100%' }}>
-                    <div style={{ gridColumn: '1 / 3', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="reg-grid-4col">
+                    <div className="reg-grid-col1-3 reg-flex-shrink0 reg-flex-nowrap-gap16">
                       <label className="setup-input-label" style={{ minWidth: '120px' }}>Company Name</label>
                       <input
                         type="text"
                         value={formData.nameByInitials}
                         onChange={(e) => handleInputChange('nameByInitials', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Management System (PVT) LTD"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ gridColumn: '3 / 4', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="reg-grid-col3-4 reg-flex-shrink0 reg-flex-nowrap-gap16">
                       <label className="setup-input-label" style={{ minWidth: '140px' }}>Business</label>
                       <input
                         type="text"
                         value={formData.surname}
                         onChange={(e) => handleInputChange('surname', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Unit Trust"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
                   </div>
@@ -2119,11 +1999,11 @@ function FourCardsWithModal() {
               </div>
 
               {/* Identification and Contact Information Section */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+              <div className="reg-grid-4col reg-margin-bottom24 reg-margin-top16">
                 {/* Column 1 - Identification */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', gridColumn: '1 / 2' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>
+                <div className="reg-grid-col1-2 reg-flex-col-gap16">
+                  <div className="reg-flex-nowrap-gap16">
+                    <label className="setup-input-label registration-setup-compulsory-label reg-label-min140">
                       {formData.applicantType === 'Corporate' ? 'Commence' : 'Date of Birth'}
                     </label>
                     <input
@@ -2131,13 +2011,7 @@ function FourCardsWithModal() {
                       value={formData.dateOfBirth}
                       onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
-                      style={{
-                        color: '#000000',
-                        cursor: isFormEditable ? 'pointer' : 'default',
-                        flex: 1,
-                        padding: '8px 12px'
-                      }}
+                      className="setup-input-field reg-flex1 reg-date-picker-padded"
                       onClick={(e) => {
                         if (isFormEditable && e.currentTarget) {
                           e.currentTarget.showPicker?.();
@@ -2145,39 +2019,36 @@ function FourCardsWithModal() {
                       }}
                     />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>NIC</label>
+                  <div className="reg-flex-nowrap-gap16">
+                    <label className="setup-input-label registration-setup-compulsory-label reg-label-min140">NIC</label>
                     <input
                       type="text"
                       value={formData.nic}
                       onChange={(e) => handleInputChange('nic', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter NIC"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Passport</label>
+                  <div className="reg-flex-nowrap-gap16">
+                    <label className="setup-input-label reg-label-min140">Passport</label>
                     <input
                       type="text"
                       value={formData.passport}
                       onChange={(e) => handleInputChange('passport', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter passport number"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
                 </div>
 
                 {/* Column 2 - Contact */}
-                <div style={{ gridColumn: '2 / 3', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="reg-grid-col2-3 reg-flex-col-gap16">
+                  <div className="reg-flex-nowrap-gap16">
                     <label className="setup-input-label" style={{ minWidth: '100px' }}>Telephone</label>
                     <select
-                      className="setup-select-field"
-                      style={{ color: '#000000', width: '70px' }}
+                      className="setup-select-field reg-select-w70"
                       value={formData.telCode}
                       onChange={e => handleInputChange('telCode', e.target.value)}
                       disabled={!isFormEditable}
@@ -2191,17 +2062,15 @@ function FourCardsWithModal() {
                       value={formData.telephone}
                       onChange={(e) => handleInputChange('telephone', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-input-min-w150-flex1"
                       placeholder="Enter telephone"
-                      style={{ color: '#000000', flex: 1, minWidth: '150px' }}
                       maxLength={10}
                     />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="reg-flex-nowrap-gap16">
                     <label className="setup-input-label" style={{ minWidth: '100px' }}>Fax</label>
                     <select
-                      className="setup-select-field"
-                      style={{ color: '#000000', width: '70px' }}
+                      className="setup-select-field reg-select-w70"
                       value={formData.faxCode}
                       onChange={e => handleInputChange('faxCode', e.target.value)}
                       disabled={!isFormEditable}
@@ -2215,17 +2084,15 @@ function FourCardsWithModal() {
                       value={formData.fax}
                       onChange={(e) => handleInputChange('fax', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-input-min-w150-flex1"
                       placeholder="Enter fax"
-                      style={{ color: '#000000', flex: 1, minWidth: '150px' }}
                       maxLength={10}
                     />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="reg-flex-nowrap-gap16">
                     <label className="setup-input-label" style={{ minWidth: '100px' }}>Mobile</label>
                     <select
-                      className="setup-select-field"
-                      style={{ color: '#000000', width: '70px' }}
+                      className="setup-select-field reg-select-w70"
                       value={formData.mobileCode}
                       onChange={e => handleInputChange('mobileCode', e.target.value)}
                       disabled={!isFormEditable}
@@ -2239,44 +2106,41 @@ function FourCardsWithModal() {
                       value={formData.mobile}
                       onChange={(e) => handleInputChange('mobile', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-input-min-w150-flex1"
                       placeholder="Enter mobile"
-                      style={{ color: '#000000', flex: 1, minWidth: '150px' }}
                       maxLength={10}
                     />
                   </div>
                 </div>
 
                 {/* Column 3 - Other No., Comp Reg. No., and Nationality */}
-                <div style={{ gridColumn: '3 / 4', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '140px' }}>Other No.</label>
+                <div className="reg-grid-col3-4 reg-flex-col-gap16">
+                  <div className="reg-flex-nowrap-gap16">
+                    <label className="setup-input-label reg-label-min140">Other No.</label>
                     <input
                       type="text"
                       value={formData.otherNo}
                       onChange={(e) => handleInputChange('otherNo', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter other number"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '140px' }}>Comp Reg. No</label>
+                  <div className="reg-flex-nowrap-gap16">
+                    <label className="setup-input-label registration-setup-compulsory-label reg-label-min140">Comp Reg. No</label>
                     <input
                       type="text"
                       value={formData.compRegNo}
                       onChange={(e) => handleInputChange('compRegNo', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter company registration number"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
                   <div style={{ marginTop: '8px' }}>
-                    <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Nationality</div>
+                    <div className="setup-input-label registration-setup-compulsory-label reg-label-bold-mb12" style={{ marginBottom: '4px' }}>Nationality</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <label className="registration-setup-compulsory-label reg-status-radio-label">
                         <input
                           type="radio"
                           name="nationality"
@@ -2286,7 +2150,7 @@ function FourCardsWithModal() {
                         />
                         Local
                       </label>
-                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <label className="registration-setup-compulsory-label reg-status-radio-label">
                         <input
                           type="radio"
                           name="nationality"
@@ -2301,35 +2165,33 @@ function FourCardsWithModal() {
                 </div>
 
                 {/* Column 4 - E-mail, Tin No., and Related Party Status */}
-                <div style={{ gridColumn: '4 / 5', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="reg-grid-col4-5 reg-flex-col-gap16">
+                  <div className="reg-flex-nowrap-gap16">
                     <label className="setup-input-label" style={{ minWidth: '100px' }}>E-mail</label>
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter email"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="reg-flex-nowrap-gap16">
                     <label className="setup-input-label" style={{ minWidth: '100px' }}>Tin No.</label>
                     <input
                       type="text"
                       value={formData.tinNo}
                       onChange={(e) => handleInputChange('tinNo', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-flex1"
                       placeholder="Enter TIN number"
-                      style={{ color: '#000000', flex: 1 }}
                     />
                   </div>
                   <div style={{ marginTop: '8px' }}>
-                    <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '4px' }}>Related Party Status</div>
+                    <div className="setup-input-label registration-setup-compulsory-label reg-label-bold-mb12" style={{ marginBottom: '4px' }}>Related Party Status</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <label className="registration-setup-compulsory-label reg-status-radio-label">
                         <input
                           type="radio"
                           name="relatedPartyStatus"
@@ -2339,7 +2201,7 @@ function FourCardsWithModal() {
                         />
                         None Related
                       </label>
-                      <label className="registration-setup-compulsory-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <label className="registration-setup-compulsory-label reg-status-radio-label">
                         <input
                           type="radio"
                           name="relatedPartyStatus"
@@ -2356,15 +2218,14 @@ function FourCardsWithModal() {
               </div>
 
               {/* PEP and FATCA Row */}
-              <div style={{ display: 'flex', gap: '24px', marginTop: '16px', flexWrap: 'wrap' }}>
+              <div className="reg-flex-wrap-gap16-mb16" style={{ marginTop: '16px' }}>
                 {/* Politically Exposed Person (PEP) */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '220px', fontWeight: 600 }}>
+                <div className="reg-flex-nowrap-gap16">
+                  <label className="setup-input-label reg-label-bold-mb12 reg-label-min220" style={{ marginBottom: 0 }}>
                     Politically Exposed Person (PEP)
                   </label>
                   <select
-                    className="setup-select-field"
-                    style={{ color: '#000000', minWidth: '140px' }}
+                    className="setup-select-field reg-select-min140"
                     value={formData.pepStatus}
                     onChange={e => handleInputChange('pepStatus', e.target.value)}
                     disabled={!isFormEditable}
@@ -2376,13 +2237,12 @@ function FourCardsWithModal() {
                 </div>
 
                 {/* FATCA Registered */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '140px', fontWeight: 600 }}>
+                <div className="reg-flex-nowrap-gap16">
+                  <label className="setup-input-label reg-label-bold-mb12 reg-label-min140" style={{ marginBottom: 0 }}>
                     FATCA Registered
                   </label>
                   <select
-                    className="setup-select-field"
-                    style={{ color: '#000000', minWidth: '140px' }}
+                    className="setup-select-field reg-select-min140"
                     value={formData.fatcaRegistered}
                     onChange={e => handleInputChange('fatcaRegistered', e.target.value)}
                     disabled={!isFormEditable}
@@ -2400,37 +2260,36 @@ function FourCardsWithModal() {
         );
       case 'Address/Bank Details':
         return (
-          <div style={{ width: '100%' }}>
+          <div className="reg-w100pct">
             {/* Two Address Cards side by side with copy button in middle */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px 1fr', gap: '12px', marginBottom: '16px', alignItems: 'start', width: '100%', boxSizing: 'border-box' }}>
+            <div className="reg-grid-3addr">
               {/* Correspondence Address Card */}
-              <div className="setup-ash-box" style={{ padding: '16px', minWidth: 0, overflow: 'hidden' }}>
-                <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
+              <div className="setup-ash-box reg-ash-box-padded">
+                <div className="setup-input-label registration-setup-compulsory-label reg-label-bold-mb12">
                   Correspondence Address
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="reg-flex-col-gap12">
                   {/* Row 1: Street and Town */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '55px', flexShrink: 0 }}>Street</label>
+                  <div className="reg-grid-2col-gap12">
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">Street</label>
                       {renderAddrCombobox('corrStreet', 'correspondenceStreet', formData.correspondenceStreet, streetOptions, 'Enter or select street')}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '45px', flexShrink: 0 }}>Town</label>
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min45">Town</label>
                       {renderAddrCombobox('corrTown', 'correspondenceTown', formData.correspondenceTown, townOptions, 'Enter or select town')}
                     </div>
                   </div>
                   {/* Row 2: City and District */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '55px', flexShrink: 0 }}>City</label>
+                  <div className="reg-grid-2col-gap12">
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">City</label>
                       {renderAddrCombobox('corrCity', 'correspondenceCity', formData.correspondenceCity, cityOptions, 'Enter or select city')}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '55px', flexShrink: 0 }}>District</label>
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">District</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.correspondenceDistrict}
                         onChange={e => handleInputChange('correspondenceDistrict', e.target.value)}
                         disabled={!isFormEditable}
@@ -2443,12 +2302,11 @@ function FourCardsWithModal() {
                     </div>
                   </div>
                   {/* Row 3: Country, Postal Code, and Postal Area */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '52px', flexShrink: 0 }}>Country</label>
+                  <div className="reg-grid-3col-gap12">
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">Country</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1, minWidth: 0 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.correspondenceCountry}
                         onChange={e => handleInputChange('correspondenceCountry', e.target.value)}
                         disabled={!isFormEditable}
@@ -2458,23 +2316,21 @@ function FourCardsWithModal() {
                         <option value="UK">UK</option>
                       </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '70px', flexShrink: 0 }}>Postal Code</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label" style={{ minWidth: '70px' }}>Postal Code</label>
                       <input
                         type="text"
                         value={formData.correspondencePostalCode}
                         onChange={(e) => handleInputChange('correspondencePostalCode', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter postal code"
-                        style={{ color: '#000000', flex: 1, minWidth: 0 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '70px', flexShrink: 0 }}>Postal Area</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '70px' }}>Postal Area</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1, minWidth: 0 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.correspondencePostalArea}
                         onChange={e => handleInputChange('correspondencePostalArea', e.target.value)}
                         disabled={!isFormEditable}
@@ -2490,57 +2346,47 @@ function FourCardsWithModal() {
               </div>
 
               {/* Copy Button */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingTop: '60px' }}>
+              <div className="reg-flex-col reg-flex-center-gap16" style={{ paddingTop: '60px' }}>
                 <button
                   onClick={handleCopyAddress}
                   disabled={!isFormEditable}
-                  style={{
-                    backgroundColor: '#0ea5e9',
-                    color: '#ffffff',
-                    border: 'none',
-                    padding: '8px 12px',
-                    borderRadius: '4px',
-                    cursor: isFormEditable ? 'pointer' : 'default',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    minWidth: '60px'
-                  }}
+                  className="reg-btn-copy-addr"
+                  style={{ marginTop: 0 }}
                 >
                   ==&gt;&gt;
                 </button>
-                <div style={{ color: '#0ea5e9', fontSize: '12px', textAlign: 'center', maxWidth: '100px' }}>
+                <div style={{ color: '#0ea5e9', fontSize: '10px', textAlign: 'center', maxWidth: '100px', fontWeight: 600 }}>
                   Click If Correspondence Address And The Personal Address are the Same
                 </div>
               </div>
 
               {/* Personal / Permanent Address Card */}
-              <div className="setup-ash-box" style={{ padding: '16px', minWidth: 0, overflow: 'hidden' }}>
-                <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
+              <div className="setup-ash-box reg-ash-box-padded">
+                <div className="setup-input-label registration-setup-compulsory-label reg-label-bold-mb12">
                   Personal / Permanent Address
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="reg-flex-col-gap12">
                   {/* Row 1: Street and Town */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '55px', flexShrink: 0 }}>Street</label>
+                  <div className="reg-grid-2col-gap12">
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">Street</label>
                       {renderAddrCombobox('permStreet', 'permanentStreet', formData.permanentStreet, streetOptions, 'Enter or select street')}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '45px', flexShrink: 0 }}>Town</label>
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min45">Town</label>
                       {renderAddrCombobox('permTown', 'permanentTown', formData.permanentTown, townOptions, 'Enter or select town')}
                     </div>
                   </div>
                   {/* Row 2: City and District */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '55px', flexShrink: 0 }}>City</label>
+                  <div className="reg-grid-2col-gap12">
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">City</label>
                       {renderAddrCombobox('permCity', 'permanentCity', formData.permanentCity, cityOptions, 'Enter or select city')}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '55px', flexShrink: 0 }}>District</label>
+                    <div className="reg-flex-shrink0 reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">District</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1, minWidth: 0 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.permanentDistrict}
                         onChange={e => handleInputChange('permanentDistrict', e.target.value)}
                         disabled={!isFormEditable}
@@ -2553,12 +2399,11 @@ function FourCardsWithModal() {
                     </div>
                   </div>
                   {/* Row 3: Country, Postal Code, and Postal Area */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '52px', flexShrink: 0 }}>Country</label>
+                  <div className="reg-grid-3col-gap12">
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min55">Country</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1, minWidth: 0 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.permanentCountry}
                         onChange={e => handleInputChange('permanentCountry', e.target.value)}
                         disabled={!isFormEditable}
@@ -2568,23 +2413,21 @@ function FourCardsWithModal() {
                         <option value="UK">UK</option>
                       </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                      <label className="setup-input-label" style={{ minWidth: '70px', flexShrink: 0 }}>Postal Code</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label" style={{ minWidth: '70px' }}>Postal Code</label>
                       <input
                         type="text"
                         value={formData.permanentPostalCode}
                         onChange={(e) => handleInputChange('permanentPostalCode', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter postal code"
-                        style={{ color: '#000000', flex: 1, minWidth: 0 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '70px', flexShrink: 0 }}>Postal Area</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '70px' }}>Postal Area</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1, minWidth: 0 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.permanentPostalArea}
                         onChange={e => handleInputChange('permanentPostalArea', e.target.value)}
                         disabled={!isFormEditable}
@@ -2667,11 +2510,10 @@ function FourCardsWithModal() {
               {/* Column 2: Bank and Branch */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Row 1: Bank */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '60px' }}>Bank</label>
+                <div className="reg-flex-nowrap-gap16">
+                  <label className="setup-input-label registration-setup-compulsory-label reg-label-min60">Bank</label>
                   <select
-                    className="setup-select-field"
-                    style={{ flex: 1, color: '#000000' }}
+                    className="setup-select-field reg-flex1"
                     value={formData.bank}
                     onChange={e => handleInputChange('bank', e.target.value)}
                     disabled={!isFormEditable}
@@ -2683,28 +2525,24 @@ function FourCardsWithModal() {
                   </select>
                 </div>
                 {/* Row 2: Branch */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label" style={{ minWidth: '60px' }}>Branch</label>
-                  <div style={{ position: 'relative', flex: 1 }} data-branch-table>
+                <div className="reg-flex-nowrap-gap16">
+                  <label className="setup-input-label reg-label-min60">Branch</label>
+                  <div className="reg-relative reg-flex1" data-branch-table>
                     <div
-                      className="setup-input-field"
+                      className="setup-input-field reg-company-select-box reg-text-black"
                       onClick={() => isFormEditable && setShowBranchTable(!showBranchTable)}
-                      style={{
-                        cursor: isFormEditable ? 'pointer' : 'default',
-                        color: '#000000', display: 'flex', alignItems: 'center'
-                      }}
                     >
                       {formData.branchNo || 'Select Branch'}
                     </div>
                     {showBranchTable && isFormEditable && (
-                      <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', color: '#000000' }}>
+                      <div className="reg-company-dropdown">
+                        <table className="reg-company-table reg-text-black">
                           <thead>
-                            <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                              <th style={{ padding: '8px 12px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', borderRight: '1px solid #cbd5e1' }} onClick={() => handleTableSort('branch', 'code')}>
+                            <tr className="reg-bg-header reg-border-bottom-gray">
+                              <th className="reg-company-th" onClick={() => handleTableSort('branch', 'code')}>
                                 Code {renderSortIndicator('branch', 'code')}
                               </th>
-                              <th style={{ padding: '8px 12px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleTableSort('branch', 'description')}>
+                              <th className="reg-company-th-last" onClick={() => handleTableSort('branch', 'description')}>
                                 Description {renderSortIndicator('branch', 'description')}
                               </th>
                             </tr>
@@ -2713,9 +2551,9 @@ function FourCardsWithModal() {
                             {getSortedData('branch', branchData).map((branch, idx) => {
                               const value = `${branch.code} - ${branch.description}`;
                               return (
-                                <tr key={idx} onClick={() => { handleInputChange('branchNo', value); setShowBranchTable(false); }} style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0', backgroundColor: formData.branchNo === value ? '#f3e8ff' : '#ffffff' }}>
-                                  <td style={{ padding: '8px 12px', fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>{branch.code}</td>
-                                  <td style={{ padding: '8px 12px', fontSize: '13px' }}>{branch.description}</td>
+                                <tr key={idx} onClick={() => { handleInputChange('branchNo', value); setShowBranchTable(false); }} className="reg-company-tr" style={{ backgroundColor: formData.branchNo === value ? '#f3e8ff' : '#ffffff' }}>
+                                  <td className="reg-company-td">{branch.code}</td>
+                                  <td className="reg-company-td-last">{branch.description}</td>
                                 </tr>
                               );
                             })}
@@ -2730,11 +2568,10 @@ function FourCardsWithModal() {
               {/* Column 3: Account Type + Account No */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Row 1: Account Type */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '100px' }}>Account Type</label>
+                <div className="reg-flex-nowrap-gap16">
+                  <label className="setup-input-label registration-setup-compulsory-label reg-label-min100">Account Type</label>
                   <select
-                    className="setup-select-field"
-                    style={{ color: '#000000', flex: 1 }}
+                    className="setup-select-field reg-flex1"
                     value={formData.accountType}
                     onChange={e => handleInputChange('accountType', e.target.value)}
                     disabled={!isFormEditable}
@@ -2746,26 +2583,23 @@ function FourCardsWithModal() {
                   </select>
                 </div>
                 {/* Row 2: Account No + Add Button */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '100px' }}>Account No</label>
+                <div className="reg-flex-nowrap-gap16">
+                  <label className="setup-input-label registration-setup-compulsory-label reg-label-min100">Account No</label>
                   <input
                     type="text"
                     value={formData.accountNo}
                     onChange={(e) => handleInputChange('accountNo', e.target.value)}
                     disabled={!isFormEditable}
-                    className="setup-input-field"
+                    className="setup-input-field reg-flex1"
                     placeholder="Enter account number"
-                    style={{ color: '#000000', flex: 1 }}
                   />
                   <button
                     onClick={handleAddBankAccount}
                     disabled={!isFormEditable}
+                    className="reg-btn-copy-addr"
                     style={{
-                      backgroundColor: '#a16207', color: '#ffffff', border: 'none',
-                      padding: '8px 12px', borderRadius: '4px',
-                      cursor: isFormEditable ? 'pointer' : 'default',
-                      fontSize: '16px', minWidth: '40px', height: '38px',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                      backgroundColor: '#a16207', color: '#ffffff',
+                      marginTop: 0, minWidth: '40px', height: '32px'
                     }}
                     title="Add Bank Account"
                   >↓</button>
@@ -2775,29 +2609,29 @@ function FourCardsWithModal() {
 
             {/* Bank Accounts Table - Full Width */}
             <div style={{ width: '100%', marginTop: '16px' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cbd5e1', marginBottom: '12px' }}>
+              <table className="reg-bank-accounts-table">
                 <thead>
-                  <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                    <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Bank Code</th>
-                    <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account No.</th>
-                    <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>Account Type</th>
-                    <th style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#0f172a' }}>Bank Name</th>
+                  <tr className="reg-portal-thead">
+                    <th className="reg-bank-accounts-th" style={{ borderRight: '1px solid #cbd5e1' }}>Bank Code</th>
+                    <th className="reg-bank-accounts-th" style={{ borderRight: '1px solid #cbd5e1' }}>Account No.</th>
+                    <th className="reg-bank-accounts-th" style={{ borderRight: '1px solid #cbd5e1' }}>Account Type</th>
+                    <th className="reg-bank-accounts-th">Bank Name</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bankAccounts.length === 0 ? (
                     <tr>
-                      <td colSpan={4} style={{ padding: '16px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                      <td colSpan={4} className="empty-cell" style={{ padding: '16px' }}>
                         No bank accounts added
                       </td>
                     </tr>
                   ) : (
                     bankAccounts.map((account, index) => (
-                      <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.bankCode}</td>
-                        <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountNo}</td>
-                        <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{account.accountType}</td>
-                        <td style={{ padding: '8px 12px', fontSize: '13px', color: '#0f172a' }}>{account.bankName}</td>
+                      <tr key={index}>
+                        <td className="reg-bank-accounts-td" style={{ borderRight: '1px solid #e2e8f0' }}>{account.bankCode}</td>
+                        <td className="reg-bank-accounts-td" style={{ borderRight: '1px solid #e2e8f0' }}>{account.accountNo}</td>
+                        <td className="reg-bank-accounts-td" style={{ borderRight: '1px solid #e2e8f0' }}>{account.accountType}</td>
+                        <td className="reg-bank-accounts-td">{account.bankName}</td>
                       </tr>
                     ))
                   )}
@@ -2811,15 +2645,12 @@ function FourCardsWithModal() {
                   }
                 }}
                 disabled={!isFormEditable || bankAccounts.length === 0}
+                className="btn btn-clear"
                 style={{
                   backgroundColor: '#ffffff',
                   color: '#dc2626',
                   border: '1px solid #cbd5e1',
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                  cursor: isFormEditable && bankAccounts.length > 0 ? 'pointer' : 'default',
-                  fontSize: '13px',
-                  fontWeight: 500
+                  marginTop: '12px'
                 }}
               >
                 Remove From List
@@ -2830,71 +2661,67 @@ function FourCardsWithModal() {
       case 'Office/ Employee details':
         return (
           <div className="setup-input-section">
-            <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
+            <div className="setup-ash-box reg-ash-box-padded reg-w100pct">
               {/* Office Details Section */}
-              <div style={{ marginBottom: '24px' }}>
-                <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '16px' }}>
+              <div className="reg-margin-bottom24">
+                <div className="setup-input-label registration-setup-compulsory-label reg-label-bold-mb12">
                   Office Details
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="reg-flex-col-gap12">
                   {/* Row 1: Occupation, Office Name, Street, Town */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Occupation</label>
+                  <div className="reg-grid-4col-repeat">
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Occupation</label>
                       <input
                         type="text"
                         value={formData.occupation}
                         onChange={(e) => handleInputChange('occupation', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter occupation"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Office Name</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Office Name</label>
                       <input
                         type="text"
                         value={formData.officeName}
                         onChange={(e) => handleInputChange('officeName', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter office name"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Street</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Street</label>
                       {renderAddrCombobox('offStreet', 'officeStreet', formData.officeStreet, streetOptions, 'Enter or select street')}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Town</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Town</label>
                       {renderAddrCombobox('offTown', 'officeTown', formData.officeTown, townOptions, 'Enter or select town')}
                     </div>
                   </div>
                   {/* Row 2: City, Postal Code, Country, Tele. */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>City</label>
+                  <div className="reg-grid-4col-repeat">
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">City</label>
                       {renderAddrCombobox('offCity', 'officeCity', formData.officeCity, cityOptions, 'Enter or select city')}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Postal Code</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Postal Code</label>
                       <input
                         type="text"
                         value={formData.officePostalCode}
                         onChange={(e) => handleInputChange('officePostalCode', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter postal code"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Country</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Country</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.officeCountry}
                         onChange={e => handleInputChange('officeCountry', e.target.value)}
                         disabled={!isFormEditable}
@@ -2904,50 +2731,46 @@ function FourCardsWithModal() {
                         <option value="UK">UK</option>
                       </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Tele.</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Tele.</label>
                       <input
                         type="text"
                         value={formData.officeTele}
                         onChange={(e) => handleInputChange('officeTele', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter telephone"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
                   </div>
                   {/* Row 3: Fax No., E-mail, Web Registration? */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Fax No.</label>
+                  <div className="reg-grid-4col-repeat">
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Fax No.</label>
                       <input
                         type="text"
                         value={formData.officeFaxNo}
                         onChange={(e) => handleInputChange('officeFaxNo', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter fax number"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>E-mail</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">E-mail</label>
                       <input
                         type="email"
                         value={formData.officeEmail}
                         onChange={(e) => handleInputChange('officeEmail', e.target.value)}
                         disabled={!isFormEditable}
-                        className="setup-input-field"
+                        className="setup-input-field reg-flex1"
                         placeholder="Enter email"
-                        style={{ color: '#000000', flex: 1 }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '100px' }}>Web Registerd?</label>
+                    <div className="reg-flex-nowrap-gap16">
+                      <label className="setup-input-label reg-label-min100">Web Registerd?</label>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1 }}
+                        className="setup-select-field reg-flex1"
                         value={formData.webRegistration || ''}
                         onChange={e => handleInputChange('webRegistration', e.target.value)}
                         disabled={!isFormEditable}
@@ -2987,28 +2810,13 @@ function FourCardsWithModal() {
                       e.preventDefault();
                       stopDrawing();
                     }}
-                    style={{
-                      width: '100%',
-                      height: '200px',
-                      cursor: isFormEditable ? 'crosshair' : 'default',
-                      display: 'block',
-                      borderRadius: '4px'
-                    }}
+                    className={`reg-signature-canvas ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                   />
-                  <div style={{ position: 'absolute', bottom: '8px', right: '8px', display: 'flex', gap: '8px' }}>
+                  <div className="reg-absolute-bottom-right reg-flex reg-gap8">
                     <button
                       onClick={clearSignature}
                       disabled={!isFormEditable}
-                      style={{
-                        backgroundColor: '#dc2626',
-                        color: '#ffffff',
-                        border: 'none',
-                        padding: '6px 12px',
-                        borderRadius: '4px',
-                        cursor: isFormEditable ? 'pointer' : 'default',
-                        fontSize: '12px',
-                        fontWeight: 500
-                      }}
+                      className={`btn btn-new reg-btn-red ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                       title="Clear Signature"
                     >
                       Clear
@@ -3044,16 +2852,7 @@ function FourCardsWithModal() {
                         input.click();
                       }}
                       disabled={!isFormEditable}
-                      style={{
-                        backgroundColor: '#0ea5e9',
-                        color: '#ffffff',
-                        border: 'none',
-                        padding: '6px 12px',
-                        borderRadius: '4px',
-                        cursor: isFormEditable ? 'pointer' : 'default',
-                        fontSize: '16px',
-                        fontWeight: 600
-                      }}
+                      className={`btn btn-new reg-btn-sky ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                       title="Upload Signature from PC"
                     >
                       ...
@@ -3068,12 +2867,12 @@ function FourCardsWithModal() {
         return (
           <div className="setup-input-section">
             {formData.applicantType === 'Individual' && (
-              <div className="setup-ash-box" style={{ padding: '16px' }}>
+              <div className="setup-ash-box reg-p16">
                 {/* Row 1: 4 Columns */}
-                <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%', marginBottom: '16px' }}>
+                <div className="reg-grid-4col-24">
                   {/* Column 1: If Personal Customer Applicant label + checkbox */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                    <label className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '4px' }}>
+                    <label className="setup-input-label registration-setup-compulsory-label reg-fw600 reg-mb4">
                       If Personal Customer Applicant
                     </label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
@@ -3082,25 +2881,25 @@ function FourCardsWithModal() {
                         checked={formData.married}
                         onChange={(e) => setFormData(prev => ({ ...prev, married: e.target.checked }))}
                         disabled={!isFormEditable}
-                        style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                        className={`reg-accent-purple ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                       />
                       Married
                     </label>
                   </div>
                   {/* Column 2: Spouse's Name */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '120px' }}>Spouse's Name</label>
-                    <input type="text" value={formData.spouseName} onChange={(e) => handleInputChange('spouseName', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter spouse's name" style={{ color: '#000000', flex: 1 }} />
+                    <label className="setup-input-label reg-label-w120">Spouse's Name</label>
+                    <input type="text" value={formData.spouseName} onChange={(e) => handleInputChange('spouseName', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter spouse's name" />
                   </div>
                   {/* Column 3: Spouse's Occupation */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '120px' }}>Spouse's Occupation</label>
-                    <input type="text" value={formData.spouseOccupation} onChange={(e) => handleInputChange('spouseOccupation', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter spouse's occupation" style={{ color: '#000000', flex: 1 }} />
+                    <label className="setup-input-label reg-label-w120">Spouse's Occupation</label>
+                    <input type="text" value={formData.spouseOccupation} onChange={(e) => handleInputChange('spouseOccupation', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter spouse's occupation" />
                   </div>
                   {/* Column 4: Spouse's Employer */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                    <label className="setup-input-label" style={{ minWidth: '120px' }}>Spouse's Employer</label>
-                    <input type="text" value={formData.spouseEmployer} onChange={(e) => handleInputChange('spouseEmployer', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter spouse's employer" style={{ color: '#000000', flex: 1 }} />
+                    <label className="setup-input-label reg-label-w120">Spouse's Employer</label>
+                    <input type="text" value={formData.spouseEmployer} onChange={(e) => handleInputChange('spouseEmployer', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter spouse's employer" />
                   </div>
                 </div>
 
@@ -3112,9 +2911,8 @@ function FourCardsWithModal() {
                     <label className="setup-input-label" style={{ minWidth: '70px' }}>Currency</label>
                     <div style={{ position: 'relative', flex: 1 }} data-table="currency">
                       <div
-                        className="setup-input-field"
+                        className={`setup-input-field ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'} ${formData.incomeCurrency ? 'reg-text-black' : 'setup-placeholder-color'} reg-flex-center`}
                         onClick={() => isFormEditable && setShowCurrencyTable(!showCurrencyTable)}
-                        style={{ cursor: isFormEditable ? 'pointer' : 'default', color: formData.incomeCurrency ? '#000000' : '#64748b', display: 'flex', alignItems: 'center' }}
                       >
                         {formData.incomeCurrency || 'Select Currency'}
                       </div>
@@ -3124,7 +2922,7 @@ function FourCardsWithModal() {
                             <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
                               <tr style={{ borderBottom: '2px solid #cbd5e1' }}>
                                 <th
-                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none', borderRight: '1px solid #cbd5e1', fontSize: '12px' }}
+                                  className="reg-p8-12 reg-text-left reg-text-black reg-cursor-pointer reg-user-select-none reg-border-right reg-fs12"
                                   onClick={() => handleTableSort('currency', 'code')}
                                 >Code{renderSortIndicator('currency', 'code')}</th>
                                 <th
@@ -3170,7 +2968,7 @@ function FourCardsWithModal() {
                             <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
                               <tr style={{ borderBottom: '2px solid #cbd5e1' }}>
                                 <th
-                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none', borderRight: '1px solid #cbd5e1', fontSize: '12px' }}
+                                  className="reg-p8-12 reg-text-left reg-text-black reg-cursor-pointer reg-user-select-none reg-border-right reg-fs12"
                                   onClick={() => handleTableSort('annualIncome', 'code')}
                                 >Code{renderSortIndicator('annualIncome', 'code')}</th>
                                 <th
@@ -3216,7 +3014,7 @@ function FourCardsWithModal() {
                             <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
                               <tr style={{ borderBottom: '2px solid #cbd5e1' }}>
                                 <th
-                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none', borderRight: '1px solid #cbd5e1', fontSize: '12px' }}
+                                  className="reg-p8-12 reg-text-left reg-text-black reg-cursor-pointer reg-user-select-none reg-border-right reg-fs12"
                                   onClick={() => handleTableSort('sourceOfIncome', 'code')}
                                 >Code{renderSortIndicator('sourceOfIncome', 'code')}</th>
                                 <th
@@ -3250,8 +3048,7 @@ function FourCardsWithModal() {
                     <label className="setup-input-label registration-setup-compulsory-label" style={{ minWidth: '110px' }}>Risk Category</label>
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <select
-                        className="setup-select-field"
-                        style={{ color: '#000000', flex: 1 }}
+                        className="setup-select-field reg-text-black reg-flex-1"
                         value={formData.riskCategory}
                         onChange={e => handleInputChange('riskCategory', e.target.value)}
                         disabled={!isFormEditable}
@@ -3265,11 +3062,12 @@ function FourCardsWithModal() {
                         <option value="Very High">Very High</option>
                       </select>
                       {formData.riskCategory && (
-                        <span style={{
-                          padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 700, whiteSpace: 'nowrap',
-                          background: formData.riskCategory === 'Low' ? '#dcfce7' : formData.riskCategory === 'Low - Medium' ? '#d1fae5' : formData.riskCategory === 'Medium' ? '#fef9c3' : formData.riskCategory === 'Medium - High' ? '#ffedd5' : formData.riskCategory === 'High' ? '#fee2e2' : '#fce7f3',
-                          color: formData.riskCategory === 'Low' ? '#15803d' : formData.riskCategory === 'Low - Medium' ? '#047857' : formData.riskCategory === 'Medium' ? '#a16207' : formData.riskCategory === 'Medium - High' ? '#c2410c' : formData.riskCategory === 'High' ? '#b91c1c' : '#9d174d',
-                        }}>{formData.riskCategory}</span>
+                        <span className={`reg-risk-badge ${formData.riskCategory === 'Low' ? 'risk-low' :
+                          formData.riskCategory === 'Low - Medium' ? 'risk-low-medium' :
+                            formData.riskCategory === 'Medium' ? 'risk-medium' :
+                              formData.riskCategory === 'Medium - High' ? 'risk-medium-high' :
+                                formData.riskCategory === 'High' ? 'risk-high' : 'risk-very-high'
+                          }`}>{formData.riskCategory}</span>
                       )}
                     </div>
                   </div>
@@ -3283,7 +3081,7 @@ function FourCardsWithModal() {
                 <div className="setup-input-label registration-setup-compulsory-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
                   If Corporate Applicant
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '38% 28% 30%', gap: '12px', width: '100%' }}>
+                <div className="reg-grid-3col-custom">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%', flexWrap: 'wrap' }}>
                     <label className="setup-input-label" style={{ margin: 0 }}>Are you a Subsidiary / Associate of another organization?</label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
@@ -3329,41 +3127,41 @@ function FourCardsWithModal() {
                         <option value="Dr">Dr</option>
                       </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Initials</label>
-                      <input type="text" value={formData.contactPersonInitials} onChange={(e) => handleInputChange('contactPersonInitials', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter initials" style={{ color: '#000000', flex: 1 }} />
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">Initials</label>
+                      <input type="text" value={formData.contactPersonInitials} onChange={(e) => handleInputChange('contactPersonInitials', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter initials" />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>First Name</label>
-                      <input type="text" value={formData.contactPersonFirstName} onChange={(e) => handleInputChange('contactPersonFirstName', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter first name" style={{ color: '#000000', flex: 1 }} />
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">First Name</label>
+                      <input type="text" value={formData.contactPersonFirstName} onChange={(e) => handleInputChange('contactPersonFirstName', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter first name" />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Surname</label>
-                      <input type="text" value={formData.contactPersonSurname} onChange={(e) => handleInputChange('contactPersonSurname', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter surname" style={{ color: '#000000', flex: 1 }} />
-                    </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Designation</label>
-                      <input type="text" value={formData.contactPersonDesignation} onChange={(e) => handleInputChange('contactPersonDesignation', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter designation" style={{ color: '#000000', flex: 1 }} />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Address</label>
-                      <input type="text" value={formData.contactPersonAddress} onChange={(e) => handleInputChange('contactPersonAddress', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter address" style={{ color: '#000000', flex: 1 }} />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Telephone</label>
-                      <input type="text" value={formData.contactPersonTelephone} onChange={(e) => handleInputChange('contactPersonTelephone', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter telephone" style={{ color: '#000000', flex: 1 }} />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>Fax</label>
-                      <input type="text" value={formData.contactPersonFax} onChange={(e) => handleInputChange('contactPersonFax', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter fax" style={{ color: '#000000', flex: 1 }} />
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">Surname</label>
+                      <input type="text" value={formData.contactPersonSurname} onChange={(e) => handleInputChange('contactPersonSurname', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter surname" />
                     </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <label className="setup-input-label" style={{ minWidth: '80px' }}>E-Mail</label>
-                      <input type="email" value={formData.contactPersonEmail} onChange={(e) => handleInputChange('contactPersonEmail', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter email" style={{ color: '#000000', flex: 1 }} />
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">Designation</label>
+                      <input type="text" value={formData.contactPersonDesignation} onChange={(e) => handleInputChange('contactPersonDesignation', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter designation" />
+                    </div>
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">Address</label>
+                      <input type="text" value={formData.contactPersonAddress} onChange={(e) => handleInputChange('contactPersonAddress', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter address" />
+                    </div>
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">Telephone</label>
+                      <input type="text" value={formData.contactPersonTelephone} onChange={(e) => handleInputChange('contactPersonTelephone', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter telephone" />
+                    </div>
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">Fax</label>
+                      <input type="text" value={formData.contactPersonFax} onChange={(e) => handleInputChange('contactPersonFax', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter fax" />
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '24% 24% 24% 24%', gap: '12px', width: '100%' }}>
+                    <div className="reg-flex-center reg-gap8 reg-w100pct">
+                      <label className="setup-input-label reg-min-w80">E-Mail</label>
+                      <input type="email" value={formData.contactPersonEmail} onChange={(e) => handleInputChange('contactPersonEmail', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-text-black reg-flex-1" placeholder="Enter email" />
                     </div>
                   </div>
                 </div>
@@ -3371,13 +3169,13 @@ function FourCardsWithModal() {
             )}
 
             {/* How did you hear about us? — Promotion uses table dropdown */}
-            <div style={{ marginTop: '24px', borderTop: '1px solid #cbd5e1', paddingTop: '16px' }}>
-              <div className="setup-input-label" style={{ fontWeight: 600, marginBottom: '12px' }}>
+            <div className="reg-mt24 reg-border-top reg-pt16">
+              <div className="setup-input-label reg-fw600 reg-mb12">
                 How did you hear about us?
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <div className="reg-flex-center reg-gap16 reg-flex-wrap">
                 {['Media', 'Promotion', 'Referral', 'Call Centre', 'Other'].map(option => (
-                  <label key={option} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000' }}>
+                  <label key={option} className="reg-flex-center reg-gap8 reg-text-black">
                     <input
                       type="radio"
                       name="heardAboutUs"
@@ -3387,7 +3185,7 @@ function FourCardsWithModal() {
                         if (option !== 'Promotion') handleInputChange('promotionOther', '');
                       }}
                       disabled={!isFormEditable}
-                      style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                      className={`reg-accent-purple ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                     />
                     {option}
                   </label>
@@ -3395,9 +3193,9 @@ function FourCardsWithModal() {
 
                 {/* Promotion table dropdown */}
                 {formData.heardAboutUs === 'Promotion' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label className="setup-input-label" style={{ minWidth: '80px' }}>Promotion</label>
-                    <div style={{ position: 'relative', minWidth: '280px' }} data-table="promotion">
+                  <div className="reg-flex-center reg-gap8">
+                    <label className="setup-input-label reg-min-w80">Promotion</label>
+                    <div className="reg-relative reg-min-w280" data-table="promotion">
                       <div
                         className="setup-input-field"
                         onClick={() => isFormEditable && setShowPromotionTable(!showPromotionTable)}
@@ -3411,11 +3209,11 @@ function FourCardsWithModal() {
                             <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f1f5f9', zIndex: 10 }}>
                               <tr style={{ borderBottom: '2px solid #cbd5e1' }}>
                                 <th
-                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none', borderRight: '1px solid #cbd5e1', fontSize: '12px' }}
+                                  className="reg-p8-12 reg-text-left reg-text-black reg-cursor-pointer reg-user-select-none reg-border-right reg-fs12"
                                   onClick={() => handleTableSort('promotion', 'promotionCode')}
                                 >Promotion Code{renderSortIndicator('promotion', 'promotionCode')}</th>
                                 <th
-                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none', borderRight: '1px solid #cbd5e1', fontSize: '12px' }}
+                                  className="reg-p8-12 reg-text-left reg-text-black reg-cursor-pointer reg-user-select-none reg-border-right reg-fs12"
                                   onClick={() => handleTableSort('promotion', 'promotionDescription')}
                                 >Promotion Description{renderSortIndicator('promotion', 'promotionDescription')}</th>
                                 <th
@@ -3587,54 +3385,48 @@ function FourCardsWithModal() {
                       value={newDirector.name}
                       onChange={(e) => handleNewDirectorChange('name', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-text-black"
                       placeholder="Name"
-                      style={{ color: '#000000' }}
                     />
                     <input
                       type="text"
                       value={newDirector.designation}
                       onChange={(e) => handleNewDirectorChange('designation', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-text-black"
                       placeholder="Designation"
-                      style={{ color: '#000000' }}
                     />
                     <input
                       type="text"
                       value={newDirector.nic}
                       onChange={(e) => handleNewDirectorChange('nic', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-text-black"
                       placeholder="NIC"
-                      style={{ color: '#000000' }}
                     />
                     <input
                       type="text"
                       value={newDirector.shares}
                       onChange={(e) => handleNewDirectorChange('shares', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-text-black"
                       placeholder="Shares"
-                      style={{ color: '#000000' }}
                     />
                     <input
                       type="text"
                       value={newDirector.contactNo}
                       onChange={(e) => handleNewDirectorChange('contactNo', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-text-black"
                       placeholder="Contact No"
-                      style={{ color: '#000000' }}
                     />
                     <input
                       type="text"
                       value={newDirector.address}
                       onChange={(e) => handleNewDirectorChange('address', e.target.value)}
                       disabled={!isFormEditable}
-                      className="setup-input-field"
+                      className="setup-input-field reg-text-black"
                       placeholder="Address"
-                      style={{ color: '#000000' }}
                     />
                     <button
                       onClick={handleAddDirector}
@@ -3719,13 +3511,13 @@ function FourCardsWithModal() {
         );
       case 'Notification':
         return (
-          <div style={{ width: '100%' }}>
+          <div className="reg-w100pct">
             {/* Statement Delivery */}
-            <div style={{ marginBottom: '16px' }}>
-              <label className="setup-input-label" style={{ fontWeight: 600, marginRight: '16px' }}>
+            <div className="reg-mb16">
+              <label className="setup-input-label reg-fw600 reg-mr16">
                 How do you wish to receive Statement ?
               </label>
-              <label style={{ marginRight: '18px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+              <label className="reg-mr18 reg-inline-flex reg-flex-center reg-gap8 reg-text-black">
                 <input
                   type="radio"
                   name="statementDelivery"
@@ -3736,14 +3528,14 @@ function FourCardsWithModal() {
                 />
                 Mail
               </label>
-              <label style={{ marginRight: '18px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#000000' }}>
+              <label className="reg-mr18 reg-inline-flex reg-flex-center reg-gap8 reg-text-black">
                 <input
                   type="radio"
                   name="statementDelivery"
                   checked={formData.statementDelivery === 'E-Mail'}
                   onChange={() => handleInputChange('statementDelivery', 'E-Mail')}
                   disabled={!isFormEditable}
-                  style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                  className={`reg-accent-purple ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                 />
                 E-Mail
               </label>
@@ -3761,16 +3553,16 @@ function FourCardsWithModal() {
             </div>
 
             {/* Cards - 2 cards side by side, 50% each */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', width: '100%' }}>
+            <div className="reg-grid-2col">
               {/* E-Mail Card */}
               <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '12px' }}>
+                <label className="reg-flex-center reg-gap8 reg-fw600 reg-text-black reg-mb12">
                   <input
                     type="checkbox"
                     checked={formData.emailNotifyEnabled}
                     onChange={(e) => handleInputChange('emailNotifyEnabled', e.target.checked)}
                     disabled={!isFormEditable}
-                    style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                    className={`reg-accent-purple ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                   />
                   Send me E-Mail on
                 </label>
@@ -3802,13 +3594,13 @@ function FourCardsWithModal() {
 
               {/* SMS Card */}
               <div className="setup-ash-box" style={{ padding: '16px', width: '100%' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#000000', marginBottom: '12px' }}>
+                <label className="reg-flex-center reg-gap8 reg-fw600 reg-text-black reg-mb12">
                   <input
                     type="checkbox"
                     checked={formData.smsNotifyEnabled}
                     onChange={(e) => handleInputChange('smsNotifyEnabled', e.target.checked)}
                     disabled={!isFormEditable}
-                    style={{ accentColor: '#9333ea', cursor: isFormEditable ? 'pointer' : 'default' }}
+                    className={`reg-accent-purple ${isFormEditable ? 'reg-cursor-pointer' : 'reg-cursor-default'}`}
                   />
                   Send me SMS on
                 </label>
@@ -3900,9 +3692,8 @@ function FourCardsWithModal() {
                             value={doc.user}
                             onChange={(e) => setSupportingDocs(prev => prev.map((d, i) => i === idx ? { ...d, user: e.target.value } : d))}
                             disabled={!isFormEditable || !doc.selected}
-                            className="setup-input-field"
+                            className="setup-input-field reg-text-black"
                             placeholder=""
-                            style={{ color: '#000000' }}
                           />
                         </td>
                       </tr>
@@ -3929,14 +3720,14 @@ function FourCardsWithModal() {
                   disabled={!isFormEditable}
                   style={{ accentColor: '#9333ea' }}
                 />
-                <span className="setup-input-label" style={{ color: '#000000' }}>Select All</span>
+                <span className="setup-input-label reg-text-black">Select All</span>
               </div>
             </div>
           </div>
         );
       case 'Office Use Details':
         return (
-          <div style={{ width: '100%' }}>
+          <div className="reg-w100pct">
             {/* First Row: Investment Type and Investor Category - 2 columns 1fr each */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', width: '100%', marginBottom: '24px' }}>
               {/* Left Column: Investment Type at Registration */}
@@ -3984,7 +3775,7 @@ function FourCardsWithModal() {
                         <div data-table="agency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
-                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                              <tr className="reg-bg-header reg-border-bottom-gray">
                                 <th
                                   style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
                                   onClick={() => handleTableSort('agency', 'code')}
@@ -4030,7 +3821,7 @@ function FourCardsWithModal() {
                         <div data-table="subagency" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
-                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                              <tr className="reg-bg-header reg-border-bottom-gray">
                                 <th
                                   style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
                                   onClick={() => handleTableSort('subAgency', 'code')}
@@ -4073,7 +3864,7 @@ function FourCardsWithModal() {
                         <div data-table="agent" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
-                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                              <tr className="reg-bg-header reg-border-bottom-gray">
                                 <th
                                   style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
                                   onClick={() => handleTableSort('agent', 'code')}
@@ -4548,29 +4339,29 @@ function FourCardsWithModal() {
                           {/* Tab content */}
                           <div>
                             {accountsActiveTab === 'Details' && (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
+                              <div className="reg-flex-col-gap12">
                                 {/* First Row: Fund + Last Investment No + Account No + Active checkbox (4 columns) */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                <div className="reg-flex-center-gap16">
                                   {/* Column 1: Fund */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px' }}>Fund</label>
-                                    <div style={{ position: 'relative', flex: 1 }}>
-                                      <div onClick={() => isFormEditable && setShowFundTable(!showFundTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.fund ? '#000000' : '#64748b', minHeight: '32px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-min80">Fund</label>
+                                    <div className="reg-relative reg-flex1">
+                                      <div onClick={() => isFormEditable && setShowFundTable(!showFundTable)} className="reg-fund-select-box" style={{ color: formData.fund ? '#000000' : '#64748b' }}>
                                         {formData.fund || 'Select fund (Name - Code)'}
                                       </div>
                                       {showFundTable && isFormEditable && (
-                                        <div data-table="fund" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                        <div data-table="fund" className="reg-company-dropdown reg-min-width-400">
+                                          <table className="reg-company-table">
                                             <thead>
-                                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                              <tr className="reg-bg-header reg-border-bottom-gray">
                                                 <th
-                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  className="reg-company-th"
                                                   onClick={() => handleTableSort('fund', 'name')}
                                                 >
                                                   Name{renderSortIndicator('fund', 'name')}
                                                 </th>
                                                 <th
-                                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  className="reg-company-th-last"
                                                   onClick={() => handleTableSort('fund', 'code')}
                                                 >
                                                   Code{renderSortIndicator('fund', 'code')}
@@ -4585,12 +4376,10 @@ function FourCardsWithModal() {
                                                     handleInputChange('fund', `${fund.name} - ${fund.code}`);
                                                     setShowFundTable(false);
                                                   }}
-                                                  style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                  className="reg-company-tr"
                                                 >
-                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{fund.name}</td>
-                                                  <td style={{ padding: '8px 12px', color: '#000000' }}>{fund.code}</td>
+                                                  <td className="reg-company-td">{fund.name}</td>
+                                                  <td className="reg-company-td-last">{fund.code}</td>
                                                 </tr>
                                               ))}
                                             </tbody>
@@ -4600,34 +4389,32 @@ function FourCardsWithModal() {
                                     </div>
                                   </div>
                                   {/* Column 2: Last Investment No */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px' }}>Last Investment No</label>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-min80">Last Investment No</label>
                                     <input
                                       type="text"
                                       value={formData.lastInvestmentNo}
                                       onChange={(e) => handleInputChange('lastInvestmentNo', e.target.value)}
                                       disabled={!isFormEditable}
-                                      className="setup-input-field"
+                                      className="setup-input-field reg-flex1 reg-text-black"
                                       placeholder="Enter last investment number"
-                                      style={{ color: '#000000', flex: 1 }}
                                     />
                                   </div>
                                   {/* Column 3: Account No */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px' }}>Account No</label>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-min80">Account No</label>
                                     <input
                                       type="text"
                                       value={formData.accountNo}
                                       onChange={(e) => handleInputChange('accountNo', e.target.value)}
                                       disabled={!isFormEditable}
-                                      className="setup-input-field"
+                                      className="setup-input-field reg-flex1 reg-text-black"
                                       placeholder="Enter account number"
-                                      style={{ color: '#000000', flex: 1 }}
                                     />
                                   </div>
                                   {/* Column 4: Active checkbox */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="reg-radio-gap6">
                                       <input
                                         type="checkbox"
                                         checked={formData.isActive}
@@ -4640,38 +4427,29 @@ function FourCardsWithModal() {
                                 </div>
 
                                 {/* Second Row: Holder ID + Acc. Created On + Empty + Empty (4 columns) */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                <div className="reg-flex-center-gap16">
                                   {/* Column 1: Holder ID */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px' }}>HolderID</label>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-min80">HolderID</label>
                                     <input
                                       type="text"
                                       value={formData.holderId}
                                       onChange={(e) => handleInputChange('holderId', e.target.value)}
                                       disabled={!isFormEditable}
-                                      className="setup-input-field"
+                                      className="setup-input-field reg-input-w150-max150 reg-text-black"
                                       placeholder="Enter holder ID"
-                                      style={{ color: '#000000', width: '150px', maxWidth: '150px' }}
                                     />
                                   </div>
                                   {/* Column 2: Acc. Created On */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px' }}>Acc. Created On:</label>
-                                    <div style={{ position: 'relative' }}>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-min80">Acc. Created On:</label>
+                                    <div className="reg-relative">
                                       <input
                                         type="date"
                                         value={formData.accCreatedOn}
                                         onChange={(e) => handleInputChange('accCreatedOn', e.target.value)}
                                         disabled={!isFormEditable}
-                                        className="setup-input-field"
-                                        style={{
-                                          color: '#000000',
-                                          width: '150px',
-                                          maxWidth: '150px',
-                                          cursor: isFormEditable ? 'pointer' : 'default',
-                                          WebkitAppearance: 'none',
-                                          MozAppearance: 'textfield'
-                                        }}
+                                        className="setup-input-field reg-acc-created-date reg-text-black"
                                         onClick={(e) => {
                                           if (isFormEditable) {
                                             e.currentTarget.showPicker?.();
@@ -4686,15 +4464,15 @@ function FourCardsWithModal() {
                                     </div>
                                   </div>
                                   {/* Column 3: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                   {/* Column 4: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                 </div>
 
                                 {/* Card with 2 tabs: Joint Account Details and Nominee Details */}
-                                <div className="setup-ash-box" style={{ padding: '16px', marginTop: '12px' }}>
+                                <div className="setup-ash-box reg-ash-box-padded reg-margin-top12">
                                   {/* Tab headers */}
-                                  <div role="tablist" style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                                  <div role="tablist" className="reg-joint-nominee-tabs">
                                     {['Joint Account Details', 'Nominee Details'].map(tab => (
                                       <div
                                         key={tab}
@@ -4703,16 +4481,7 @@ function FourCardsWithModal() {
                                         tabIndex={0}
                                         onClick={() => setAccountHolderDetailsTab(tab)}
                                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setAccountHolderDetailsTab(tab); }}
-                                        style={{
-                                          padding: '10px 14px',
-                                          background: accountHolderDetailsTab === tab ? '#ffffff' : '#e2e8f0',
-                                          color: '#000000',
-                                          border: accountHolderDetailsTab === tab ? '2px solid #0ea5e9' : '1px solid #cbd5e1',
-                                          borderRadius: '6px 6px 0 0',
-                                          cursor: 'pointer',
-                                          fontWeight: 600,
-                                          fontSize: '12px',
-                                        }}
+                                        className={`reg-joint-nominee-tab ${accountHolderDetailsTab === tab ? 'active' : 'inactive'}`}
                                       >
                                         {tab}
                                       </div>
@@ -4721,14 +4490,14 @@ function FourCardsWithModal() {
 
                                   {/* Tab content */}
                                   {accountHolderDetailsTab === 'Joint Account Details' && (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    <div className="reg-flex-col-gap16">
                                       {/* Account Holder Type card */}
-                                      <div className="setup-ash-box" style={{ padding: '16px', background: '#f1f5f9' }}>
-                                        <div style={{ fontWeight: 'bold', marginBottom: '12px', color: '#000000' }}>Account Holder Type</div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                      <div className="setup-ash-box reg-ash-box-padded" style={{ background: '#f1f5f9' }}>
+                                        <div className="reg-label-bold-mb12 reg-text-black">Account Holder Type</div>
+                                        <div className="reg-flex-center-gap16-full-width">
                                           {/* Column 1: Radio buttons */}
-                                          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '33.33%' }}>
-                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                          <div className="reg-flex-center-gap16 reg-flex-33">
+                                            <label className="reg-radio-gap6">
                                               <input
                                                 type="radio"
                                                 name="accountHolderType"
@@ -4738,9 +4507,9 @@ function FourCardsWithModal() {
                                                 disabled={!isFormEditable}
                                                 style={{ accentColor: formData.accountHolderType === 'Individual' ? '#9333ea' : undefined }}
                                               />
-                                              <span style={{ color: '#000000' }}>Individual</span>
+                                              <span className="reg-text-black">Individual</span>
                                             </label>
-                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                            <label className="reg-radio-gap6">
                                               <input
                                                 type="radio"
                                                 name="accountHolderType"
@@ -4750,9 +4519,9 @@ function FourCardsWithModal() {
                                                 disabled={!isFormEditable}
                                                 style={{ accentColor: formData.accountHolderType === 'Joint' ? '#9333ea' : undefined }}
                                               />
-                                              <span style={{ color: '#000000' }}>Joint</span>
+                                              <span className="reg-text-black">Joint</span>
                                             </label>
-                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                            <label className="reg-radio-gap6">
                                               <input
                                                 type="radio"
                                                 name="accountHolderType"
@@ -4762,11 +4531,11 @@ function FourCardsWithModal() {
                                                 disabled={!isFormEditable}
                                                 style={{ accentColor: formData.accountHolderType === 'Guardian' ? '#9333ea' : undefined }}
                                               />
-                                              <span style={{ color: '#000000' }}>Guardian</span>
+                                              <span className="reg-text-black">Guardian</span>
                                             </label>
                                           </div>
                                           {/* Column 2: Middle input + search (conditional) */}
-                                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '33.33%', visibility: formData.accountHolderType === 'Individual' ? 'hidden' : 'visible' }}>
+                                          <div className="reg-flex-33" style={{ display: 'flex', alignItems: 'center', gap: '8px', visibility: formData.accountHolderType === 'Individual' ? 'hidden' : 'visible' }}>
                                             <label className="setup-input-label" style={{ minWidth: formData.accountHolderType === 'Joint' ? '100px' : '90px' }}>
                                               {formData.accountHolderType === 'Joint' ? 'Joint Holder' : formData.accountHolderType === 'Guardian' ? 'Guardian' : ''}
                                             </label>
@@ -4775,14 +4544,12 @@ function FourCardsWithModal() {
                                               value={formData.accountHolderType === 'Joint' ? formData.jointHolderInput : formData.guardianInput}
                                               onChange={(e) => handleInputChange(formData.accountHolderType === 'Joint' ? 'jointHolderInput' : 'guardianInput', e.target.value)}
                                               disabled={!isFormEditable}
-                                              className="setup-input-field"
+                                              className="setup-input-field reg-flex1 reg-text-black"
                                               placeholder="Enter Holder ID"
-                                              style={{ color: '#000000', flex: 1 }}
                                             />
                                             <button
-                                              className="setup-btn setup-btn-new"
+                                              className="setup-btn setup-btn-new reg-btn-search"
                                               title="Search"
-                                              style={{ padding: '8px 12px' }}
                                               onClick={() => {
                                                 if (formData.accountHolderType === 'Joint') {
                                                   setIsJointHolderSearchModalOpen(true);
@@ -4794,20 +4561,18 @@ function FourCardsWithModal() {
                                             >🔍</button>
                                           </div>
                                           {/* Column 3: Right input + add button */}
-                                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '33.33%' }}>
+                                          <div className="reg-flex-center-gap8 reg-flex-33">
                                             <input
                                               type="text"
                                               value={formData.rightInput}
                                               onChange={(e) => handleInputChange('rightInput', e.target.value)}
                                               disabled={!isFormEditable}
-                                              className="setup-input-field"
+                                              className="setup-input-field reg-flex1 reg-text-black"
                                               placeholder="Enter Name"
-                                              style={{ color: '#000000', flex: 1 }}
                                             />
                                             <button
-                                              className="setup-btn setup-btn-new"
+                                              className="setup-btn setup-btn-new reg-btn-search"
                                               title="Add to table"
-                                              style={{ padding: '8px 12px' }}
                                               onClick={() => {
                                                 if (formData.rightInput.trim()) {
                                                   const newHolder: HolderInfo = {
@@ -4826,13 +4591,13 @@ function FourCardsWithModal() {
                                       </div>
 
                                       {/* Account Operate card (visible for all account holder types) */}
-                                      <div className="setup-ash-box" style={{ padding: '16px', background: '#f1f5f9' }}>
-                                        <div style={{ fontWeight: 'bold', marginBottom: '12px', color: '#000000' }}>Account Operate</div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                                      <div className="setup-ash-box reg-ash-box-padded" style={{ background: '#f1f5f9' }}>
+                                        <div className="reg-label-bold-mb12 reg-text-black">Account Operate</div>
+                                        <div className="reg-flex-center-gap16 reg-margin-bottom16">
                                           {/* Either Party and Jointly radio buttons only visible when Joint is selected */}
                                           {formData.accountHolderType === 'Joint' && (
                                             <>
-                                              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                              <label className="reg-radio-gap6">
                                                 <input
                                                   type="radio"
                                                   name="accountOperate"
@@ -4842,9 +4607,9 @@ function FourCardsWithModal() {
                                                   disabled={!isFormEditable}
                                                   style={{ accentColor: formData.accountOperate === 'Either Party' ? '#9333ea' : undefined }}
                                                 />
-                                                <span style={{ color: '#000000' }}>Either Party</span>
+                                                <span className="reg-text-black">Either Party</span>
                                               </label>
-                                              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                              <label className="reg-radio-gap6">
                                                 <input
                                                   type="radio"
                                                   name="accountOperate"
@@ -4854,30 +4619,30 @@ function FourCardsWithModal() {
                                                   disabled={!isFormEditable}
                                                   style={{ accentColor: formData.accountOperate === 'Jointly' ? '#9333ea' : undefined }}
                                                 />
-                                                <span style={{ color: '#000000' }}>Jointly</span>
+                                                <span className="reg-text-black">Jointly</span>
                                               </label>
                                             </>
                                           )}
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                                          <div style={{ flex: 1 }}>
-                                            <table className="setup-data-table" style={{ width: '100%' }}>
+                                        <div className="reg-flex-center-gap12 reg-margin-bottom12">
+                                          <div className="reg-flex1">
+                                            <table className="reg-bank-accounts-table">
                                               <thead>
-                                                <tr>
-                                                  <th>Holder No</th>
-                                                  <th>Holder Name</th>
+                                                <tr className="reg-portal-thead">
+                                                  <th className="reg-bank-accounts-th">Holder No</th>
+                                                  <th className="reg-bank-accounts-th">Holder Name</th>
                                                 </tr>
                                               </thead>
-                                              <tbody>
+                                              <tbody className="reg-table-body">
                                                 {jointHolders.length === 0 ? (
                                                   <tr>
-                                                    <td colSpan={2} style={{ textAlign: 'center', padding: '20px', color: '#94a3b8' }}>No holders added</td>
+                                                    <td colSpan={2} className="empty-cell" style={{ padding: '20px' }}>No holders added</td>
                                                   </tr>
                                                 ) : (
                                                   jointHolders.map((holder, idx) => (
                                                     <tr key={idx}>
-                                                      <td>{holder.holderNo}</td>
-                                                      <td>{holder.holderName}</td>
+                                                      <td className="reg-bank-accounts-td">{holder.holderNo}</td>
+                                                      <td className="reg-bank-accounts-td">{holder.holderName}</td>
                                                     </tr>
                                                   ))
                                                 )}
@@ -4885,8 +4650,7 @@ function FourCardsWithModal() {
                                             </table>
                                           </div>
                                           <button
-                                            className="setup-btn"
-                                            style={{ background: '#dc2626', color: '#ffffff', padding: '8px 16px', marginLeft: '12px' }}
+                                            className="setup-btn reg-btn-remove-list"
                                             onClick={() => {
                                               setJointHolders(jointHolders.filter((_, idx) => !jointHolders[idx].selected));
                                             }}
@@ -4899,44 +4663,40 @@ function FourCardsWithModal() {
                                   )}
 
                                   {accountHolderDetailsTab === 'Nominee Details' && (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    <div className="reg-flex-col-gap16">
                                       {/* First row: 4 columns */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                      <div className="reg-flex-center-gap16-full-width">
                                         {/* Column 1: Nominee label + input + search */}
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                          <label className="setup-input-label" style={{ minWidth: '80px' }}>Nominee</label>
+                                        <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                          <label className="setup-input-label reg-label-min80">Nominee</label>
                                           <input
                                             type="text"
                                             value={formData.nomineeInput}
                                             onChange={(e) => handleInputChange('nomineeInput', e.target.value)}
                                             disabled={!isFormEditable}
-                                            className="setup-input-field"
+                                            className="setup-input-field reg-flex1 reg-text-black"
                                             placeholder="Enter Holder ID"
-                                            style={{ color: '#000000', flex: 1 }}
                                           />
                                           <button
-                                            className="setup-btn setup-btn-new"
+                                            className="setup-btn setup-btn-new reg-btn-search"
                                             title="Search"
-                                            style={{ padding: '8px 12px' }}
                                             onClick={() => setIsNomineeSearchModalOpen(true)}
                                             disabled={!isFormEditable}
                                           >🔍</button>
                                         </div>
-                                        {/* Column 3: Input + add button */}
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '25%', flex: '1 1 25%' }}>
+                                        {/* Column 2: Input + add button */}
+                                        <div className="reg-flex-center-gap8 reg-flex-1-1-25">
                                           <input
                                             type="text"
                                             value={formData.nomineeRightInput}
                                             onChange={(e) => handleInputChange('nomineeRightInput', e.target.value)}
                                             disabled={!isFormEditable}
-                                            className="setup-input-field"
+                                            className="setup-input-field reg-flex1 reg-text-black"
                                             placeholder="Enter Name"
-                                            style={{ color: '#000000', flex: 1 }}
                                           />
                                           <button
-                                            className="setup-btn setup-btn-new"
+                                            className="setup-btn setup-btn-new reg-btn-search"
                                             title="Add to table"
-                                            style={{ padding: '8px 12px' }}
                                             onClick={() => {
                                               if (formData.nomineeRightInput.trim()) {
                                                 const newNominee: HolderInfo = {
@@ -4952,28 +4712,28 @@ function FourCardsWithModal() {
                                           >▼</button>
                                         </div>
                                         {/* Column 4: Empty */}
-                                        <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                        <div className="reg-flex-1-1-25"></div>
                                       </div>
                                       {/* Table: Holder No and Holder Name */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <div style={{ flex: 1 }}>
-                                          <table className="setup-data-table" style={{ width: '100%' }}>
+                                      <div className="reg-flex-center-gap12">
+                                        <div className="reg-flex1">
+                                          <table className="reg-bank-accounts-table">
                                             <thead>
-                                              <tr>
-                                                <th>Holder No</th>
-                                                <th>Holder Name</th>
+                                              <tr className="reg-portal-thead">
+                                                <th className="reg-bank-accounts-th">Holder No</th>
+                                                <th className="reg-bank-accounts-th">Holder Name</th>
                                               </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody className="reg-table-body">
                                               {nomineeHolders.length === 0 ? (
                                                 <tr>
-                                                  <td colSpan={2} style={{ textAlign: 'center', padding: '20px', color: '#94a3b8' }}>No nominees added</td>
+                                                  <td colSpan={2} className="empty-cell" style={{ padding: '20px' }}>No nominees added</td>
                                                 </tr>
                                               ) : (
                                                 nomineeHolders.map((holder, idx) => (
                                                   <tr key={idx}>
-                                                    <td>{holder.holderNo}</td>
-                                                    <td>{holder.holderName}</td>
+                                                    <td className="reg-bank-accounts-td">{holder.holderNo}</td>
+                                                    <td className="reg-bank-accounts-td">{holder.holderName}</td>
                                                   </tr>
                                                 ))
                                               )}
@@ -4981,12 +4741,10 @@ function FourCardsWithModal() {
                                           </table>
                                         </div>
                                         <button
-                                          className="setup-btn"
-                                          style={{ background: '#dc2626', color: '#ffffff', padding: '8px 16px', marginLeft: '12px' }}
+                                          className="setup-btn reg-btn-remove-list"
                                           onClick={() => {
                                             setNomineeHolders(nomineeHolders.filter((_, idx) => !nomineeHolders[idx].selected));
                                           }}
-
                                         >
                                           Remove selected Item
                                         </button>
@@ -4995,9 +4753,10 @@ function FourCardsWithModal() {
                                   )}
                                 </div>
 
+
                                 {/* Reinvest/Payout radio buttons */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '12px' }}>
-                                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                <div className="reg-reinvest-payout-row">
+                                  <label className="reg-radio-gap6">
                                     <input
                                       type="radio"
                                       name="reinvestPayout"
@@ -5007,9 +4766,9 @@ function FourCardsWithModal() {
                                       disabled={!isFormEditable}
                                       style={{ accentColor: formData.reinvestPayout === 'Reinvest' ? '#9333ea' : undefined }}
                                     />
-                                    <span style={{ color: '#000000' }}>Reinvest</span>
+                                    <span className="reg-text-black">Reinvest</span>
                                   </label>
-                                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                  <label className="reg-radio-gap6">
                                     <input
                                       type="radio"
                                       name="reinvestPayout"
@@ -5019,48 +4778,48 @@ function FourCardsWithModal() {
                                       disabled={!isFormEditable}
                                       style={{ accentColor: formData.reinvestPayout === 'Payout' ? '#9333ea' : undefined }}
                                     />
-                                    <span style={{ color: '#000000' }}>Payout</span>
+                                    <span className="reg-text-black">Payout</span>
                                   </label>
                                 </div>
 
                                 {/* Reinvest card */}
                                 {formData.reinvestPayout === 'Reinvest' && (
-                                  <div className="setup-ash-box" style={{ padding: '16px', marginTop: '12px' }}>
+                                  <div className="setup-ash-box reg-ash-box-padded reg-margin-top12">
                                     {/* One row: Title + Checkbox | Fund | Account No + Search | Empty (4 columns) */}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                    <div className="reg-flex-center-gap16">
                                       {/* Column 1: Title + Checkbox */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '25%', flex: '1 1 25%' }}>
+                                      <div className="reg-flex-center-gap8 reg-flex-1-1-25">
                                         <div style={{ fontWeight: 'bold', color: '#000000' }}>Reinvest to Diffrent Account(tick)</div>
-                                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                        <label className="reg-radio-gap6">
                                           <input
                                             type="checkbox"
                                             checked={formData.reinvestToDifferentAccount}
                                             onChange={(e) => handleInputChange('reinvestToDifferentAccount', e.target.checked)}
                                             disabled={!isFormEditable}
                                           />
-                                          <span style={{ color: '#000000' }}>Yes</span>
+                                          <span className="reg-text-black">Yes</span>
                                         </label>
                                       </div>
                                       {/* Column 2: Fund */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Fund</label>
-                                        <div style={{ position: 'relative', flex: 1 }}>
-                                          <div onClick={() => isFormEditable && setShowReinvestFundTable(!showReinvestFundTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.reinvestFund ? '#000000' : '#64748b', minHeight: '32px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                        <label className="setup-input-label reg-label-min80">Fund</label>
+                                        <div className="reg-relative reg-flex1">
+                                          <div onClick={() => isFormEditable && setShowReinvestFundTable(!showReinvestFundTable)} className={`reg-fund-select-box ${formData.reinvestFund ? 'reg-text-black' : 'setup-placeholder-color'}`}>
                                             {formData.reinvestFund || 'Select fund (Name - Code)'}
                                           </div>
                                           {showReinvestFundTable && isFormEditable && (
-                                            <div data-table="reinvestFund" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <div data-table="reinvestFund" className="reg-company-dropdown reg-min-width-400">
+                                              <table className="reg-company-table">
                                                 <thead>
-                                                  <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                  <tr className="reg-bg-header reg-border-bottom-gray">
                                                     <th
-                                                      style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                      className="reg-company-th"
                                                       onClick={() => handleTableSort('reinvestFund', 'name')}
                                                     >
                                                       Name{renderSortIndicator('reinvestFund', 'name')}
                                                     </th>
                                                     <th
-                                                      style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                      className="reg-company-th-last"
                                                       onClick={() => handleTableSort('reinvestFund', 'code')}
                                                     >
                                                       Code{renderSortIndicator('reinvestFund', 'code')}
@@ -5075,12 +4834,10 @@ function FourCardsWithModal() {
                                                         handleInputChange('reinvestFund', `${fund.name} - ${fund.code}`);
                                                         setShowReinvestFundTable(false);
                                                       }}
-                                                      style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                      className="reg-company-tr"
                                                     >
-                                                      <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{fund.name}</td>
-                                                      <td style={{ padding: '8px 12px', color: '#000000' }}>{fund.code}</td>
+                                                      <td className="reg-company-td">{fund.name}</td>
+                                                      <td className="reg-company-td-last">{fund.code}</td>
                                                     </tr>
                                                   ))}
                                                 </tbody>
@@ -5090,56 +4847,54 @@ function FourCardsWithModal() {
                                         </div>
                                       </div>
                                       {/* Column 3: Account No + Search */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Account No</label>
+                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                        <label className="setup-input-label reg-label-min80">Account No</label>
                                         <input
                                           type="text"
                                           value={formData.reinvestAccountNo}
                                           onChange={(e) => handleInputChange('reinvestAccountNo', e.target.value)}
                                           disabled={!isFormEditable}
-                                          className="setup-input-field"
+                                          className="setup-input-field reg-flex1 reg-text-black"
                                           placeholder="Enter account number"
-                                          style={{ color: '#000000', flex: 1 }}
                                         />
                                         <button
-                                          className="setup-btn setup-btn-new"
+                                          className="setup-btn setup-btn-new reg-btn-search"
                                           title="Search"
-                                          style={{ padding: '8px 12px' }}
                                           onClick={() => setIsReinvestAccountSearchModalOpen(true)}
                                           disabled={!isFormEditable}
                                         >🔍</button>
                                       </div>
                                       {/* Column 4: Empty */}
-                                      <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                      <div className="reg-flex-1-1-25"></div>
                                     </div>
                                   </div>
                                 )}
 
                                 {/* Payout card */}
                                 {formData.reinvestPayout === 'Payout' && (
-                                  <div className="setup-ash-box" style={{ padding: '16px', marginTop: '12px' }}>
+                                  <div className="setup-ash-box reg-ash-box-padded reg-margin-top12">
                                     {/* One row: Payment Type | Bank | Account No | Empty (4 columns) */}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                    <div className="reg-flex-center-gap16">
                                       {/* Column 1: Payment Type */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Payment Type</label>
-                                        <div style={{ position: 'relative', flex: 1 }}>
-                                          <div onClick={() => isFormEditable && setShowPaymentTypeTable(!showPaymentTypeTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.paymentType ? '#000000' : '#64748b', minHeight: '32px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                        <label className="setup-input-label reg-label-min80">Payment Type</label>
+                                        <div className="reg-relative reg-flex1">
+                                          <div onClick={() => isFormEditable && setShowPaymentTypeTable(!showPaymentTypeTable)} className={`reg-fund-select-box ${formData.paymentType ? 'reg-text-black' : 'setup-placeholder-color'}`}>
                                             {formData.paymentType || 'Select payment type (Code - Name)'}
                                           </div>
                                           {showPaymentTypeTable && isFormEditable && (
-                                            <div data-table="paymentType" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <div data-table="paymentType" className="reg-company-dropdown reg-min-width-400">
+                                              <table className="reg-company-table">
                                                 <thead>
-                                                  <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                  <tr className="reg-bg-header reg-border-bottom-gray">
                                                     <th
-                                                      style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                      className="reg-company-th"
                                                       onClick={() => handleTableSort('paymentType', 'code')}
                                                     >
                                                       Code{renderSortIndicator('paymentType', 'code')}
                                                     </th>
                                                     <th
-                                                      style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                      className="reg-company-th-last"
                                                       onClick={() => handleTableSort('paymentType', 'name')}
                                                     >
                                                       Name{renderSortIndicator('paymentType', 'name')}
@@ -5154,12 +4909,10 @@ function FourCardsWithModal() {
                                                         handleInputChange('paymentType', `${pt.name} - ${pt.code}`);
                                                         setShowPaymentTypeTable(false);
                                                       }}
-                                                      style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                      className="reg-company-tr"
                                                     >
-                                                      <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{pt.code}</td>
-                                                      <td style={{ padding: '8px 12px', color: '#000000' }}>{pt.name}</td>
+                                                      <td className="reg-company-td">{pt.code}</td>
+                                                      <td className="reg-company-td-last">{pt.name}</td>
                                                     </tr>
                                                   ))}
                                                 </tbody>
@@ -5169,31 +4922,31 @@ function FourCardsWithModal() {
                                         </div>
                                       </div>
                                       {/* Column 2: Bank */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Bank</label>
-                                        <div style={{ position: 'relative', flex: 1 }}>
-                                          <div onClick={() => isFormEditable && setShowPayoutBankTable(!showPayoutBankTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.payoutBank ? '#000000' : '#64748b', minHeight: '32px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                        <label className="setup-input-label reg-label-min80">Bank</label>
+                                        <div className="reg-relative reg-flex1">
+                                          <div onClick={() => isFormEditable && setShowPayoutBankTable(!showPayoutBankTable)} className={`reg-fund-select-box ${formData.payoutBank ? 'reg-text-black' : 'setup-placeholder-color'}`}>
                                             {formData.payoutBank || 'Select bank (Name - Code)'}
                                           </div>
                                           {showPayoutBankTable && isFormEditable && (
-                                            <div data-table="payoutBank" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <div data-table="payoutBank" className="reg-company-dropdown reg-min-width-400">
+                                              <table className="reg-company-table">
                                                 <thead>
-                                                  <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                                  <tr className="reg-bg-header reg-border-bottom-gray">
                                                     <th
-                                                      style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                      className="reg-company-th"
                                                       onClick={() => handleTableSort('payoutBank', 'name')}
                                                     >
                                                       Name{renderSortIndicator('payoutBank', 'name')}
                                                     </th>
                                                     <th
-                                                      style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                      className="reg-company-th"
                                                       onClick={() => handleTableSort('payoutBank', 'code')}
                                                     >
                                                       Code{renderSortIndicator('payoutBank', 'code')}
                                                     </th>
                                                     <th
-                                                      style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                      className="reg-company-th-last"
                                                       onClick={() => handleTableSort('payoutBank', 'district')}
                                                     >
                                                       District{renderSortIndicator('payoutBank', 'district')}
@@ -5208,13 +4961,11 @@ function FourCardsWithModal() {
                                                         handleInputChange('payoutBank', `${bank.name} - ${bank.code}`);
                                                         setShowPayoutBankTable(false);
                                                       }}
-                                                      style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                      className="reg-company-tr"
                                                     >
-                                                      <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.name}</td>
-                                                      <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.code}</td>
-                                                      <td style={{ padding: '8px 12px', color: '#000000' }}>{bank.district}</td>
+                                                      <td className="reg-company-td">{bank.name}</td>
+                                                      <td className="reg-company-td">{bank.code}</td>
+                                                      <td className="reg-company-td-last">{bank.district}</td>
                                                     </tr>
                                                   ))}
                                                 </tbody>
@@ -5224,73 +4975,70 @@ function FourCardsWithModal() {
                                         </div>
                                       </div>
                                       {/* Column 3: Account No */}
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                        <label className="setup-input-label" style={{ minWidth: '80px' }}>Account No</label>
+                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                        <label className="setup-input-label reg-label-min80">Account No</label>
                                         <input
                                           type="text"
                                           value={formData.payoutAccountNo}
                                           onChange={(e) => handleInputChange('payoutAccountNo', e.target.value)}
                                           disabled={!isFormEditable}
-                                          className="setup-input-field"
+                                          className="setup-input-field reg-flex1 reg-text-black"
                                           placeholder="Enter account number"
-                                          style={{ color: '#000000', flex: 1 }}
                                         />
                                       </div>
                                       {/* Column 4: Empty */}
-                                      <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                      <div className="reg-flex-1-1-25"></div>
                                     </div>
                                   </div>
                                 )}
 
                                 {/* Payee input - 4 columns */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '12px', width: '100%' }}>
+                                <div className="reg-flex-center-gap16 reg-margin-top12">
                                   {/* Column 1: Payee label + input */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px' }}>Payee</label>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-min80">Payee</label>
                                     <input
                                       type="text"
                                       value={formData.payee}
                                       onChange={(e) => handleInputChange('payee', e.target.value)}
                                       disabled={!isFormEditable}
-                                      className="setup-input-field"
-                                      placeholder="Enter payee"
-                                      style={{ color: '#000000', flex: 1 }}
+                                      className="setup-input-field reg-flex1 reg-text-black"
                                     />
                                   </div>
                                   {/* Column 2: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                   {/* Column 3: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                   {/* Column 4: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                 </div>
                               </div>
                             )}
 
                             {accountsActiveTab === 'Bank Details' && (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
+                              <div className="reg-flex-col-gap12">
                                 {/* First Row: Payment Type | Bank | Account No | Account Name (4 columns) */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                <div className="reg-flex-center-gap16">
                                   {/* Column 1: Payment Type */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Payment Type</label>
-                                    <div style={{ position: 'relative', flex: 1 }}>
-                                      <div onClick={() => isFormEditable && setShowBankDetailsPaymentTypeTable(!showBankDetailsPaymentTypeTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsPaymentType ? '#000000' : '#64748b', minHeight: '32px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-bold-min80">Payment Type</label>
+                                    <div className="reg-relative reg-flex1">
+                                      <div onClick={() => isFormEditable && setShowBankDetailsPaymentTypeTable(!showBankDetailsPaymentTypeTable)} className="reg-fund-select-box" style={{ color: formData.bankDetailsPaymentType ? '#000000' : '#64748b' }}>
                                         {formData.bankDetailsPaymentType || 'Select payment type (Code - Name)'}
                                       </div>
                                       {showBankDetailsPaymentTypeTable && isFormEditable && (
-                                        <div data-table="bankDetailsPaymentType" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                        <div data-table="bankDetailsPaymentType" className="reg-company-dropdown reg-min-width-400">
+                                          <table className="reg-company-table">
                                             <thead>
-                                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                              <tr className="reg-bg-header reg-border-bottom-gray">
                                                 <th
-                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  className="reg-company-th"
                                                   onClick={() => handleTableSort('bankDetailsPaymentType', 'code')}
                                                 >
                                                   Code{renderSortIndicator('bankDetailsPaymentType', 'code')}
                                                 </th>
                                                 <th
-                                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  className="reg-company-th-last"
                                                   onClick={() => handleTableSort('bankDetailsPaymentType', 'name')}
                                                 >
                                                   Name{renderSortIndicator('bankDetailsPaymentType', 'name')}
@@ -5305,12 +5053,10 @@ function FourCardsWithModal() {
                                                     handleInputChange('bankDetailsPaymentType', `${pt.name} - ${pt.code}`);
                                                     setShowBankDetailsPaymentTypeTable(false);
                                                   }}
-                                                  style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                  className="reg-company-tr"
                                                 >
-                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{pt.code}</td>
-                                                  <td style={{ padding: '8px 12px', color: '#000000' }}>{pt.name}</td>
+                                                  <td className="reg-company-td">{pt.code}</td>
+                                                  <td className="reg-company-td-last">{pt.name}</td>
                                                 </tr>
                                               ))}
                                             </tbody>
@@ -5320,31 +5066,31 @@ function FourCardsWithModal() {
                                     </div>
                                   </div>
                                   {/* Column 2: Bank */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Bank</label>
-                                    <div style={{ position: 'relative', flex: 1 }}>
-                                      <div onClick={() => isFormEditable && setShowBankDetailsBankTable(!showBankDetailsBankTable)} style={{ padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', cursor: isFormEditable ? 'pointer' : 'default', color: formData.bankDetailsBank ? '#000000' : '#64748b', minHeight: '32px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-bold-min80">Bank</label>
+                                    <div className="reg-relative reg-flex1">
+                                      <div onClick={() => isFormEditable && setShowBankDetailsBankTable(!showBankDetailsBankTable)} className={`reg-fund-select-box ${formData.bankDetailsBank ? 'reg-text-black' : 'setup-placeholder-color'}`}>
                                         {formData.bankDetailsBank || 'Select bank (Name - Code)'}
                                       </div>
                                       {showBankDetailsBankTable && isFormEditable && (
-                                        <div data-table="bankDetailsBank" style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', minWidth: '400px' }}>
-                                          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                        <div data-table="bankDetailsBank" className="reg-company-dropdown reg-min-width-400">
+                                          <table className="reg-company-table">
                                             <thead>
-                                              <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                                              <tr className="reg-bg-header reg-border-bottom-gray">
                                                 <th
-                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  className="reg-company-th"
                                                   onClick={() => handleTableSort('bankDetailsBank', 'name')}
                                                 >
                                                   Name{renderSortIndicator('bankDetailsBank', 'name')}
                                                 </th>
                                                 <th
-                                                  style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  className="reg-company-th"
                                                   onClick={() => handleTableSort('bankDetailsBank', 'code')}
                                                 >
                                                   Code{renderSortIndicator('bankDetailsBank', 'code')}
                                                 </th>
                                                 <th
-                                                  style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', cursor: 'pointer', userSelect: 'none' }}
+                                                  className="reg-company-th-last"
                                                   onClick={() => handleTableSort('bankDetailsBank', 'district')}
                                                 >
                                                   District{renderSortIndicator('bankDetailsBank', 'district')}
@@ -5359,13 +5105,11 @@ function FourCardsWithModal() {
                                                     handleInputChange('bankDetailsBank', `${bank.name} - ${bank.code}`);
                                                     setShowBankDetailsBankTable(false);
                                                   }}
-                                                  style={{ cursor: 'pointer', borderBottom: '1px solid #e2e8f0' }}
-                                                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                                                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                  className="reg-company-tr"
                                                 >
-                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.name}</td>
-                                                  <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{bank.code}</td>
-                                                  <td style={{ padding: '8px 12px', color: '#000000' }}>{bank.district}</td>
+                                                  <td className="reg-company-td">{bank.name}</td>
+                                                  <td className="reg-company-td">{bank.code}</td>
+                                                  <td className="reg-company-td-last">{bank.district}</td>
                                                 </tr>
                                               ))}
                                             </tbody>
@@ -5375,79 +5119,73 @@ function FourCardsWithModal() {
                                     </div>
                                   </div>
                                   {/* Column 3: Account No */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Account No</label>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-bold-min80">Account No</label>
                                     <input
                                       type="text"
                                       value={formData.bankDetailsAccountNo}
                                       onChange={(e) => handleInputChange('bankDetailsAccountNo', e.target.value)}
                                       disabled={!isFormEditable}
-                                      className="setup-input-field"
-                                      placeholder="Enter account number"
-                                      style={{ color: '#000000', flex: 1 }}
+                                      className="setup-input-field reg-flex1 reg-text-black"
                                     />
                                   </div>
                                   {/* Column 4: Account Name */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Account Name</label>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-bold-min80">Account Name</label>
                                     <input
                                       type="text"
                                       value={formData.bankDetailsAccountName}
                                       onChange={(e) => handleInputChange('bankDetailsAccountName', e.target.value)}
                                       disabled={!isFormEditable}
-                                      className="setup-input-field"
-                                      placeholder="Enter account name"
-                                      style={{ color: '#000000', flex: 1 }}
+                                      className="setup-input-field reg-flex1 reg-text-black"
                                     />
                                   </div>
                                 </div>
 
                                 {/* Second Row: Payee | Empty | Empty | Empty (4 columns) */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+                                <div className="reg-flex-center-gap16">
                                   {/* Column 1: Payee */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '25%', flex: '1 1 25%' }}>
-                                    <label className="setup-input-label" style={{ minWidth: '80px', color: '#000000', fontWeight: 600 }}>Payee</label>
+                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
+                                    <label className="setup-input-label reg-label-bold-min80">Payee</label>
                                     <input
                                       type="text"
                                       value={formData.bankDetailsPayee}
                                       onChange={(e) => handleInputChange('bankDetailsPayee', e.target.value)}
                                       disabled={!isFormEditable}
-                                      className="setup-input-field"
-                                      placeholder="Enter payee"
-                                      style={{ color: '#000000', flex: 1 }}
+                                      className="setup-input-field reg-flex1 reg-text-black"
                                     />
                                   </div>
                                   {/* Column 2: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                   {/* Column 3: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                   {/* Column 4: Empty */}
-                                  <div style={{ width: '25%', flex: '1 1 25%' }}></div>
+                                  <div className="reg-flex-1-1-25"></div>
                                 </div>
 
                                 {/* Bank Accounts Table */}
-                                <div style={{ marginTop: '12px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#f9fafb' }}>
-                                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <div className="reg-bank-details-table-container">
+                                  <table className="reg-bank-accounts-table">
                                     <thead>
-                                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Bank Code</th>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Account No.</th>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Account Type</th>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Bank Name</th>
+                                      <tr className="reg-portal-thead">
+                                        <th className="reg-bank-accounts-th">Bank Code</th>
+                                        <th className="reg-bank-accounts-th">Account No.</th>
+                                        <th className="reg-bank-accounts-th">Account Type</th>
+                                        <th className="reg-bank-accounts-th">Bank Name</th>
                                       </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="reg-table-body">
                                       {bankDetailsAccounts.length === 0 ? (
                                         <tr>
-                                          <td colSpan={4} style={{ padding: '20px', textAlign: 'center', color: '#94a3b8' }}>No bank accounts added</td>
+                                          <td colSpan={4} className="empty-cell reg-p20">No bank accounts added</td>
                                         </tr>
                                       ) : (
                                         bankDetailsAccounts.map((account, idx) => (
-                                          <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.bankCode}</td>
-                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accountNo}</td>
-                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accountType}</td>
-                                            <td style={{ padding: '8px 12px', color: '#000000' }}>{account.bankName}</td>
+                                          <tr key={idx}>
+                                            <td className="reg-bank-accounts-td">{account.bankCode}</td>
+                                            <td className="reg-bank-accounts-td">{account.accountNo}</td>
+                                            <td className="reg-bank-accounts-td">{account.accountType}</td>
+                                            <td className="reg-bank-accounts-td">{account.bankName}</td>
                                           </tr>
                                         ))
                                       )}
@@ -5458,29 +5196,29 @@ function FourCardsWithModal() {
                             )}
 
                             {accountsActiveTab === 'Existing Accounts' && (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#000000' }}>
+                              <div className="reg-flex-col-gap12">
                                 {/* Existing Accounts Table */}
-                                <div style={{ border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#ffffff', overflow: 'hidden' }}>
-                                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <div className="reg-existing-acc-table-container">
+                                  <table className="reg-bank-accounts-table">
                                     <thead>
-                                      <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Account No</th>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Fund Name</th>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Product Type</th>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontWeight: 600 }}>Acc. Type</th>
-                                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', fontWeight: 600 }}>Active</th>
+                                      <tr className="reg-portal-thead">
+                                        <th className="reg-bank-accounts-th">Account No</th>
+                                        <th className="reg-bank-accounts-th">Fund Name</th>
+                                        <th className="reg-bank-accounts-th">Product Type</th>
+                                        <th className="reg-bank-accounts-th">Acc. Type</th>
+                                        <th className="reg-bank-accounts-th">Active</th>
                                       </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="reg-table-body">
                                       {existingAccounts.length === 0 ? (
                                         // Show empty rows when no data
                                         Array.from({ length: 12 }).map((_, idx) => (
-                                          <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000', minHeight: '40px' }}></td>
-                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
-                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
-                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
-                                            <td style={{ padding: '8px 12px', color: '#000000' }}></td>
+                                          <tr key={idx}>
+                                            <td className="reg-bank-accounts-td reg-h40"></td>
+                                            <td className="reg-bank-accounts-td"></td>
+                                            <td className="reg-bank-accounts-td"></td>
+                                            <td className="reg-bank-accounts-td"></td>
+                                            <td className="reg-bank-accounts-td"></td>
                                           </tr>
                                         ))
                                       ) : (
@@ -5488,7 +5226,7 @@ function FourCardsWithModal() {
                                           {existingAccounts.map((account, idx) => (
                                             <tr
                                               key={idx}
-                                              style={{ borderBottom: '1px solid #e2e8f0', cursor: 'pointer' }}
+                                              className="reg-clickable-row"
                                               onDoubleClick={() => {
                                                 // Handle double click to edit
                                                 if (isFormEditable) {
@@ -5500,21 +5238,21 @@ function FourCardsWithModal() {
                                                 }
                                               }}
                                             >
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accountNo}</td>
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.fundName}</td>
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.productType}</td>
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}>{account.accType}</td>
-                                              <td style={{ padding: '8px 12px', color: '#000000' }}>{account.active}</td>
+                                              <td className="reg-bank-accounts-td">{account.accountNo}</td>
+                                              <td className="reg-bank-accounts-td">{account.fundName}</td>
+                                              <td className="reg-bank-accounts-td">{account.productType}</td>
+                                              <td className="reg-bank-accounts-td">{account.accType}</td>
+                                              <td className="reg-bank-accounts-td">{account.active}</td>
                                             </tr>
                                           ))}
                                           {/* Fill remaining rows if needed */}
                                           {existingAccounts.length < 12 && Array.from({ length: 12 - existingAccounts.length }).map((_, idx) => (
-                                            <tr key={`empty-${idx}`} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000', minHeight: '40px' }}></td>
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
-                                              <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000' }}></td>
-                                              <td style={{ padding: '8px 12px', color: '#000000' }}></td>
+                                            <tr key={`empty-${idx}`}>
+                                              <td className="reg-bank-accounts-td reg-h40"></td>
+                                              <td className="reg-bank-accounts-td"></td>
+                                              <td className="reg-bank-accounts-td"></td>
+                                              <td className="reg-bank-accounts-td"></td>
+                                              <td className="reg-bank-accounts-td"></td>
                                             </tr>
                                           ))}
                                         </>
@@ -5524,7 +5262,7 @@ function FourCardsWithModal() {
                                 </div>
 
                                 {/* Instruction text */}
-                                <div style={{ marginTop: '8px', color: '#2563eb', fontSize: '14px', fontWeight: 500 }}>
+                                <div className="reg-instruction-text">
                                   Double click to Edit the selected value
                                 </div>
                               </div>

@@ -800,7 +800,7 @@ function ViewRightsModal({ roleName, onClose }: { roleName: string; onClose: () 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>🔐</div>
             <div>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, letterSpacing: '-0.02em' }}>User Rights — {roleName}</h3>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, letterSpacing: '-0.02em' }}>Role Rights — {roleName}</h3>
               <p style={{ margin: '2px 0 0 0', fontSize: '12px', opacity: 0.9 }}>Granular Permission Matrix (Read-Only View)</p>
             </div>
           </div>

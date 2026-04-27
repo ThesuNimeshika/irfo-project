@@ -6,20 +6,22 @@ import { useNavigate, useLocation } from 'react-router-dom';
    NAV ITEMS
 ───────────────────────────────────────────── */
 const navItems = [
-  { label: 'Dashboard',        icon: '🏠',  link: '/',                  shortcut: 'D' },
-  { label: 'Setup',            icon: '⚙️',  link: '/setup',             shortcut: 'S' },
-  { label: 'Registration',     icon: '📝',  link: '/registrationsetup', shortcut: 'R' },
-  { label: 'Unit Operations',  icon: '🔢',  link: '/unit-operations',   shortcut: 'U' },
-  { label: 'Approval',         icon: '✅',  link: '/approval',          shortcut: 'A' },
-  { label: 'Doc Printing',     icon: '🖨️',  link: '/document-printing', shortcut: 'P' },
-  { label: 'Security',         icon: '🔒',  link: '/security',          shortcut: 'X' },
+  { label: 'Dashboard', icon: '🏠', link: '/', shortcut: 'D' },
+  { label: 'Setup', icon: '⚙️', link: '/setup', shortcut: 'S' },
+  { label: 'Registration', icon: '📝', link: '/registrationsetup', shortcut: 'R' },
+  { label: 'Unit Operations', icon: '🔢', link: '/unit-operations', shortcut: 'U' },
+  { label: 'Approval', icon: '✅', link: '/approval', shortcut: 'A' },
+  { label: 'Doc Printing', icon: '🖨️', link: '/document-printing', shortcut: 'P' },
+  { label: 'Security', icon: '🔒', link: '/security', shortcut: 'X' },
   {
     label: 'Report', icon: '📊', shortcut: 'R',
     children: [
-      { label: 'MIS',              link: '/report/mis' },
-      { label: 'Dividend Reports', link: '/report/dividend' },
-      { label: 'Other Reports',    link: '/report/other' },
+      { label: 'User Login Details', link: '/report' },
+      { label: 'MIS', link: '/report' },
+      { label: 'Dividend Reports', link: '/report' },
+      { label: 'Other Reports', link: '/report' },
     ],
+
   },
 ];
 
@@ -28,8 +30,8 @@ const navItems = [
 ───────────────────────────────────────────── */
 const getSidebarWidth = () => {
   if (typeof window === 'undefined') return 188;
-  if (window.innerWidth <= 480)  return 148;
-  if (window.innerWidth <= 768)  return 168;
+  if (window.innerWidth <= 480) return 148;
+  if (window.innerWidth <= 768) return 168;
   if (window.innerWidth <= 1024) return 178;
   return 188;
 };
@@ -42,8 +44,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
   const [reportOpen, setReportOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(getSidebarWidth());
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number; width: number } | null>(null);
-  const reportBtnRef  = useRef<HTMLButtonElement>(null);
-  const dropdownRef   = useRef<HTMLDivElement>(null);
+  const reportBtnRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   /* ── Sync sidebar width on resize ── */
   useEffect(() => {
@@ -77,7 +79,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
     ?.children?.some(c => location.pathname.toLowerCase().startsWith(c.link.toLowerCase())) ?? false;
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-  const iconSize  = isMobile ? 16 : 18;
+  const iconSize = isMobile ? 16 : 18;
 
   return (
     <>
@@ -316,22 +318,22 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
       <nav
         className="sb-shell"
         style={{
-          width        : sidebarWidth,
-          minWidth     : sidebarWidth,
-          maxWidth     : sidebarWidth,
-          height       : '100vh',
-          position     : 'fixed',
+          width: sidebarWidth,
+          minWidth: sidebarWidth,
+          maxWidth: sidebarWidth,
+          height: '100vh',
+          position: 'fixed',
           top: 0, left: 0,
-          zIndex       : 2000,
-          display      : 'flex',
+          zIndex: 2000,
+          display: 'flex',
           flexDirection: 'column',
-          alignItems   : 'stretch',
-          paddingTop   : 68,
+          alignItems: 'stretch',
+          paddingTop: 68,
           paddingBottom: 20,
-          overflowY    : 'auto',
-          overflowX    : 'hidden',
-          boxSizing    : 'border-box',
-          transition   : 'width 0.25s ease',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          boxSizing: 'border-box',
+          transition: 'width 0.25s ease',
         }}
       >
         {/* NAV ITEMS */}
@@ -355,8 +357,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                     if (!reportOpen && reportBtnRef.current) {
                       const rect = reportBtnRef.current.getBoundingClientRect();
                       setDropdownPos({
-                        top  : rect.top,      // anchor to top of button; popup will go above
-                        left : rect.left,
+                        top: rect.top,      // anchor to top of button; popup will go above
+                        left: rect.left,
                         width: rect.width,
                       });
                     }
@@ -379,13 +381,13 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
                     ref={dropdownRef}
                     className="sb-dropdown sb-dropdown-portal"
                     style={{
-                      position : 'fixed',
-                      left     : dropdownPos.left,
-                      width    : dropdownPos.width,
+                      position: 'fixed',
+                      left: dropdownPos.left,
+                      width: dropdownPos.width,
                       // Place bottom of dropdown at top of button minus a small gap
-                      bottom   : `calc(100vh - ${dropdownPos.top}px + 6px)`,
-                      top      : 'auto',
-                      zIndex   : 9999,
+                      bottom: `calc(100vh - ${dropdownPos.top}px + 6px)`,
+                      top: 'auto',
+                      zIndex: 9999,
                     }}
                   >
                     {item.children?.map(child => (
@@ -427,7 +429,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
 ───────────────────────────────────────────── */
 export default function Sidebar() {
   const navigate = useNavigate();
-  const [open, setOpen]       = useState(false);
+  const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -449,23 +451,23 @@ export default function Sidebar() {
         className="sidebar-fab"
         onClick={() => setOpen(true)}
         style={{
-          position       : 'fixed',
+          position: 'fixed',
           bottom: 24, right: 24,
-          zIndex         : 1300,
-          width          : 50, height: 50,
-          borderRadius   : '50%',
-          background     : 'rgba(255,255,255,0.90)',
-          backdropFilter : 'blur(20px)',
+          zIndex: 1300,
+          width: 50, height: 50,
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.90)',
+          backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          color          : '#1e3a8a',
-          border         : '1.5px solid rgba(200,213,255,0.70)',
-          boxShadow      : '0 4px 20px rgba(30,58,138,0.14), inset 0 1px 0 rgba(255,255,255,0.90)',
-          display        : 'none',
-          alignItems     : 'center',
-          justifyContent : 'center',
-          fontSize       : 24,
-          cursor         : 'pointer',
-          transition     : 'box-shadow 0.18s, background 0.18s',
+          color: '#1e3a8a',
+          border: '1.5px solid rgba(200,213,255,0.70)',
+          boxShadow: '0 4px 20px rgba(30,58,138,0.14), inset 0 1px 0 rgba(255,255,255,0.90)',
+          display: 'none',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 24,
+          cursor: 'pointer',
+          transition: 'box-shadow 0.18s, background 0.18s',
         }}
         aria-label="Open menu"
       >
@@ -477,10 +479,10 @@ export default function Sidebar() {
         <div
           onClick={() => setOpen(false)}
           style={{
-            position  : 'fixed',
-            inset     : 0,
+            position: 'fixed',
+            inset: 0,
             background: 'rgba(0,0,0,0.18)',
-            zIndex    : 1390,
+            zIndex: 1390,
             backdropFilter: 'blur(2px)',
           }}
         />
@@ -491,39 +493,39 @@ export default function Sidebar() {
         <div
           className="sidebar-drawer"
           style={{
-            position      : 'fixed',
+            position: 'fixed',
             top: 0, right: 0,
-            width         : isMobile ? 220 : 260,
-            height        : '100vh',
-            background    : 'rgba(248,250,253,0.92)',
+            width: isMobile ? 220 : 260,
+            height: '100vh',
+            background: 'rgba(248,250,253,0.92)',
             backdropFilter: 'blur(32px) saturate(200%)',
             WebkitBackdropFilter: 'blur(32px) saturate(200%)',
-            borderLeft    : '1px solid rgba(200,213,255,0.60)',
-            zIndex        : 1400,
-            boxShadow     : '-6px 0 40px rgba(30,58,138,0.10)',
-            animation     : 'sbSlideIn 0.26s cubic-bezier(0.4,0,0.2,1)',
-            display       : 'flex',
-            flexDirection : 'column',
-            alignItems    : 'stretch',
+            borderLeft: '1px solid rgba(200,213,255,0.60)',
+            zIndex: 1400,
+            boxShadow: '-6px 0 40px rgba(30,58,138,0.10)',
+            animation: 'sbSlideIn 0.26s cubic-bezier(0.4,0,0.2,1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
           }}
         >
           {/* Close button */}
           <button
             onClick={() => setOpen(false)}
             style={{
-              alignSelf   : 'flex-end',
-              margin      : 12,
-              background  : 'rgba(255,255,255,0.75)',
-              border      : '1px solid rgba(200,213,255,0.50)',
+              alignSelf: 'flex-end',
+              margin: 12,
+              background: 'rgba(255,255,255,0.75)',
+              border: '1px solid rgba(200,213,255,0.50)',
               borderRadius: 8,
               width: 30, height: 30,
-              display     : 'flex',
-              alignItems  : 'center',
+              display: 'flex',
+              alignItems: 'center',
               justifyContent: 'center',
-              fontSize    : 16,
-              color       : '#6b7280',
-              cursor      : 'pointer',
-              boxShadow   : '0 1px 4px rgba(30,58,138,0.08)',
+              fontSize: 16,
+              color: '#6b7280',
+              cursor: 'pointer',
+              boxShadow: '0 1px 4px rgba(30,58,138,0.08)',
             }}
             aria-label="Close menu"
           >

@@ -15,6 +15,7 @@ interface UserRole {
 import UserSearchModal from '../components/UserSearchModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import BackupModalContent from '../components/BackupModalContent';
 
 const moduleData = [
   { title: 'Create User', icon: '👤' },
@@ -22,7 +23,6 @@ const moduleData = [
   { title: 'Assign User Role', icon: '🔑' },
   { title: 'Back Up', icon: '💽' },
   { title: 'Day End', icon: '🔄' },
-  { title: 'User login Details', icon: '📝' },
   { title: 'Mobile Excel File Upload', icon: '📊' },
 ];
 
@@ -113,7 +113,7 @@ function SubMenuRightsModal({
         const next = { ...inner };
         const currentPerms = { ...(next[title] || {}) };
         if (isEnabling) {
-          currentPerms[idx] = ['approve', 'save', 'create', 'delete', 'print'];
+          currentPerms[idx] = ['approve', 'save', 'edit', 'delete', 'print'];
         } else {
           delete currentPerms[idx];
         }
@@ -137,7 +137,7 @@ function SubMenuRightsModal({
       setRowPermissions(prev => ({
         ...prev,
         [title]: items.reduce((acc, _, i) => {
-          acc[i] = ['approve', 'save', 'create', 'delete', 'print'];
+          acc[i] = ['approve', 'save', 'edit', 'delete', 'print'];
           return acc;
         }, {} as Record<number, string[]>)
       }));
@@ -189,7 +189,7 @@ function SubMenuRightsModal({
           <div style={{ textAlign: 'center' }}>ENABLE</div>
           <div style={{ textAlign: 'center' }}>APPROVE</div>
           <div style={{ textAlign: 'center' }}>SAVE</div>
-          <div style={{ textAlign: 'center' }}>CREATE</div>
+          <div style={{ textAlign: 'center' }}>EDIT</div>
           <div style={{ textAlign: 'center' }}>DELETE</div>
           <div style={{ textAlign: 'center' }}>PRINT</div>
         </div>
@@ -215,8 +215,8 @@ function SubMenuRightsModal({
                 </button>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
-                  {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
+                <button className={`rights-action-btn rights-btn-edit ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('edit') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'edit')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('edit') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Edit'}
                 </button>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -831,9 +831,9 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [roles, setRoles] = useState<UserRole[]>([
-    { code: '001', name: 'Project Manager', enabledRows: [0, 1, 6], rowPermissions: { 0: ['approve', 'save'], 1: ['save', 'create'], 6: ['print'] }, createdBy: 'Admin' },
-    { code: '002', name: 'System Admin', enabledRows: [0, 1, 2, 3, 4, 5, 6], rowPermissions: { 0: ['approve', 'save', 'create', 'delete', 'print'], 1: ['approve', 'save', 'create', 'delete', 'print'], 6: ['approve', 'save', 'create', 'delete', 'print'] }, createdBy: 'Director' },
-    { code: '003', name: 'Developer', enabledRows: [1, 2, 3], rowPermissions: { 1: ['save', 'create'], 2: ['save'], 3: ['save'] }, createdBy: 'Lead Dev' },
+    { code: '001', name: 'Project Manager', enabledRows: [0, 1, 6], rowPermissions: { 0: ['approve', 'save'], 1: ['save', 'edit'], 6: ['print'] }, createdBy: 'Admin' },
+    { code: '002', name: 'System Admin', enabledRows: [0, 1, 2, 3, 4, 5, 6], rowPermissions: { 0: ['approve', 'save', 'edit', 'delete', 'print'], 1: ['approve', 'save', 'edit', 'delete', 'print'], 6: ['approve', 'save', 'edit', 'delete', 'print'] }, createdBy: 'Director' },
+    { code: '003', name: 'Developer', enabledRows: [1, 2, 3], rowPermissions: { 1: ['save', 'edit'], 2: ['save'], 3: ['save'] }, createdBy: 'Lead Dev' },
   ] as UserRole[]);
 
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warn' } | null>(null);
@@ -896,7 +896,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
       setRowPermissions(inner => {
         const next = { ...inner };
         if (isEnabling) {
-          next[idx] = ['approve', 'save', 'create', 'delete', 'print'];
+          next[idx] = ['approve', 'save', 'edit', 'delete', 'print'];
         } else {
           delete next[idx];
         }
@@ -913,7 +913,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
         setSubMenuRowPermissions(prev => ({
           ...prev,
           [menuTitle]: subItems.reduce((acc, _, i) => {
-            acc[i] = ['approve', 'save', 'create', 'delete', 'print'];
+            acc[i] = ['approve', 'save', 'edit', 'delete', 'print'];
             return acc;
           }, {} as Record<number, string[]>)
         }));
@@ -947,11 +947,11 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
       const newSubMenuRowPermissions: Record<string, Record<number, string[]>> = {};
 
       subMenus.forEach((menu, i) => {
-        newRowPermissions[i] = ['approve', 'save', 'create', 'delete', 'print'];
+        newRowPermissions[i] = ['approve', 'save', 'edit', 'delete', 'print'];
         const subItems = getSubMenuItems(menu);
         newSubMenuEnabledRows[menu] = subItems.map((_, si) => si);
         newSubMenuRowPermissions[menu] = subItems.reduce((acc, _, si) => {
-          acc[si] = ['approve', 'save', 'create', 'delete', 'print'];
+          acc[si] = ['approve', 'save', 'edit', 'delete', 'print'];
           return acc;
         }, {} as Record<number, string[]>);
       });
@@ -1135,7 +1135,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
           <div style={{ textAlign: 'center' }}>ENABLE</div>
           <div style={{ textAlign: 'center' }}>APPROVE</div>
           <div style={{ textAlign: 'center' }}>SAVE</div>
-          <div style={{ textAlign: 'center' }}>CREATE</div>
+          <div style={{ textAlign: 'center' }}>EDIT</div>
           <div style={{ textAlign: 'center' }}>DELETE</div>
           <div style={{ textAlign: 'center' }}>PRINT</div>
         </div>
@@ -1169,8 +1169,8 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
                 </button>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button className={`rights-action-btn rights-btn-create ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('create') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'create')} disabled={!enabledRows.includes(idx)}>
-                  {(rowPermissions[idx] || []).includes('create') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Create'}
+                <button className={`rights-action-btn rights-btn-edit ${!enabledRows.includes(idx) ? 'disabled' : ''} ${(rowPermissions[idx] || []).includes('edit') ? 'active' : ''}`} onClick={() => togglePermission(idx, 'edit')} disabled={!enabledRows.includes(idx)}>
+                  {(rowPermissions[idx] || []).includes('edit') ? <span style={{ fontSize: '14px', fontWeight: 'bold' }}>✓</span> : 'Edit'}
                 </button>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -1412,6 +1412,11 @@ function Security() {
       return <PasswordChangerModal />;
     }
 
+    if (title === 'Back Up') {
+      return <BackupModalContent />;
+    }
+
+
     return (
       <div className="empty-content" style={{ padding: '20px', textAlign: 'center' }}>
         <p>Content for <strong>{title}</strong> will be implemented here.</p>
@@ -1426,7 +1431,7 @@ function Security() {
         <Navbar />
       </div>
 
-      <div className="setup-main-layout">
+      <div className="setup-main-layout" style={{ minHeight: 'calc(100vh - 70px)' }}>
         <div className="home-sidebar-container">
           <Sidebar />
         </div>

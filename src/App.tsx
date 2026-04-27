@@ -9,7 +9,9 @@ import Login from './pages/Login';
 import OtpAuth from './pages/OtpAuth';
 import ResetRequest from './pages/ResetRequest';
 import Security from './pages/Security';
+import Reports from './pages/Reports';
 import { AuthProvider } from './context/AuthContext';
+
 import ProtectedRoute from './components/ProtectedRoute';
 
 // CSS import ORDER matters:
@@ -40,6 +42,8 @@ function App() {
           <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
           <Route path="/document-printing" element={<ProtectedRoute><DocumentPrinting /></ProtectedRoute>} />
           <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>} />
+          <Route path="/report" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />

@@ -356,6 +356,13 @@
   box-shadow: 0 2px 8px rgba(107, 114, 128, 0.18);
 }
 
+.btn-backup {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+}
+
+
 .btn-icon {
   font-size: 12px;
 }
@@ -1703,6 +1710,7 @@
   font-size: 14px;
   font-weight: 500;
 }
+
 .reg-grid-4col-24 {
   display: grid;
   grid-template-columns: 24% 24% 24% 24%;
@@ -1844,7 +1852,7 @@
   border: 1px solid #cbd5e1 !important;
   border-radius: 4px !important;
   margin-top: 4px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
   max-height: 240px !important;
   overflow-y: auto !important;
 }
@@ -1873,39 +1881,122 @@
 }
 
 
-.risk-low { background-color: #dcfce7 !important; color: #15803d !important; }
-.risk-low-medium { background-color: #d1fae5 !important; color: #047857 !important; }
-.risk-medium { background-color: #fef9c3 !important; color: #a16207 !important; }
-.risk-medium-high { background-color: #ffedd5 !important; color: #c2410c !important; }
-.risk-high { background-color: #fee2e2 !important; color: #b91c1c !important; }
-.risk-very-high { background-color: #fce7f3 !important; color: #9d174d !important; }
+.risk-low {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+.risk-low-medium {
+  background-color: #d1fae5 !important;
+  color: #047857 !important;
+}
+
+.risk-medium {
+  background-color: #fef9c3 !important;
+  color: #a16207 !important;
+}
+
+.risk-medium-high {
+  background-color: #ffedd5 !important;
+  color: #c2410c !important;
+}
+
+.risk-high {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+
+.risk-very-high {
+  background-color: #fce7f3 !important;
+  color: #9d174d !important;
+}
 
 
-.reg-min-width-320 { min-width: 320px !important; }
-.reg-max-h-240 { max-height: 240px !important; }
-.reg-p8-12 { padding: 8px 12px !important; }
-.reg-border-right { border-right: 1px solid #cbd5e1 !important; }
-.reg-fs12 { font-size: 12px !important; }
-.reg-user-select-none { user-select: none !important; }
-.reg-text-left { text-align: left !important; }
+.reg-min-width-320 {
+  min-width: 320px !important;
+}
+
+.reg-max-h-240 {
+  max-height: 240px !important;
+}
+
+.reg-p8-12 {
+  padding: 8px 12px !important;
+}
+
+.reg-border-right {
+  border-right: 1px solid #cbd5e1 !important;
+}
+
+.reg-fs12 {
+  font-size: 12px !important;
+}
+
+.reg-user-select-none {
+  user-select: none !important;
+}
+
+.reg-text-left {
+  text-align: left !important;
+}
 
 
-.reg-p20 { padding: 20px !important; }
-.reg-h40 { height: 40px !important; }
+.reg-p20 {
+  padding: 20px !important;
+}
+
+.reg-h40 {
+  height: 40px !important;
+}
 
 
-.reg-border-bottom-gray { border-bottom: 1px solid #e2e8f0 !important; }
-.reg-p20 { padding: 20px !important; }
-.reg-mr16 { margin-right: 16px !important; }
-.reg-mr18 { margin-right: 18px !important; }
-.reg-inline-flex { display: inline-flex !important; }
-.reg-grid-2col { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+.reg-border-bottom-gray {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.reg-p20 {
+  padding: 20px !important;
+}
+
+.reg-mr16 {
+  margin-right: 16px !important;
+}
+
+.reg-mr18 {
+  margin-right: 18px !important;
+}
+
+.reg-inline-flex {
+  display: inline-flex !important;
+}
+
+.reg-grid-2col {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+}
 
 
-.reg-min-w80 { min-width: 80px !important; }
-.reg-min-w100 { min-width: 100px !important; }
-.reg-min-w280 { min-width: 280px !important; }
-.reg-border-top { border-top: 1px solid #cbd5e1 !important; }
-.reg-pt16 { padding-top: 16px !important; }
-.reg-bg-header { background-color: #f1f5f9 !important; }
+.reg-min-w80 {
+  min-width: 80px !important;
+}
 
+.reg-min-w100 {
+  min-width: 100px !important;
+}
+
+.reg-min-w280 {
+  min-width: 280px !important;
+}
+
+.reg-border-top {
+  border-top: 1px solid #cbd5e1 !important;
+}
+
+.reg-pt16 {
+  padding-top: 16px !important;
+}
+
+.reg-bg-header {
+  background-color: #f1f5f9 !important;
+}

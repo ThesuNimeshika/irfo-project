@@ -16,6 +16,7 @@ import UserSearchModal from '../components/UserSearchModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import BackupModalContent from '../components/BackupModalContent';
+import DayEndModalContent from '../components/DayEndModalContent';
 
 const moduleData = [
   { title: 'Create User', icon: '👤' },
@@ -1414,6 +1415,10 @@ function Security() {
 
     if (title === 'Back Up') {
       return <BackupModalContent />;
+    }
+
+    if (title === 'Day End') {
+      return <DayEndModalContent />;
     }
 
 

@@ -31,6 +31,7 @@ interface FormData {
   branchNo: string;
   // Application Entry fields
   applicationNo: string;
+  cdsNo: string;
   applicationStatus: 'Pending' | 'Approved' | 'All';
   applicantType: 'Individual' | 'Corporate' | '';
   title: string;
@@ -143,6 +144,7 @@ interface FormData {
   authorizedOfficer: string;
   // Unit Holders Accounts (top card)
   ackNo: string;
+  registrationHolderName: string;
   // Unit Holders Accounts Details tab
   fund: string;
   lastInvestmentNo: string;
@@ -336,6 +338,7 @@ function FourCardsWithModal() {
     swiftCode: 'SBLILKLX', // Read-only field
     branchNo: '',
     applicationNo: '',
+    cdsNo: '',
     applicationStatus: 'All',
     applicantType: '',
     title: '',
@@ -442,6 +445,7 @@ function FourCardsWithModal() {
     inputOfficer: '',
     authorizedOfficer: '',
     ackNo: '',
+    registrationHolderName: '',
     // Unit Holders Accounts Details tab
     fund: '',
     lastInvestmentNo: '',
@@ -859,6 +863,7 @@ function FourCardsWithModal() {
       swiftCode: 'SBLILKLX',
       branchNo: '',
       applicationNo: '',
+      cdsNo: '',
       applicationStatus: 'All',
       applicantType: '',
       title: '',
@@ -964,6 +969,7 @@ function FourCardsWithModal() {
       inputOfficer: '',
       authorizedOfficer: '',
       ackNo: '',
+      registrationHolderName: '',
       // Unit Holders Accounts Details tab
       fund: '',
       lastInvestmentNo: '',
@@ -1262,6 +1268,18 @@ function FourCardsWithModal() {
                 onClick={() => setIsRegistrationProfilesSearchModalOpen(true)}
                 disabled={!isFormEditable}
               >🔍</button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label className="setup-input-label" style={{ minWidth: '100px' }}>CDS No.</label>
+                <input
+                  type="text"
+                  value={formData.cdsNo}
+                  onChange={(e) => handleInputChange('cdsNo', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="setup-input-field"
+                  placeholder="Enter CDS number"
+                  style={{ color: '#000000', flex: 1 }}
+                />
+              </div>
               <span className="registration-setup-compulsory-data-fields-note" style={{ marginLeft: '12px' }}>
                 Compulsory Data Fields
               </span>
@@ -1287,40 +1305,48 @@ function FourCardsWithModal() {
     if (modalTitle === 'Unit Holders Accounts') {
       return (
         <div className="setup-input-section">
-          {/* Top card: Registration No + Search + ACKNO - Fixed */}
+          {/* Top card: Registration No + Search + Name + ACKNO - Fixed */}
           <div className="setup-ash-box" style={{ padding: '16px', marginBottom: '2px', position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#ffffff' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
-              {/* Left Column: Reduced width - Registration No label + input */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: 'auto', flex: '0 0 auto' }}>
-                <label className="setup-input-label" style={{ minWidth: '120px' }}>Registration No</label>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              {/* Left Column: Registration No label + input + Search button + Name field */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 auto' }}>
+                <label className="setup-input-label" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Registration No</label>
                 <input
                   type="text"
                   value={formData.applicationNo}
                   onChange={(e) => handleInputChange('applicationNo', e.target.value)}
                   disabled={!isFormEditable}
-                  className="setup-input-field"
+                  className="uha-text-input"
                   placeholder="Enter registration number"
-                  style={{ color: '#000000', width: '200px', minWidth: '200px' }}
+                  style={{ width: '180px' }}
                 />
-              </div>
-              {/* Right Column: Reduced width - Search button + ACKNO label + input */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', width: 'auto', flex: '0 0 auto' }}>
                 <button
-                  className="setup-btn setup-btn-new"
+                  className="uha-icon-btn uha-icon-btn-search"
                   title="Search"
-                  style={{ padding: '8px 16px', minWidth: '50px', width: 'auto' }}
                   onClick={() => setIsUnitHoldersSearchModalOpen(true)}
                   disabled={!isFormEditable}
                 >🔍</button>
-                <label className="setup-input-label" style={{ minWidth: '70px' }}>ACKNO</label>
+                <input
+                  type="text"
+                  value={formData.registrationHolderName}
+                  onChange={(e) => handleInputChange('registrationHolderName', e.target.value)}
+                  disabled={!isFormEditable}
+                  className="uha-text-input"
+                  placeholder="Holder Name"
+                  style={{ flex: 1 }}
+                />
+              </div>
+              {/* Right Column: ACKNO right corner */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <label className="setup-input-label" style={{ minWidth: '70px', textAlign: 'right' }}>ACKNO</label>
                 <input
                   type="text"
                   value={formData.ackNo}
                   onChange={(e) => handleInputChange('ackNo', e.target.value)}
                   disabled={!isFormEditable}
-                  className="setup-input-field"
+                  className="uha-text-input"
                   placeholder="ACKNO"
-                  style={{ color: '#000000', width: '220px', minWidth: '220px' }}
+                  style={{ width: '180px' }}
                 />
               </div>
             </div>
@@ -1333,6 +1359,9 @@ function FourCardsWithModal() {
             onSelect={(result) => {
               if (result.holderId) {
                 handleInputChange('applicationNo', result.holderId);
+              }
+              if (result.holderName || result.fullName) {
+                handleInputChange('registrationHolderName', result.holderName || result.fullName || '');
               }
               setIsUnitHoldersSearchModalOpen(false);
             }}
@@ -1353,8 +1382,9 @@ function FourCardsWithModal() {
             isOpen={isJointHolderSearchModalOpen}
             onClose={() => setIsJointHolderSearchModalOpen(false)}
             onSelect={(result) => {
-              if (result.holderId || result.holderName) {
-                handleInputChange('jointHolderInput', result.holderName || result.holderId || '');
+              if (result.holderId || result.holderName || result.fullName) {
+                handleInputChange('jointHolderInput', result.holderId || '');
+                handleInputChange('rightInput', result.holderName || result.fullName || '');
               }
               setIsJointHolderSearchModalOpen(false);
             }}
@@ -1364,8 +1394,9 @@ function FourCardsWithModal() {
             isOpen={isGuardianSearchModalOpen}
             onClose={() => setIsGuardianSearchModalOpen(false)}
             onSelect={(result) => {
-              if (result.holderId || result.holderName) {
-                handleInputChange('guardianInput', result.holderName || result.holderId || '');
+              if (result.holderId || result.holderName || result.fullName) {
+                handleInputChange('guardianInput', result.holderId || '');
+                handleInputChange('rightInput', result.holderName || result.fullName || '');
               }
               setIsGuardianSearchModalOpen(false);
             }}
@@ -1501,6 +1532,7 @@ function FourCardsWithModal() {
                     swiftCode: 'SBLILKLX',
                     branchNo: '',
                     applicationNo: '',
+                    cdsNo: '',
                     applicationStatus: 'All',
                     applicantType: '',
                     title: '',
@@ -1606,6 +1638,7 @@ function FourCardsWithModal() {
                     inputOfficer: '',
                     authorizedOfficer: '',
                     ackNo: '',
+                    registrationHolderName: '',
                     // Unit Holders Accounts Details tab
                     fund: '',
                     lastInvestmentNo: '',
@@ -4069,6 +4102,7 @@ function FourCardsWithModal() {
                             swiftCode: 'SBLILKLX',
                             branchNo: '',
                             applicationNo: '',
+                            cdsNo: '',
                             applicationStatus: 'All',
                             applicantType: '',
                             title: '',
@@ -4174,6 +4208,7 @@ function FourCardsWithModal() {
                             inputOfficer: '',
                             authorizedOfficer: '',
                             ackNo: '',
+                            registrationHolderName: '',
                             // Unit Holders Accounts Details tab
                             fund: '',
                             lastInvestmentNo: '',
@@ -4341,852 +4376,471 @@ function FourCardsWithModal() {
                           <div>
                             {accountsActiveTab === 'Details' && (
                               <div className="reg-flex-col-gap12">
-                                {/* First Row: Fund + Last Investment No + Account No + Active checkbox (4 columns) */}
-                                <div className="reg-flex-center-gap16">
-                                  {/* Column 1: Fund */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-min80">Fund</label>
-                                    <div className="reg-relative reg-flex1">
-                                      <div onClick={() => isFormEditable && setShowFundTable(!showFundTable)} className="reg-fund-select-box" style={{ color: formData.fund ? '#000000' : '#64748b' }}>
-                                        {formData.fund || 'Select fund (Name - Code)'}
-                                      </div>
-                                      {showFundTable && isFormEditable && (
-                                        <div data-table="fund" className="reg-company-dropdown reg-min-width-400">
-                                          <table className="reg-company-table">
-                                            <thead>
-                                              <tr className="reg-bg-header reg-border-bottom-gray">
-                                                <th
-                                                  className="reg-company-th"
-                                                  onClick={() => handleTableSort('fund', 'name')}
-                                                >
-                                                  Name{renderSortIndicator('fund', 'name')}
-                                                </th>
-                                                <th
-                                                  className="reg-company-th-last"
-                                                  onClick={() => handleTableSort('fund', 'code')}
-                                                >
-                                                  Code{renderSortIndicator('fund', 'code')}
-                                                </th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              {getSortedData('fund', fundData).map((fund, idx) => (
-                                                <tr
-                                                  key={idx}
-                                                  onClick={() => {
-                                                    handleInputChange('fund', `${fund.name} - ${fund.code}`);
-                                                    setShowFundTable(false);
-                                                  }}
-                                                  className="reg-company-tr"
-                                                >
-                                                  <td className="reg-company-td">{fund.name}</td>
-                                                  <td className="reg-company-td-last">{fund.code}</td>
-                                                </tr>
-                                              ))}
-                                            </tbody>
-                                          </table>
+                                {/* First Row Info Grid */}
+                                <div className="uha-info-grid" style={{ marginBottom: '16px' }}>
+                                  <div className="uha-field-group">
+                                    <div className="uha-selection-card" style={{ padding: '8px 12px', marginTop: 0 }}>
+                                      <div className="uha-field-label">Fund</div>
+                                      <div className="uha-select-wrap">
+                                        <div onClick={() => isFormEditable && setShowFundTable(!showFundTable)} className={`uha-select-box ${formData.fund ? 'uha-text-black' : 'uha-placeholder'}`}>
+                                          {formData.fund || 'Select fund'}
                                         </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  {/* Column 2: Last Investment No */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-min80">Last Investment No</label>
-                                    <input
-                                      type="text"
-                                      value={formData.lastInvestmentNo}
-                                      onChange={(e) => handleInputChange('lastInvestmentNo', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field reg-flex1 reg-text-black"
-                                      placeholder="Enter last investment number"
-                                    />
-                                  </div>
-                                  {/* Column 3: Account No */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-min80">Account No</label>
-                                    <input
-                                      type="text"
-                                      value={formData.accountNo}
-                                      onChange={(e) => handleInputChange('accountNo', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field reg-flex1 reg-text-black"
-                                      placeholder="Enter account number"
-                                    />
-                                  </div>
-                                  {/* Column 4: Active checkbox */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="reg-radio-gap6">
-                                      <input
-                                        type="checkbox"
-                                        checked={formData.isActive}
-                                        onChange={(e) => handleInputChange('isActive', e.target.checked)}
-                                        disabled={!isFormEditable}
-                                      />
-                                      <span style={{ fontSize: '14px', color: '#000000' }}>Active</span>
-                                    </label>
-                                  </div>
-                                </div>
-
-                                {/* Second Row: Holder ID + Acc. Created On + Empty + Empty (4 columns) */}
-                                <div className="reg-flex-center-gap16">
-                                  {/* Column 1: Holder ID */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-min80">HolderID</label>
-                                    <input
-                                      type="text"
-                                      value={formData.holderId}
-                                      onChange={(e) => handleInputChange('holderId', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field reg-input-w150-max150 reg-text-black"
-                                      placeholder="Enter holder ID"
-                                    />
-                                  </div>
-                                  {/* Column 2: Acc. Created On */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-min80">Acc. Created On:</label>
-                                    <div className="reg-relative">
-                                      <input
-                                        type="date"
-                                        value={formData.accCreatedOn}
-                                        onChange={(e) => handleInputChange('accCreatedOn', e.target.value)}
-                                        disabled={!isFormEditable}
-                                        className="setup-input-field reg-acc-created-date reg-text-black"
-                                        onClick={(e) => {
-                                          if (isFormEditable) {
-                                            e.currentTarget.showPicker?.();
-                                          }
-                                        }}
-                                        onFocus={(e) => {
-                                          if (isFormEditable) {
-                                            e.currentTarget.showPicker?.();
-                                          }
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* Column 3: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
-                                  {/* Column 4: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
-                                </div>
-
-                                {/* Card with 2 tabs: Joint Account Details and Nominee Details */}
-                                <div className="setup-ash-box reg-ash-box-padded reg-margin-top12">
-                                  {/* Tab headers */}
-                                  <div role="tablist" className="reg-joint-nominee-tabs">
-                                    {['Joint Account Details', 'Nominee Details'].map(tab => (
-                                      <div
-                                        key={tab}
-                                        role="tab"
-                                        aria-selected={accountHolderDetailsTab === tab}
-                                        tabIndex={0}
-                                        onClick={() => setAccountHolderDetailsTab(tab)}
-                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setAccountHolderDetailsTab(tab); }}
-                                        className={`reg-joint-nominee-tab ${accountHolderDetailsTab === tab ? 'active' : 'inactive'}`}
-                                      >
-                                        {tab}
-                                      </div>
-                                    ))}
-                                  </div>
-
-                                  {/* Tab content */}
-                                  {accountHolderDetailsTab === 'Joint Account Details' && (
-                                    <div className="reg-flex-col-gap16">
-                                      {/* Account Holder Type card */}
-                                      <div className="setup-ash-box reg-ash-box-padded" style={{ background: '#f1f5f9' }}>
-                                        <div className="reg-label-bold-mb12 reg-text-black">Account Holder Type</div>
-                                        <div className="reg-flex-center-gap16-full-width">
-                                          {/* Column 1: Radio buttons */}
-                                          <div className="reg-flex-center-gap16 reg-flex-33">
-                                            <label className="reg-radio-gap6">
-                                              <input
-                                                type="radio"
-                                                name="accountHolderType"
-                                                value="Individual"
-                                                checked={formData.accountHolderType === 'Individual'}
-                                                onChange={(e) => handleInputChange('accountHolderType', e.target.value as 'Individual' | 'Joint' | 'Guardian')}
-                                                disabled={!isFormEditable}
-                                                style={{ accentColor: formData.accountHolderType === 'Individual' ? '#9333ea' : undefined }}
-                                              />
-                                              <span className="reg-text-black">Individual</span>
-                                            </label>
-                                            <label className="reg-radio-gap6">
-                                              <input
-                                                type="radio"
-                                                name="accountHolderType"
-                                                value="Joint"
-                                                checked={formData.accountHolderType === 'Joint'}
-                                                onChange={(e) => handleInputChange('accountHolderType', e.target.value as 'Individual' | 'Joint' | 'Guardian')}
-                                                disabled={!isFormEditable}
-                                                style={{ accentColor: formData.accountHolderType === 'Joint' ? '#9333ea' : undefined }}
-                                              />
-                                              <span className="reg-text-black">Joint</span>
-                                            </label>
-                                            <label className="reg-radio-gap6">
-                                              <input
-                                                type="radio"
-                                                name="accountHolderType"
-                                                value="Guardian"
-                                                checked={formData.accountHolderType === 'Guardian'}
-                                                onChange={(e) => handleInputChange('accountHolderType', e.target.value as 'Individual' | 'Joint' | 'Guardian')}
-                                                disabled={!isFormEditable}
-                                                style={{ accentColor: formData.accountHolderType === 'Guardian' ? '#9333ea' : undefined }}
-                                              />
-                                              <span className="reg-text-black">Guardian</span>
-                                            </label>
-                                          </div>
-                                          {/* Column 2: Middle input + search (conditional) */}
-                                          <div className="reg-flex-33" style={{ display: 'flex', alignItems: 'center', gap: '8px', visibility: formData.accountHolderType === 'Individual' ? 'hidden' : 'visible' }}>
-                                            <label className="setup-input-label" style={{ minWidth: formData.accountHolderType === 'Joint' ? '100px' : '90px' }}>
-                                              {formData.accountHolderType === 'Joint' ? 'Joint Holder' : formData.accountHolderType === 'Guardian' ? 'Guardian' : ''}
-                                            </label>
-                                            <input
-                                              type="text"
-                                              value={formData.accountHolderType === 'Joint' ? formData.jointHolderInput : formData.guardianInput}
-                                              onChange={(e) => handleInputChange(formData.accountHolderType === 'Joint' ? 'jointHolderInput' : 'guardianInput', e.target.value)}
-                                              disabled={!isFormEditable}
-                                              className="setup-input-field reg-flex1 reg-text-black"
-                                              placeholder="Enter Holder ID"
-                                            />
-                                            <button
-                                              className="setup-btn setup-btn-new reg-btn-search"
-                                              title="Search"
-                                              onClick={() => {
-                                                if (formData.accountHolderType === 'Joint') {
-                                                  setIsJointHolderSearchModalOpen(true);
-                                                } else if (formData.accountHolderType === 'Guardian') {
-                                                  setIsGuardianSearchModalOpen(true);
-                                                }
-                                              }}
-                                              disabled={!isFormEditable}
-                                            >🔍</button>
-                                          </div>
-                                          {/* Column 3: Right input + add button */}
-                                          <div className="reg-flex-center-gap8 reg-flex-33">
-                                            <input
-                                              type="text"
-                                              value={formData.rightInput}
-                                              onChange={(e) => handleInputChange('rightInput', e.target.value)}
-                                              disabled={!isFormEditable}
-                                              className="setup-input-field reg-flex1 reg-text-black"
-                                              placeholder="Enter Name"
-                                            />
-                                            <button
-                                              className="setup-btn setup-btn-new reg-btn-search"
-                                              title="Add to table"
-                                              onClick={() => {
-                                                if (formData.rightInput.trim()) {
-                                                  const newHolder: HolderInfo = {
-                                                    holderNo: String(jointHolders.length + 1),
-                                                    holderName: formData.rightInput.trim(),
-                                                    selected: false,
-                                                  };
-                                                  setJointHolders([...jointHolders, newHolder]);
-                                                  handleInputChange('rightInput', '');
-                                                }
-                                              }}
-                                              disabled={!isFormEditable || !formData.rightInput.trim()}
-                                            >▼</button>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {/* Account Operate card (visible for all account holder types) */}
-                                      <div className="setup-ash-box reg-ash-box-padded" style={{ background: '#f1f5f9' }}>
-                                        <div className="reg-label-bold-mb12 reg-text-black">Account Operate</div>
-                                        <div className="reg-flex-center-gap16 reg-margin-bottom16">
-                                          {/* Either Party and Jointly radio buttons only visible when Joint is selected */}
-                                          {formData.accountHolderType === 'Joint' && (
-                                            <>
-                                              <label className="reg-radio-gap6">
-                                                <input
-                                                  type="radio"
-                                                  name="accountOperate"
-                                                  value="Either Party"
-                                                  checked={formData.accountOperate === 'Either Party'}
-                                                  onChange={(e) => handleInputChange('accountOperate', e.target.value as 'Either Party' | 'Jointly')}
-                                                  disabled={!isFormEditable}
-                                                  style={{ accentColor: formData.accountOperate === 'Either Party' ? '#9333ea' : undefined }}
-                                                />
-                                                <span className="reg-text-black">Either Party</span>
-                                              </label>
-                                              <label className="reg-radio-gap6">
-                                                <input
-                                                  type="radio"
-                                                  name="accountOperate"
-                                                  value="Jointly"
-                                                  checked={formData.accountOperate === 'Jointly'}
-                                                  onChange={(e) => handleInputChange('accountOperate', e.target.value as 'Either Party' | 'Jointly')}
-                                                  disabled={!isFormEditable}
-                                                  style={{ accentColor: formData.accountOperate === 'Jointly' ? '#9333ea' : undefined }}
-                                                />
-                                                <span className="reg-text-black">Jointly</span>
-                                              </label>
-                                            </>
-                                          )}
-                                        </div>
-                                        <div className="reg-flex-center-gap12 reg-margin-bottom12">
-                                          <div className="reg-flex1">
-                                            <table className="reg-bank-accounts-table">
+                                        {showFundTable && isFormEditable && (
+                                          <div data-table="fund" className="uha-dropdown-table-container">
+                                            <table className="uha-dropdown-table">
                                               <thead>
-                                                <tr className="reg-portal-thead">
-                                                  <th className="reg-bank-accounts-th">Holder No</th>
-                                                  <th className="reg-bank-accounts-th">Holder Name</th>
+                                                <tr>
+                                                  <th onClick={() => handleTableSort('fund', 'name')}>Name</th>
+                                                  <th onClick={() => handleTableSort('fund', 'code')}>Code</th>
                                                 </tr>
                                               </thead>
-                                              <tbody className="reg-table-body">
-                                                {jointHolders.length === 0 ? (
-                                                  <tr>
-                                                    <td colSpan={2} className="empty-cell" style={{ padding: '20px' }}>No holders added</td>
+                                              <tbody>
+                                                {getSortedData('fund', fundData).map((fund, idx) => (
+                                                  <tr key={idx} onClick={() => { handleInputChange('fund', `${fund.name} - ${fund.code}`); setShowFundTable(false); }}>
+                                                    <td>{fund.name}</td>
+                                                    <td>{fund.code}</td>
                                                   </tr>
-                                                ) : (
-                                                  jointHolders.map((holder, idx) => (
-                                                    <tr key={idx}>
-                                                      <td className="reg-bank-accounts-td">{holder.holderNo}</td>
-                                                      <td className="reg-bank-accounts-td">{holder.holderName}</td>
-                                                    </tr>
-                                                  ))
-                                                )}
+                                                ))}
                                               </tbody>
                                             </table>
                                           </div>
-                                          <button
-                                            className="setup-btn reg-btn-remove-list"
-                                            onClick={() => {
-                                              setJointHolders(jointHolders.filter((_, idx) => !jointHolders[idx].selected));
-                                            }}
-                                          >
-                                            Remove selected Item
-                                          </button>
-                                        </div>
+                                        )}
                                       </div>
                                     </div>
-                                  )}
+                                  </div>
+                                  <div className="uha-field-group">
+                                    <div className="uha-field-label">Last Investment No</div>
+                                    <input type="text" value={formData.lastInvestmentNo} onChange={(e) => handleInputChange('lastInvestmentNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Last Inv No" />
+                                  </div>
+                                  <div className="uha-field-group">
+                                    <div className="uha-field-label">Account No</div>
+                                    <input type="text" value={formData.accountNo} onChange={(e) => handleInputChange('accountNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account No" />
+                                  </div>
+                                  <div className="uha-field-group">
+                                    <div className="uha-field-label">Active</div>
+                                    <div className="uha-active-cell">
+                                      <label className="uha-active-label">
+                                        <input type="checkbox" checked={formData.isActive} onChange={(e) => handleInputChange('isActive', e.target.checked)} disabled={!isFormEditable} />
+                                        <span>Active</span>
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
 
-                                  {accountHolderDetailsTab === 'Nominee Details' && (
-                                    <div className="reg-flex-col-gap16">
-                                      {/* First row: 4 columns */}
-                                      <div className="reg-flex-center-gap16-full-width">
-                                        {/* Column 1: Nominee label + input + search */}
-                                        <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                          <label className="setup-input-label reg-label-min80">Nominee</label>
-                                          <input
-                                            type="text"
-                                            value={formData.nomineeInput}
-                                            onChange={(e) => handleInputChange('nomineeInput', e.target.value)}
-                                            disabled={!isFormEditable}
-                                            className="setup-input-field reg-flex1 reg-text-black"
-                                            placeholder="Enter Holder ID"
-                                          />
-                                          <button
-                                            className="setup-btn setup-btn-new reg-btn-search"
-                                            title="Search"
-                                            onClick={() => setIsNomineeSearchModalOpen(true)}
-                                            disabled={!isFormEditable}
-                                          >🔍</button>
+                                <div className="uha-info-grid" style={{ marginBottom: '16px', gridTemplateColumns: '1fr 1fr 2fr' }}>
+                                  <div className="uha-field-group">
+                                    <div className="uha-field-label">Holder ID</div>
+                                    <input type="text" value={formData.holderId} onChange={(e) => handleInputChange('holderId', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Holder ID" />
+                                  </div>
+                                  <div className="uha-field-group">
+                                    <div className="uha-field-label">Acc. Created On</div>
+                                    <input type="date" value={formData.accCreatedOn} onChange={(e) => handleInputChange('accCreatedOn', e.target.value)} disabled={!isFormEditable} className="uha-text-input" onClick={(e) => { if (isFormEditable) { e.currentTarget.showPicker?.(); } }} />
+                                  </div>
+                                  <div className="uha-field-group">
+                                    <div className="uha-field-label">CDS No</div>
+                                    <input type="text" value={formData.cdsNo} onChange={(e) => handleInputChange('cdsNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="CDS No" style={{ height: '38px' }} />
+                                  </div>
+                                </div>
+
+                                {/* ── Premium Joint/Nominee card ── */}
+                                <div className="uha-section-card" style={{ marginTop: '4px' }}>
+                                  {/* Sub-tab bar */}
+                                  <div className="uha-subtab-bar" style={{ padding: '0 16px', background: '#f8fafc' }}>
+                                    {['Joint Account Details', 'Nominee Details'].map(tab => (
+                                      <button key={tab} className={`uha-subtab${accountHolderDetailsTab === tab ? ' active' : ''}`} onClick={() => setAccountHolderDetailsTab(tab)}>
+                                        {tab}
+                                      </button>
+                                    ))}
+                                  </div>
+
+                                  {/* Joint Account Details */}
+                                  {accountHolderDetailsTab === 'Joint Account Details' && (
+                                    <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                                      {/* Account Holder Type */}
+                                      <div>
+                                        <div className="uha-field-label" style={{ marginBottom: '10px' }}>Account Holder Type</div>
+                                        <div className="uha-holder-type-group">
+                                          {(['Individual', 'Joint', 'Guardian'] as const).map(type => (
+                                            <label key={type} className="uha-radio-option">
+                                              <input type="radio" name="accountHolderType" value={type} checked={formData.accountHolderType === type} onChange={(e) => handleInputChange('accountHolderType', e.target.value as 'Individual' | 'Joint' | 'Guardian')} disabled={!isFormEditable} />
+                                              {type}
+                                            </label>
+                                          ))}
                                         </div>
-                                        {/* Column 2: Input + add button */}
-                                        <div className="reg-flex-center-gap8 reg-flex-1-1-25">
-                                          <input
-                                            type="text"
-                                            value={formData.nomineeRightInput}
-                                            onChange={(e) => handleInputChange('nomineeRightInput', e.target.value)}
-                                            disabled={!isFormEditable}
-                                            className="setup-input-field reg-flex1 reg-text-black"
-                                            placeholder="Enter Name"
-                                          />
-                                          <button
-                                            className="setup-btn setup-btn-new reg-btn-search"
-                                            title="Add to table"
-                                            onClick={() => {
-                                              if (formData.nomineeRightInput.trim()) {
-                                                const newNominee: HolderInfo = {
-                                                  holderNo: String(nomineeHolders.length + 1),
-                                                  holderName: formData.nomineeRightInput.trim(),
-                                                  selected: false,
-                                                };
-                                                setNomineeHolders([...nomineeHolders, newNominee]);
-                                                handleInputChange('nomineeRightInput', '');
-                                              }
-                                            }}
-                                            disabled={!isFormEditable || !formData.nomineeRightInput.trim()}
-                                          >▼</button>
-                                        </div>
-                                        {/* Column 4: Empty */}
-                                        <div className="reg-flex-1-1-25"></div>
                                       </div>
-                                      {/* Table: Holder No and Holder Name */}
-                                      <div className="reg-flex-center-gap12">
-                                        <div className="reg-flex1">
-                                          <table className="reg-bank-accounts-table">
-                                            <thead>
-                                              <tr className="reg-portal-thead">
-                                                <th className="reg-bank-accounts-th">Holder No</th>
-                                                <th className="reg-bank-accounts-th">Holder Name</th>
-                                              </tr>
-                                            </thead>
-                                            <tbody className="reg-table-body">
-                                              {nomineeHolders.length === 0 ? (
-                                                <tr>
-                                                  <td colSpan={2} className="empty-cell" style={{ padding: '20px' }}>No nominees added</td>
+
+                                      {/* Holder search inputs */}
+                                      {formData.accountHolderType !== 'Individual' && (
+                                        <div className="uha-holder-input-row">
+                                          <div className="uha-field-group">
+                                            <div className="uha-field-label">{formData.accountHolderType === 'Joint' ? 'Joint Holder ID' : 'Guardian ID'}</div>
+                                            <div className="uha-field-row">
+                                              <input type="text" value={formData.accountHolderType === 'Joint' ? formData.jointHolderInput : formData.guardianInput} onChange={(e) => handleInputChange(formData.accountHolderType === 'Joint' ? 'jointHolderInput' : 'guardianInput', e.target.value)} disabled={!isFormEditable} readOnly className="uha-text-input" placeholder="Enter Holder ID" />
+                                              <button className="uha-icon-btn uha-icon-btn-search" title="Search" onClick={() => { if (formData.accountHolderType === 'Joint') setIsJointHolderSearchModalOpen(true); else if (formData.accountHolderType === 'Guardian') setIsGuardianSearchModalOpen(true); }} disabled={!isFormEditable}>🔍</button>
+                                            </div>
+                                          </div>
+                                          <div className="uha-field-group">
+                                            <div className="uha-field-label">Holder Name</div>
+                                            <div className="uha-field-row">
+                                              <input type="text" value={formData.rightInput} onChange={(e) => handleInputChange('rightInput', e.target.value)} disabled={!isFormEditable} readOnly className="uha-text-input" placeholder="Name (auto-filled)" />
+                                              <button className="uha-icon-btn uha-icon-btn-add" title="Add to list" onClick={() => { if (formData.rightInput.trim()) { const holderNoVal = formData.accountHolderType === 'Joint' ? formData.jointHolderInput : formData.guardianInput; const newHolder: HolderInfo = { holderNo: holderNoVal || String(jointHolders.length + 1), holderName: formData.rightInput.trim(), selected: false }; setJointHolders([...jointHolders, newHolder]); handleInputChange('rightInput', ''); handleInputChange('jointHolderInput', ''); handleInputChange('guardianInput', ''); } }} disabled={!isFormEditable || !formData.rightInput.trim()}>+</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {/* Account Operate */}
+                                      {formData.accountHolderType === 'Joint' && (
+                                        <div className="uha-operate-section">
+                                          <div className="uha-operate-label">Account Operate</div>
+                                          <div className="uha-operate-radios">
+                                            {(['Either Party', 'Jointly'] as const).map(opt => (
+                                              <label key={opt} className="uha-radio-option">
+                                                <input type="radio" name="accountOperate" value={opt} checked={formData.accountOperate === opt} onChange={(e) => handleInputChange('accountOperate', e.target.value as 'Either Party' | 'Jointly')} disabled={!isFormEditable} />
+                                                {opt}
+                                              </label>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {/* Holders table */}
+                                      <div className="uha-holders-table-wrap">
+                                        <table className="uha-holders-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Holder No</th>
+                                              <th>Holder Name</th>
+                                              <th style={{ width: '80px', textAlign: 'center' }}>Action</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {jointHolders.length === 0 ? (
+                                              <tr className="uha-empty-row"><td colSpan={3}>No holders added yet</td></tr>
+                                            ) : (
+                                              jointHolders.map((holder, idx) => (
+                                                <tr key={idx}>
+                                                  <td>{holder.holderNo}</td>
+                                                  <td>{holder.holderName}</td>
+                                                  <td style={{ textAlign: 'center' }}>
+                                                    <button className="uha-icon-btn uha-icon-btn-remove" title="Remove" onClick={() => setJointHolders(jointHolders.filter((_, i) => i !== idx))} disabled={!isFormEditable}>✕</button>
+                                                  </td>
                                                 </tr>
-                                              ) : (
-                                                nomineeHolders.map((holder, idx) => (
-                                                  <tr key={idx}>
-                                                    <td className="reg-bank-accounts-td">{holder.holderNo}</td>
-                                                    <td className="reg-bank-accounts-td">{holder.holderName}</td>
-                                                  </tr>
-                                                ))
-                                              )}
-                                            </tbody>
-                                          </table>
+                                              ))
+                                            )}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Nominee Details */}
+                                  {accountHolderDetailsTab === 'Nominee Details' && (
+                                    <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                                      <div className="uha-holder-input-row">
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Nominee ID</div>
+                                          <div className="uha-field-row">
+                                            <input type="text" value={formData.nomineeInput} onChange={(e) => handleInputChange('nomineeInput', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Enter Holder ID" />
+                                            <button className="uha-icon-btn uha-icon-btn-search" title="Search nominee" onClick={() => setIsNomineeSearchModalOpen(true)} disabled={!isFormEditable}>🔍</button>
+                                          </div>
                                         </div>
-                                        <button
-                                          className="setup-btn reg-btn-remove-list"
-                                          onClick={() => {
-                                            setNomineeHolders(nomineeHolders.filter((_, idx) => !nomineeHolders[idx].selected));
-                                          }}
-                                        >
-                                          Remove selected Item
-                                        </button>
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Nominee Name</div>
+                                          <div className="uha-field-row">
+                                            <input type="text" value={formData.nomineeRightInput} onChange={(e) => handleInputChange('nomineeRightInput', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Enter Name" />
+                                            <button className="uha-icon-btn uha-icon-btn-add" title="Add to list" onClick={() => { if (formData.nomineeRightInput.trim()) { const newNominee: HolderInfo = { holderNo: String(nomineeHolders.length + 1), holderName: formData.nomineeRightInput.trim(), selected: false }; setNomineeHolders([...nomineeHolders, newNominee]); handleInputChange('nomineeRightInput', ''); } }} disabled={!isFormEditable || !formData.nomineeRightInput.trim()}>+</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="uha-holders-table-wrap">
+                                        <table className="uha-holders-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Holder No</th>
+                                              <th>Holder Name</th>
+                                              <th style={{ width: '80px', textAlign: 'center' }}>Action</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {nomineeHolders.length === 0 ? (
+                                              <tr className="uha-empty-row"><td colSpan={3}>No nominees added yet</td></tr>
+                                            ) : (
+                                              nomineeHolders.map((holder, idx) => (
+                                                <tr key={idx}>
+                                                  <td>{holder.holderNo}</td>
+                                                  <td>{holder.holderName}</td>
+                                                  <td style={{ textAlign: 'center' }}>
+                                                    <button className="uha-icon-btn uha-icon-btn-remove" title="Remove" onClick={() => setNomineeHolders(nomineeHolders.filter((_, i) => i !== idx))} disabled={!isFormEditable}>✕</button>
+                                                  </td>
+                                                </tr>
+                                              ))
+                                            )}
+                                          </tbody>
+                                        </table>
                                       </div>
                                     </div>
                                   )}
                                 </div>
-
-
-                                {/* Reinvest/Payout radio buttons */}
-                                <div className="reg-reinvest-payout-row">
-                                  <label className="reg-radio-gap6">
-                                    <input
-                                      type="radio"
-                                      name="reinvestPayout"
-                                      value="Reinvest"
-                                      checked={formData.reinvestPayout === 'Reinvest'}
-                                      onChange={(e) => handleInputChange('reinvestPayout', e.target.value as 'Reinvest' | 'Payout')}
-                                      disabled={!isFormEditable}
-                                      style={{ accentColor: formData.reinvestPayout === 'Reinvest' ? '#9333ea' : undefined }}
-                                    />
-                                    <span className="reg-text-black">Reinvest</span>
+                                {/* ── Reinvest / Payout pill toggle ── */}
+                                <div className="uha-reinvest-toggle">
+                                  <span className="uha-toggle-label">Distribution:</span>
+                                  <label className="uha-toggle-option">
+                                    <input type="radio" name="reinvestPayout" value="Reinvest" checked={formData.reinvestPayout === 'Reinvest'} onChange={(e) => handleInputChange('reinvestPayout', e.target.value as 'Reinvest' | 'Payout')} disabled={!isFormEditable} />
+                                    Reinvest
                                   </label>
-                                  <label className="reg-radio-gap6">
-                                    <input
-                                      type="radio"
-                                      name="reinvestPayout"
-                                      value="Payout"
-                                      checked={formData.reinvestPayout === 'Payout'}
-                                      onChange={(e) => handleInputChange('reinvestPayout', e.target.value as 'Reinvest' | 'Payout')}
-                                      disabled={!isFormEditable}
-                                      style={{ accentColor: formData.reinvestPayout === 'Payout' ? '#9333ea' : undefined }}
-                                    />
-                                    <span className="reg-text-black">Payout</span>
+                                  <label className="uha-toggle-option">
+                                    <input type="radio" name="reinvestPayout" value="Payout" checked={formData.reinvestPayout === 'Payout'} onChange={(e) => handleInputChange('reinvestPayout', e.target.value as 'Reinvest' | 'Payout')} disabled={!isFormEditable} />
+                                    Payout
                                   </label>
                                 </div>
 
-                                {/* Reinvest card */}
+                                {/* Distribution Details (Reinvest/Payout) */}
                                 {formData.reinvestPayout === 'Reinvest' && (
-                                  <div className="setup-ash-box reg-ash-box-padded reg-margin-top12">
-                                    {/* One row: Title + Checkbox | Fund | Account No + Search | Empty (4 columns) */}
-                                    <div className="reg-flex-center-gap16">
-                                      {/* Column 1: Title + Checkbox */}
-                                      <div className="reg-flex-center-gap8 reg-flex-1-1-25">
-                                        <div style={{ fontWeight: 'bold', color: '#000000' }}>Reinvest to Diffrent Account(tick)</div>
-                                        <label className="reg-radio-gap6">
-                                          <input
-                                            type="checkbox"
-                                            checked={formData.reinvestToDifferentAccount}
-                                            onChange={(e) => handleInputChange('reinvestToDifferentAccount', e.target.checked)}
-                                            disabled={!isFormEditable}
-                                          />
-                                          <span className="reg-text-black">Yes</span>
+                                  <div className="uha-reinvest-card">
+                                    <div className="uha-reinvest-grid">
+                                      {/* Col 1: Toggle */}
+                                      <div className="uha-field-group">
+                                        <div className="uha-reinvest-title">Reinvest to Different Account</div>
+                                        <label className="uha-checkbox-label">
+                                          <input type="checkbox" checked={formData.reinvestToDifferentAccount} onChange={(e) => handleInputChange('reinvestToDifferentAccount', e.target.checked)} disabled={!isFormEditable} />
+                                          Yes
                                         </label>
                                       </div>
-                                      {/* Column 2: Fund */}
-                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                        <label className="setup-input-label reg-label-min80">Fund</label>
-                                        <div className="reg-relative reg-flex1">
-                                          <div onClick={() => isFormEditable && setShowReinvestFundTable(!showReinvestFundTable)} className={`reg-fund-select-box ${formData.reinvestFund ? 'reg-text-black' : 'setup-placeholder-color'}`}>
-                                            {formData.reinvestFund || 'Select fund (Name - Code)'}
-                                          </div>
-                                          {showReinvestFundTable && isFormEditable && (
-                                            <div data-table="reinvestFund" className="reg-company-dropdown reg-min-width-400">
-                                              <table className="reg-company-table">
-                                                <thead>
-                                                  <tr className="reg-bg-header reg-border-bottom-gray">
-                                                    <th
-                                                      className="reg-company-th"
-                                                      onClick={() => handleTableSort('reinvestFund', 'name')}
-                                                    >
-                                                      Name{renderSortIndicator('reinvestFund', 'name')}
-                                                    </th>
-                                                    <th
-                                                      className="reg-company-th-last"
-                                                      onClick={() => handleTableSort('reinvestFund', 'code')}
-                                                    >
-                                                      Code{renderSortIndicator('reinvestFund', 'code')}
-                                                    </th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {getSortedData('reinvestFund', fundData).map((fund, idx) => (
-                                                    <tr
-                                                      key={idx}
-                                                      onClick={() => {
-                                                        handleInputChange('reinvestFund', `${fund.name} - ${fund.code}`);
-                                                        setShowReinvestFundTable(false);
-                                                      }}
-                                                      className="reg-company-tr"
-                                                    >
-                                                      <td className="reg-company-td">{fund.name}</td>
-                                                      <td className="reg-company-td-last">{fund.code}</td>
-                                                    </tr>
-                                                  ))}
-                                                </tbody>
-                                              </table>
+                                      {/* Col 2: Fund */}
+                                      <div className="uha-field-group">
+                                        <div className="uha-selection-card" style={{ padding: '8px 12px', marginTop: 0 }}>
+                                          <div className="uha-field-label">Fund</div>
+                                          <div className="uha-select-wrap">
+                                            <div onClick={() => isFormEditable && setShowReinvestFundTable(!showReinvestFundTable)} className={`uha-select-box ${formData.reinvestFund ? 'uha-text-black' : 'uha-placeholder'}`}>
+                                              {formData.reinvestFund || 'Select fund'}
                                             </div>
-                                          )}
+                                            {showReinvestFundTable && isFormEditable && (
+                                              <div data-table="reinvestFund" className="uha-dropdown-table-container">
+                                                <table className="uha-dropdown-table">
+                                                  <thead>
+                                                    <tr>
+                                                      <th onClick={() => handleTableSort('reinvestFund', 'name')}>Name</th>
+                                                      <th onClick={() => handleTableSort('reinvestFund', 'code')}>Code</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {getSortedData('reinvestFund', fundData).map((fund, idx) => (
+                                                      <tr key={idx} onClick={() => { handleInputChange('reinvestFund', `${fund.name} - ${fund.code}`); setShowReinvestFundTable(false); }}>
+                                                        <td>{fund.name}</td>
+                                                        <td>{fund.code}</td>
+                                                      </tr>
+                                                    ))}
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            )}
+                                          </div>
                                         </div>
                                       </div>
-                                      {/* Column 3: Account No + Search */}
-                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                        <label className="setup-input-label reg-label-min80">Account No</label>
-                                        <input
-                                          type="text"
-                                          value={formData.reinvestAccountNo}
-                                          onChange={(e) => handleInputChange('reinvestAccountNo', e.target.value)}
-                                          disabled={!isFormEditable}
-                                          className="setup-input-field reg-flex1 reg-text-black"
-                                          placeholder="Enter account number"
-                                        />
-                                        <button
-                                          className="setup-btn setup-btn-new reg-btn-search"
-                                          title="Search"
-                                          onClick={() => setIsReinvestAccountSearchModalOpen(true)}
-                                          disabled={!isFormEditable}
-                                        >🔍</button>
+                                      {/* Col 3: Account No */}
+                                      <div className="uha-field-group">
+                                        <div className="uha-field-label">Account No</div>
+                                        <div className="uha-field-row">
+                                          <input type="text" value={formData.reinvestAccountNo} onChange={(e) => handleInputChange('reinvestAccountNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account No" />
+                                          <button className="uha-icon-btn uha-icon-btn-search" title="Search" onClick={() => setIsReinvestAccountSearchModalOpen(true)} disabled={!isFormEditable}>🔍</button>
+                                        </div>
                                       </div>
-                                      {/* Column 4: Empty */}
-                                      <div className="reg-flex-1-1-25"></div>
                                     </div>
                                   </div>
                                 )}
 
-                                {/* Payout card */}
                                 {formData.reinvestPayout === 'Payout' && (
-                                  <div className="setup-ash-box reg-ash-box-padded reg-margin-top12">
-                                    {/* One row: Payment Type | Bank | Account No | Empty (4 columns) */}
-                                    <div className="reg-flex-center-gap16">
-                                      {/* Column 1: Payment Type */}
-                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                        <label className="setup-input-label reg-label-min80">Payment Type</label>
-                                        <div className="reg-relative reg-flex1">
-                                          <div onClick={() => isFormEditable && setShowPaymentTypeTable(!showPaymentTypeTable)} className={`reg-fund-select-box ${formData.paymentType ? 'reg-text-black' : 'setup-placeholder-color'}`}>
-                                            {formData.paymentType || 'Select payment type (Code - Name)'}
-                                          </div>
-                                          {showPaymentTypeTable && isFormEditable && (
-                                            <div data-table="paymentType" className="reg-company-dropdown reg-min-width-400">
-                                              <table className="reg-company-table">
-                                                <thead>
-                                                  <tr className="reg-bg-header reg-border-bottom-gray">
-                                                    <th
-                                                      className="reg-company-th"
-                                                      onClick={() => handleTableSort('paymentType', 'code')}
-                                                    >
-                                                      Code{renderSortIndicator('paymentType', 'code')}
-                                                    </th>
-                                                    <th
-                                                      className="reg-company-th-last"
-                                                      onClick={() => handleTableSort('paymentType', 'name')}
-                                                    >
-                                                      Name{renderSortIndicator('paymentType', 'name')}
-                                                    </th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {getSortedData('paymentType', paymentTypeData).map((pt, idx) => (
-                                                    <tr
-                                                      key={idx}
-                                                      onClick={() => {
-                                                        handleInputChange('paymentType', `${pt.name} - ${pt.code}`);
-                                                        setShowPaymentTypeTable(false);
-                                                      }}
-                                                      className="reg-company-tr"
-                                                    >
-                                                      <td className="reg-company-td">{pt.code}</td>
-                                                      <td className="reg-company-td-last">{pt.name}</td>
-                                                    </tr>
-                                                  ))}
-                                                </tbody>
-                                              </table>
+                                  <div className="uha-reinvest-card">
+                                    <div className="uha-bank-layout">
+                                      <div className="uha-reinvest-grid">
+                                        {/* Col 1: Payment Type */}
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Payment Type</div>
+                                          <div className="uha-select-wrap">
+                                            <div onClick={() => isFormEditable && setShowPaymentTypeTable(!showPaymentTypeTable)} className={`uha-select-box ${formData.paymentType ? 'uha-text-black' : 'uha-placeholder'}`}>
+                                              {formData.paymentType || 'Select payment type'}
                                             </div>
-                                          )}
+                                            {showPaymentTypeTable && isFormEditable && (
+                                              <div data-table="paymentType" className="uha-dropdown-table-container">
+                                                <table className="uha-dropdown-table">
+                                                  <thead>
+                                                    <tr>
+                                                      <th onClick={() => handleTableSort('paymentType', 'code')}>Code</th>
+                                                      <th onClick={() => handleTableSort('paymentType', 'name')}>Name</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {getSortedData('paymentType', paymentTypeData).map((pt, idx) => (
+                                                      <tr key={idx} onClick={() => { handleInputChange('paymentType', `${pt.name} - ${pt.code}`); setShowPaymentTypeTable(false); }}>
+                                                        <td>{pt.code}</td>
+                                                        <td>{pt.name}</td>
+                                                      </tr>
+                                                    ))}
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
+                                        {/* Col 2: Bank */}
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Bank</div>
+                                          <div className="uha-select-wrap">
+                                            <div onClick={() => isFormEditable && setShowPayoutBankTable(!showPayoutBankTable)} className={`uha-select-box ${formData.payoutBank ? 'uha-text-black' : 'uha-placeholder'}`}>
+                                              {formData.payoutBank || 'Select bank'}
+                                            </div>
+                                            {showPayoutBankTable && isFormEditable && (
+                                              <div data-table="payoutBank" className="uha-dropdown-table-container">
+                                                <table className="uha-dropdown-table">
+                                                  <thead>
+                                                    <tr>
+                                                      <th onClick={() => handleTableSort('payoutBank', 'name')}>Name</th>
+                                                      <th onClick={() => handleTableSort('payoutBank', 'code')}>Code</th>
+                                                      <th onClick={() => handleTableSort('payoutBank', 'district')}>District</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {getSortedData('payoutBank', bankData).map((bank, idx) => (
+                                                      <tr key={idx} onClick={() => { handleInputChange('payoutBank', `${bank.name} - ${bank.code}`); setShowPayoutBankTable(false); }}>
+                                                        <td>{bank.name}</td>
+                                                        <td>{bank.code}</td>
+                                                        <td>{bank.district}</td>
+                                                      </tr>
+                                                    ))}
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
+                                        {/* Col 3: Account No */}
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Account No</div>
+                                          <input type="text" value={formData.payoutAccountNo} onChange={(e) => handleInputChange('payoutAccountNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account No" />
                                         </div>
                                       </div>
-                                      {/* Column 2: Bank */}
-                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                        <label className="setup-input-label reg-label-min80">Bank</label>
-                                        <div className="reg-relative reg-flex1">
-                                          <div onClick={() => isFormEditable && setShowPayoutBankTable(!showPayoutBankTable)} className={`reg-fund-select-box ${formData.payoutBank ? 'reg-text-black' : 'setup-placeholder-color'}`}>
-                                            {formData.payoutBank || 'Select bank (Name - Code)'}
-                                          </div>
-                                          {showPayoutBankTable && isFormEditable && (
-                                            <div data-table="payoutBank" className="reg-company-dropdown reg-min-width-400">
-                                              <table className="reg-company-table">
-                                                <thead>
-                                                  <tr className="reg-bg-header reg-border-bottom-gray">
-                                                    <th
-                                                      className="reg-company-th"
-                                                      onClick={() => handleTableSort('payoutBank', 'name')}
-                                                    >
-                                                      Name{renderSortIndicator('payoutBank', 'name')}
-                                                    </th>
-                                                    <th
-                                                      className="reg-company-th"
-                                                      onClick={() => handleTableSort('payoutBank', 'code')}
-                                                    >
-                                                      Code{renderSortIndicator('payoutBank', 'code')}
-                                                    </th>
-                                                    <th
-                                                      className="reg-company-th-last"
-                                                      onClick={() => handleTableSort('payoutBank', 'district')}
-                                                    >
-                                                      District{renderSortIndicator('payoutBank', 'district')}
-                                                    </th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {getSortedData('payoutBank', bankData).map((bank, idx) => (
-                                                    <tr
-                                                      key={idx}
-                                                      onClick={() => {
-                                                        handleInputChange('payoutBank', `${bank.name} - ${bank.code}`);
-                                                        setShowPayoutBankTable(false);
-                                                      }}
-                                                      className="reg-company-tr"
-                                                    >
-                                                      <td className="reg-company-td">{bank.name}</td>
-                                                      <td className="reg-company-td">{bank.code}</td>
-                                                      <td className="reg-company-td-last">{bank.district}</td>
-                                                    </tr>
-                                                  ))}
-                                                </tbody>
-                                              </table>
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                      {/* Column 3: Account No */}
-                                      <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                        <label className="setup-input-label reg-label-min80">Account No</label>
-                                        <input
-                                          type="text"
-                                          value={formData.payoutAccountNo}
-                                          onChange={(e) => handleInputChange('payoutAccountNo', e.target.value)}
-                                          disabled={!isFormEditable}
-                                          className="setup-input-field reg-flex1 reg-text-black"
-                                          placeholder="Enter account number"
-                                        />
-                                      </div>
-                                      {/* Column 4: Empty */}
-                                      <div className="reg-flex-1-1-25"></div>
                                     </div>
                                   </div>
                                 )}
 
-                                {/* Payee input - 4 columns */}
-                                <div className="reg-flex-center-gap16 reg-margin-top12">
-                                  {/* Column 1: Payee label + input */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-min80">Payee</label>
-                                    <input
-                                      type="text"
-                                      value={formData.payee}
-                                      onChange={(e) => handleInputChange('payee', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field reg-flex1 reg-text-black"
-                                    />
+                                {/* Payee */}
+                                <div style={{ marginTop: '14px', maxWidth: '320px' }}>
+                                  <div className="uha-field-group">
+                                    <div className="uha-field-label">Payee</div>
+                                    <input type="text" value={formData.payee} onChange={(e) => handleInputChange('payee', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Enter Payee Name" />
                                   </div>
-                                  {/* Column 2: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
-                                  {/* Column 3: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
-                                  {/* Column 4: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
                                 </div>
                               </div>
                             )}
 
                             {accountsActiveTab === 'Bank Details' && (
-                              <div className="reg-flex-col-gap12">
-                                {/* First Row: Payment Type | Bank | Account No | Account Name (4 columns) */}
-                                <div className="reg-flex-center-gap16">
-                                  {/* Column 1: Payment Type */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-bold-min80">Payment Type</label>
-                                    <div className="reg-relative reg-flex1">
-                                      <div onClick={() => isFormEditable && setShowBankDetailsPaymentTypeTable(!showBankDetailsPaymentTypeTable)} className="reg-fund-select-box" style={{ color: formData.bankDetailsPaymentType ? '#000000' : '#64748b' }}>
-                                        {formData.bankDetailsPaymentType || 'Select payment type (Code - Name)'}
-                                      </div>
-                                      {showBankDetailsPaymentTypeTable && isFormEditable && (
-                                        <div data-table="bankDetailsPaymentType" className="reg-company-dropdown reg-min-width-400">
-                                          <table className="reg-company-table">
-                                            <thead>
-                                              <tr className="reg-bg-header reg-border-bottom-gray">
-                                                <th
-                                                  className="reg-company-th"
-                                                  onClick={() => handleTableSort('bankDetailsPaymentType', 'code')}
-                                                >
-                                                  Code{renderSortIndicator('bankDetailsPaymentType', 'code')}
-                                                </th>
-                                                <th
-                                                  className="reg-company-th-last"
-                                                  onClick={() => handleTableSort('bankDetailsPaymentType', 'name')}
-                                                >
-                                                  Name{renderSortIndicator('bankDetailsPaymentType', 'name')}
-                                                </th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              {getSortedData('bankDetailsPaymentType', paymentTypeData).map((pt, idx) => (
-                                                <tr
-                                                  key={idx}
-                                                  onClick={() => {
-                                                    handleInputChange('bankDetailsPaymentType', `${pt.name} - ${pt.code}`);
-                                                    setShowBankDetailsPaymentTypeTable(false);
-                                                  }}
-                                                  className="reg-company-tr"
-                                                >
-                                                  <td className="reg-company-td">{pt.code}</td>
-                                                  <td className="reg-company-td-last">{pt.name}</td>
-                                                </tr>
-                                              ))}
-                                            </tbody>
-                                          </table>
+                              <div className="uha-bank-details-wrap">
+                                <div className="uha-section-card">
+                                  <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                                    {/* Bank Form Layout */}
+                                    <div className="uha-bank-layout">
+                                      <div className="uha-info-grid">
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Payment Type</div>
+                                          <div className="uha-select-wrap">
+                                            <div onClick={() => isFormEditable && setShowBankDetailsPaymentTypeTable(!showBankDetailsPaymentTypeTable)} className={`uha-select-box ${formData.bankDetailsPaymentType ? 'uha-text-black' : 'uha-placeholder'}`}>
+                                              {formData.bankDetailsPaymentType || 'Select payment type'}
+                                            </div>
+                                            {showBankDetailsPaymentTypeTable && isFormEditable && (
+                                              <div data-table="bankDetailsPaymentType" className="uha-dropdown-table-container">
+                                                <table className="uha-dropdown-table">
+                                                  <thead>
+                                                    <tr>
+                                                      <th onClick={() => handleTableSort('bankDetailsPaymentType', 'code')}>Code</th>
+                                                      <th onClick={() => handleTableSort('bankDetailsPaymentType', 'name')}>Name</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {getSortedData('bankDetailsPaymentType', paymentTypeData).map((pt, idx) => (
+                                                      <tr key={idx} onClick={() => { handleInputChange('bankDetailsPaymentType', `${pt.name} - ${pt.code}`); setShowBankDetailsPaymentTypeTable(false); }}>
+                                                        <td>{pt.code}</td>
+                                                        <td>{pt.name}</td>
+                                                      </tr>
+                                                    ))}
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            )}
+                                          </div>
                                         </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  {/* Column 2: Bank */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-bold-min80">Bank</label>
-                                    <div className="reg-relative reg-flex1">
-                                      <div onClick={() => isFormEditable && setShowBankDetailsBankTable(!showBankDetailsBankTable)} className={`reg-fund-select-box ${formData.bankDetailsBank ? 'reg-text-black' : 'setup-placeholder-color'}`}>
-                                        {formData.bankDetailsBank || 'Select bank (Name - Code)'}
-                                      </div>
-                                      {showBankDetailsBankTable && isFormEditable && (
-                                        <div data-table="bankDetailsBank" className="reg-company-dropdown reg-min-width-400">
-                                          <table className="reg-company-table">
-                                            <thead>
-                                              <tr className="reg-bg-header reg-border-bottom-gray">
-                                                <th
-                                                  className="reg-company-th"
-                                                  onClick={() => handleTableSort('bankDetailsBank', 'name')}
-                                                >
-                                                  Name{renderSortIndicator('bankDetailsBank', 'name')}
-                                                </th>
-                                                <th
-                                                  className="reg-company-th"
-                                                  onClick={() => handleTableSort('bankDetailsBank', 'code')}
-                                                >
-                                                  Code{renderSortIndicator('bankDetailsBank', 'code')}
-                                                </th>
-                                                <th
-                                                  className="reg-company-th-last"
-                                                  onClick={() => handleTableSort('bankDetailsBank', 'district')}
-                                                >
-                                                  District{renderSortIndicator('bankDetailsBank', 'district')}
-                                                </th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              {getSortedData('bankDetailsBank', bankData).map((bank, idx) => (
-                                                <tr
-                                                  key={idx}
-                                                  onClick={() => {
-                                                    handleInputChange('bankDetailsBank', `${bank.name} - ${bank.code}`);
-                                                    setShowBankDetailsBankTable(false);
-                                                  }}
-                                                  className="reg-company-tr"
-                                                >
-                                                  <td className="reg-company-td">{bank.name}</td>
-                                                  <td className="reg-company-td">{bank.code}</td>
-                                                  <td className="reg-company-td-last">{bank.district}</td>
-                                                </tr>
-                                              ))}
-                                            </tbody>
-                                          </table>
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Bank</div>
+                                          <div className="uha-select-wrap">
+                                            <div onClick={() => isFormEditable && setShowBankDetailsBankTable(!showBankDetailsBankTable)} className={`uha-select-box ${formData.bankDetailsBank ? 'uha-text-black' : 'uha-placeholder'}`}>
+                                              {formData.bankDetailsBank || 'Select bank'}
+                                            </div>
+                                            {showBankDetailsBankTable && isFormEditable && (
+                                              <div data-table="bankDetailsBank" className="uha-dropdown-table-container">
+                                                <table className="uha-dropdown-table">
+                                                  <thead>
+                                                    <tr>
+                                                      <th onClick={() => handleTableSort('bankDetailsBank', 'name')}>Name</th>
+                                                      <th onClick={() => handleTableSort('bankDetailsBank', 'code')}>Code</th>
+                                                      <th onClick={() => handleTableSort('bankDetailsBank', 'district')}>District</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {getSortedData('bankDetailsBank', bankData).map((bank, idx) => (
+                                                      <tr key={idx} onClick={() => { handleInputChange('bankDetailsBank', `${bank.name} - ${bank.code}`); setShowBankDetailsBankTable(false); }}>
+                                                        <td>{bank.name}</td>
+                                                        <td>{bank.code}</td>
+                                                        <td>{bank.district}</td>
+                                                      </tr>
+                                                    ))}
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            )}
+                                          </div>
                                         </div>
-                                      )}
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Account No</div>
+                                          <input type="text" value={formData.bankDetailsAccountNo} onChange={(e) => handleInputChange('bankDetailsAccountNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account No" />
+                                        </div>
+                                        <div className="uha-field-group">
+                                          <div className="uha-field-label">Account Name</div>
+                                          <input type="text" value={formData.bankDetailsAccountName} onChange={(e) => handleInputChange('bankDetailsAccountName', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account Name" />
+                                        </div>
+                                      </div>
                                     </div>
-                                  </div>
-                                  {/* Column 3: Account No */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-bold-min80">Account No</label>
-                                    <input
-                                      type="text"
-                                      value={formData.bankDetailsAccountNo}
-                                      onChange={(e) => handleInputChange('bankDetailsAccountNo', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field reg-flex1 reg-text-black"
-                                    />
-                                  </div>
-                                  {/* Column 4: Account Name */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-bold-min80">Account Name</label>
-                                    <input
-                                      type="text"
-                                      value={formData.bankDetailsAccountName}
-                                      onChange={(e) => handleInputChange('bankDetailsAccountName', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field reg-flex1 reg-text-black"
-                                    />
-                                  </div>
-                                </div>
 
-                                {/* Second Row: Payee | Empty | Empty | Empty (4 columns) */}
-                                <div className="reg-flex-center-gap16">
-                                  {/* Column 1: Payee */}
-                                  <div className="reg-flex-center-gap12 reg-flex-1-1-25">
-                                    <label className="setup-input-label reg-label-bold-min80">Payee</label>
-                                    <input
-                                      type="text"
-                                      value={formData.bankDetailsPayee}
-                                      onChange={(e) => handleInputChange('bankDetailsPayee', e.target.value)}
-                                      disabled={!isFormEditable}
-                                      className="setup-input-field reg-flex1 reg-text-black"
-                                    />
+                                    {/* Payee Row */}
+                                    <div style={{ maxWidth: '300px' }}>
+                                      <div className="uha-field-group">
+                                        <div className="uha-field-label">Payee</div>
+                                        <input type="text" value={formData.bankDetailsPayee} onChange={(e) => handleInputChange('bankDetailsPayee', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Payee Name" />
+                                      </div>
+                                    </div>
                                   </div>
-                                  {/* Column 2: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
-                                  {/* Column 3: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
-                                  {/* Column 4: Empty */}
-                                  <div className="reg-flex-1-1-25"></div>
                                 </div>
 
                                 {/* Bank Accounts Table */}
-                                <div className="reg-bank-details-table-container">
-                                  <table className="reg-bank-accounts-table">
+                                <div className="uha-holders-table-wrap" style={{ marginTop: '16px' }}>
+                                  <table className="uha-holders-table">
                                     <thead>
-                                      <tr className="reg-portal-thead">
-                                        <th className="reg-bank-accounts-th">Bank Code</th>
-                                        <th className="reg-bank-accounts-th">Account No.</th>
-                                        <th className="reg-bank-accounts-th">Account Type</th>
-                                        <th className="reg-bank-accounts-th">Bank Name</th>
+                                      <tr>
+                                        <th>Bank Code</th>
+                                        <th>Account No.</th>
+                                        <th>Account Type</th>
+                                        <th>Bank Name</th>
                                       </tr>
                                     </thead>
-                                    <tbody className="reg-table-body">
+                                    <tbody>
                                       {bankDetailsAccounts.length === 0 ? (
-                                        <tr>
-                                          <td colSpan={4} className="empty-cell reg-p20">No bank accounts added</td>
-                                        </tr>
+                                        <tr className="uha-empty-row"><td colSpan={4}>No bank accounts added</td></tr>
                                       ) : (
                                         bankDetailsAccounts.map((account, idx) => (
                                           <tr key={idx}>
-                                            <td className="reg-bank-accounts-td">{account.bankCode}</td>
-                                            <td className="reg-bank-accounts-td">{account.accountNo}</td>
-                                            <td className="reg-bank-accounts-td">{account.accountType}</td>
-                                            <td className="reg-bank-accounts-td">{account.bankName}</td>
+                                            <td>{account.bankCode}</td>
+                                            <td>{account.accountNo}</td>
+                                            <td>{account.accountType}</td>
+                                            <td>{account.bankName}</td>
                                           </tr>
                                         ))
                                       )}
@@ -5197,74 +4851,44 @@ function FourCardsWithModal() {
                             )}
 
                             {accountsActiveTab === 'Existing Accounts' && (
-                              <div className="reg-flex-col-gap12">
-                                {/* Existing Accounts Table */}
-                                <div className="reg-existing-acc-table-container">
-                                  <table className="reg-bank-accounts-table">
+                              <div className="uha-existing-accounts-wrap">
+                                <div className="uha-holders-table-wrap">
+                                  <table className="uha-holders-table">
                                     <thead>
-                                      <tr className="reg-portal-thead">
-                                        <th className="reg-bank-accounts-th">Account No</th>
-                                        <th className="reg-bank-accounts-th">Fund Name</th>
-                                        <th className="reg-bank-accounts-th">Product Type</th>
-                                        <th className="reg-bank-accounts-th">Acc. Type</th>
-                                        <th className="reg-bank-accounts-th">Active</th>
+                                      <tr>
+                                        <th>Account No</th>
+                                        <th>Fund Name</th>
+                                        <th>Product Type</th>
+                                        <th>Acc. Type</th>
+                                        <th>Active</th>
                                       </tr>
                                     </thead>
-                                    <tbody className="reg-table-body">
+                                    <tbody>
                                       {existingAccounts.length === 0 ? (
-                                        // Show empty rows when no data
-                                        Array.from({ length: 12 }).map((_, idx) => (
-                                          <tr key={idx}>
-                                            <td className="reg-bank-accounts-td reg-h40"></td>
-                                            <td className="reg-bank-accounts-td"></td>
-                                            <td className="reg-bank-accounts-td"></td>
-                                            <td className="reg-bank-accounts-td"></td>
-                                            <td className="reg-bank-accounts-td"></td>
-                                          </tr>
+                                        Array.from({ length: 10 }).map((_, idx) => (
+                                          <tr key={idx}><td colSpan={5} style={{ height: '38px' }}></td></tr>
                                         ))
                                       ) : (
                                         <>
                                           {existingAccounts.map((account, idx) => (
-                                            <tr
-                                              key={idx}
-                                              className="reg-clickable-row"
-                                              onDoubleClick={() => {
-                                                // Handle double click to edit
-                                                if (isFormEditable) {
-                                                  // Populate form fields with selected account data
-                                                  handleInputChange('accountNo', account.accountNo);
-                                                  handleInputChange('fund', account.fundName);
-                                                  // Switch to Details tab to show the data
-                                                  setAccountsActiveTab('Details');
-                                                }
-                                              }}
-                                            >
-                                              <td className="reg-bank-accounts-td">{account.accountNo}</td>
-                                              <td className="reg-bank-accounts-td">{account.fundName}</td>
-                                              <td className="reg-bank-accounts-td">{account.productType}</td>
-                                              <td className="reg-bank-accounts-td">{account.accType}</td>
-                                              <td className="reg-bank-accounts-td">{account.active}</td>
+                                            <tr key={idx} className="uha-clickable-row" onDoubleClick={() => { if (isFormEditable) { handleInputChange('accountNo', account.accountNo); handleInputChange('fund', account.fundName); setAccountsActiveTab('Details'); } }}>
+                                              <td>{account.accountNo}</td>
+                                              <td>{account.fundName}</td>
+                                              <td>{account.productType}</td>
+                                              <td>{account.accType}</td>
+                                              <td>{account.active}</td>
                                             </tr>
                                           ))}
-                                          {/* Fill remaining rows if needed */}
-                                          {existingAccounts.length < 12 && Array.from({ length: 12 - existingAccounts.length }).map((_, idx) => (
-                                            <tr key={`empty-${idx}`}>
-                                              <td className="reg-bank-accounts-td reg-h40"></td>
-                                              <td className="reg-bank-accounts-td"></td>
-                                              <td className="reg-bank-accounts-td"></td>
-                                              <td className="reg-bank-accounts-td"></td>
-                                              <td className="reg-bank-accounts-td"></td>
-                                            </tr>
+                                          {existingAccounts.length < 10 && Array.from({ length: 10 - existingAccounts.length }).map((_, idx) => (
+                                            <tr key={`empty-${idx}`}><td colSpan={5} style={{ height: '38px' }}></td></tr>
                                           ))}
                                         </>
                                       )}
                                     </tbody>
                                   </table>
                                 </div>
-
-                                {/* Instruction text */}
-                                <div className="reg-instruction-text">
-                                  Double click to Edit the selected value
+                                <div style={{ marginTop: '10px', fontSize: '12px', color: '#64748b', fontStyle: 'italic', textAlign: 'right' }}>
+                                  * Double click a row to edit
                                 </div>
                               </div>
                             )}
@@ -5275,7 +4899,6 @@ function FourCardsWithModal() {
                   </div>
                   {/* end reg-modal-body */}
 
-                  {/* FIXED: Footer */}
                   <div className="reg-modal-footer">
                     Double click to get the selected value
                   </div>
@@ -5286,7 +4909,6 @@ function FourCardsWithModal() {
           </div>
         </div>
       </div>
-
 
       <Footer />
     </>

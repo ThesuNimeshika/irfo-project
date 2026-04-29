@@ -2192,11 +2192,13 @@
 }
 
 .uha-field-label {
-  font-size: 10px;
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
   font-weight: 700;
+  color: var(--text-500);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
 }
 
 .uha-field-row {
@@ -2206,35 +2208,37 @@
 }
 
 .uha-text-input {
-  flex: 1;
-  height: 38px;
-  padding: 0 14px;
-  border: 1.2px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 13.5px;
-  color: #1e293b;
-  background: #ffffff;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Lato', system-ui, sans-serif;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  width: 100%;
+  padding: 5px 9px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-xs);
+  font-size: 12px;
+  margin-bottom: 0;
+  color: var(--text-700);
+  background: var(--white);
+  min-height: 30px;
+  height: auto;
+  transition: var(--ease);
+  font-family: var(--font-body);
+  box-sizing: border-box;
 }
 
 .uha-text-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  border-color: var(--accent-mid);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(46, 79, 173, 0.10);
 }
 
 .uha-text-input:hover:not(:focus) {
-  border-color: #d1d5db;
+  border-color: var(--border-dark);
 }
 
 .uha-text-input:disabled {
-  background: #f9fafb;
-  color: #94a3b8;
+  background: var(--surface-1);
+  color: var(--text-300);
   cursor: not-allowed;
-  border-color: #f3f4f6;
+  border-color: var(--border-mid);
 }
 
 .uha-icon-btn {
@@ -2458,36 +2462,36 @@
 }
 
 .uha-select-box {
-  height: 38px;
   width: 100%;
-  padding: 0 14px;
-  border: 1.2px solid #e5e7eb;
-  border-left: 3px solid #3b82f6;
-  border-radius: 10px;
-  font-size: 13.5px;
-  color: #1e293b;
-  background: #ffffff;
+  padding: 5px 9px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-xs);
+  font-size: 12px;
+  margin-bottom: 0;
+  color: var(--text-700);
+  background: var(--white);
+  min-height: 30px;
+  height: auto;
   cursor: pointer;
   display: flex;
   align-items: center;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Lato', system-ui, sans-serif;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: var(--ease);
+  font-family: var(--font-body);
+  box-sizing: border-box;
 }
 
 .uha-select-box:hover {
-  border-color: #3b82f6;
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  border-color: var(--accent-mid);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(46, 79, 173, 0.10);
 }
 
 .uha-select-box.uha-placeholder {
-  color: #94a3b8;
+  color: var(--text-300);
 }
 
 .uha-select-box.uha-text-black {
-  color: #0f172a;
-  font-weight: 500;
+  color: var(--text-700);
 }
 
 /* ── Selection Card (Outer Layout) ── */

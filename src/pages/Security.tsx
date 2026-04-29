@@ -93,7 +93,8 @@ function SubMenuRightsModal({
   enabledRows = [],
   setEnabledRows,
   rowPermissions = {},
-  setRowPermissions
+  setRowPermissions,
+  onAddSubMenu
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -103,8 +104,18 @@ function SubMenuRightsModal({
   setEnabledRows: React.Dispatch<React.SetStateAction<Record<string, number[]>>>;
   rowPermissions: Record<number, string[]>;
   setRowPermissions: React.Dispatch<React.SetStateAction<Record<string, Record<number, string[]>>>>;
+  onAddSubMenu?: (newSubMenu: string) => void;
 }) {
+  const [newSubMenuName, setNewSubMenuName] = useState('');
+
   if (!isOpen) return null;
+
+  const handleAddSubMenu = () => {
+    if (newSubMenuName.trim() && onAddSubMenu) {
+      onAddSubMenu(newSubMenuName.trim());
+      setNewSubMenuName('');
+    }
+  };
 
   const toggleRow = (idx: number) => {
     setEnabledRows(prev => {
@@ -233,6 +244,25 @@ function SubMenuRightsModal({
             </div>
           ))}
         </div>
+
+        {onAddSubMenu && (
+          <div style={{ padding: '12px 20px', borderTop: '1px solid #f1f5f9', display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <input
+              type="text"
+              placeholder="New Sub-Menu Title"
+              value={newSubMenuName}
+              onChange={e => setNewSubMenuName(e.target.value)}
+              style={{ flex: 1, padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '13px' }}
+            />
+            <button
+              onClick={handleAddSubMenu}
+              style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            >
+              + Add Sub-Menu
+            </button>
+          </div>
+        )}
+
         <div style={{ padding: '12px 20px', background: '#f8fafc', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid #e2e8f0', fontWeight: 'bold' }}>
           {items.length} of {items.length} sub-menus
         </div>
@@ -851,10 +881,26 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
     setTimeout(() => setToast(null), 3500);
   };
 
-  const subMenus = [
-    'Dashboard', 'Setup', 'Registration', 'Unit Operation', 'Approval',
-    'Doc Printing', 'Reports'
-  ];
+  const [dynamicMenus, setDynamicMenus] = useState<Record<string, string[]>>({
+    'Dashboard': [],
+    'Setup': SETUP_SUB_MENU_ITEMS,
+    'Registration': REGISTRATION_SUB_MENU_ITEMS,
+    'Unit Operation': UNIT_OPERATION_SUB_MENU_ITEMS,
+    'Approval': APPROVAL_SUB_MENU_ITEMS,
+    'Doc Printing': DOC_PRINTING_SUB_MENU_ITEMS,
+    'Reports': REPORTS_SUB_MENU_ITEMS
+  });
+  const subMenus = Object.keys(dynamicMenus);
+
+  const [newMenuName, setNewMenuName] = useState('');
+
+  const handleAddMenu = () => {
+    if (newMenuName.trim() && !dynamicMenus[newMenuName.trim()]) {
+      setDynamicMenus(prev => ({ ...prev, [newMenuName.trim()]: [] }));
+      setNewMenuName('');
+      showToast(`Added new menu column: "${newMenuName.trim()}"`, 'success');
+    }
+  };
 
   const handleCreate = () => {
     if (!selectedRole) {
@@ -906,7 +952,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
 
       // Automatically enable all sub-menu items when a main menu is enabled
       if (isEnabling) {
-        const subItems = getSubMenuItems(menuTitle);
+        const subItems = dynamicMenus[menuTitle] || [];
         setSubMenuEnabledRows(prev => ({
           ...prev,
           [menuTitle]: subItems.map((_, i) => i)
@@ -949,7 +995,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
 
       subMenus.forEach((menu, i) => {
         newRowPermissions[i] = ['approve', 'save', 'edit', 'delete', 'print'];
-        const subItems = getSubMenuItems(menu);
+        const subItems = dynamicMenus[menu] || [];
         newSubMenuEnabledRows[menu] = subItems.map((_, si) => si);
         newSubMenuRowPermissions[menu] = subItems.reduce((acc, _, si) => {
           acc[si] = ['approve', 'save', 'edit', 'delete', 'print'];
@@ -966,7 +1012,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
   const togglePermission = (rowIdx: number, perm: string) => {
     if (!enabledRows.includes(rowIdx)) return;
     const menuTitle = subMenus[rowIdx];
-    const subItems = getSubMenuItems(menuTitle);
+    const subItems = dynamicMenus[menuTitle] || [];
 
     setRowPermissions(prev => {
       const current = prev[rowIdx] || [];
@@ -1145,12 +1191,11 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
           {subMenus.map((menu, idx) => (
             <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr', padding: '12px 20px', borderBottom: '1px solid #f1f5f9', alignItems: 'center', minWidth: '600px' }}>
               <div
-                style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500, cursor: menu === 'Dashboard' ? 'default' : 'pointer' }}
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', fontWeight: 500, cursor: 'pointer' }}
                 onClick={(e) => {
-                  if (menu === 'Dashboard') return;
                   e.preventDefault();
                   e.stopPropagation();
-                  setSelectedSubMenu({ title: menu, items: getSubMenuItems(menu) });
+                  setSelectedSubMenu({ title: menu, items: dynamicMenus[menu] || [] });
                 }}
               >
                 <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#f1f5f9', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>{idx + 1}</span>
@@ -1187,6 +1232,23 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
             </div>
           ))}
         </div>
+
+        {/* Add New Menu Row */}
+        <div style={{ padding: '12px 20px', borderTop: '1px solid #f1f5f9', display: 'flex', gap: '10px', alignItems: 'center', background: '#f8fafc' }}>
+          <input
+            type="text"
+            placeholder="New Main Menu Title"
+            value={newMenuName}
+            onChange={e => setNewMenuName(e.target.value)}
+            style={{ flex: 1, maxWidth: '300px', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '13px' }}
+          />
+          <button
+            onClick={handleAddMenu}
+            style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}
+          >
+            + Add Menu Column
+          </button>
+        </div>
       </div>
 
       {selectedSubMenu && (
@@ -1199,6 +1261,14 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
           setEnabledRows={setSubMenuEnabledRows}
           rowPermissions={subMenuRowPermissions[selectedSubMenu.title] || {}}
           setRowPermissions={setSubMenuRowPermissions}
+          onAddSubMenu={(newSub) => {
+            setDynamicMenus(prev => {
+              const updated = { ...prev, [selectedSubMenu.title]: [...(prev[selectedSubMenu.title] || []), newSub] };
+              setSelectedSubMenu(curr => curr ? { ...curr, items: updated[selectedSubMenu.title] } : null);
+              return updated;
+            });
+            showToast(`Added sub-menu: "${newSub}"`, 'success');
+          }}
         />
       )}
 
@@ -1219,7 +1289,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
 
           role.enabledRows.forEach((idx: number) => {
             const menuTitle = subMenus[idx];
-            const subItems = getSubMenuItems(menuTitle);
+            const subItems = dynamicMenus[menuTitle] || [];
             newSubEnabled[menuTitle] = subItems.map((_, i) => i);
             newSubPerms[menuTitle] = subItems.reduce((acc, _, i) => {
               acc[i] = role.rowPermissions[idx] || [];

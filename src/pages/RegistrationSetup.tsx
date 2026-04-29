@@ -1331,6 +1331,7 @@ function FourCardsWithModal() {
                   value={formData.registrationHolderName}
                   onChange={(e) => handleInputChange('registrationHolderName', e.target.value)}
                   disabled={!isFormEditable}
+                  readOnly
                   className="uha-text-input"
                   placeholder="Holder Name"
                   style={{ flex: 1 }}
@@ -4489,6 +4490,36 @@ function FourCardsWithModal() {
                                         </div>
                                       )}
 
+                                      {/* Holders table */}
+                                      {formData.accountHolderType !== 'Individual' && (
+                                        <div className="uha-holders-table-wrap">
+                                          <table className="uha-holders-table">
+                                            <thead>
+                                              <tr>
+                                                <th>Holder No</th>
+                                                <th>Holder Name</th>
+                                                <th style={{ width: '80px', textAlign: 'center' }}>Action</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {jointHolders.length === 0 ? (
+                                                <tr className="uha-empty-row"><td colSpan={3}>No holders added yet</td></tr>
+                                              ) : (
+                                                jointHolders.map((holder, idx) => (
+                                                  <tr key={idx}>
+                                                    <td>{holder.holderNo}</td>
+                                                    <td>{holder.holderName}</td>
+                                                    <td style={{ textAlign: 'center' }}>
+                                                      <button className="uha-icon-btn uha-icon-btn-remove" title="Remove" onClick={() => setJointHolders(jointHolders.filter((_, i) => i !== idx))} disabled={!isFormEditable}>✕</button>
+                                                    </td>
+                                                  </tr>
+                                                ))
+                                              )}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      )}
+
                                       {/* Account Operate */}
                                       {formData.accountHolderType === 'Joint' && (
                                         <div className="uha-operate-section">
@@ -4503,34 +4534,6 @@ function FourCardsWithModal() {
                                           </div>
                                         </div>
                                       )}
-
-                                      {/* Holders table */}
-                                      <div className="uha-holders-table-wrap">
-                                        <table className="uha-holders-table">
-                                          <thead>
-                                            <tr>
-                                              <th>Holder No</th>
-                                              <th>Holder Name</th>
-                                              <th style={{ width: '80px', textAlign: 'center' }}>Action</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {jointHolders.length === 0 ? (
-                                              <tr className="uha-empty-row"><td colSpan={3}>No holders added yet</td></tr>
-                                            ) : (
-                                              jointHolders.map((holder, idx) => (
-                                                <tr key={idx}>
-                                                  <td>{holder.holderNo}</td>
-                                                  <td>{holder.holderName}</td>
-                                                  <td style={{ textAlign: 'center' }}>
-                                                    <button className="uha-icon-btn uha-icon-btn-remove" title="Remove" onClick={() => setJointHolders(jointHolders.filter((_, i) => i !== idx))} disabled={!isFormEditable}>✕</button>
-                                                  </td>
-                                                </tr>
-                                              ))
-                                            )}
-                                          </tbody>
-                                        </table>
-                                      </div>
                                     </div>
                                   )}
 

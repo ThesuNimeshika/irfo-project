@@ -37,14 +37,14 @@ const BackupModalContent = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                         <label style={{ fontSize: '14px', fontWeight: '700', color: '#1e293b', minWidth: '80px' }}>File Name</label>
-                        <div style={{ flex: 1, display: 'flex', gap: '8px' }}>
+                        <div style={{ flex: 1, display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <input
                                 type="text"
                                 value={fileName}
                                 onChange={(e) => setFileName(e.target.value)}
                                 style={{
                                     flex: 1,
-                                    height: '40px',
+                                    height: '32px',
                                     padding: '0 12px',
                                     borderRadius: '6px',
                                     border: '1px solid #cbd5e1',
@@ -62,8 +62,8 @@ const BackupModalContent = () => {
                             <button
                                 onClick={() => fileInputRef.current?.click()}
                                 style={{
-                                    width: '26px',
-                                    height: '26px',
+                                    width: '32px',
+                                    height: '32px',
                                     background: '#f1f5f9',
                                     border: '1px solid #cbd5e1',
                                     borderRadius: '4px',
@@ -72,34 +72,32 @@ const BackupModalContent = () => {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     fontSize: '12px',
-                                    transition: 'all 0.2s'
+                                    transition: 'all 0.2s',
+                                    flexShrink: 0
                                 }}
                                 onMouseOver={(e) => e.currentTarget.style.background = '#e2e8f0'}
                                 onMouseOut={(e) => e.currentTarget.style.background = '#f1f5f9'}
                             >
                                 📁
                             </button>
+                            <button
+                                className="setup-btn setup-btn-backup"
+                                onClick={handleUpload}
+                                style={{ padding: '0 12px', height: '32px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}
+                            >
+                                <span className="setup-btn-icon" style={{ margin: 0, fontSize: '12px' }}>📤</span>
+                                Upload
+                            </button>
+                            <button
+                                className="setup-btn setup-btn-clear"
+                                onClick={() => setFileName('')}
+                                style={{ padding: '0 12px', height: '32px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}
+                            >
+                                <span className="setup-btn-icon" style={{ margin: 0, fontSize: '12px' }}>✕</span>
+                                Clear
+                            </button>
                         </div>
                     </div>
-                </div>
-
-                {/* Main Action Palette */}
-                <div className="setup-action-buttons" style={{ margin: 0, padding: 0 }}>
-                    <button
-                        className="setup-btn setup-btn-backup"
-                        onClick={handleUpload}
-                        style={{ padding: '0 24px', height: '42px' }}
-                    >
-                        <span className="setup-btn-icon">📤</span>
-                        Upload & Process
-                    </button>
-                    <button
-                        className="setup-btn setup-btn-clear"
-                        onClick={() => setFileName('')}
-                    >
-                        <span className="setup-btn-icon">✕</span>
-                        Clear
-                    </button>
                 </div>
 
                 {/* History Table (Screenshot Bottom Section) */}

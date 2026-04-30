@@ -22,6 +22,7 @@ const moduleData = [
   { title: 'Create User', icon: '👤' },
   { title: 'Password Changer', icon: '🛡️' },
   { title: 'Assign User Role', icon: '🔑' },
+  { title: 'Manage Menus', icon: '📝' },
   { title: 'Back Up', icon: '💽' },
   { title: 'Day End', icon: '🔄' },
   { title: 'Mobile Excel File Upload', icon: '📊' },
@@ -70,20 +71,6 @@ const DOC_PRINTING_SUB_MENU_ITEMS = [
 const REPORTS_SUB_MENU_ITEMS = [
   'MIS', 'Dividend Reports', 'Other Reports'
 ];
-
-const SECURITY_SUB_MENU_ITEMS = [
-  'Create User', 'Password Changer', 'Assign User Role'
-];
-
-const getSubMenuItems = (menu: string) => {
-  if (menu === 'Registration') return REGISTRATION_SUB_MENU_ITEMS;
-  if (menu === 'Unit Operation') return UNIT_OPERATION_SUB_MENU_ITEMS;
-  if (menu === 'Approval') return APPROVAL_SUB_MENU_ITEMS;
-  if (menu === 'Doc Printing') return DOC_PRINTING_SUB_MENU_ITEMS;
-  if (menu === 'Security') return SECURITY_SUB_MENU_ITEMS;
-  if (menu === 'Reports') return REPORTS_SUB_MENU_ITEMS;
-  return SETUP_SUB_MENU_ITEMS;
-};
 
 function SubMenuRightsModal({
   isOpen,
@@ -855,7 +842,131 @@ const UpdateUserRoleModal = ({ isOpen, onClose, onSelect, roles }: { isOpen: boo
   );
 };
 
-const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
+const MenuManagementModal = ({
+  dynamicMenus,
+  setDynamicMenus,
+  isMobile
+}: {
+  dynamicMenus: Record<string, string[]>;
+  setDynamicMenus: React.Dispatch<React.SetStateAction<Record<string, string[]>>>;
+  isMobile: boolean;
+}) => {
+  const [newMenuName, setNewMenuName] = useState('');
+  const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
+  const [newSubMenuName, setNewSubMenuName] = useState('');
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warn' } | null>(null);
+
+  const showToast = (msg: string, type: 'success' | 'error' | 'warn' = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleAddMenu = () => {
+    if (newMenuName.trim() && !dynamicMenus[newMenuName.trim()]) {
+      setDynamicMenus(prev => ({ ...prev, [newMenuName.trim()]: [] }));
+      setNewMenuName('');
+      showToast(`Added new main menu: "${newMenuName.trim()}"`, 'success');
+    }
+  };
+
+  const handleAddSubMenu = () => {
+    if (selectedMenu && newSubMenuName.trim()) {
+      if (dynamicMenus[selectedMenu].includes(newSubMenuName.trim())) {
+        showToast('Sub-menu already exists.', 'warn');
+        return;
+      }
+      setDynamicMenus(prev => ({
+        ...prev,
+        [selectedMenu]: [...(prev[selectedMenu] || []), newSubMenuName.trim()]
+      }));
+      setNewSubMenuName('');
+      showToast(`Added sub-menu: "${newSubMenuName.trim()}"`, 'success');
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '24px', padding: isMobile ? '12px' : '24px', background: '#fdfbfa', minHeight: '600px', borderRadius: '8px' }}>
+      {toast && (
+        <div style={{ position: 'fixed', top: '24px', right: '24px', zIndex: 9999, padding: '14px 20px', borderRadius: '10px', fontSize: '13px', fontWeight: '600', color: '#fff', maxWidth: '320px', boxShadow: '0 8px 24px rgba(0,0,0,0.15)', background: toast.type === 'success' ? '#10b981' : toast.type === 'error' ? '#ef4444' : '#f59e0b', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span>{toast.type === 'success' ? '✅' : toast.type === 'error' ? '❌' : '⚠️'}</span>
+          {toast.msg}
+        </div>
+      )}
+
+      {/* Left List of Menus */}
+      <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '16px', background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', border: '1px solid #e2e8f0', minWidth: '300px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0, color: '#1e293b' }}>Main Menus</h3>
+        <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 12px 0' }}>Manage top-level navigation items</p>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <input
+            type="text"
+            placeholder="New Main Menu Title"
+            value={newMenuName}
+            onChange={e => setNewMenuName(e.target.value)}
+            style={{ flex: 1, padding: '0 12px', height: '40px', boxSizing: 'border-box', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none' }}
+          />
+          <button onClick={handleAddMenu} style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '0 16px', height: '40px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add</button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', flex: 1, maxHeight: '400px', marginTop: '12px' }}>
+          {Object.keys(dynamicMenus).map(menu => (
+            <div
+              key={menu}
+              onClick={() => setSelectedMenu(menu)}
+              style={{ padding: '12px 16px', borderRadius: '8px', background: selectedMenu === menu ? '#eff6ff' : '#f8fafc', border: `1px solid ${selectedMenu === menu ? '#bfdbfe' : '#e2e8f0'}`, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s' }}
+            >
+              <span style={{ fontSize: '13px', fontWeight: selectedMenu === menu ? 'bold' : '500', color: selectedMenu === menu ? 'var(--accent, #1e3a8a)' : '#334155' }}>{menu}</span>
+              <span style={{ fontSize: '11px', background: selectedMenu === menu ? 'var(--accent, #1e3a8a)' : '#e2e8f0', color: selectedMenu === menu ? '#fff' : '#64748b', padding: '2px 8px', borderRadius: '12px', fontWeight: 'bold' }}>{dynamicMenus[menu].length || 0}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Right List of Sub Menus */}
+      <div style={{ flex: '2', display: 'flex', flexDirection: 'column', background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', border: '1px solid #e2e8f0' }}>
+        {selectedMenu ? (
+          <>
+            <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 4px 0', color: '#1e293b' }}>{selectedMenu} — Sub Menus</h3>
+            <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px 0' }}>Add or edit sub-menus for this category</p>
+
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+              <input
+                type="text"
+                placeholder="New Sub-Menu Title"
+                value={newSubMenuName}
+                onChange={e => setNewSubMenuName(e.target.value)}
+                style={{ flex: 1, maxWidth: '400px', padding: '0 12px', height: '40px', boxSizing: 'border-box', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none' }}
+              />
+              <button onClick={handleAddSubMenu} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '0 16px', height: '40px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add Sub-Menu</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
+              {(dynamicMenus[selectedMenu] || []).map((subMenu, idx) => (
+                <div key={idx} style={{ padding: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent, #1e3a8a)' }} />
+                  {subMenu}
+                </div>
+              ))}
+              {(dynamicMenus[selectedMenu] || []).length === 0 && (
+                <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: '#94a3b8', fontSize: '13px', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+                  No sub-menus added yet for {selectedMenu}.
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', textAlign: 'center' }}>
+            <span style={{ fontSize: '40px', marginBottom: '16px', opacity: 0.5 }}>📂</span>
+            <p style={{ fontSize: '14px', margin: 0, fontWeight: '500' }}>Select a main menu to view and add sub-menus.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const AssignUserRoleModal = ({ isMobile, dynamicMenus }: { isMobile: boolean, dynamicMenus: Record<string, string[]> }) => {
   const [selectedRole, setSelectedRole] = useState('');
   const [roleDescription, setRoleDescription] = useState('');
   const [createdBy, setCreatedBy] = useState('');
@@ -881,26 +992,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
     setTimeout(() => setToast(null), 3500);
   };
 
-  const [dynamicMenus, setDynamicMenus] = useState<Record<string, string[]>>({
-    'Dashboard': [],
-    'Setup': SETUP_SUB_MENU_ITEMS,
-    'Registration': REGISTRATION_SUB_MENU_ITEMS,
-    'Unit Operation': UNIT_OPERATION_SUB_MENU_ITEMS,
-    'Approval': APPROVAL_SUB_MENU_ITEMS,
-    'Doc Printing': DOC_PRINTING_SUB_MENU_ITEMS,
-    'Reports': REPORTS_SUB_MENU_ITEMS
-  });
   const subMenus = Object.keys(dynamicMenus);
-
-  const [newMenuName, setNewMenuName] = useState('');
-
-  const handleAddMenu = () => {
-    if (newMenuName.trim() && !dynamicMenus[newMenuName.trim()]) {
-      setDynamicMenus(prev => ({ ...prev, [newMenuName.trim()]: [] }));
-      setNewMenuName('');
-      showToast(`Added new menu column: "${newMenuName.trim()}"`, 'success');
-    }
-  };
 
   const handleCreate = () => {
     if (!selectedRole) {
@@ -1233,22 +1325,7 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
           ))}
         </div>
 
-        {/* Add New Menu Row */}
-        <div style={{ padding: '12px 20px', borderTop: '1px solid #f1f5f9', display: 'flex', gap: '10px', alignItems: 'center', background: '#f8fafc' }}>
-          <input
-            type="text"
-            placeholder="New Main Menu Title"
-            value={newMenuName}
-            onChange={e => setNewMenuName(e.target.value)}
-            style={{ flex: 1, maxWidth: '300px', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '13px' }}
-          />
-          <button
-            onClick={handleAddMenu}
-            style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}
-          >
-            + Add Menu Column
-          </button>
-        </div>
+        {/* Add New Menu Row removed */}
       </div>
 
       {selectedSubMenu && (
@@ -1261,14 +1338,6 @@ const AssignUserRoleModal = ({ isMobile }: { isMobile: boolean }) => {
           setEnabledRows={setSubMenuEnabledRows}
           rowPermissions={subMenuRowPermissions[selectedSubMenu.title] || {}}
           setRowPermissions={setSubMenuRowPermissions}
-          onAddSubMenu={(newSub) => {
-            setDynamicMenus(prev => {
-              const updated = { ...prev, [selectedSubMenu.title]: [...(prev[selectedSubMenu.title] || []), newSub] };
-              setSelectedSubMenu(curr => curr ? { ...curr, items: updated[selectedSubMenu.title] } : null);
-              return updated;
-            });
-            showToast(`Added sub-menu: "${newSub}"`, 'success');
-          }}
         />
       )}
 
@@ -1454,6 +1523,16 @@ function Security() {
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
 
+  const [dynamicMenus, setDynamicMenus] = useState<Record<string, string[]>>({
+    'Dashboard': [],
+    'Setup': SETUP_SUB_MENU_ITEMS,
+    'Registration': REGISTRATION_SUB_MENU_ITEMS,
+    'Unit Operation': UNIT_OPERATION_SUB_MENU_ITEMS,
+    'Approval': APPROVAL_SUB_MENU_ITEMS,
+    'Doc Printing': DOC_PRINTING_SUB_MENU_ITEMS,
+    'Reports': REPORTS_SUB_MENU_ITEMS
+  });
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -1472,7 +1551,11 @@ function Security() {
 
 
     if (title === 'Assign User Role') {
-      return <AssignUserRoleModal isMobile={isMobile} />;
+      return <AssignUserRoleModal isMobile={isMobile} dynamicMenus={dynamicMenus} />;
+    }
+
+    if (title === 'Manage Menus') {
+      return <MenuManagementModal isMobile={isMobile} dynamicMenus={dynamicMenus} setDynamicMenus={setDynamicMenus} />;
     }
 
     if (title === 'Create User') {

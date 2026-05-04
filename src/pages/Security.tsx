@@ -855,6 +855,8 @@ const MenuManagementModal = ({
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
   const [newSubMenuName, setNewSubMenuName] = useState('');
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warn' } | null>(null);
+  const [confirmDeleteMenu, setConfirmDeleteMenu] = useState<string | null>(null);
+  const [confirmDeleteSubMenu, setConfirmDeleteSubMenu] = useState<string | null>(null);
 
   const showToast = (msg: string, type: 'success' | 'error' | 'warn' = 'success') => {
     setToast({ msg, type });
@@ -884,8 +886,72 @@ const MenuManagementModal = ({
     }
   };
 
+  const handleDeleteMenu = (menuToDelete: string) => {
+    setConfirmDeleteMenu(menuToDelete);
+  };
+
+  const executeDeleteMenu = () => {
+    if (confirmDeleteMenu) {
+      setDynamicMenus(prev => {
+        const next = { ...prev };
+        delete next[confirmDeleteMenu];
+        return next;
+      });
+      if (selectedMenu === confirmDeleteMenu) {
+        setSelectedMenu(null);
+      }
+      showToast(`Deleted main menu: "${confirmDeleteMenu}"`, 'success');
+      setConfirmDeleteMenu(null);
+    }
+  };
+
+  const handleDeleteSubMenu = (subMenuToDelete: string) => {
+    setConfirmDeleteSubMenu(subMenuToDelete);
+  };
+
+  const executeDeleteSubMenu = () => {
+    if (selectedMenu && confirmDeleteSubMenu) {
+      setDynamicMenus(prev => ({
+        ...prev,
+        [selectedMenu]: prev[selectedMenu].filter(item => item !== confirmDeleteSubMenu)
+      }));
+      showToast(`Deleted sub-menu: "${confirmDeleteSubMenu}"`, 'success');
+      setConfirmDeleteSubMenu(null);
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '24px', padding: isMobile ? '12px' : '24px', background: '#fdfbfa', minHeight: '600px', borderRadius: '8px' }}>
+    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '24px', padding: isMobile ? '12px' : '24px', background: '#fdfbfa', minHeight: '600px', borderRadius: '8px', position: 'relative' }}>
+
+      {/* Delete Menu Confirmation */}
+      {confirmDeleteMenu && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: '12px', padding: '28px 32px', maxWidth: '400px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.25)', textAlign: 'center' }}>
+            <div style={{ fontSize: '40px', marginBottom: '12px' }}>🗑️</div>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#1e293b' }}>Delete Menu</h3>
+            <p style={{ margin: '0 0 24px 0', fontSize: '13px', color: '#64748b' }}>Are you sure you want to delete the main menu <strong>"{confirmDeleteMenu}"</strong> and all its sub-menus? This action cannot be undone.</p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button onClick={() => setConfirmDeleteMenu(null)} style={{ padding: '10px 24px', borderRadius: '8px', border: '1.5px solid #e2e8f0', background: '#fff', color: '#64748b', fontWeight: '600', cursor: 'pointer', fontSize: '13px' }}>Cancel</button>
+              <button onClick={executeDeleteMenu} style={{ padding: '10px 24px', borderRadius: '8px', border: 'none', background: '#ef4444', color: '#fff', fontWeight: '600', cursor: 'pointer', fontSize: '13px', boxShadow: '0 4px 12px rgba(239,68,68,0.3)' }}>Yes, Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Sub-Menu Confirmation */}
+      {confirmDeleteSubMenu && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: '12px', padding: '28px 32px', maxWidth: '400px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.25)', textAlign: 'center' }}>
+            <div style={{ fontSize: '40px', marginBottom: '12px' }}>🗑️</div>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#1e293b' }}>Delete Sub-Menu</h3>
+            <p style={{ margin: '0 0 24px 0', fontSize: '13px', color: '#64748b' }}>Are you sure you want to delete the sub-menu <strong>"{confirmDeleteSubMenu}"</strong>? This action cannot be undone.</p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button onClick={() => setConfirmDeleteSubMenu(null)} style={{ padding: '10px 24px', borderRadius: '8px', border: '1.5px solid #e2e8f0', background: '#fff', color: '#64748b', fontWeight: '600', cursor: 'pointer', fontSize: '13px' }}>Cancel</button>
+              <button onClick={executeDeleteSubMenu} style={{ padding: '10px 24px', borderRadius: '8px', border: 'none', background: '#ef4444', color: '#fff', fontWeight: '600', cursor: 'pointer', fontSize: '13px', boxShadow: '0 4px 12px rgba(239,68,68,0.3)' }}>Yes, Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
       {toast && (
         <div style={{ position: 'fixed', top: '24px', right: '24px', zIndex: 9999, padding: '14px 20px', borderRadius: '10px', fontSize: '13px', fontWeight: '600', color: '#fff', maxWidth: '320px', boxShadow: '0 8px 24px rgba(0,0,0,0.15)', background: toast.type === 'success' ? '#10b981' : toast.type === 'error' ? '#ef4444' : '#f59e0b', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span>{toast.type === 'success' ? '✅' : toast.type === 'error' ? '❌' : '⚠️'}</span>
@@ -899,25 +965,35 @@ const MenuManagementModal = ({
         <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 12px 0' }}>Manage top-level navigation items</p>
 
         <div style={{ display: 'flex', gap: '8px' }}>
+          {/* HEIGHT REDUCED HERE (input height: '34px') */}
           <input
             type="text"
             placeholder="New Main Menu Title"
             value={newMenuName}
             onChange={e => setNewMenuName(e.target.value)}
-            style={{ flex: 1, padding: '0 12px', height: '40px', boxSizing: 'border-box', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none' }}
+            style={{ flex: 1, padding: '0 12px', height: '30px', boxSizing: 'border-box', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none' }}
           />
-          <button onClick={handleAddMenu} style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '0 16px', height: '40px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add</button>
+          {/* HEIGHT REDUCED HERE (button height: '34px') */}
+          <button onClick={handleAddMenu} style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '0 16px', height: '30px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add</button>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', flex: 1, maxHeight: '400px', marginTop: '12px' }}>
           {Object.keys(dynamicMenus).map(menu => (
-            <div
-              key={menu}
-              onClick={() => setSelectedMenu(menu)}
-              style={{ padding: '12px 16px', borderRadius: '8px', background: selectedMenu === menu ? '#eff6ff' : '#f8fafc', border: `1px solid ${selectedMenu === menu ? '#bfdbfe' : '#e2e8f0'}`, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s' }}
-            >
-              <span style={{ fontSize: '13px', fontWeight: selectedMenu === menu ? 'bold' : '500', color: selectedMenu === menu ? 'var(--accent, #1e3a8a)' : '#334155' }}>{menu}</span>
-              <span style={{ fontSize: '11px', background: selectedMenu === menu ? 'var(--accent, #1e3a8a)' : '#e2e8f0', color: selectedMenu === menu ? '#fff' : '#64748b', padding: '2px 8px', borderRadius: '12px', fontWeight: 'bold' }}>{dynamicMenus[menu].length || 0}</span>
+            <div key={menu} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div
+                onClick={() => setSelectedMenu(menu)}
+                style={{ flex: 1, padding: '12px 16px', borderRadius: '8px', background: selectedMenu === menu ? '#eff6ff' : '#f8fafc', border: `1px solid ${selectedMenu === menu ? '#bfdbfe' : '#e2e8f0'}`, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s' }}
+              >
+                <span style={{ fontSize: '13px', fontWeight: selectedMenu === menu ? 'bold' : '500', color: selectedMenu === menu ? 'var(--accent, #1e3a8a)' : '#334155' }}>{menu}</span>
+                <span style={{ fontSize: '11px', background: selectedMenu === menu ? 'var(--accent, #1e3a8a)' : '#e2e8f0', color: selectedMenu === menu ? '#fff' : '#64748b', padding: '2px 8px', borderRadius: '12px', fontWeight: 'bold' }}>{dynamicMenus[menu].length || 0}</span>
+              </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); handleDeleteMenu(menu); }}
+                title="Delete Menu"
+                style={{ background: '#fee2e2', color: '#ef4444', border: '1px solid #fca5a5', width: '32px', height: '32px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, padding: 0 }}
+              >
+                &times;
+              </button>
             </div>
           ))}
         </div>
@@ -931,21 +1007,32 @@ const MenuManagementModal = ({
             <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px 0' }}>Add or edit sub-menus for this category</p>
 
             <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+              {/* HEIGHT REDUCED HERE (input height: '34px') */}
               <input
                 type="text"
                 placeholder="New Sub-Menu Title"
                 value={newSubMenuName}
                 onChange={e => setNewSubMenuName(e.target.value)}
-                style={{ flex: 1, maxWidth: '400px', padding: '0 12px', height: '40px', boxSizing: 'border-box', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none' }}
+                style={{ flex: 1, maxWidth: '400px', padding: '0 12px', height: '30px', boxSizing: 'border-box', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none' }}
               />
-              <button onClick={handleAddSubMenu} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '0 16px', height: '40px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add Sub-Menu</button>
+              {/* HEIGHT REDUCED HERE (button height: '34px') */}
+              <button onClick={handleAddSubMenu} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '0 16px', height: '30px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add Sub-Menu</button>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
               {(dynamicMenus[selectedMenu] || []).map((subMenu, idx) => (
-                <div key={idx} style={{ padding: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent, #1e3a8a)' }} />
-                  {subMenu}
+                <div key={idx} style={{ padding: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent, #1e3a8a)' }} />
+                    {subMenu}
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDeleteSubMenu(subMenu); }}
+                    title="Delete Sub-Menu"
+                    style={{ background: 'transparent', color: '#ef4444', border: 'none', fontSize: '16px', lineHeight: 1, cursor: 'pointer', padding: '0 4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    &times;
+                  </button>
                 </div>
               ))}
               {(dynamicMenus[selectedMenu] || []).length === 0 && (

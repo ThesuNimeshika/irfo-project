@@ -295,6 +295,80 @@ const IcoLock = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none
 const IcoDevice = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>;
 const IcoStar = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>;
 
+const AVAILABLE_FUNDS = [
+  { code: '11', name: 'Ceylon Index Fund' },
+  { code: '12', name: 'Ceylon Income Fund' },
+  { code: '13', name: 'Ceylon Tourism Fund' },
+  { code: '14', name: 'Ceylon Financial Sector Fund' },
+  { code: '15', name: 'Ceylon IPO Fund' },
+  { code: '16', name: 'Ceylon Gilt Edged Fund' },
+  { code: '17', name: 'Ceylon Dollar Bond Fund' },
+  { code: '18', name: 'Ceylon Treasury Income Fund' },
+  { code: '19', name: 'Ceylon Money Market Fund' },
+  { code: '20', name: 'Ceylon ABC Fund' },
+];
+
+const MultiSelectFund = ({ selectedFunds, onChange }: { selectedFunds: string[], onChange: (funds: string[]) => void }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const toggleFund = (code: string) => {
+    if (selectedFunds.includes(code)) {
+      onChange(selectedFunds.filter(f => f !== code));
+    } else {
+      onChange([...selectedFunds, code]);
+    }
+  };
+
+  const selectedText = selectedFunds.length > 0
+    ? selectedFunds.join(', ')
+    : 'Select Funds';
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ ...inputStyle, paddingLeft: '44px', display: 'flex', alignItems: 'center', cursor: 'pointer', background: '#fff', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', paddingRight: '30px' }}
+      >
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedText}</span>
+        <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none', fontSize: '10px' }}>▼</span>
+      </div>
+      {isOpen && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', marginTop: '4px', boxShadow: '0 15px 30px rgba(0,0,0,0.15)', zIndex: 100, maxHeight: '300px', overflowY: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '40px 60px 1fr', padding: '10px 16px', borderBottom: '2px solid #f1f5f9', background: '#f8fafc', fontSize: '11px', fontWeight: 'bold', color: '#64748b', position: 'sticky', top: 0, zIndex: 1 }}>
+            <div></div>
+            <div>CODE</div>
+            <div>FUND NAME</div>
+          </div>
+          {AVAILABLE_FUNDS.map(fund => (
+            <div
+              key={fund.code}
+              onClick={() => toggleFund(fund.code)}
+              style={{ display: 'grid', gridTemplateColumns: '40px 60px 1fr', padding: '10px 16px', borderBottom: '1px solid #f1f5f9', alignItems: 'center', cursor: 'pointer', background: selectedFunds.includes(fund.code) ? '#f0f7ff' : 'transparent', transition: 'background 0.2s' }}
+              onMouseOver={(e) => !selectedFunds.includes(fund.code) && (e.currentTarget.style.background = '#f8fafc')}
+              onMouseOut={(e) => !selectedFunds.includes(fund.code) && (e.currentTarget.style.background = 'transparent')}
+            >
+              <input type="checkbox" checked={selectedFunds.includes(fund.code)} readOnly style={{ cursor: 'pointer', width: '16px', height: '16px' }} />
+              <div style={{ fontSize: '13px', fontWeight: '700', color: '#1e3a8a' }}>{fund.code}</div>
+              <div style={{ fontSize: '13px', color: '#334155', fontWeight: 500 }}>{fund.name}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CustomDateInput = forwardRef(({ value, onClick, placeholder }: any, ref: any) => (
   <input
     onClick={onClick}
@@ -327,8 +401,7 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
-  const [employer, setEmployer] = useState('');
-  const [department, setDepartment] = useState('');
+  const [fund, setFund] = useState<string[]>([]);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otpMethod, setOtpMethod] = useState('');
@@ -346,8 +419,14 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
     setEmail(user.email || '');
     setAddress(user.address || '');
     setIsActive(user.isActive ?? true);
-    setEmployer(user.employer || '');
-    setDepartment(user.department || '');
+    // Handle fund initialization (support both string and array formats)
+    if (user.fund) {
+      setFund(Array.isArray(user.fund) ? user.fund : user.fund.split(',').map((s: string) => s.trim()).filter(Boolean));
+    } else if (user.department) {
+      setFund(Array.isArray(user.department) ? user.department : user.department.split(',').map((s: string) => s.trim()).filter(Boolean));
+    } else {
+      setFund([]);
+    }
     setOtpMethod(user.otpMethod || '');
     setUserType(user.userType || '');
     setDesignation(user.designation || '');
@@ -364,8 +443,7 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
     setEmail('');
     setAddress('');
     setIsActive(true);
-    setEmployer('');
-    setDepartment('');
+    setFund([]);
     setOtpMethod('');
     setUserType('');
     setPassword('');
@@ -657,29 +735,12 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
         </Section>
 
         <Section title="Organisation" icon="🏢">
-          <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
-            <div style={{ flex: 1, position: 'relative' }}>
-              <IconWrapper><IcoBuilding /></IconWrapper>
-              <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} className={secInputClass} value={employer} onChange={e => setEmployer(e.target.value)}>
-                <option value="">Employer</option>
-                <option value="irfo">IRFO (Internal)</option>
-                <option value="management_systems">Management Systems (Pvt) Ltd</option>
-                <option value="external_contractor">External Contractor</option>
-              </select>
-              <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none', fontSize: '10px' }}>▼</span>
-            </div>
-            <div style={{ flex: 1, position: 'relative' }}>
-              <IconWrapper><IcoOffice /></IconWrapper>
-              <select style={{ ...inputStyle, appearance: 'none', backgroundColor: '#fff' }} className={secInputClass} value={department} onChange={e => setDepartment(e.target.value)}>
-                <option value="">Department</option>
-                <option value="it">Information Technology (IT)</option>
-                <option value="hr">Human Resources</option>
-                <option value="finance">Finance</option>
-                <option value="operations">Operations</option>
-                <option value="security">Security</option>
-              </select>
-              <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none', fontSize: '10px' }}>▼</span>
-            </div>
+          <div style={{ position: 'relative', width: '100%' }}>
+            <IconWrapper><IcoOffice /></IconWrapper>
+            <MultiSelectFund
+              selectedFunds={fund}
+              onChange={setFund}
+            />
           </div>
         </Section>
 

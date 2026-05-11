@@ -9,8 +9,8 @@ interface UserSearchResult {
   email?: string;
   address?: string;
   isActive?: boolean;
-  employer?: string;
-  department?: string;
+  company?: string;
+  fund?: string;
   otpMethod?: string;
   userType?: string;
   [key: string]: any;
@@ -35,11 +35,11 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
   const [statusMessage, setStatusMessage] = useState<string>('Ready to search');
 
   const mockUsers: UserSearchResult[] = [
-    { fullName: 'Anushka Perera', empNo: 'EMP001', mobile: '0712345678', email: 'anushka@irfo.com', address: 'Colombo 03', isActive: true, employer: 'irfo', department: 'it', otpMethod: 'email', userType: 'super_admin' },
-    { fullName: 'Basuru Wickramasinghe', empNo: 'EMP002', mobile: '0771234567', email: 'basuru@irfo.com', address: 'Kandy', isActive: true, employer: 'irfo', department: 'finance', otpMethod: 'sms', userType: 'system_admin' },
-    { fullName: 'Tharindu Silva', empNo: 'EMP003', mobile: '0754567890', email: 'tharindu@irfo.com', address: 'Galle', isActive: false, employer: 'management_systems', department: 'operations', otpMethod: 'authenticator', userType: 'standard' },
-    { fullName: 'Thilina Fernando', empNo: 'EMP004', mobile: '0721122334', email: 'thilina@irfo.com', address: 'Negombo', isActive: true, employer: 'external_contractor', department: 'security', otpMethod: 'email', userType: 'read_only' },
-    { fullName: 'Thushara Bandara', empNo: 'EMP005', mobile: '0789988776', email: 'thushara@irfo.com', address: 'Jaffna', isActive: true, employer: 'irfo', department: 'hr', otpMethod: 'sms', userType: 'standard' },
+    { fullName: 'Anushka Perera', empNo: 'EMP001', mobile: '0712345678', email: 'anushka@irfo.com', address: 'Colombo 03', isActive: true, company: 'irfo', fund: 'it', otpMethod: 'email', userType: 'super_admin' },
+    { fullName: 'Basuru Wickramasinghe', empNo: 'EMP002', mobile: '0771234567', email: 'basuru@irfo.com', address: 'Kandy', isActive: true, company: 'irfo', fund: 'finance', otpMethod: 'sms', userType: 'system_admin' },
+    { fullName: 'Tharindu Silva', empNo: 'EMP003', mobile: '0754567890', email: 'tharindu@irfo.com', address: 'Galle', isActive: false, company: 'management_systems', fund: 'operations', otpMethod: 'authenticator', userType: 'standard' },
+    { fullName: 'Thilina Fernando', empNo: 'EMP004', mobile: '0721122334', email: 'thilina@irfo.com', address: 'Negombo', isActive: true, company: 'external_contractor', fund: 'security', otpMethod: 'email', userType: 'read_only' },
+    { fullName: 'Thushara Bandara', empNo: 'EMP005', mobile: '0789988776', email: 'thushara@irfo.com', address: 'Jaffna', isActive: true, company: 'irfo', fund: 'hr', otpMethod: 'sms', userType: 'standard' },
   ];
 
   const handleSearch = () => {

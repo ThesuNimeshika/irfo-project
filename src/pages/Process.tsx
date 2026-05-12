@@ -62,10 +62,6 @@ function Process() {
 
                 <div className="setup-main-content">
                     <div className="setup-main-card magical-bg animated-bg">
-                        <div style={{ marginBottom: '24px', textAlign: 'center' }}>
-                            <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e3a8a', marginBottom: '8px' }}>Process Management</h1>
-                            <p style={{ color: '#64748b', fontSize: '14px' }}>Execute system maintenance and data processing tasks</p>
-                        </div>
 
                         <div className="setup-modules-grid">
                             {moduleData.map((mod, idx) => (

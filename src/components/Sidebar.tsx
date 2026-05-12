@@ -106,7 +106,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           justify-content: center;
           width       : calc(100% - 20px);
           margin      : 1px 10px;
-          padding     : 7px 4px 5px;
+          padding     : 4px 4px 2px;
           border-radius: 10px;
           border      : 1px solid transparent;
           background  : transparent;
@@ -116,7 +116,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           color       : #6b7280;
           text-align  : center;
           box-sizing  : border-box;
-          gap         : 3px;
+          gap         : 2px;
           transition  :
             background   0.18s cubic-bezier(0.4,0,0.2,1),
             border-color 0.18s cubic-bezier(0.4,0,0.2,1),
@@ -226,7 +226,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           flex-direction : row !important;
           justify-content: space-between !important;
           align-items    : center !important;
-          padding        : 9px 10px 9px 8px !important;
+          padding        : 5px 10px 5px 8px !important;
           gap            : 0 !important;
         }
         .sb-report-left {
@@ -304,7 +304,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           height    : 1px;
           background: linear-gradient(90deg, transparent, rgba(30,58,138,0.10) 40%, rgba(30,58,138,0.10) 60%, transparent);
           border    : none;
-          margin    : 5px 16px;
+          margin    : 2px 16px;
           display   : block;
         }
 
@@ -329,8 +329,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'stretch',
-          paddingTop: 68,
-          paddingBottom: 20,
+          paddingTop: 75,
+          paddingBottom: 50,
           overflowY: 'auto',
           overflowX: 'hidden',
           boxSizing: 'border-box',

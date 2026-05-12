@@ -53,17 +53,17 @@ function Home() {
       const response = await fetch('http://localhost:5095/api/dashboard/funds/names');
       if (!response.ok) throw new Error('Failed to fetch fund names');
       const fundNames: string[] = await response.json();
-      
-      
+
+
       setPieData(prevData => {
         return prevData.map((item, index) => ({
           ...item,
-          name: fundNames[index] || item.name 
+          name: fundNames[index] || item.name
         }));
       });
     } catch (err) {
       console.error('Error loading fund names:', err);
-      
+
     }
   }
 
@@ -71,7 +71,7 @@ function Home() {
   async function fetchPieData(_date: string, type: 'unit' | 'market') {
     // Use current pie data names to maintain labels
     const currentNames = pieData.map(item => item.name);
-    
+
     if (type === 'unit') {
       return {
         pie: [
@@ -157,13 +157,13 @@ function Home() {
       <div className="navbar-fixed-wrapper">
         <Navbar />
       </div>
-      <div className="home-main-layout" style={{ 
-        marginTop: 0, 
-        paddingTop: 0, 
-        display: 'flex', 
-        flexDirection: isMobile ? 'column' : 'row', 
-        height: '100vh', 
-        minHeight: 'unset', 
+      <div className="home-main-layout" style={{
+        marginTop: 0,
+        paddingTop: 0,
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        height: '100vh',
+        minHeight: 'unset',
         overflow: 'hidden',
         background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
         marginBottom: 0
@@ -171,19 +171,18 @@ function Home() {
         {/* Sidebar left-aligned, fixed width on desktop only */}
         {!isMobile && (
           <div className="home-sidebar-container" style={{
-            width: isTablet ? '100px' : '120px',
             flexShrink: 0
           }}>
             <Sidebar />
           </div>
         )}
         {/* Main content area: stack cards vertically */}
-        <div style={{ 
-          flex: 1, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '0', 
-          height: '100vh', 
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0',
+          height: '100vh',
           overflow: 'hidden',
           background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
           marginBottom: 0,
@@ -192,9 +191,9 @@ function Home() {
           paddingRight: '0px'
         }}>
           {/* Unified magical layout card */}
-          <div className="home-card magical-bg animated-bg dashboard-main-card" style={{ 
-            flex: isMobile ? '1' : '0.8', 
-            minHeight: 0, 
+          <div className="home-card magical-bg animated-bg dashboard-main-card" style={{
+            flex: isMobile ? '1' : '0.8',
+            minHeight: 0,
             marginBottom: 0,
             background: 'transparent',
             boxShadow: 'none',
@@ -203,13 +202,13 @@ function Home() {
             width: '100%'
           }}>
             {/* Pie chart section */}
-            <div className="dashboard-pie-section" style={{ 
-              paddingTop: isMobile ? '20px' : isTablet ? '25px' : '35px', 
-              paddingBottom: '20px', 
-              position: 'relative', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+            <div className="dashboard-pie-section" style={{
+              paddingTop: isMobile ? '20px' : isTablet ? '25px' : '35px',
+              paddingBottom: '20px',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               width: '100%',
               paddingLeft: isMobile ? '10px' : isTablet ? '15px' : '20px',
               paddingRight: isMobile ? '10px' : isTablet ? '15px' : '20px',
@@ -217,8 +216,8 @@ function Home() {
             }}>
               {/* Legend right - only show if fund names are short */}
               {pieData.some(entry => entry.name.length <= 15) && (
-                <div className="dashboard-pie-legend" style={{ 
-                  maxHeight: isMobile ? '120px' : isTablet ? '170px' : '190px', 
+                <div className="dashboard-pie-legend" style={{
+                  maxHeight: isMobile ? '120px' : isTablet ? '170px' : '190px',
                   overflowY: 'auto',
                   paddingLeft: isMobile ? '20px' : isTablet ? '35px' : '38px',
                   paddingTop: '0px',
@@ -230,16 +229,16 @@ function Home() {
                   textAlign: 'left',
                   marginBottom: isMobile ? '10px' : '0'
                 }}>
-                {pieData.map((entry) => (
+                  {pieData.map((entry) => (
                     <div key={entry.name} className="dashboard-pie-legend-row" style={{ textAlign: 'left', marginBottom: '8px', width: '100%', display: 'flex', alignItems: 'center' }}>
                       <span className="dashboard-pie-legend-color" style={{ background: entry.color, display: 'inline-block', width: '12px', height: '12px', borderRadius: '2px', flexShrink: 0, marginRight: '8px' }}></span>
                       <span className="dashboard-pie-legend-label" style={{ fontSize: isMobile ? '12px' : '14px', wordBreak: 'break-word', maxWidth: isMobile ? '150px' : '200px' }}>{entry.name}</span>
-                  </div>
-                ))}
-              </div>
+                    </div>
+                  ))}
+                </div>
               )}
               {/* Pie chart center */}
-              <div className="dashboard-pie-chart" style={{ 
+              <div className="dashboard-pie-chart" style={{
                 marginRight: pieData.some(entry => entry.name.length <= 15) ? (isMobile ? '0' : '20px') : 'auto',
                 width: isMobile ? '100%' : 'auto',
                 display: 'flex',
@@ -300,10 +299,10 @@ function Home() {
                 </ResponsiveContainer>
               </div>
               {/* Toggle switch for pie type selection */}
-              <div style={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
                 gap: isMobile ? '8px' : '12px',
                 cursor: 'help',
                 position: 'relative',
@@ -337,9 +336,9 @@ function Home() {
                   </div>,
                   document.body
                 )}
-                <div style={{ 
-                  fontSize: isMobile ? '11px' : '12px', 
-                  fontWeight: '700', 
+                <div style={{
+                  fontSize: isMobile ? '11px' : '12px',
+                  fontWeight: '700',
                   color: '#1e3a8a',
                   marginBottom: isMobile ? '4px' : '6px',
                   textTransform: 'uppercase',
@@ -372,7 +371,7 @@ function Home() {
                     borderRadius: isMobile ? '17px' : '21px',
                     zIndex: 1
                   }} />
-                  
+
                   {/* Slider knob */}
                   <div style={{
                     position: 'absolute',
@@ -387,7 +386,7 @@ function Home() {
                     zIndex: 3,
                     border: '1px solid rgba(30,58,138,0.15)'
                   }} />
-                  
+
                   {/* Knob glow */}
                   <div style={{
                     position: 'absolute',
@@ -400,7 +399,7 @@ function Home() {
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                     zIndex: 2
                   }} />
-                  
+
                   {/* Labels */}
                   <div style={{
                     position: 'relative',
@@ -433,7 +432,7 @@ function Home() {
                       transform: pieType === 'market' ? 'scale(1.05)' : 'scale(1)',
                       letterSpacing: '0.03em'
                     }}>
-                  Fund
+                      Fund
                     </span>
                   </div>
                 </div>
@@ -479,7 +478,7 @@ function Home() {
                 pointerEvents: 'none',
                 zIndex: 0
               }} />
-              
+
               {/* Header row: icon + label */}
               <div style={{
                 display: 'flex',
@@ -507,7 +506,7 @@ function Home() {
                   Date Selection
                 </span>
               </div>
-              
+
               {/* Date input */}
               <div style={{
                 position: 'relative',
@@ -546,7 +545,7 @@ function Home() {
                   }}
                 />
               </div>
-              
+
               {/* Formatted date display */}
               <div style={{
                 fontSize: isMobile ? '13px' : '14px',
@@ -563,26 +562,26 @@ function Home() {
                 fontFamily: "'Lato', system-ui, sans-serif",
                 letterSpacing: '0.01em'
               }}>
-                {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-GB', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 })}
               </div>
             </div>
           </div>
           {/* DataTable Card */}
-          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{ 
-            flex: isMobile ? '0.8' : '1.2', 
-            minHeight: 0, 
-            marginTop: 4, 
-            marginBottom: 0, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            justifyContent: 'stretch', 
-            height: isMobile ? 'auto' : '30vh', 
-            borderBottomLeftRadius: 0, 
-            borderBottomRightRadius: 0, 
+          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{
+            flex: isMobile ? '0.8' : '1.2',
+            minHeight: 0,
+            marginTop: 4,
+            marginBottom: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'stretch',
+            height: isMobile ? 'auto' : '30vh',
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
             paddingTop: 4,
             width: '100%',
             paddingLeft: '0px',

@@ -4246,7 +4246,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
   };
   return (
     <div className="setup-modal-grid-3col">
-      {/* Left Column */}
+      {/* Column 1: General Info */}
       <div className="setup-flex-column-gap20">
         {/* Txn. Type Box */}
         <div className="setup-ash-box">
@@ -4278,6 +4278,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             </label>
           </div>
         </div>
+
         {/* Code */}
         <div className="setup-label-input-inline setup-inline-label-width-1-2">
           <label className="setup-input-label">Code</label>
@@ -4290,18 +4291,7 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             placeholder="Enter code"
           />
         </div>
-        {/* Percentage */}
-        <div className="setup-label-input-inline setup-inline-label-width-1-2">
-          <label className="setup-input-label">Percentage</label>
-          <input
-            type="text"
-            value={formData.unitFeePercentage || ''}
-            onChange={e => handleInputChange('unitFeePercentage', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            placeholder="Enter percentage"
-          />
-        </div>
+
         {/* Description */}
         <div className="setup-label-input-inline setup-inline-label-width-1-2">
           <label className="setup-input-label">Description</label>
@@ -4314,6 +4304,36 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
             placeholder="Enter description"
           />
         </div>
+      </div>
+
+      {/* Column 2: Pricing & Age */}
+      <div className="setup-flex-column-gap20">
+        {/* Percentage */}
+        <div className="setup-label-input-inline setup-inline-label-width-1-2">
+          <label className="setup-input-label">Percentage</label>
+          <input
+            type="text"
+            value={formData.unitFeePercentage || ''}
+            onChange={e => handleInputChange('unitFeePercentage', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter percentage"
+          />
+        </div>
+
+        {/* Unit Fee */}
+        <div className="setup-label-input-inline setup-inline-label-width-1-2">
+          <label className="setup-input-label">Unit Fee</label>
+          <input
+            type="text"
+            value={formData.unitFee || ''}
+            onChange={e => handleInputChange('unitFee', e.target.value)}
+            disabled={!isFormEditable}
+            className="setup-input-field"
+            placeholder="Enter unit fee"
+          />
+        </div>
+
         {/* Price One (%) and Price Two (%) in one row */}
         <div className="setup-grid-2col">
           <div className="setup-label-input-inline setup-inline-label-width-1-2">
@@ -4355,19 +4375,6 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
           </div>
         </div>
 
-        {/* Unit Fee */}
-        <div className="setup-label-input-inline setup-inline-label-width-1-2">
-          <label className="setup-input-label">Unit Fee</label>
-          <input
-            type="text"
-            value={formData.unitFee || ''}
-            onChange={e => handleInputChange('unitFee', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            placeholder="Enter unit fee"
-          />
-        </div>
-
         {/* Redemption Age Section - Only visible when Redemption is selected */}
         {formData.unitFeeTxnType === 'redemption' && (
           <div className="setup-ash-box setup-full-width">
@@ -4400,8 +4407,8 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
         )}
       </div>
 
-      {/* Right Column: Card with scrollable table */}
-      <div className="setup-ash-box">
+      {/* Column 3: Applicable Funds */}
+      <div className="setup-ash-box" style={{ height: 'fit-content' }}>
         <div className="setup-ash-box-title">Applicable Funds</div>
         <div className="setup-list-table-container">
           <table className="setup-list-table">

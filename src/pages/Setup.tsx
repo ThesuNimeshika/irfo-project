@@ -45,9 +45,7 @@ interface FormData {
   custodianCode: string;
   custodianActive: boolean;
   custodianName: string;
-  custodianAddress1: string;
-  custodianAddress2: string;
-  custodianAddress3: string;
+  custodianAddress: string;
   custodianTelephoneNumber: string;
   custodianFaxNo: string;
   custodianEmail: string;
@@ -338,14 +336,14 @@ const tableData = {
     { date: '2024-02-14', description: 'Valentine Day', type: 'Special' }
   ],
   Trustees: [
-    { trusteeCode: 'TR001', active: 'Yes', trusteeName: 'John Smith', address: '123 Main Street', town: 'Downtown', city: 'New York', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'john@trustcorp.com' },
-    { trusteeCode: 'TR002', active: 'Yes', trusteeName: 'Sarah Johnson', address: '456 Oak Avenue', town: 'Midtown', city: 'Los Angeles', telephoneNumber: '+1-555-0456', faxNo: '+1-555-0457', email: 'sarah@fiduciary.com' },
-    { trusteeCode: 'TR003', active: 'No', trusteeName: 'Michael Brown', address: '789 Pine Street', town: 'Uptown', city: 'Chicago', telephoneNumber: '+1-555-0789', faxNo: '+1-555-0790', email: 'michael@trustee.com' }
+    { trusteeCode: 'TR001', active: 'Yes', trusteeName: 'John Smith', trusteeAddress: '123 Main Street, Downtown, New York', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'john@trustcorp.com' },
+    { trusteeCode: 'TR002', active: 'Yes', trusteeName: 'Sarah Johnson', trusteeAddress: '456 Oak Avenue, Midtown, Los Angeles', telephoneNumber: '+1-555-0456', faxNo: '+1-555-0457', email: 'sarah@fiduciary.com' },
+    { trusteeCode: 'TR003', active: 'No', trusteeName: 'Michael Brown', trusteeAddress: '789 Pine Street, Uptown, Chicago', telephoneNumber: '+1-555-0789', faxNo: '+1-555-0790', email: 'michael@trustee.com' }
   ],
   Custodian: [
-    { custodianCode: 'CU001', active: 'Yes', custodianName: 'Global Custody Bank', address1: '123 Wall Street', address2: 'Suite 100', address3: 'Floor 5', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'global@custody.com' },
-    { custodianCode: 'CU002', active: 'Yes', custodianName: 'Euro Custody Ltd', address1: '456 Fleet Street', address2: 'Building A', address3: 'Level 3', telephoneNumber: '+44-20-7123-4567', faxNo: '+44-20-7123-4568', email: 'euro@custody.co.uk' },
-    { custodianCode: 'CU003', active: 'Yes', custodianName: 'Asia Pacific Custody', address1: '789 Finance Street', address2: 'Tower B', address3: 'Level 10', telephoneNumber: '+65-6123-4567', faxNo: '+65-6123-4568', email: 'asia@custody.sg' }
+    { custodianCode: 'CU001', active: 'Yes', custodianName: 'Global Custody Bank', address: '123 Wall Street, Suite 100, Floor 5', telephoneNumber: '+1-555-0123', faxNo: '+1-555-0124', email: 'global@custody.com' },
+    { custodianCode: 'CU002', active: 'Yes', custodianName: 'Euro Custody Ltd', address: '456 Fleet Street, Building A, Level 3', telephoneNumber: '+44-20-7123-4567', faxNo: '+44-20-7123-4568', email: 'euro@custody.co.uk' },
+    { custodianCode: 'CU003', active: 'Yes', custodianName: 'Asia Pacific Custody', address: '789 Finance Street, Tower B, Level 10', telephoneNumber: '+65-6123-4567', faxNo: '+65-6123-4568', email: 'asia@custody.sg' }
   ],
   'Postal Area': [
     { postalCode: 'PA001', active: 'Yes', description: 'Downtown Area' },
@@ -689,14 +687,15 @@ function CustomDataTable({ data, columns, onRowDoubleClick }: {
                                                                                 column === 'maturityDate' ? 'Maturity date' :
                                                                                   column === 'certificateType' ? 'Certificate type' :
                                                                                     column === 'custodianCode' ? 'Custodian Code' :
-                                                                                      column === 'suspendAccount' ? 'Suspend account' :
-                                                                                        column === 'managementAccount' ? 'Management account' :
-                                                                                          column === 'registrarAccount' ? 'Registrar account' :
-                                                                                            column === 'trustyAccount' ? 'Trusty account' :
-                                                                                              column === 'tinNo' ? 'Tin_no' :
-                                                                                                column === 'exposureType' ? 'Exposure Type' :
-                                                                                                  column === 'category' ? 'Category' :
-                                                                                                    column.replace(/([A-Z])/g, ' $1').trim(),
+                                                                                      column === 'trusteeAddress' ? 'Address' :
+                                                                                        column === 'suspendAccount' ? 'Suspend account' :
+                                                                                          column === 'managementAccount' ? 'Management account' :
+                                                                                            column === 'registrarAccount' ? 'Registrar account' :
+                                                                                              column === 'trustyAccount' ? 'Trusty account' :
+                                                                                                column === 'tinNo' ? 'Tin_no' :
+                                                                                                  column === 'exposureType' ? 'Exposure Type' :
+                                                                                                    column === 'category' ? 'Category' :
+                                                                                                      column.replace(/([A-Z])/g, ' $1').trim(),
       cell: (info) => (
         <span className="text-gray-900">{info.getValue()}</span>
       ),
@@ -888,9 +887,7 @@ function Setup() {
     custodianCode: '',
     custodianActive: false,
     custodianName: '',
-    custodianAddress1: '',
-    custodianAddress2: '',
-    custodianAddress3: '',
+    custodianAddress: '',
     custodianTelephoneNumber: '',
     custodianFaxNo: '',
     custodianEmail: '',
@@ -1140,9 +1137,7 @@ function Setup() {
       custodianCode: '',
       custodianActive: false,
       custodianName: '',
-      custodianAddress1: '',
-      custodianAddress2: '',
-      custodianAddress3: '',
+      custodianAddress: '',
       custodianTelephoneNumber: '',
       custodianFaxNo: '',
       custodianEmail: '',
@@ -3080,13 +3075,13 @@ function TrusteesModalContent({ formData, handleInputChange, isFormEditable = fa
       </div>
       <div className="setup-input-group">
         <label className="setup-input-label">Address (No/Street/Town/City)</label>
-        <input
-          type="text"
+        <textarea
           value={formData.trusteeAddress}
           onChange={(e) => handleInputChange('trusteeAddress', e.target.value)}
           disabled={!isFormEditable}
-          className="setup-input-field"
+          className="setup-input-field setup-textarea"
           placeholder="Enter address as: No, Street Name, Town, City"
+          rows={3}
         />
       </div>
       <div className="setup-input-group">
@@ -3165,36 +3160,14 @@ function CustodianModalContent({ formData, handleInputChange, isFormEditable = f
         />
       </div>
       <div className="setup-input-group">
-        <label className="setup-input-label">Address 1</label>
-        <input
-          type="text"
-          value={formData.custodianAddress1}
-          onChange={(e) => handleInputChange('custodianAddress1', e.target.value)}
+        <label className="setup-input-label">Address</label>
+        <textarea
+          value={formData.custodianAddress}
+          onChange={(e) => handleInputChange('custodianAddress', e.target.value)}
           disabled={!isFormEditable}
-          className="setup-input-field"
-          placeholder="Enter address 1"
-        />
-      </div>
-      <div className="setup-input-group">
-        <label className="setup-input-label">Address 2</label>
-        <input
-          type="text"
-          value={formData.custodianAddress2}
-          onChange={(e) => handleInputChange('custodianAddress2', e.target.value)}
-          disabled={!isFormEditable}
-          className="setup-input-field"
-          placeholder="Enter address 2"
-        />
-      </div>
-      <div className="setup-input-group">
-        <label className="setup-input-label">Address 3</label>
-        <input
-          type="text"
-          value={formData.custodianAddress3}
-          onChange={(e) => handleInputChange('custodianAddress3', e.target.value)}
-          disabled={!isFormEditable}
-          className="setup-input-field"
-          placeholder="Enter address 3"
+          className="setup-input-field setup-textarea"
+          placeholder="Enter address"
+          rows={3}
         />
       </div>
       <div className="setup-input-group">

@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import OtpAuth from './pages/OtpAuth';
 import ResetRequest from './pages/ResetRequest';
 import Security from './pages/Security';
+import Process from './pages/Process';
 import Reports from './pages/Reports';
 import { AuthProvider } from './context/AuthContext';
 
@@ -42,6 +43,7 @@ function App() {
           <Route path="/approval" element={<ProtectedRoute><Approval /></ProtectedRoute>} />
           <Route path="/document-printing" element={<ProtectedRoute><DocumentPrinting /></ProtectedRoute>} />
           <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>} />
+          <Route path="/process" element={<ProtectedRoute><Process /></ProtectedRoute>} />
           <Route path="/report" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
 
 

@@ -15,17 +15,12 @@ interface UserRole {
 import UserSearchModal from '../components/UserSearchModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import BackupModalContent from '../components/BackupModalContent';
-import DayEndModalContent from '../components/DayEndModalContent';
 
 const moduleData = [
   { title: 'Create User', icon: '👤' },
   { title: 'Password Changer', icon: '🛡️' },
   { title: 'Assign User Role', icon: '🔑' },
   { title: 'Manage Menus', icon: '📝' },
-  { title: 'Back Up', icon: '💽' },
-  { title: 'Day End', icon: '🔄' },
-  { title: 'Mobile Excel File Upload', icon: '📊' },
 ];
 
 const modules = moduleData.map(m => ({ title: m.title, icon: m.icon }));
@@ -1711,14 +1706,6 @@ function Security() {
 
     if (title === 'Password Changer') {
       return <PasswordChangerModal />;
-    }
-
-    if (title === 'Back Up') {
-      return <BackupModalContent />;
-    }
-
-    if (title === 'Day End') {
-      return <DayEndModalContent />;
     }
 
 

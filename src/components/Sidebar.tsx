@@ -12,6 +12,7 @@ const navItems = [
   { label: 'Unit Operations', icon: '🔢', link: '/unit-operations', shortcut: 'U' },
   { label: 'Approval', icon: '✅', link: '/approval', shortcut: 'A' },
   { label: 'Doc Printing', icon: '🖨️', link: '/document-printing', shortcut: 'P' },
+  { label: 'Process', icon: '🔄', link: '/process', shortcut: 'Z' },
   { label: 'Security', icon: '🔒', link: '/security', shortcut: 'X' },
   {
     label: 'Report', icon: '📊', shortcut: 'R',

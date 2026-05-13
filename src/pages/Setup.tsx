@@ -4518,210 +4518,94 @@ function CommissionLevelModalContent({ formData, handleInputChange, isFormEditab
 // ========================================
 function AgentCommissionDefinitionModalContent({ formData, handleInputChange, handleDateChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, handleDateChange: (field: string, date: Date | null) => void, isFormEditable: boolean }) {
   return (
-    <div className="setup-modal-grid-3col">
-      {/* Left Column */}
-      <div className="setup-flex-column-gap24">
-        {/* Commission Category Group */}
-        <div className="setup-ash-box">
-          <div className="setup-ash-box-title">Commission Category</div>
-          <div className="setup-radio-group">
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="agentCommissionCategory"
-                value="investment"
-                checked={formData.agentCommissionCategory === 'investment'}
-                onChange={e => handleInputChange('agentCommissionCategory', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              <span className="setup-radio-text">Investment Wise Commission</span>
-            </label>
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="agentCommissionCategory"
-                value="trailer"
-                checked={formData.agentCommissionCategory === 'trailer'}
-                onChange={e => handleInputChange('agentCommissionCategory', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              <span className="setup-radio-text">Trailer Fee</span>
-            </label>
+    <div className="commission-def-container">
+      {/* Section 1: Definition Info */}
+      <div className="commission-def-section">
+        <h4 className="commission-def-section-title">Commission Definition</h4>
+        <div className="commission-def-grid">
+          <div className="commission-def-group">
+            <label className="commission-def-label">Category</label>
+            <div className="commission-def-radios-row">
+              <label className="commission-def-radio-simple">
+                <input type="radio" name="agentCommissionCategory" value="investment" checked={formData.agentCommissionCategory === 'investment'} onChange={e => handleInputChange('agentCommissionCategory', e.target.value)} disabled={!isFormEditable} />
+                <span>Investment Wise</span>
+              </label>
+              <label className="commission-def-radio-simple">
+                <input type="radio" name="agentCommissionCategory" value="trailer" checked={formData.agentCommissionCategory === 'trailer'} onChange={e => handleInputChange('agentCommissionCategory', e.target.value)} disabled={!isFormEditable} />
+                <span>Trailer Fee</span>
+              </label>
+            </div>
           </div>
-        </div>
-
-        {/* Commission Type, Level, Fund Group */}
-        <div className="setup-ash-box">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div className="setup-input-group">
-              <label className="setup-input-label">Commission Type</label>
-              <select
-                value={formData.agentCommissionType || ''}
-                onChange={e => handleInputChange('agentCommissionType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-select-field setup-select-black"
-              >
-                <option value="">Select Commission Type</option>
-                <option value="Flat Rate">Flat Rate</option>
-                <option value="Percentage">Percentage</option>
-                <option value="Tiered">Tiered</option>
-              </select>
-            </div>
-
-            <div className="setup-input-group">
-              <label className="setup-input-label">Commission Level</label>
-              <select
-                value={formData.agentCommissionLevel || ''}
-                onChange={e => handleInputChange('agentCommissionLevel', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-select-field setup-select-black"
-              >
-                <option value="">Select Commission Level</option>
-                <option value="Entry Level">Entry Level</option>
-                <option value="Intermediate Level">Intermediate Level</option>
-                <option value="Senior Level">Senior Level</option>
-                <option value="Executive Level">Executive Level</option>
-              </select>
-            </div>
-
-            <div className="setup-input-group">
-              <label className="setup-input-label">Fund</label>
-              <select
-                value={formData.agentCommissionFund || ''}
-                onChange={e => handleInputChange('agentCommissionFund', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-select-field setup-select-black"
-              >
-                <option value="">Select Fund</option>
-                <option value="Growth Fund">Growth Fund</option>
-                <option value="Income Fund">Income Fund</option>
-                <option value="Balanced Fund">Balanced Fund</option>
-                <option value="Money Market Fund">Money Market Fund</option>
-              </select>
-            </div>
+          <div className="commission-def-group">
+            <label className="commission-def-label">Commission Type</label>
+            <select value={formData.agentCommissionType || ''} onChange={e => handleInputChange('agentCommissionType', e.target.value)} disabled={!isFormEditable} className="commission-def-select-simple">
+              <option value="">Select Type</option>
+              <option value="Flat Rate">Flat Rate</option>
+              <option value="Percentage">Percentage</option>
+              <option value="Tiered">Tiered</option>
+            </select>
+          </div>
+          <div className="commission-def-group">
+            <label className="commission-def-label">Commission Level</label>
+            <select value={formData.agentCommissionLevel || ''} onChange={e => handleInputChange('agentCommissionLevel', e.target.value)} disabled={!isFormEditable} className="commission-def-select-simple">
+              <option value="">Select Level</option>
+              <option value="Entry Level">Entry Level</option>
+              <option value="Intermediate Level">Intermediate Level</option>
+              <option value="Senior Level">Senior Level</option>
+              <option value="Executive Level">Executive Level</option>
+            </select>
+          </div>
+          <div className="commission-def-group">
+            <label className="commission-def-label">Target Fund</label>
+            <select value={formData.agentCommissionFund || ''} onChange={e => handleInputChange('agentCommissionFund', e.target.value)} disabled={!isFormEditable} className="commission-def-select-simple">
+              <option value="">Select Fund</option>
+              <option value="Growth Fund">Growth Fund</option>
+              <option value="Income Fund">Income Fund</option>
+              <option value="Balanced Fund">Balanced Fund</option>
+              <option value="Money Market Fund">Money Market Fund</option>
+            </select>
           </div>
         </div>
       </div>
 
-      {/* Right Column */}
-      <div className="setup-flex-column-gap24">
-        {/* Agent Type Group */}
-        <div className="setup-ash-box">
-          <div className="setup-ash-box-title">Agent Type</div>
-          <div className="setup-radio-group">
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="agentCommissionAgentType"
-                value="agency"
-                checked={formData.agentCommissionAgentType === 'agency'}
-                onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              <span className="setup-radio-text">Agency Wise</span>
-            </label>
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="agentCommissionAgentType"
-                value="subAgency"
-                checked={formData.agentCommissionAgentType === 'subAgency'}
-                onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              <span className="setup-radio-text">Sub Agency Wise</span>
-            </label>
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="agentCommissionAgentType"
-                value="agent"
-                checked={formData.agentCommissionAgentType === 'agent'}
-                onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              <span className="setup-radio-text">Agent Wise</span>
-            </label>
+      {/* Section 2: Parameters */}
+      <div className="commission-def-section">
+        <h4 className="commission-def-section-title">Application Parameters</h4>
+        <div className="commission-def-grid">
+          <div className="commission-def-group">
+            <label className="commission-def-label">Agent Type</label>
+            <div className="commission-def-radios-row">
+              <label className="commission-def-radio-simple">
+                <input type="radio" name="agentCommissionAgentType" value="agency" checked={formData.agentCommissionAgentType === 'agency'} onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)} disabled={!isFormEditable} />
+                <span>Agency</span>
+              </label>
+              <label className="commission-def-radio-simple">
+                <input type="radio" name="agentCommissionAgentType" value="subAgency" checked={formData.agentCommissionAgentType === 'subAgency'} onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)} disabled={!isFormEditable} />
+                <span>Sub Agency</span>
+              </label>
+              <label className="commission-def-radio-simple">
+                <input type="radio" name="agentCommissionAgentType" value="agent" checked={formData.agentCommissionAgentType === 'agent'} onChange={e => handleInputChange('agentCommissionAgentType', e.target.value)} disabled={!isFormEditable} />
+                <span>Agent</span>
+              </label>
+            </div>
           </div>
-        </div>
-
-        {/* Period and Amount Group */}
-        <div className="setup-ash-box">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Period From</label>
-                <input
-                  type="date"
-                  value={formData.agentCommissionPeriodFrom ? formData.agentCommissionPeriodFrom.toISOString().split('T')[0] : ''}
-                  onChange={e => handleDateChange('agentCommissionPeriodFrom', e.target.value ? new Date(e.target.value) : null)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field setup-select-black"
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e) => {
-                    if (!isFormEditable) return;
-                    e.currentTarget.showPicker?.();
-                  }}
-                />
-              </div>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Period To</label>
-                <input
-                  type="date"
-                  value={formData.agentCommissionPeriodTo ? formData.agentCommissionPeriodTo.toISOString().split('T')[0] : ''}
-                  onChange={e => handleDateChange('agentCommissionPeriodTo', e.target.value ? new Date(e.target.value) : null)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field setup-select-black"
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e) => {
-                    if (!isFormEditable) return;
-                    e.currentTarget.showPicker?.();
-                  }}
-                />
-              </div>
+          <div className="commission-def-group">
+            <label className="commission-def-label">Validity Period (From - To)</label>
+            <div className="commission-def-inputs-row">
+              <input type="date" value={formData.agentCommissionPeriodFrom ? formData.agentCommissionPeriodFrom.toISOString().split('T')[0] : ''} onChange={e => handleDateChange('agentCommissionPeriodFrom', e.target.value ? new Date(e.target.value) : null)} disabled={!isFormEditable} className="commission-def-input-simple" onClick={(e) => { if (!isFormEditable) return; e.currentTarget.showPicker?.(); }} />
+              <input type="date" value={formData.agentCommissionPeriodTo ? formData.agentCommissionPeriodTo.toISOString().split('T')[0] : ''} onChange={e => handleDateChange('agentCommissionPeriodTo', e.target.value ? new Date(e.target.value) : null)} disabled={!isFormEditable} className="commission-def-input-simple" onClick={(e) => { if (!isFormEditable) return; e.currentTarget.showPicker?.(); }} />
             </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Amount From</label>
-                <input
-                  type="text"
-                  value={formData.agentCommissionAmountFrom || ''}
-                  onChange={e => handleInputChange('agentCommissionAmountFrom', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field setup-select-black"
-                  placeholder="Enter amount from"
-                />
-              </div>
-              <div className="setup-input-group">
-                <label className="setup-input-label">Amount To</label>
-                <input
-                  type="text"
-                  value={formData.agentCommissionAmountTo || ''}
-                  onChange={e => handleInputChange('agentCommissionAmountTo', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field setup-select-black"
-                  placeholder="Enter amount to"
-                />
-              </div>
+          </div>
+          <div className="commission-def-group">
+            <label className="commission-def-label">Amount Range (From - To)</label>
+            <div className="commission-def-inputs-row">
+              <input type="text" value={formData.agentCommissionAmountFrom || ''} onChange={e => handleInputChange('agentCommissionAmountFrom', e.target.value)} disabled={!isFormEditable} className="commission-def-input-simple" placeholder="Min Amount" />
+              <input type="text" value={formData.agentCommissionAmountTo || ''} onChange={e => handleInputChange('agentCommissionAmountTo', e.target.value)} disabled={!isFormEditable} className="commission-def-input-simple" placeholder="Max Amount" />
             </div>
-
-            <div className="setup-input-group">
-              <label className="setup-input-label">Commission Rate</label>
-              <input
-                type="text"
-                value={formData.agentCommissionRate || ''}
-                onChange={e => handleInputChange('agentCommissionRate', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-input-field setup-select-black"
-                placeholder="Enter commission rate (e.g., 2.5%)"
-              />
-            </div>
+          </div>
+          <div className="commission-def-group">
+            <label className="commission-def-label">Commission Rate</label>
+            <input type="text" value={formData.agentCommissionRate || ''} onChange={e => handleInputChange('agentCommissionRate', e.target.value)} disabled={!isFormEditable} className="commission-def-input-simple" placeholder="e.g. 2.5%" />
           </div>
         </div>
       </div>

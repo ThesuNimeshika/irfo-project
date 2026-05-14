@@ -1571,11 +1571,13 @@ function Setup() {
             />
           )}
           {modalTitle === 'Unit Fee Codes' && (
-            <UnitFeeCodesSection
-              formData={formData}
-              handleInputChange={handleInputChange}
-              isFormEditable={isFormEditable}
-            />
+            <div className="setup-full-width-grid-col">
+              <UnitFeeCodesSection
+                formData={formData}
+                handleInputChange={handleInputChange}
+                isFormEditable={isFormEditable}
+              />
+            </div>
           )}
           {modalTitle === 'Documents Setup' && (
             <DocumentsSetupModalContent
@@ -1626,21 +1628,15 @@ function Setup() {
               isFormEditable={isFormEditable}
             />
           )}
-          {modalTitle === 'Agent Commission Definition' && (
-            <AgentCommissionDefinitionModalContent
-              formData={formData}
-              handleInputChange={handleInputChange}
-              handleDateChange={handleDateChange}
-              isFormEditable={isFormEditable}
-            />
-          )}
-          {modalTitle === 'Assign Agent to Commission Definition' && (
-            <AgentCommissionDefinitionModalContent
-              formData={formData}
-              handleInputChange={handleInputChange}
-              handleDateChange={handleDateChange}
-              isFormEditable={isFormEditable}
-            />
+          {(modalTitle === 'Agent Commission Definition' || modalTitle === 'Assign Agent to Commission Definition') && (
+            <div className="setup-full-width-grid-col">
+              <AgentCommissionDefinitionModalContent
+                formData={formData}
+                handleInputChange={handleInputChange}
+                handleDateChange={handleDateChange}
+                isFormEditable={isFormEditable}
+              />
+            </div>
           )}
           {modalTitle === 'Territory' && (
             <TerritoryModalContent
@@ -2568,119 +2564,229 @@ function CompanyDetailsTabs({
               </div>
             )}
             {activeTab === 'administrator' && (
-              <div className="setup-administrator-tab setup-tab-content-wrapper">
-                <div className="setup-administrator-form setup-tab-content-wrapper">
-
-                  {/* PATH CONFIGURATION */}
-                  <div className="setup-administrator-full-width">
-                    <div className="setup-administrator-path-item">
-                      <label className="setup-input-label reg-label-no-margin">Report Path</label>
-                      <input type="text" value={formData.reportPath} onChange={(e) => handleInputChange('reportPath', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter report path" />
-                    </div>
-                    <div className="setup-administrator-path-item">
-                      <label className="setup-input-label reg-label-no-margin">Document Path</label>
-                      <input type="text" value={formData.documentPath} onChange={(e) => handleInputChange('documentPath', e.target.value)} disabled={!isFormEditable} className="setup-input-field" placeholder="Enter document path" />
-                    </div>
+              <div className="setup-administrator-tab setup-tab-content-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {/* Paths Section */}
+                <div className="setup-modal-grid-2col" style={{ gap: '20px' }}>
+                  <div className="commission-def-group">
+                    <label className="commission-def-label">Report Path</label>
+                    <input
+                      type="text"
+                      value={formData.reportPath}
+                      onChange={(e) => handleInputChange('reportPath', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="commission-def-input-simple"
+                      placeholder="Enter report path"
+                    />
                   </div>
-
-                  {/* TWO-COLUMN: Left (Units + Amount + SMTP) | Right (Confirm/Approve) */}
-                  <div className="setup-administrator-two-column">
-
-                    {/* LEFT */}
-                    <div className="setup-administrator-column">
-
-                      {/* Units */}
-                      <div className="setup-ash-box setup-administrator-box">
-                        <label className="setup-input-label reg-label-bold reg-label-block">Units</label>
-                        <div className="setup-administrator-inner-grid">
-                          <label className="setup-input-label reg-label-no-margin reg-label-nowrap reg-label-small">Decimal Position</label>
-                          <input type="text" value={formData.unitsDecimalPosition} onChange={(e) => handleInputChange('unitsDecimalPosition', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-input-min-width" placeholder="0" />
-                          <label className="setup-radio-label reg-label-no-margin reg-label-nowrap"><input type="radio" name="unitsDecimalMethod" value="truncate" checked={formData.unitsDecimalMethod === 'truncate'} onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Truncate</label>
-                          <label className="setup-radio-label reg-label-no-margin reg-label-nowrap"><input type="radio" name="unitsDecimalMethod" value="round" checked={formData.unitsDecimalMethod === 'round'} onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Round</label>
-                        </div>
-                      </div>
-
-                      {/* Amount */}
-                      <div className="setup-ash-box setup-administrator-box">
-                        <label className="setup-input-label reg-label-bold reg-label-block">Amount</label>
-                        <div className="setup-administrator-inner-grid">
-                          <label className="setup-input-label reg-label-no-margin reg-label-nowrap reg-label-small">Decimal Position</label>
-                          <input type="text" value={formData.amountDecimalPosition} onChange={(e) => handleInputChange('amountDecimalPosition', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-input-min-width" placeholder="0" />
-                          <label className="setup-radio-label reg-label-no-margin reg-label-nowrap"><input type="radio" name="amountDecimalMethod" value="truncate" checked={formData.amountDecimalMethod === 'truncate'} onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Truncate</label>
-                          <label className="setup-radio-label reg-label-no-margin reg-label-nowrap"><input type="radio" name="amountDecimalMethod" value="round" checked={formData.amountDecimalMethod === 'round'} onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Round</label>
-                        </div>
-                      </div>
-
-                      {/* SMTP Email Setup */}
-                      <div className="setup-ash-box setup-administrator-box">
-                        <label className="setup-input-label reg-label-bold reg-label-block">SMTP Email Setup</label>
-                        <div className="setup-administrator-checkbox-row">
-                          <div className="setup-checkbox-container"><input type="checkbox" id="smtpInvalidLogin" checked={formData.smtpInvalidLogin} onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="smtpInvalidLogin" className="setup-checkbox-label">Invalid Login</label></div>
-                          <div className="setup-checkbox-container"><input type="checkbox" id="smtpLockedAccount" checked={formData.smtpLockedAccount} onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="smtpLockedAccount" className="setup-checkbox-label">Locked Account</label></div>
-                          <div className="setup-checkbox-container"><input type="checkbox" id="smtpRegistrationApproval" checked={formData.smtpRegistrationApproval} onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="smtpRegistrationApproval" className="setup-checkbox-label">Registration Approval</label></div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    {/* RIGHT: Different Data Entry Confirm/Approve */}
-                    <div className="setup-ash-box setup-administrator-box">
-                      <label className="setup-input-label reg-label-bold reg-label-block">Different Data Entry Confirm / Approve</label>
-                      <div className="setup-administrator-checkbox-list">
-                        <div className="setup-checkbox-container"><input type="checkbox" id="applicationApprove" checked={formData.applicationApprove} onChange={(e) => handleInputChange('applicationApprove', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="applicationApprove" className="setup-checkbox-label">Application Approve</label></div>
-                        <div className="setup-checkbox-container"><input type="checkbox" id="registrationApprove" checked={formData.registrationApprove} onChange={(e) => handleInputChange('registrationApprove', e.target.checked)} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="registrationApprove" className="setup-checkbox-label">Registration Approve</label></div>
-                        <div className="setup-checkbox-container"><input type="checkbox" id="accountApprove" checked={formData.accountApprove} onChange={(e) => handleInputChange('accountApprove', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="accountApprove" className="setup-checkbox-label">Account Approve</label></div>
-                        <div className="setup-checkbox-container"><input type="checkbox" id="transactionApprove" checked={formData.transactionApprove} onChange={(e) => handleInputChange('transactionApprove', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="transactionApprove" className="setup-checkbox-label">Transaction Approve</label></div>
-                        <div className="setup-checkbox-container"><input type="checkbox" id="unitPriceApprove" checked={formData.unitPriceApprove} onChange={(e) => handleInputChange('unitPriceApprove', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="unitPriceApprove" className="setup-checkbox-label">Unit Price Approve</label></div>
-                      </div>
-                    </div>
-
+                  <div className="commission-def-group">
+                    <label className="commission-def-label">Document Path</label>
+                    <input
+                      type="text"
+                      value={formData.documentPath}
+                      onChange={(e) => handleInputChange('documentPath', e.target.value)}
+                      disabled={!isFormEditable}
+                      className="commission-def-input-simple"
+                      placeholder="Enter document path"
+                    />
                   </div>
+                </div>
 
-                  {/* THREE-COLUMN: Email Sending Options | Login | Multiple User Access */}
-                  <div className="setup-three-column-row">
-
-                    <div className="setup-ash-box setup-administrator-box">
-                      <label className="setup-input-label reg-label-bold reg-label-block">Email Sending Options</label>
-                      <div className="setup-administrator-checkbox-list">
-                        <div className="setup-checkbox-container"><input type="checkbox" id="sendEmailsAccountApproval" checked={formData.sendEmailsAccountApproval} onChange={(e) => handleInputChange('sendEmailsAccountApproval', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="sendEmailsAccountApproval" className="setup-checkbox-label">Send Emails on Account Approval</label></div>
-                        <div className="setup-checkbox-container"><input type="checkbox" id="sendEmailsAcknowledgment" checked={formData.sendEmailsAcknowledgment} onChange={(e) => handleInputChange('sendEmailsAcknowledgment', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="sendEmailsAcknowledgment" className="setup-checkbox-label">Send Emails on Acknowledgment</label></div>
-                        <div className="setup-checkbox-container"><input type="checkbox" id="sendEmailsInvestment" checked={formData.sendEmailsInvestment} onChange={(e) => handleInputChange('sendEmailsInvestment', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="sendEmailsInvestment" className="setup-checkbox-label">Send Emails on Investment</label></div>
+                {/* Configuration Grid: Units, Amount, SMTP, Approvals */}
+                <div className="setup-modal-grid-4col" style={{ gap: '16px', alignItems: 'start' }}>
+                  {/* Units */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">Units</legend>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div className="commission-def-group">
+                        <label className="commission-def-label" style={{ fontSize: '10px' }}>Decimal Position</label>
+                        <input
+                          type="text"
+                          value={formData.unitsDecimalPosition}
+                          onChange={(e) => handleInputChange('unitsDecimalPosition', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="commission-def-input-simple"
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="setup-flex-row-gap-16">
+                        <label className="setup-radio-label">
+                          <input type="radio" name="unitsDecimalMethod" value="truncate" checked={formData.unitsDecimalMethod === 'truncate'} onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)} disabled={!isFormEditable} />
+                          Truncate
+                        </label>
+                        <label className="setup-radio-label">
+                          <input type="radio" name="unitsDecimalMethod" value="round" checked={formData.unitsDecimalMethod === 'round'} onChange={(e) => handleInputChange('unitsDecimalMethod', e.target.value)} disabled={!isFormEditable} />
+                          Round
+                        </label>
                       </div>
                     </div>
+                  </fieldset>
 
-                    <div className="setup-ash-box setup-administrator-box">
-                      <label className="setup-input-label reg-label-bold reg-label-block">Login</label>
-                      <div className="setup-administrator-checkbox-list">
-                        <div className="setup-checkbox-container"><input type="checkbox" id="loginInvalidUser" checked={formData.loginInvalidUser} onChange={(e) => handleInputChange('loginInvalidUser', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="loginInvalidUser" className="setup-checkbox-label">Invalid User</label></div>
-                        <div className="setup-checkbox-container"><input type="checkbox" id="loginAccountLock" checked={formData.loginAccountLock} onChange={(e) => handleInputChange('loginAccountLock', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" /><label htmlFor="loginAccountLock" className="setup-checkbox-label">Account Lock</label></div>
+                  {/* Amount */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">Amount</legend>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div className="commission-def-group">
+                        <label className="commission-def-label" style={{ fontSize: '10px' }}>Decimal Position</label>
+                        <input
+                          type="text"
+                          value={formData.amountDecimalPosition}
+                          onChange={(e) => handleInputChange('amountDecimalPosition', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="commission-def-input-simple"
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="setup-flex-row-gap-16">
+                        <label className="setup-radio-label">
+                          <input type="radio" name="amountDecimalMethod" value="truncate" checked={formData.amountDecimalMethod === 'truncate'} onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)} disabled={!isFormEditable} />
+                          Truncate
+                        </label>
+                        <label className="setup-radio-label">
+                          <input type="radio" name="amountDecimalMethod" value="round" checked={formData.amountDecimalMethod === 'round'} onChange={(e) => handleInputChange('amountDecimalMethod', e.target.value)} disabled={!isFormEditable} />
+                          Round
+                        </label>
                       </div>
                     </div>
+                  </fieldset>
 
-                    <div className="setup-ash-box setup-administrator-box">
-                      <label className="setup-input-label reg-label-bold reg-label-block">Multiple User Access</label>
-                      <div className="setup-administrator-access-row">
-                        <label className="setup-radio-label"><input type="radio" name="multipleUserAccess" value="yes" checked={formData.multipleUserAccess === 'yes'} onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> Yes</label>
-                        <label className="setup-radio-label"><input type="radio" name="multipleUserAccess" value="no" checked={formData.multipleUserAccess === 'no'} onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)} disabled={!isFormEditable} className="setup-radio-input" /> No</label>
+                  {/* SMTP Email Setup */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">SMTP Email Setup</legend>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <label className="setup-checkbox-container-simple">
+                        <input type="checkbox" checked={formData.smtpInvalidLogin} onChange={(e) => handleInputChange('smtpInvalidLogin', e.target.checked)} disabled={!isFormEditable} />
+                        Invalid Login
+                      </label>
+                      <label className="setup-checkbox-container-simple">
+                        <input type="checkbox" checked={formData.smtpLockedAccount} onChange={(e) => handleInputChange('smtpLockedAccount', e.target.checked)} disabled={!isFormEditable} />
+                        Locked Account
+                      </label>
+                      <label className="setup-checkbox-container-simple">
+                        <input type="checkbox" checked={formData.smtpRegistrationApproval} onChange={(e) => handleInputChange('smtpRegistrationApproval', e.target.checked)} disabled={!isFormEditable} />
+                        Registration Approval
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  {/* Approvals */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">Confirm / Approve</legend>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {[
+                        { key: 'applicationApprove' as keyof FormData, label: 'Application' },
+                        { key: 'registrationApprove' as keyof FormData, label: 'Registration' },
+                        { key: 'accountApprove' as keyof FormData, label: 'Account' },
+                        { key: 'transactionApprove' as keyof FormData, label: 'Transaction' },
+                        { key: 'unitPriceApprove' as keyof FormData, label: 'Unit Price' }
+                      ].map(item => (
+                        <label key={item.key} className="setup-checkbox-container-simple">
+                          <input
+                            type="checkbox"
+                            checked={item.key === 'applicationApprove' || item.key === 'registrationApprove' ? Boolean(formData[item.key]) : formData[item.key] === 'true'}
+                            onChange={(e) => handleInputChange(item.key, item.key === 'applicationApprove' || item.key === 'registrationApprove' ? e.target.checked : e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                          />
+                          {item.label}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                </div>
+
+                {/* Options Grid: Emails, Login, Access, File */}
+                <div className="setup-modal-grid-4col" style={{ gap: '16px', alignItems: 'start' }}>
+                  {/* Email Sending Options */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">Email Options</legend>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {[
+                        { key: 'sendEmailsAccountApproval' as keyof FormData, label: 'Account Approval' },
+                        { key: 'sendEmailsAcknowledgment' as keyof FormData, label: 'Acknowledgment' },
+                        { key: 'sendEmailsInvestment' as keyof FormData, label: 'Investment' }
+                      ].map(item => (
+                        <label key={item.key} className="setup-checkbox-container-simple">
+                          <input
+                            type="checkbox"
+                            checked={formData[item.key] === 'true'}
+                            onChange={(e) => handleInputChange(item.key, e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                          />
+                          {item.label}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  {/* Login Options */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">Login</legend>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {[
+                        { key: 'loginInvalidUser' as keyof FormData, label: 'Invalid User' },
+                        { key: 'loginAccountLock' as keyof FormData, label: 'Account Lock' }
+                      ].map(item => (
+                        <label key={item.key} className="setup-checkbox-container-simple">
+                          <input
+                            type="checkbox"
+                            checked={formData[item.key] === 'true'}
+                            onChange={(e) => handleInputChange(item.key, e.target.checked.toString())}
+                            disabled={!isFormEditable}
+                          />
+                          {item.label}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  {/* Multiple User Access */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">User Access</legend>
+                    <div className="setup-flex-row-gap-16">
+                      <label className="setup-radio-label">
+                        <input type="radio" name="multipleUserAccess" value="yes" checked={formData.multipleUserAccess === 'yes'} onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)} disabled={!isFormEditable} />
+                        Yes
+                      </label>
+                      <label className="setup-radio-label">
+                        <input type="radio" name="multipleUserAccess" value="no" checked={formData.multipleUserAccess === 'no'} onChange={(e) => handleInputChange('multipleUserAccess', e.target.value)} disabled={!isFormEditable} />
+                        No
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  {/* Footer Items */}
+                  <fieldset className="setup-fieldset" style={{ height: '100%' }}>
+                    <legend className="setup-legend">File Config</legend>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div className="commission-def-group">
+                        <label className="commission-def-label" style={{ fontSize: '10px' }}>Table Name</label>
+                        <input
+                          type="text"
+                          value={formData.tableName}
+                          onChange={(e) => handleInputChange('tableName', e.target.value)}
+                          disabled={!isFormEditable}
+                          className="commission-def-input-simple"
+                          placeholder="Enter table name"
+                        />
                       </div>
+                      <button
+                        onClick={() => { console.log('Creating configuration file with data:', formData); alert('Configuration file created successfully!'); }}
+                        disabled={!isFormEditable}
+                        className="setup-btn-primary"
+                        style={{ height: '30px', padding: '0 12px', fontSize: '11px', width: 'fit-content' }}
+                      >
+                        Create File
+                      </button>
+                      <label className="setup-checkbox-container-simple" style={{ fontSize: '11px' }}>
+                        <input
+                          type="checkbox"
+                          checked={Boolean(formData.certificateSeparateExitFee)}
+                          onChange={(e) => handleInputChange('certificateSeparateExitFee', e.target.checked.toString())}
+                          disabled={!isFormEditable}
+                        />
+                        Cert. Separate (Exit Fee)
+                      </label>
                     </div>
-
-                  </div>
-
-                  {/* BOTTOM ROW: Table Name | Create File | Certificate */}
-                  <div className="setup-administrator-footer">
-                    <div className="setup-administrator-file-item">
-                      <label className="setup-input-label reg-label-no-margin reg-label-nowrap">Table Name</label>
-                      <input type="text" value={formData.tableName} onChange={(e) => handleInputChange('tableName', e.target.value)} disabled={!isFormEditable} className="setup-input-field reg-input-fixed-width" placeholder="Enter table name" />
-                    </div>
-                    <button onClick={() => { console.log('Creating configuration file with data:', formData); alert('Configuration file created successfully!'); }} disabled={!isFormEditable} className="setup-btn setup-btn-primary setup-administrator-create-btn">Create File</button>
-                    <div className="setup-checkbox-container reg-flex-shrink-0">
-                      <input type="checkbox" id="certificateSeparateExitFee" checked={formData.certificateSeparateExitFee} onChange={(e) => handleInputChange('certificateSeparateExitFee', e.target.checked.toString())} disabled={!isFormEditable} className="setup-checkbox-input" />
-                      <label htmlFor="certificateSeparateExitFee" className="setup-checkbox-label">Certificate Separate with Exit Fee</label>
-                    </div>
-                  </div>
-
-
+                  </fieldset>
                 </div>
               </div>
             )}
@@ -4225,7 +4331,7 @@ function DocumentsSetupModalContent({ formData, handleInputChange, isFormEditabl
 // ========================================
 // UNIT FEE CODES SECTION
 // ========================================
-function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[]) => void, isFormEditable: boolean }) {
+function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { formData: FormData, handleInputChange: (field: string, value: string | string[] | boolean) => void, isFormEditable: boolean }) {
   // Example data for table
   const funds = [
     { code: 'FUND001', name: 'Equity Growth Fund' },
@@ -4244,173 +4350,176 @@ function UnitFeeCodesSection({ formData, handleInputChange, isFormEditable }: { 
     }
     handleInputChange('unitFeeApplicableFunds', updated);
   };
+
   return (
-    <div className="setup-modal-grid-3col">
-      {/* Column 1: General Info */}
-      <div className="setup-flex-column-gap20">
-        {/* Txn. Type Box */}
-        <div className="setup-ash-box">
-          <div className="setup-ash-box-title">Txn. Type</div>
-          <div className="setup-centered-flex setup-gap-24">
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="unitFeeTxnType"
-                value="creation"
-                checked={formData.unitFeeTxnType === 'creation'}
-                onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              Creation
-            </label>
-            <label className="setup-radio-label">
-              <input
-                type="radio"
-                name="unitFeeTxnType"
-                value="redemption"
-                checked={formData.unitFeeTxnType === 'redemption'}
-                onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
-                disabled={!isFormEditable}
-                className="setup-radio-input"
-              />
-              Redemption
-            </label>
+    <div className="commission-def-container" style={{ gap: '32px' }}>
+      {/* Top Part: General & Pricing Information */}
+      <div className="commission-def-section">
+        <h4 className="commission-def-section-title">Fee Code Information</h4>
+        <div className="commission-def-grid">
+          {/* Column 1: Txn Type */}
+          <fieldset className="setup-fieldset">
+            <legend className="setup-legend">Txn. Type</legend>
+            <div className="commission-def-radios-row" style={{ marginTop: '0px' }}>
+              <label className="commission-def-radio-simple">
+                <input
+                  type="radio"
+                  name="unitFeeTxnType"
+                  value="creation"
+                  checked={formData.unitFeeTxnType === 'creation'}
+                  onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
+                  disabled={!isFormEditable}
+                />
+                <span>Creation</span>
+              </label>
+              <label className="commission-def-radio-simple">
+                <input
+                  type="radio"
+                  name="unitFeeTxnType"
+                  value="redemption"
+                  checked={formData.unitFeeTxnType === 'redemption'}
+                  onChange={e => handleInputChange('unitFeeTxnType', e.target.value)}
+                  disabled={!isFormEditable}
+                />
+                <span>Redemption</span>
+              </label>
+            </div>
+          </fieldset>
+
+          {/* Column 2: Code */}
+          <div className="commission-def-group">
+            <label className="commission-def-label">Code</label>
+            <input
+              type="text"
+              value={formData.unitFeeCode || ''}
+              onChange={e => handleInputChange('unitFeeCode', e.target.value)}
+              disabled={!isFormEditable}
+              className="commission-def-input-simple"
+              placeholder="Enter code"
+            />
+          </div>
+
+          {/* Column 3: Description */}
+          <div className="commission-def-group" style={{ gridColumn: 'span 2' }}>
+            <label className="commission-def-label">Description</label>
+            <input
+              type="text"
+              value={formData.unitFeeDescription || ''}
+              onChange={e => handleInputChange('unitFeeDescription', e.target.value)}
+              disabled={!isFormEditable}
+              className="commission-def-input-simple"
+              placeholder="Enter description"
+            />
           </div>
         </div>
 
-        {/* Code */}
-        <div className="setup-label-input-inline setup-inline-label-width-1-2">
-          <label className="setup-input-label">Code</label>
-          <input
-            type="text"
-            value={formData.unitFeeCode || ''}
-            onChange={e => handleInputChange('unitFeeCode', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            placeholder="Enter code"
-          />
-        </div>
+        <div className="commission-def-grid" style={{ marginTop: '20px' }}>
+          {/* Column 1: Percentage */}
+          <div className="commission-def-group">
+            <label className="commission-def-label">Percentage</label>
+            <input
+              type="text"
+              value={formData.unitFeePercentage || ''}
+              onChange={e => handleInputChange('unitFeePercentage', e.target.value)}
+              disabled={!isFormEditable}
+              className="commission-def-input-simple"
+              placeholder="Percentage (%)"
+            />
+          </div>
 
-        {/* Description */}
-        <div className="setup-label-input-inline setup-inline-label-width-1-2">
-          <label className="setup-input-label">Description</label>
-          <input
-            type="text"
-            value={formData.unitFeeDescription || ''}
-            onChange={e => handleInputChange('unitFeeDescription', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            placeholder="Enter description"
-          />
-        </div>
-      </div>
+          {/* Column 2: Unit Fee */}
+          <div className="commission-def-group">
+            <label className="commission-def-label">Unit Fee</label>
+            <input
+              type="text"
+              value={formData.unitFee || ''}
+              onChange={e => handleInputChange('unitFee', e.target.value)}
+              disabled={!isFormEditable}
+              className="commission-def-input-simple"
+              placeholder="Enter unit fee"
+            />
+          </div>
 
-      {/* Column 2: Pricing & Age */}
-      <div className="setup-flex-column-gap20">
-        {/* Percentage */}
-        <div className="setup-label-input-inline setup-inline-label-width-1-2">
-          <label className="setup-input-label">Percentage</label>
-          <input
-            type="text"
-            value={formData.unitFeePercentage || ''}
-            onChange={e => handleInputChange('unitFeePercentage', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            placeholder="Enter percentage"
-          />
-        </div>
-
-        {/* Unit Fee */}
-        <div className="setup-label-input-inline setup-inline-label-width-1-2">
-          <label className="setup-input-label">Unit Fee</label>
-          <input
-            type="text"
-            value={formData.unitFee || ''}
-            onChange={e => handleInputChange('unitFee', e.target.value)}
-            disabled={!isFormEditable}
-            className="setup-input-field"
-            placeholder="Enter unit fee"
-          />
-        </div>
-
-        {/* Price One (%) and Price Two (%) in one row */}
-        <div className="setup-grid-2col">
-          <div className="setup-label-input-inline setup-inline-label-width-1-2">
-            <label className="setup-input-label">Price One (%)</label>
+          {/* Column 3: Price One and Two */}
+          <div className="commission-def-group">
+            <label className="commission-def-label">Price One (%)</label>
             <input
               type="text"
               value={formData.unitFeePriceOne || ''}
               onChange={e => handleInputChange('unitFeePriceOne', e.target.value)}
               disabled={!isFormEditable}
-              className="setup-input-field"
-              placeholder="Price One (%)"
+              className="commission-def-input-simple"
+              placeholder="Price One"
             />
           </div>
-          <div className="setup-label-input-inline setup-inline-label-width-1-2-auto">
-            <label className="setup-input-label">Price Two (%)</label>
-            <input
-              type="text"
-              value={formData.unitFeePriceTwo || ''}
-              onChange={e => handleInputChange('unitFeePriceTwo', e.target.value)}
-              disabled={!isFormEditable}
-              className="setup-input-field"
-              placeholder="Price Two (%)"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                const priceOne = parseFloat(formData.unitFeePriceOne || '0');
-                const priceTwo = parseFloat(formData.unitFeePriceTwo || '0');
-                if (!isNaN(priceOne) && !isNaN(priceTwo) && priceOne !== 0) {
-                  const calculatedPercentage = ((priceTwo / priceOne) * 100).toFixed(2);
-                  handleInputChange('unitFeePercentage', calculatedPercentage);
-                }
-              }}
-              disabled={!isFormEditable}
-              className="setup-btn-primary"
-            >
-              %
-            </button>
-          </div>
-        </div>
 
-        {/* Redemption Age Section - Only visible when Redemption is selected */}
-        {formData.unitFeeTxnType === 'redemption' && (
-          <div className="setup-ash-box setup-full-width">
-            <label className="setup-ash-box-title">Redemption Age</label>
-            <div className="setup-grid-2col">
-              <div className="setup-label-input-inline setup-inline-label-width-1-2">
-                <label className="setup-input-label">NO of Days From</label>
-                <input
-                  type="text"
-                  value={formData.redemptionAgeFrom || ''}
-                  onChange={e => handleInputChange('redemptionAgeFrom', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter days from"
-                />
-              </div>
-              <div className="setup-label-input-inline setup-inline-label-width-1-2">
-                <label className="setup-input-label">To</label>
-                <input
-                  type="text"
-                  value={formData.redemptionAgeTo || ''}
-                  onChange={e => handleInputChange('redemptionAgeTo', e.target.value)}
-                  disabled={!isFormEditable}
-                  className="setup-input-field"
-                  placeholder="Enter days to"
-                />
-              </div>
+          <div className="commission-def-group">
+            <label className="commission-def-label">Price Two (%)</label>
+            <div className="setup-flex-row-gap-8">
+              <input
+                type="text"
+                value={formData.unitFeePriceTwo || ''}
+                onChange={e => handleInputChange('unitFeePriceTwo', e.target.value)}
+                disabled={!isFormEditable}
+                className="commission-def-input-simple"
+                placeholder="Price Two"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const priceOne = parseFloat(formData.unitFeePriceOne || '0');
+                  const priceTwo = parseFloat(formData.unitFeePriceTwo || '0');
+                  if (!isNaN(priceOne) && !isNaN(priceTwo) && priceOne !== 0) {
+                    const calculatedPercentage = ((priceTwo / priceOne) * 100).toFixed(2);
+                    handleInputChange('unitFeePercentage', calculatedPercentage);
+                  }
+                }}
+                disabled={!isFormEditable}
+                className="setup-btn-primary"
+                style={{ height: '30px', minWidth: '30px', padding: '0 4px', fontSize: '12px' }}
+              >
+                %
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Column 3: Applicable Funds */}
-      <div className="setup-ash-box" style={{ height: 'fit-content' }}>
-        <div className="setup-ash-box-title">Applicable Funds</div>
-        <div className="setup-list-table-container">
+      {/* Redemption Age (Conditionally visible) */}
+      {formData.unitFeeTxnType === 'redemption' && (
+        <div className="commission-def-section">
+          <h4 className="commission-def-section-title">Redemption Age</h4>
+          <div className="commission-def-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+            <div className="commission-def-group">
+              <label className="commission-def-label">No. of Days From</label>
+              <input
+                type="text"
+                value={formData.redemptionAgeFrom || ''}
+                onChange={e => handleInputChange('redemptionAgeFrom', e.target.value)}
+                disabled={!isFormEditable}
+                className="commission-def-input-simple"
+                placeholder="Days From"
+              />
+            </div>
+            <div className="commission-def-group">
+              <label className="commission-def-label">To</label>
+              <input
+                type="text"
+                value={formData.redemptionAgeTo || ''}
+                onChange={e => handleInputChange('redemptionAgeTo', e.target.value)}
+                disabled={!isFormEditable}
+                className="commission-def-input-simple"
+                placeholder="Days To"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Applicable Funds */}
+      <div className="commission-def-section">
+        <h4 className="commission-def-section-title">Applicable Funds</h4>
+        <div className="setup-list-table-container" style={{ maxHeight: '200px' }}>
           <table className="setup-list-table">
             <colgroup>
               <col className="checkbox-col" />

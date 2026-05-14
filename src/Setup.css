@@ -2232,6 +2232,47 @@ input[type="radio"]:disabled {
   margin-top: 8px;
 }
 
+.setup-fieldset {
+  border: 1px solid #e1e9f1;
+  border-radius: 6px;
+  padding: 4px 12px 6px;
+  margin-top: 2px;
+}
+
+.setup-legend {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6c757d;
+  padding: 0 8px;
+  text-transform: uppercase;
+  margin-left: -4px;
+}
+
+.setup-modal-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.setup-modal-grid-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.setup-checkbox-container-simple {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.setup-checkbox-container-simple input[type="checkbox"] {
+  cursor: pointer;
+}
+
 .setup-btn-primary {
   padding: 8px 12px;
   height: 40px;
@@ -2759,7 +2800,7 @@ input[type="radio"]:disabled {
 .commission-def-section-title {
   font-size: 14px;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #000000;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin: 0;

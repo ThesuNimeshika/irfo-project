@@ -4410,13 +4410,14 @@ function FourCardsWithModal() {
                                     </div>
                                   </div>
                                   <div className="uha-field-group">
-                                    <div className="uha-field-label">Last Investment No</div>
-                                    <input type="text" value={formData.lastInvestmentNo} onChange={(e) => handleInputChange('lastInvestmentNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Last Inv No" />
+                                    <div className="uha-field-label">Account No</div>
+                                    <input type="text" value={formData.accountNo} onChange={(e) => handleInputChange('accountNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account No" readOnly />
                                   </div>
                                   <div className="uha-field-group">
-                                    <div className="uha-field-label">Account No</div>
-                                    <input type="text" value={formData.accountNo} onChange={(e) => handleInputChange('accountNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account No" />
+                                    <div className="uha-field-label">Last Investment No</div>
+                                    <input type="text" value={formData.lastInvestmentNo} onChange={(e) => handleInputChange('lastInvestmentNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Last Inv No" readOnly />
                                   </div>
+
                                   <div className="uha-field-group">
                                     <div className="uha-field-label">Active</div>
                                     <div className="uha-active-cell">
@@ -4646,7 +4647,7 @@ function FourCardsWithModal() {
                                         <div className="uha-field-label">Account No</div>
                                         <div className="uha-field-row">
                                           <input type="text" value={formData.reinvestAccountNo} onChange={(e) => handleInputChange('reinvestAccountNo', e.target.value)} disabled={!isFormEditable} className="uha-text-input" placeholder="Account No" />
-                                          <button className="uha-icon-btn uha-icon-btn-search" title="Search" onClick={() => setIsReinvestAccountSearchModalOpen(true)} disabled={!isFormEditable}>🔍</button>
+                                          <button className="uha-icon-btn uha-icon-btn-search uha-btn-search-orange" title="Search" onClick={() => setIsReinvestAccountSearchModalOpen(true)} disabled={!isFormEditable}>🔍</button>
                                         </div>
                                       </div>
                                     </div>

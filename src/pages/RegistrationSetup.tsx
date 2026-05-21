@@ -4914,6 +4914,16 @@ function FourCardsWithModal() {
         </div>
       </div>
 
+      {/* Account Search Modal — Reinvest Account No (orange button) */}
+      <AccountSearchModal
+        isOpen={isReinvestAccountSearchModalOpen}
+        onClose={() => setIsReinvestAccountSearchModalOpen(false)}
+        title="Search Account"
+        onSelect={(result) => {
+          if (result.accountNo) handleInputChange('reinvestAccountNo', result.accountNo);
+        }}
+      />
+
       <Footer />
     </>
   );

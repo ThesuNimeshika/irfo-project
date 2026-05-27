@@ -314,15 +314,15 @@ const moduleData = [
 // API Endpoint: GET /api/setup/table-data/{module}
 const tableData = {
     Bank: [
-        { code: '0', description: 'Bank Muscat', address: 'CJW5+9HF, Sohar, Oman' },
-        { code: '1', description: 'Zurcher kantonalbank', address: 'Switzerland' },
-        { code: '31', description: 'Federal credit union in New York', address: '2 United Nations Plaza, New York, NY 10017' },
-        { code: '111', description: 'HSBC Indonesia', address: 'Jakarta, Indonesia' },
-        { code: '4806', description: 'HSBC - De Voeux Branch', address: 'Des Voeux Road Central, Hong Kong' },
-        { code: '40111', description: 'HSBC - Hong Kong', address: "Queen's Road Central, Hong Kong" },
-        { code: '83268', description: 'National Australia Bank', address: 'Melbourne, Australia' },
-        { code: '210000', description: 'Chase Bank - Park Avenue South', address: 'New York' },
-        { code: '301830', description: 'Lloyds Bank Plc - Haywards Heath', address: '99-101 South Road - Post / ZIP Code : Rh16 4nd' }
+        { code: '0', branchNo: 'BR-001', district: 'Al Batinah', swiftCode: 'BMUSOMRX', description: 'Bank Muscat', address: 'CJW5+9HF, Sohar, Oman' },
+        { code: '1', branchNo: 'BR-002', district: 'Zurich', swiftCode: 'ZKBKCHZZ', description: 'Zurcher kantonalbank', address: 'Switzerland' },
+        { code: '31', branchNo: 'BR-003', district: 'Manhattan', swiftCode: 'FCCCUS33', description: 'Federal credit union in New York', address: '2 United Nations Plaza, New York, NY 10017' },
+        { code: '111', branchNo: 'BR-004', district: 'Jakarta Pusat', swiftCode: 'HSBCIDJX', description: 'HSBC Indonesia', address: 'Jakarta, Indonesia' },
+        { code: '4806', branchNo: 'BR-005', district: 'Central', swiftCode: 'HSBCHKHH', description: 'HSBC - De Voeux Branch', address: 'Des Voeux Road Central, Hong Kong' },
+        { code: '40111', branchNo: 'BR-006', district: 'Central', swiftCode: 'HSBCHKHH', description: 'HSBC - Hong Kong', address: "Queen's Road Central, Hong Kong" },
+        { code: '83268', branchNo: 'BR-007', district: 'Victoria', swiftCode: 'NATAAU33', description: 'National Australia Bank', address: 'Melbourne, Australia' },
+        { code: '210000', branchNo: 'BR-008', district: 'Midtown', swiftCode: 'CHASUS33', description: 'Chase Bank - Park Avenue South', address: 'New York' },
+        { code: '301830', branchNo: 'BR-009', district: 'West Sussex', swiftCode: 'LOYDGB21', description: 'Lloyds Bank Plc - Haywards Heath', address: '99-101 South Road - Post / ZIP Code : Rh16 4nd' }
     ],
     'Transaction Type': [
         { transactionCode: 'T001', transactionType: 'Purchase', transactionName: 'Buy Transaction', lastTransactionNumber: '1001' },
@@ -1453,6 +1453,9 @@ function Setup() {
     // API Endpoint: GET /api/setup/table-columns/{module}
     const getTableColumns = (title: string) => {
         // Enforce explicit column order for specific modules
+        if (title === 'Bank') {
+            return ['code', 'branchNo', 'district', 'swiftCode', 'description', 'address'];
+        }
         if (title === 'Join Sale Agent') {
             return ['agencyCode', 'subAgencyCode', 'agentCode', 'agentDescription'];
         }

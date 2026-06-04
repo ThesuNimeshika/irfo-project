@@ -1454,7 +1454,7 @@ function Setup() {
     const getTableColumns = (title: string) => {
         // Enforce explicit column order for specific modules
         if (title === 'Bank') {
-            return ['code', 'branchNo', 'district', 'swiftCode', 'description', 'address'];
+            return ['code', 'description', 'address', 'district', 'branchNo', 'swiftCode'];
         }
         if (title === 'Join Sale Agent') {
             return ['agencyCode', 'subAgencyCode', 'agentCode', 'agentDescription'];
@@ -2994,7 +2994,10 @@ function BankModalContent({ formData, handleInputChange, isFormEditable = false 
                 <input
                     type="text"
                     value={formData.code}
-                    onChange={(e) => handleInputChange('code', e.target.value)}
+                    onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length <= 7) handleInputChange('code', val);
+                    }}
                     maxLength={7}
                     disabled={!isFormEditable}
                     className="setup-input-field"
@@ -3410,6 +3413,19 @@ function DividendTypeModalContent({ formData, handleInputChange, isFormEditable 
 // FUNDS MODAL COMPONENT
 // ========================================
 function FundsModalContent({ formData, handleInputChange, handleDateChange, isFormEditable = false, setSuspenseModalOpen }: { formData: FormData, handleInputChange: (field: string, value: string) => void, handleDateChange: (field: string, date: Date | null) => void, isFormEditable: boolean, setSuspenseModalOpen: (open: boolean) => void }) {
+    const [showTrusteeTable, setShowTrusteeTable] = useState(false);
+    const [showCustodianTable, setShowCustodianTable] = useState(false);
+    const [showFundTypeTable, setShowFundTypeTable] = useState(false);
+
+    const fundTypeOptions = [
+        { code: 'FT001', description: 'Open Ended' },
+        { code: 'FT002', description: 'Close Ended' },
+    ];
+
+    const tableDropStyle: React.CSSProperties = { position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto' };
+    const thStyle: React.CSSProperties = { padding: '8px 12px', textAlign: 'left', color: '#000000', fontSize: '13px', backgroundColor: '#f8fafc', borderBottom: '1px solid #cbd5e1' };
+    const tdStyle: React.CSSProperties = { padding: '8px 12px', color: '#000000', fontSize: '13px', borderTop: '1px solid #f1f5f9' };
+
     return (
         <>
             <div className="setup-input-group">
@@ -3443,32 +3459,81 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
                     placeholder="Enter Manager"
                 />
             </div>
+            {/* Trustee table picker */}
             <div className="setup-input-group">
                 <label className="setup-input-label">Trustee</label>
-                <select
-                    value={formData.trustee}
-                    onChange={(e) => handleInputChange('trustee', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-select-field"
-                >
-                    <option value="">Select Trustee</option>
-                    <option value="Trust Corp">Trust Corp</option>
-                    <option value="Fiduciary Ltd">Fiduciary Ltd</option>
-                    <option value="Trustee Corp">Trustee Corp</option>
-                </select>
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <div
+                        className="setup-input-field"
+                        onClick={() => isFormEditable && setShowTrusteeTable(!showTrusteeTable)}
+                        style={{ cursor: isFormEditable ? 'pointer' : 'default', color: formData.trustee ? '#0f172a' : '#64748b', display: 'flex', alignItems: 'center', minHeight: '38px' }}
+                    >
+                        {formData.trustee || 'Select Trustee'}
+                    </div>
+                    {showTrusteeTable && isFormEditable && (
+                        <div style={tableDropStyle}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ ...thStyle, borderRight: '1px solid #cbd5e1' }}>Trustee Code</th>
+                                        <th style={thStyle}>Trustee Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {tableData['Trustees']?.map((t, i) => (
+                                        <tr key={i}
+                                            onClick={() => { handleInputChange('trustee', `${t.trusteeCode} - ${t.trusteeName}`); setShowTrusteeTable(false); }}
+                                            style={{ cursor: 'pointer', backgroundColor: '#ffffff' }}
+                                            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                                            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#ffffff'}
+                                        >
+                                            <td style={{ ...tdStyle, borderRight: '1px solid #e2e8f0' }}>{t.trusteeCode}</td>
+                                            <td style={tdStyle}>{t.trusteeName}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
+            {/* Custodian table picker */}
             <div className="setup-input-group">
                 <label className="setup-input-label">Custodian</label>
-                <select
-                    value={formData.custodian}
-                    onChange={(e) => handleInputChange('custodian', e.target.value)}
-                    className="setup-select-field"
-                >
-                    <option value="">Select Custodian</option>
-                    <option value="Global Custody">Global Custody</option>
-                    <option value="Euro Custody">Euro Custody</option>
-                    <option value="Asia Custody">Asia Custody</option>
-                </select>
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <div
+                        className="setup-input-field"
+                        onClick={() => isFormEditable && setShowCustodianTable(!showCustodianTable)}
+                        style={{ cursor: isFormEditable ? 'pointer' : 'default', color: formData.custodian ? '#0f172a' : '#64748b', display: 'flex', alignItems: 'center', minHeight: '38px' }}
+                    >
+                        {formData.custodian || 'Select Custodian'}
+                    </div>
+                    {showCustodianTable && isFormEditable && (
+                        <div style={tableDropStyle}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ ...thStyle, borderRight: '1px solid #cbd5e1' }}>Custodian Code</th>
+                                        <th style={thStyle}>Custodian Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {tableData['Custodian']?.map((c, i) => (
+                                        <tr key={i}
+                                            onClick={() => { handleInputChange('custodian', `${c.custodianCode} - ${c.custodianName}`); setShowCustodianTable(false); }}
+                                            style={{ cursor: 'pointer', backgroundColor: '#ffffff' }}
+                                            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                                            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#ffffff'}
+                                        >
+                                            <td style={{ ...tdStyle, borderRight: '1px solid #e2e8f0' }}>{c.custodianCode}</td>
+                                            <td style={tdStyle}>{c.custodianName}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="setup-input-group">
                 <label className="setup-input-label">Min Value of Investment</label>
@@ -3520,33 +3585,42 @@ function FundsModalContent({ formData, handleInputChange, handleDateChange, isFo
                     disabled={!isFormEditable}
                 />
             </div>
+            {/* Fund Type table picker */}
             <div className="setup-input-group">
                 <label className="setup-input-label">Fund Type</label>
-                <div className="setup-radio-group">
-                    <label className="setup-radio-item">
-                        <input
-                            type="radio"
-                            name="fundType"
-                            value="Open Ended"
-                            checked={formData.fundType === 'Open Ended'}
-                            onChange={(e) => handleInputChange('fundType', e.target.value)}
-                            disabled={!isFormEditable}
-                            className="setup-radio-input"
-                        />
-                        Open Ended
-                    </label>
-                    <label className="setup-radio-item">
-                        <input
-                            type="radio"
-                            name="fundType"
-                            value="Close Ended"
-                            checked={formData.fundType === 'Close Ended'}
-                            onChange={(e) => handleInputChange('fundType', e.target.value)}
-                            disabled={!isFormEditable}
-                            className="setup-radio-input"
-                        />
-                        Close Ended
-                    </label>
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <div
+                        className="setup-input-field"
+                        onClick={() => isFormEditable && setShowFundTypeTable(!showFundTypeTable)}
+                        style={{ cursor: isFormEditable ? 'pointer' : 'default', color: formData.fundType ? '#0f172a' : '#64748b', display: 'flex', alignItems: 'center', minHeight: '38px' }}
+                    >
+                        {formData.fundType || 'Select Fund Type'}
+                    </div>
+                    {showFundTypeTable && isFormEditable && (
+                        <div style={tableDropStyle}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ ...thStyle, borderRight: '1px solid #cbd5e1' }}>Code</th>
+                                        <th style={thStyle}>Fund Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {fundTypeOptions.map((ft, i) => (
+                                        <tr key={i}
+                                            onClick={() => { handleInputChange('fundType', ft.description); setShowFundTypeTable(false); }}
+                                            style={{ cursor: 'pointer', backgroundColor: formData.fundType === ft.description ? '#e0f2fe' : '#ffffff' }}
+                                            onMouseEnter={e => { if (formData.fundType !== ft.description) e.currentTarget.style.backgroundColor = '#f8fafc'; }}
+                                            onMouseLeave={e => { if (formData.fundType !== ft.description) e.currentTarget.style.backgroundColor = '#ffffff'; }}
+                                        >
+                                            <td style={{ ...tdStyle, borderRight: '1px solid #e2e8f0' }}>{ft.code}</td>
+                                            <td style={tdStyle}>{ft.description}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="setup-input-group">
@@ -3813,6 +3887,8 @@ function OtherChargesModalContent({ formData, handleInputChange, handleDateChang
 // AGENCY MODAL COMPONENT
 // ========================================
 function AgencyModalContent({ formData, handleInputChange, isFormEditable = false }: { formData: FormData, handleInputChange: (field: string, value: string) => void, isFormEditable: boolean }) {
+    const [showAgencyTypeTable, setShowAgencyTypeTable] = useState(false);
+
     return (
         <>
             <div className="setup-input-group">
@@ -3839,18 +3915,46 @@ function AgencyModalContent({ formData, handleInputChange, isFormEditable = fals
             </div>
             <div className="setup-input-group">
                 <label className="setup-input-label">Agency Type</label>
-                <select
-                    value={formData.agencyType || ''}
-                    onChange={(e) => handleInputChange('agencyType', e.target.value)}
-                    disabled={!isFormEditable}
-                    className="setup-select-field"
-                >
-                    <option value="">Select agency type</option>
-                    <option value="Primary Agent">Primary Agent</option>
-                    <option value="Sub Agent">Sub Agent</option>
-                    <option value="Broker">Broker</option>
-                    <option value="Distributor">Distributor</option>
-                </select>
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <div
+                        className="setup-input-field"
+                        onClick={() => isFormEditable && setShowAgencyTypeTable(!showAgencyTypeTable)}
+                        style={{
+                            cursor: isFormEditable ? 'pointer' : 'default',
+                            color: formData.agencyType ? '#0f172a' : '#64748b',
+                            display: 'flex', alignItems: 'center', width: '100%',
+                            minHeight: '38px'
+                        }}
+                    >
+                        {formData.agencyType || 'Select agency type'}
+                    </div>
+                    {showAgencyTypeTable && isFormEditable && (
+                        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid #cbd5e1' }}>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', borderRight: '1px solid #cbd5e1', color: '#000000', fontSize: '13px' }}>Agency Type Code</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#000000', fontSize: '13px' }}>Agency Type Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {tableData['Agency Type']?.map((a, i) => (
+                                        <tr key={i} onClick={() => {
+                                            handleInputChange('agencyType', `${a.agencyTypeCode} - ${a.agencyTypeDescription}`);
+                                            setShowAgencyTypeTable(false);
+                                        }} style={{ cursor: 'pointer', backgroundColor: '#ffffff' }}
+                                            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                                            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#ffffff'}
+                                        >
+                                            <td style={{ padding: '8px 12px', borderRight: '1px solid #e2e8f0', color: '#000000', fontSize: '13px' }}>{a.agencyTypeCode}</td>
+                                            <td style={{ padding: '8px 12px', color: '#000000', fontSize: '13px' }}>{a.agencyTypeDescription}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="setup-input-group">
                 <label className="setup-input-label">Calculate Commission</label>

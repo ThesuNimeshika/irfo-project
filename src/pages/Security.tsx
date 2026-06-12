@@ -675,10 +675,15 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
                 <input type="text" placeholder="Full Name *" style={inputStyle} className={secInputClass} value={fullName} onChange={e => setFullName(e.target.value)} />
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
+                <IconWrapper><IcoBriefcase /></IconWrapper>
+                <input type="text" placeholder="Employee No." style={inputStyle} className={secInputClass} value={empNo} onChange={e => setEmpNo(e.target.value)} />
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '16px', flexDirection: isMobile ? 'column' : 'row' }}>
+              <div style={{ flex: 1, position: 'relative' }}>
                 <IconWrapper top="14px">
                   <IcoUser />
                 </IconWrapper>
-
                 <select
                   style={inputStyle}
                   value={gender}
@@ -1625,7 +1630,7 @@ const PasswordChangerModal = () => {
                 <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5, fontSize: '15px' }}>🔍</span>
                 <input type="text" value={searchUser} onChange={e => setSearchUser(e.target.value)} placeholder="User name" style={{ ...fieldStyle, borderColor: errors.searchUser ? '#ef4444' : '#e2e8f0' }} />
               </div>
-              <button className="setup-btn" style={{ height: '44px', minWidth: '85px', justifyContent: 'center', borderRadius: '8px', background: 'var(--white)', color: 'var(--text-700)', border: '1px solid var(--border-mid)', boxShadow: 'var(--shadow-xs)', fontWeight: 'bold', cursor: 'pointer' }}>Load</button>
+
             </div>
             {errors.searchUser && <p style={{ color: '#ef4444', fontSize: '11px', margin: '4px 0 0 4px' }}>{errors.searchUser}</p>}
           </div>

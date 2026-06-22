@@ -21,6 +21,7 @@ const moduleData = [
   { title: 'Password Changer', icon: '🛡️' },
   { title: 'Assign User Role', icon: '🔑' },
   { title: 'Manage Menus', icon: '📝' },
+  { title: 'Password Policy', icon: '🔒' },
 ];
 
 const modules = moduleData.map(m => ({ title: m.title, icon: m.icon }));
@@ -1689,6 +1690,249 @@ const PasswordChangerModal = () => {
   );
 };
 
+const PasswordPolicyModal = ({ isMobile }: { isMobile: boolean }) => {
+  const [selectedComp, setSelectedComp] = useState('01');
+  const [effectiveDate, setEffectiveDate] = useState('2024-01-01');
+  const [minLength, setMinLength] = useState(8);
+  const [maxLength, setMaxLength] = useState(32);
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warn' } | null>(null);
+
+  const showToast = (msg: string, type: 'success' | 'error' | 'warn' = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  const [rules, setRules] = useState({
+    uppercase: { enabled: true, min: 1 },
+    lowercase: { enabled: true, min: 1 },
+    numbers: { enabled: true, min: 1 },
+    symbols: { enabled: true, min: 1 },
+  });
+
+  const [policy, setPolicy] = useState({
+    expiry: 90,
+    maxAttempts: 5,
+    lockout: 30,
+    session: 20,
+    history: 5,
+  });
+
+  const [errorMessages, setErrorMessages] = useState({
+    length: 'Password must be between 8 and 32 characters.',
+    uppercase: 'Must contain at least 1 uppercase letter.',
+    lowercase: 'Must contain at least 1 lowercase letter.',
+    numbers: 'Must include at least 1 number.',
+    symbols: 'Must include at least 1 special character (!@#$...).',
+    expired: 'Your password has expired. Please set a new one.',
+    locked: 'Account locked due to too many failed attempts.',
+    reuse: 'Cannot reuse your last 5 passwords.',
+  });
+
+  const companies: Record<string, any> = {
+    '01': { logo: 'CAM', name: 'Ceylon Asset Management Co. Ltd', meta: 'COMP_CODE: 01 | info@ceylonam.com | +94 11 7394000', hasPolicy: false },
+    '02': { logo: 'MSL', name: 'MSL Capital Partners Ltd', meta: 'COMP_CODE: 02 | info@msl.lk | +94 11 2345678', hasPolicy: true },
+    '03': { logo: 'ORB', name: 'Orbit Securities Ltd', meta: 'COMP_CODE: 03 | info@orbit.lk | +94 11 3456789', hasPolicy: false },
+  };
+
+  const currentComp = companies[selectedComp] || { logo: '?', name: 'Select Company', meta: '', hasPolicy: false };
+
+  const handleSave = () => {
+    showToast('Password policy saved successfully!', 'success');
+  };
+
+  return (
+    <div id="password-policy-redesign" style={{ padding: '20px', background: '#f8fafc', minHeight: '100%', fontFamily: 'inherit' }}>
+      <style>{`
+        #password-policy-redesign .pp-grid { display: grid; grid-template-columns: ${isMobile ? '1fr' : '1fr 1fr'}; gap: 20px; }
+        #password-policy-redesign .pp-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); transition: transform 0.2s, box-shadow 0.2s; }
+        #password-policy-redesign .pp-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
+        #password-policy-redesign .pp-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
+        #password-policy-redesign .pp-card-icon { width: 32px; height: 32px; border-radius: 8px; background: #eff6ff; color: #1e3a8a; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        #password-policy-redesign .pp-card-title { font-size: 15px; font-weight: 700; color: #1e293b; }
+        #password-policy-redesign .pp-label { font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 6px; display: block; }
+        #password-policy-redesign .pp-input { width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #1e293b; outline: none; transition: border-color 0.2s; background: #fff; }
+        #password-policy-redesign .pp-input:focus { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.05); }
+        #password-policy-redesign .pp-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        #password-policy-redesign .pp-toggle { position: relative; width: 36px; height: 20px; cursor: pointer; }
+        #password-policy-redesign .pp-toggle input { opacity: 0; width: 0; height: 0; }
+        #password-policy-redesign .pp-slider { position: absolute; inset: 0; background: #cbd5e1; border-radius: 20px; transition: 0.3s; }
+        #password-policy-redesign .pp-slider:before { content: ""; position: absolute; height: 14px; width: 14px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+        #password-policy-redesign .pp-toggle input:checked + .pp-slider { background: #10b981; }
+        #password-policy-redesign .pp-toggle input:checked + .pp-slider:before { transform: translateX(16px); }
+        #password-policy-redesign .pp-comp-box { background: linear-gradient(to right, #f8fafc, #fff); border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-top: 15px; }
+        #password-policy-redesign .pp-logo { width: 44px; height: 44px; border-radius: 10px; background: #1e3a8a; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2); }
+        #password-policy-redesign .pp-btn-save { background: #1e3a8a; color: #fff; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2); }
+        #password-policy-redesign .pp-btn-save:hover { background: #1e40af; transform: translateY(-1px); }
+        #password-policy-redesign .pp-alert { background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; padding: 10px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+      `}</style>
+
+      {toast && (
+        <div style={{ position: 'fixed', top: '24px', right: '24px', zIndex: 9999, padding: '14px 20px', borderRadius: '10px', fontSize: '13px', fontWeight: '600', color: '#fff', background: toast.type === 'success' ? '#10b981' : '#ef4444', boxShadow: '0 8px 24px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span>{toast.type === 'success' ? '✅' : '❌'}</span> {toast.msg}
+        </div>
+      )}
+
+      <div className="pp-grid">
+        {/* Card 1: Company Profile */}
+        <div className="pp-card" style={{ gridColumn: isMobile ? 'span 1' : 'span 2' }}>
+          <div className="pp-card-header">
+            <div className="pp-card-icon">🏢</div>
+            <div className="pp-card-title">Company & Deployment Profile</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr', gap: '20px' }}>
+            <div>
+              <label className="pp-label">Active Organization</label>
+              <select className="pp-input" value={selectedComp} onChange={(e) => setSelectedComp(e.target.value)}>
+                {Object.keys(companies).map(id => (
+                  <option key={id} value={id}>{id} — {companies[id].name}</option>
+                ))}
+              </select>
+              <div className="pp-comp-box">
+                <div className="pp-logo">{currentComp.logo}</div>
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#1e293b' }}>{currentComp.name}</div>
+                  <div style={{ fontSize: '11px', color: '#64748b' }}>{currentComp.meta}</div>
+                </div>
+              </div>
+              {currentComp.hasPolicy && (
+                <div className="pp-alert">
+                  <span>⚠️</span> This organization already has an active policy. Saving will replace it.
+                </div>
+              )}
+            </div>
+            <div>
+              <label className="pp-label">Effective Date</label>
+              <input type="date" className="pp-input" value={effectiveDate} onChange={(e) => setEffectiveDate(e.target.value)} />
+              <div style={{ marginTop: '15px', padding: '12px', background: '#dcfce7', borderRadius: '8px', color: '#16a34a', fontSize: '11px', fontWeight: '700', textAlign: 'center', border: '1px solid #bbf7d0' }}>
+                ✓ SYSTEM STATUS: READY
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: Core Length Constraints */}
+        <div className="pp-card">
+          <div className="pp-card-header">
+            <div className="pp-card-icon">📏</div>
+            <div className="pp-card-title">Password Length Rules</div>
+          </div>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            <div style={{ flex: 1 }}>
+              <label className="pp-label">Minimum</label>
+              <input type="number" className="pp-input" value={minLength} onChange={(e) => setMinLength(parseInt(e.target.value) || 0)} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label className="pp-label">Maximum</label>
+              <input type="number" className="pp-input" value={maxLength} onChange={(e) => setMaxLength(parseInt(e.target.value) || 0)} />
+            </div>
+          </div>
+          <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '12px' }}>Recommended: 8–32 characters for optimal security.</p>
+        </div>
+
+        {/* Card 3: Complexity Matrix */}
+        <div className="pp-card">
+          <div className="pp-card-header">
+            <div className="pp-card-icon">🔐</div>
+            <div className="pp-card-title">Complexity Requirements</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            {[
+              { key: 'uppercase', label: 'Uppercase Letters', sub: 'A–Z required' },
+              { key: 'lowercase', label: 'Lowercase Letters', sub: 'a–z required' },
+              { key: 'numbers', label: 'Numerical Digits', sub: '0–9 required' },
+              { key: 'symbols', label: 'Special Symbols', sub: '!@#$ required' },
+            ].map(({ key, label, sub }) => (
+              <div className="pp-toggle-row" key={key}>
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>{label}</div>
+                  <div style={{ fontSize: '10px', color: '#94a3b8' }}>{sub}</div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <input type="number" className="pp-input" style={{ width: '45px', padding: '5px', textAlign: 'center' }}
+                    value={(rules as any)[key].min}
+                    onChange={(e) => setRules(prev => ({ ...prev, [key]: { ...prev[key as keyof typeof prev], min: parseInt(e.target.value) || 0 } }))} />
+                  <label className="pp-toggle">
+                    <input type="checkbox" checked={(rules as any)[key].enabled}
+                      onChange={(e) => setRules(prev => ({ ...prev, [key]: { ...prev[key as keyof typeof prev], enabled: e.target.checked } }))} />
+                    <span className="pp-slider"></span>
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Card 4: Security & Lifecycle */}
+        <div className="pp-card">
+          <div className="pp-card-header">
+            <div className="pp-card-icon">⏳</div>
+            <div className="pp-card-title">Security & Lifecycle</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            <div>
+              <label className="pp-label">Password expiry (days)</label>
+              <input type="number" className="pp-input" value={policy.expiry} onChange={(e) => setPolicy(prev => ({ ...prev, expiry: parseInt(e.target.value) || 0 }))} />
+            </div>
+            <div>
+              <label className="pp-label">Lockout duration (minutes)</label>
+              <input type="number" className="pp-input" value={policy.lockout} onChange={(e) => setPolicy(prev => ({ ...prev, lockout: parseInt(e.target.value) || 0 }))} />
+            </div>
+            <div>
+              <label className="pp-label">Max invalid attempts</label>
+              <input type="number" className="pp-input" value={policy.maxAttempts} onChange={(e) => setPolicy(prev => ({ ...prev, maxAttempts: parseInt(e.target.value) || 0 }))} />
+            </div>
+            <div>
+              <label className="pp-label">Session timeout (minutes)</label>
+              <input type="number" className="pp-input" value={policy.session} onChange={(e) => setPolicy(prev => ({ ...prev, session: parseInt(e.target.value) || 0 }))} />
+            </div>
+            <div style={{ gridColumn: 'span 2' }}>
+              <label className="pp-label">Password history count</label>
+              <input type="number" className="pp-input" value={policy.history} onChange={(e) => setPolicy(prev => ({ ...prev, history: parseInt(e.target.value) || 0 }))} />
+              <p style={{ fontSize: '10px', color: '#94a3b8', marginTop: '6px' }}>
+                * Password history count — number of previous passwords blocked from reuse
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 5: User Communication */}
+        <div className="pp-card">
+          <div className="pp-card-header">
+            <div className="pp-card-icon">💬</div>
+            <div className="pp-card-title">User Notifications</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', paddingRight: '5px' }}>
+            {[
+              { key: 'length', label: 'Length Violation', icon: '📏' },
+              { key: 'uppercase', label: 'Uppercase Missing', icon: '🔠' },
+              { key: 'lowercase', label: 'Lowercase Missing', icon: '🔡' },
+              { key: 'numbers', label: 'Numbers Missing', icon: '🔢' },
+              { key: 'symbols', label: 'Symbols Missing', icon: '🔣' },
+              { key: 'expired', label: 'Password Expired', icon: '📅' },
+              { key: 'locked', label: 'Account Locked', icon: '🔒' },
+              { key: 'reuse', label: 'Password Reuse', icon: '⏳' },
+            ].map(({ key, label, icon }) => (
+              <div key={key}>
+                <label className="pp-label">{icon} {label}</label>
+                <input type="text" className="pp-input"
+                  value={(errorMessages as any)[key]}
+                  onChange={(e) => setErrorMessages(prev => ({ ...prev, [key]: e.target.value }))} />
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '15px', background: '#f1f5f9', padding: '10px', borderRadius: '8px', fontSize: '11px', color: '#64748b', border: '1px dashed #cbd5e1' }}>
+            ℹ️ These messages are shown to users when policy rules are violated.
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '25px', display: 'flex', justifyContent: 'flex-end' }}>
+        <button className="pp-btn-save" onClick={handleSave}>💾 Save Configuration</button>
+      </div>
+    </div>
+  );
+};
+
 function Security() {
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
@@ -1734,6 +1978,10 @@ function Security() {
 
     if (title === 'Password Changer') {
       return <PasswordChangerModal />;
+    }
+
+    if (title === 'Password Policy') {
+      return <PasswordPolicyModal isMobile={isMobile} />;
     }
 
 

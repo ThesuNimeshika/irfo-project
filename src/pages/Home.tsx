@@ -1,25 +1,15 @@
 import Navbar, { Footer } from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 import '../App.css';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import DataTable from "../components/DataTable"
+import DataTable from '../components/DataTable';
 
 type PieEntry = { name: string; value: number; color: string };
 
-// Define 10 colors for the 10 parts - matching system colors
 const pieColors = [
-  '#4f46e5', // deep indigo (primary)
-  '#d946ef', // vibrant magenta (secondary)
-  '#f0abfc', // pink (from gradient)
-  '#e0e7ff', // light indigo (from gradient)
-  '#8b5cf6', // violet
-  '#06b6d4', // cyan
-  '#10b981', // emerald
-  '#f59e42', // orange
-  '#DAC17C', // Sandcastle
-  '#FFDE21'  // yellow
+  '#6366f1', '#a855f7', '#ec4899', '#f43f5e', '#fb923c',
+  '#eab308', '#22c55e', '#14b8a6', '#0ea5e9', '#8b5cf6',
 ];
 
 const defaultPieData: PieEntry[] = [
@@ -32,263 +22,243 @@ const defaultPieData: PieEntry[] = [
   { name: 'Part G', value: 5, color: pieColors[6] },
   { name: 'Part H', value: 4, color: pieColors[7] },
   { name: 'Part I', value: 3, color: pieColors[8] },
-  { name: 'Part J', value: 2, color: pieColors[9] }
+  { name: 'Part J', value: 2, color: pieColors[9] },
 ];
 
+
+
 function Home() {
-  // Floating label and active slice
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  // Date state
   const todayStr = new Date().toISOString().slice(0, 10);
   const [selectedDate, setSelectedDate] = useState(todayStr);
-  // Pie chart state
   const [pieType, setPieType] = useState<'unit' | 'market'>('unit');
   const [pieData, setPieData] = useState<PieEntry[]>(defaultPieData);
-  // Toggle tooltip state
-  const [showToggleTooltip, setShowToggleTooltip] = useState(false);
 
-  // Fetch fund names and update pie chart labels
+
   async function fetchFundNames() {
     try {
-      const response = await fetch('http://localhost:5095/api/dashboard/funds/names');
-      if (!response.ok) throw new Error('Failed to fetch fund names');
-      const fundNames: string[] = await response.json();
-
-
-      setPieData(prevData => {
-        return prevData.map((item, index) => ({
-          ...item,
-          name: fundNames[index] || item.name
-        }));
-      });
-    } catch (err) {
-      console.error('Error loading fund names:', err);
-
-    }
+      const res = await fetch('http://localhost:5095/api/dashboard/funds/names');
+      if (!res.ok) throw new Error();
+      const names: string[] = await res.json();
+      setPieData(prev => prev.map((item, i) => ({ ...item, name: names[i] || item.name })));
+    } catch { /* backend offline — use defaults */ }
   }
 
-  // Simulate backend fetch (replace with real API call)
   async function fetchPieData(_date: string, type: 'unit' | 'market') {
-    // Use current pie data names to maintain labels
-    const currentNames = pieData.map(item => item.name);
-
-    if (type === 'unit') {
-      return {
-        pie: [
-          { name: currentNames[0], value: 15, color: pieColors[0] },
-          { name: currentNames[1], value: 12, color: pieColors[1] },
-          { name: currentNames[2], value: 10, color: pieColors[2] },
-          { name: currentNames[3], value: 8, color: pieColors[3] },
-          { name: currentNames[4], value: 7, color: pieColors[4] },
-          { name: currentNames[5], value: 6, color: pieColors[5] },
-          { name: currentNames[6], value: 5, color: pieColors[6] },
-          { name: currentNames[7], value: 4, color: pieColors[7] },
-          { name: currentNames[8], value: 3, color: pieColors[8] },
-          { name: currentNames[9], value: 2, color: pieColors[9] }
-        ],
-        creationPrice: 123.45,
-        redeemPrice: 98.76
-      };
-    } else {
-      return {
-        pie: [
-          { name: currentNames[0], value: 20, color: pieColors[0] },
-          { name: currentNames[1], value: 18, color: pieColors[1] },
-          { name: currentNames[2], value: 15, color: pieColors[2] },
-          { name: currentNames[3], value: 12, color: pieColors[3] },
-          { name: currentNames[4], value: 10, color: pieColors[4] },
-          { name: currentNames[5], value: 8, color: pieColors[5] },
-          { name: currentNames[6], value: 6, color: pieColors[6] },
-          { name: currentNames[7], value: 4, color: pieColors[7] },
-          { name: currentNames[8], value: 3, color: pieColors[8] },
-          { name: currentNames[9], value: 2, color: pieColors[9] }
-        ],
-        creationPrice: 150.12,
-        redeemPrice: 110.34
-      };
-    }
+    const names = pieData.map(d => d.name);
+    const vals = type === 'unit' ? [15, 12, 10, 8, 7, 6, 5, 4, 3, 2] : [20, 18, 15, 12, 10, 8, 6, 4, 3, 2];
+    return { pie: vals.map((v, i) => ({ name: names[i], value: v, color: pieColors[i] })) };
   }
 
-  // Fetch only pie chart data (for radio change)
-  async function fetchPieOnly(_date: string, type: 'unit' | 'market') {
-    const d = await fetchPieData(_date, type);
-    setPieData(d.pie);
+  async function fetchAll(d: string, t: 'unit' | 'market') {
+    const r = await fetchPieData(d, t);
+    setPieData(r.pie);
   }
 
-  // Fetch all (for date change)
-  async function fetchAll(_date: string, type: 'unit' | 'market') {
-    const d = await fetchPieData(_date, type);
-    setPieData(d.pie);
-  }
+  useEffect(() => { fetchAll(selectedDate, pieType); fetchFundNames(); }, []);
+  useEffect(() => { fetchAll(selectedDate, pieType); }, [selectedDate]);
+  useEffect(() => { fetchAll(selectedDate, pieType); }, [pieType]);
 
-  // On mount, fetch all for today and fund names
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  const [isTablet, setIsTablet] = useState(() => window.innerWidth > 768 && window.innerWidth <= 1024);
   useEffect(() => {
-    fetchAll(selectedDate, pieType);
-    fetchFundNames();
+    const fn = () => { const w = window.innerWidth; setIsMobile(w <= 768); setIsTablet(w > 768 && w <= 1024); };
+    fn(); window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
   }, []);
 
-  // On date change, fetch all (pie + prices)
-  useEffect(() => {
-    fetchAll(selectedDate, pieType);
-  }, [selectedDate]);
+  const total = pieData.reduce((s, v) => s + v.value, 0);
+  const formattedDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-GB', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  });
 
-  // On pieType (radio) change, fetch only pie chart
-  useEffect(() => {
-    fetchPieOnly(selectedDate, pieType);
-  }, [pieType]);
-
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
-  const [isTablet, setIsTablet] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 && window.innerWidth <= 1024 : false);
-
-  // Update responsive states on resize
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setIsMobile(width <= 768);
-      setIsTablet(width > 768 && width <= 1024);
-    };
-    handleResize(); // Call immediately
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  /* ──────────────────────────────────────────── */
   return (
     <>
-      <div className="navbar-fixed-wrapper">
-        <Navbar />
-      </div>
-      <div className="home-main-layout" style={{
-        marginTop: 0,
-        paddingTop: 0,
+      <div className="navbar-fixed-wrapper"><Navbar /></div>
+      {!isMobile && <Sidebar />}
+
+      <div style={{
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         height: '100vh',
-        minHeight: 'unset',
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
-        marginBottom: 0
+        background: '#f8fafc',
+        paddingTop: 54, // push content below navbar
+        boxSizing: 'border-box',
       }}>
-        {/* Sidebar left-aligned, fixed width on desktop only */}
+        {/* Sidebar */}
         {!isMobile && (
-          <div className="home-sidebar-container" style={{
-            flexShrink: 0
-          }}>
-            <Sidebar />
-          </div>
+          <div style={{ width: 188, minWidth: 188, flexShrink: 0 }} />
         )}
-        {/* Main content area: stack cards vertically */}
+
+        {/* ── Content column ── */}
         <div style={{
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          gap: '0',
-          height: '100vh',
+          height: '100%',
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #e0e7ff 0%, #f0abfc 100%)',
-          marginBottom: 0,
-          paddingTop: isMobile ? '60px' : isTablet ? '55px' : '50px',
-          paddingLeft: '0px',
-          paddingRight: '0px'
+          padding: isMobile ? '10px 8px 30px' : isTablet ? '12px 12px 30px' : '16px 20px 30px',
+          gap: 16,
         }}>
-          {/* Unified magical layout card */}
-          <div className="home-card magical-bg animated-bg dashboard-main-card" style={{
-            flex: isMobile ? '1' : '0.8',
-            minHeight: 0,
-            marginBottom: 0,
-            background: 'transparent',
-            boxShadow: 'none',
-            border: 'none',
-            height: isMobile ? 'auto' : '70vh',
-            width: '100%'
+
+          {/* ── Row 1: Pie card + Date/Toggle card ── */}
+          <div style={{
+            display: 'flex',
+            gap: 16,
+            flexShrink: 0,
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: 'center',
           }}>
-            {/* Pie chart section */}
-            <div className="dashboard-pie-section" style={{
-              paddingTop: isMobile ? '20px' : isTablet ? '25px' : '35px',
-              paddingBottom: '20px',
-              position: 'relative',
+
+            {/* ── Pie chart card ── */}
+            <div style={{
+              flex: '1 1 0',
+              background: '#fff',
+              borderRadius: 20,
+              boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
+              border: '1.5px solid #f0f0f0',
+              padding: isMobile ? '12px 10px 10px' : '14px 20px 14px',
               display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '100%',
-              paddingLeft: isMobile ? '10px' : isTablet ? '15px' : '20px',
-              paddingRight: isMobile ? '10px' : isTablet ? '15px' : '20px',
-              flexDirection: isMobile ? 'column' : 'row'
+              gap: isMobile ? 16 : 32,
+              overflow: 'hidden',
+              position: 'relative',
             }}>
-              {/* Legend right - only show if fund names are short */}
-              {pieData.some(entry => entry.name.length <= 15) && (
-                <div className="dashboard-pie-legend" style={{
-                  maxHeight: isMobile ? '120px' : isTablet ? '170px' : '190px',
-                  overflowY: 'auto',
-                  paddingLeft: isMobile ? '20px' : isTablet ? '35px' : '38px',
-                  paddingTop: '0px',
-                  width: isMobile ? '100%' : isTablet ? '220px' : '250px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  justifyContent: 'flex-start',
-                  textAlign: 'left',
-                  marginBottom: isMobile ? '10px' : '0'
-                }}>
-                  {pieData.map((entry) => (
-                    <div key={entry.name} className="dashboard-pie-legend-row" style={{ textAlign: 'left', marginBottom: '8px', width: '100%', display: 'flex', alignItems: 'center' }}>
-                      <span className="dashboard-pie-legend-color" style={{ background: entry.color, display: 'inline-block', width: '12px', height: '12px', borderRadius: '2px', flexShrink: 0, marginRight: '8px' }}></span>
-                      <span className="dashboard-pie-legend-label" style={{ fontSize: isMobile ? '12px' : '14px', wordBreak: 'break-word', maxWidth: isMobile ? '150px' : '200px' }}>{entry.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* Pie chart center */}
-              <div className="dashboard-pie-chart" style={{
-                marginRight: pieData.some(entry => entry.name.length <= 15) ? (isMobile ? '0' : '20px') : 'auto',
-                width: isMobile ? '100%' : 'auto',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
+              {/* Decorative corner */}
+              <div style={{
+                position: 'absolute', top: -30, right: -30,
+                width: 120, height: 120, borderRadius: '50%',
+                background: 'linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%)',
+                opacity: 0.5, pointerEvents: 'none',
+              }} />
+
+              {/* Left: Legend in 2-column grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '4px 12px',
+                flex: '0 0 auto',
+                width: isMobile ? '100%' : 280,
+                order: isMobile ? 2 : 0,
+                paddingTop: 4,
               }}>
-                <ResponsiveContainer width={isMobile ? "90%" : "80%"} height={isMobile ? 200 : 220}>
+                {/* Legend header spanning both columns */}
+                <div style={{
+                  gridColumn: '1 / -1',
+                  fontSize: 11, fontWeight: 800, color: '#6366f1',
+                  textTransform: 'uppercase', letterSpacing: '0.1em',
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  marginBottom: 6,
+                }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: '#6366f1' }} />
+                  Fund Distribution
+                </div>
+                {pieData.map((entry, i) => (
+                  <div key={entry.name} style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '5px 8px', borderRadius: 8,
+                    background: activeIndex === i ? entry.color + '18' : '#fafafa',
+                    border: `1px solid ${activeIndex === i ? entry.color + '44' : '#f0f0f0'}`,
+                    transition: 'all 0.2s',
+                    cursor: 'default',
+                    minWidth: 0,
+                  }}>
+                    <div style={{
+                      width: 10, height: 10, borderRadius: 3, flexShrink: 0,
+                      background: entry.color,
+                      boxShadow: activeIndex === i ? `0 0 5px ${entry.color}` : 'none',
+                    }} />
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#374151', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{entry.name}</span>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: entry.color, flexShrink: 0, marginLeft: 2 }}>
+                      {total ? ((entry.value / total) * 100).toFixed(0) : 0}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Centre: Donut — fixed width balanced next to legend */}
+              <div style={{ width: isMobile ? '100%' : 280, flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', order: 1, position: 'relative' }}>
+                {/* Center-hole label — shows hovered slice info or total */}
+                <div style={{
+                  position: 'absolute',
+                  top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  textAlign: 'center',
+                  pointerEvents: 'none',
+                  zIndex: 2,
+                  transition: 'all 0.2s',
+                }}>
+                  {activeIndex !== null ? (
+                    <>
+                      <div style={{
+                        fontSize: 22, fontWeight: 900, lineHeight: 1,
+                        color: pieData[activeIndex]?.color ?? '#111',
+                        transition: 'color 0.2s',
+                      }}>
+                        {total ? ((pieData[activeIndex].value / total) * 100).toFixed(1) : 0}%
+                      </div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: '#9ca3af', marginTop: 3, maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {pieData[activeIndex]?.name}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: 20, fontWeight: 900, color: '#111827', lineHeight: 1 }}>{pieData.length}</div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: '#9ca3af', marginTop: 3 }}>Funds</div>
+                    </>
+                  )}
+                </div>
+                <ResponsiveContainer width="100%" height={isMobile ? 160 : 190}>
                   <PieChart>
                     <Pie
                       data={pieData}
                       dataKey="value"
                       nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={isMobile ? 80 : 110}
-                      innerRadius={isMobile ? 40 : 60}
-                      isAnimationActive={true}
-                      animationDuration={700}
+                      cx="50%" cy="50%"
+                      outerRadius={isMobile ? 70 : 85}
+                      innerRadius={isMobile ? 36 : 50}
+                      isAnimationActive
+                      animationDuration={800}
                       key={pieType}
-                      onMouseLeave={() => { setActiveIndex(null); }}
+                      onMouseLeave={() => setActiveIndex(null)}
+                      paddingAngle={2}
                     >
                       {pieData.map((entry, idx) => (
                         <Cell
                           key={`cell-${idx}`}
                           fill={entry.color}
-                          stroke={activeIndex === idx ? '#222' : undefined}
-                          strokeWidth={activeIndex === idx ? 2 : 1}
-                          className={activeIndex === idx ? 'pie-slice-pop' : ''}
-                          style={{ transition: 'filter 0.25s, transform 0.25s', cursor: 'pointer' }}
-                          onMouseEnter={() => {
-                            setActiveIndex(idx);
+                          stroke={activeIndex === idx ? entry.color : '#fff'}
+                          strokeWidth={activeIndex === idx ? 3 : 2}
+                          style={{
+                            filter: activeIndex === idx ? `drop-shadow(0 4px 10px ${entry.color}90)` : 'none',
+                            transition: 'filter 0.2s',
+                            cursor: 'pointer',
                           }}
+                          onMouseEnter={() => setActiveIndex(idx)}
                         />
                       ))}
                     </Pie>
                     <Tooltip
                       content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          const entry = payload[0].payload;
-                          const total = pieData.reduce((sum, v) => sum + v.value, 0);
-                          const percent = total ? ((entry.value / total) * 100).toFixed(1) : 0;
+                        if (active && payload?.length) {
+                          const e = payload[0].payload;
+                          const pct = total ? ((e.value / total) * 100).toFixed(1) : 0;
                           return (
-                            <div className="dashboard-pie-tooltip">
-                              <div style={{ fontWeight: 700, fontSize: isMobile ? 14 : 18, marginBottom: 4 }}>{entry.name}</div>
-                              <div>Percent: <b>{percent}%</b></div>
-                              {pieType === 'unit' ? (
-                                <div>Units: <b>{entry.value.toLocaleString()}</b></div>
-                              ) : (
-                                <div>Value: <b>LKR {entry.value.toLocaleString()}</b></div>
-                              )}
+                            <div style={{
+                              background: '#fff',
+                              border: `1.5px solid ${e.color}44`,
+                              borderRadius: 12, padding: '10px 14px',
+                              boxShadow: `0 8px 24px ${e.color}30`,
+                            }}>
+                              <div style={{ fontWeight: 800, fontSize: 13, color: e.color, marginBottom: 4 }}>{e.name}</div>
+                              <div style={{ fontSize: 12, color: '#6b7280' }}>Share: <b style={{ color: '#111' }}>{pct}%</b></div>
+                              <div style={{ fontSize: 12, color: '#6b7280' }}>
+                                {pieType === 'unit' ? 'Units' : 'Value'}: <b style={{ color: '#111' }}>{pieType === 'market' ? 'LKR ' : ''}{e.value.toLocaleString()}</b>
+                              </div>
                             </div>
                           );
                         }
@@ -298,305 +268,169 @@ function Home() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              {/* Toggle switch for pie type selection */}
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: isMobile ? '8px' : '12px',
-                cursor: 'help',
-                position: 'relative',
-                marginLeft: pieData.some(entry => entry.name.length <= 15) ? (isMobile ? '0' : '10px') : 'auto',
-                marginRight: pieData.some(entry => entry.name.length <= 15) ? '0' : 'auto',
-                paddingRight: isMobile ? '10px' : '30px',
-                marginTop: isMobile ? '15px' : '0'
-              }}
-                onMouseEnter={() => setShowToggleTooltip(true)}
-                onMouseLeave={() => setShowToggleTooltip(false)}
-              >
-                {/* Custom tooltip */}
-                {showToggleTooltip && createPortal(
-                  <div style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    background: 'rgba(0, 0, 0, 0.9)',
-                    color: 'white',
-                    padding: '8px 12px',
-                    borderRadius: '6px',
-                    fontSize: isMobile ? '10px' : '12px',
-                    fontWeight: '500',
-                    whiteSpace: 'nowrap',
-                    zIndex: 99999999999,
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
-                  }}>
-                    You can switch the pie chart data between fund size wise and unit wise from this switch
-                  </div>,
-                  document.body
-                )}
-                <div style={{
-                  fontSize: isMobile ? '11px' : '12px',
-                  fontWeight: '700',
-                  color: '#1e3a8a',
-                  marginBottom: isMobile ? '4px' : '6px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.07em',
-                  textShadow: 'none'
-                }}>
-                  View Mode
-                </div>
-                <div style={{
-                  position: 'relative',
-                  width: isMobile ? '140px' : '180px',
-                  height: isMobile ? '38px' : '46px',
-                  background: 'linear-gradient(145deg, #eef2fb 0%, #e0e7ff 100%)',
-                  borderRadius: isMobile ? '19px' : '23px',
-                  padding: '4px',
-                  cursor: 'pointer',
-                  boxShadow: 'inset 0 2px 4px rgba(30,58,138,0.10), 0 4px 14px rgba(30,58,138,0.14)',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                  border: '1.5px solid rgba(30, 58, 138, 0.22)',
-                  overflow: 'hidden'
-                }} onClick={() => setPieType(pieType === 'unit' ? 'market' : 'unit')}>
-                  {/* Background gradient overlay */}
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'linear-gradient(135deg, rgba(30,58,138,0.07) 0%, rgba(46,79,173,0.07) 100%)',
-                    borderRadius: isMobile ? '17px' : '21px',
-                    zIndex: 1
-                  }} />
-
-                  {/* Slider knob */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '4px',
-                    left: pieType === 'unit' ? '4px' : `calc(100% - ${isMobile ? '34px' : '42px'})`,
-                    width: isMobile ? '30px' : '38px',
-                    height: isMobile ? '30px' : '38px',
-                    background: 'linear-gradient(145deg, #ffffff 0%, #eef2fb 100%)',
-                    borderRadius: '50%',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: '0 3px 10px rgba(30,58,138,0.22), inset 0 1px 2px rgba(255,255,255,0.95)',
-                    zIndex: 3,
-                    border: '1px solid rgba(30,58,138,0.15)'
-                  }} />
-
-                  {/* Knob glow */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '4px',
-                    left: pieType === 'unit' ? '4px' : `calc(100% - ${isMobile ? '34px' : '42px'})`,
-                    width: isMobile ? '30px' : '38px',
-                    height: isMobile ? '30px' : '38px',
-                    background: 'radial-gradient(circle, rgba(30,58,138,0.18) 0%, transparent 70%)',
-                    borderRadius: '50%',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    zIndex: 2
-                  }} />
-
-                  {/* Labels */}
-                  <div style={{
-                    position: 'relative',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    height: '100%',
-                    padding: isMobile ? '0 8px' : '0 14px',
-                    zIndex: 4
-                  }}>
-                    <span style={{
-                      fontSize: isMobile ? '10px' : '11px',
-                      fontWeight: '800',
-                      color: pieType === 'unit' ? '#1e3a8a' : '#9ca3af',
-                      transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                      textShadow: 'none',
-                      filter: 'none',
-                      transform: pieType === 'unit' ? 'scale(1.05)' : 'scale(1)',
-                      letterSpacing: '0.03em'
-                    }}>
-                      Unit
-                    </span>
-                    <span style={{
-                      fontSize: isMobile ? '10px' : '11px',
-                      fontWeight: '800',
-                      color: pieType === 'market' ? '#1e3a8a' : '#9ca3af',
-                      transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                      textShadow: 'none',
-                      filter: 'none',
-                      transform: pieType === 'market' ? 'scale(1.05)' : 'scale(1)',
-                      letterSpacing: '0.03em'
-                    }}>
-                      Fund
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
-            {/* Spacing between pie and date card */}
-            <div style={{ height: isMobile ? '12px' : '32px' }}></div>
-            {/* Date Selection Card — glassy professional design */}
+
+            {/* ── Right column: Toggle + Date ── */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
-              gap: isMobile ? '10px' : '14px',
-              padding: isMobile ? '16px 18px' : '22px 28px',
-              background: 'rgba(255, 255, 255, 0.72)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              borderRadius: isMobile ? '14px' : '18px',
-              border: '1px solid rgba(30, 58, 138, 0.14)',
-              boxShadow: '0 4px 24px rgba(30, 58, 138, 0.10), 0 1px 4px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.85)',
-              position: 'relative',
-              overflow: 'hidden',
-              width: '100%',
-              maxWidth: isMobile ? '260px' : '320px',
-              margin: '0 auto'
+              gap: 8,
+              minWidth: isMobile ? '100%' : 220,
+              order: isMobile ? 3 : 2,
             }}>
-              {/* Subtle glass shimmer */}
+              {/* View Mode card */}
               <div style={{
-                position: 'absolute',
-                top: 0, left: 0, right: 0,
-                height: '50%',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 100%)',
-                borderRadius: '18px 18px 0 0',
-                pointerEvents: 'none',
-                zIndex: 0
-              }} />
-              {/* Subtle corner accent */}
-              <div style={{
-                position: 'absolute',
-                top: '-30px', right: '-30px',
-                width: '90px', height: '90px',
-                background: 'radial-gradient(circle, rgba(30,58,138,0.08) 0%, transparent 70%)',
-                pointerEvents: 'none',
-                zIndex: 0
-              }} />
-
-              {/* Header row: icon + label */}
-              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                border: '1.5px solid #f0f0f0',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                padding: '8px 14px',
                 display: 'flex',
-                alignItems: 'center',
-                gap: '7px',
-                position: 'relative',
-                zIndex: 1,
-                width: '100%',
-                justifyContent: 'center',
-                borderBottom: '1px solid rgba(30,58,138,0.08)',
-                paddingBottom: isMobile ? '8px' : '10px'
+                flexDirection: 'column',
+                gap: 6,
               }}>
-                <span style={{
-                  fontSize: isMobile ? '15px' : '17px',
-                  lineHeight: 1
-                }}>📅</span>
-                <span style={{
-                  fontSize: isMobile ? '11px' : '12px',
-                  fontWeight: '700',
-                  color: '#1e3a8a',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.07em',
-                  fontFamily: "'Lato', system-ui, sans-serif"
-                }}>
-                  Date Selection
-                </span>
+                <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: '#a855f7' }} />
+                  View Mode
+                </div>
+                {/* Toggle */}
+                <div
+                  onClick={() => setPieType(pieType === 'unit' ? 'market' : 'unit')}
+                  style={{
+                    position: 'relative', width: '100%', height: 28,
+                    background: '#f1f5f9',
+                    borderRadius: 16, cursor: 'pointer',
+                    border: '1.5px solid #e2e8f0',
+                    overflow: 'hidden',
+                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute', top: 2, bottom: 2,
+                    width: 'calc(50% - 2px)',
+                    borderRadius: 16,
+                    background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                    left: pieType === 'unit' ? 2 : 'calc(50%)',
+                    transition: 'left 0.3s cubic-bezier(0.4,0,0.2,1)',
+                    boxShadow: '0 2px 8px rgba(99,102,241,0.40)',
+                  }} />
+                  <div style={{ position: 'relative', display: 'flex', height: '100%', zIndex: 1 }}>
+                    {['Unit', 'Fund'].map((label, i) => (
+                      <span key={label} style={{
+                        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 12, fontWeight: 800,
+                        color: (i === 0 && pieType === 'unit') || (i === 1 && pieType === 'market') ? '#fff' : '#6b7280',
+                        transition: 'color 0.2s',
+                      }}>{label}</span>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center' }}>
+                  {pieType === 'unit' ? 'Showing by unit count' : 'Showing by fund value'}
+                </div>
               </div>
 
-              {/* Date input */}
+              {/* Date Selection card */}
               <div style={{
-                position: 'relative',
-                zIndex: 1,
-                width: '100%',
+                background: '#fff',
+                borderRadius: 16,
+                border: '1.5px solid #f0f0f0',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                padding: '8px 14px',
                 display: 'flex',
-                justifyContent: 'center'
+                flexDirection: 'column',
+                gap: 6,
+                position: 'relative',
+                overflow: 'hidden',
               }}>
+                {/* Corner accent */}
+                <div style={{
+                  position: 'absolute', bottom: -20, right: -20,
+                  width: 90, height: 90, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #e0f2fe, #ddd6fe)',
+                  opacity: 0.8, pointerEvents: 'none',
+                }} />
+                <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 14 }}>📅</span> Date Selection
+                </div>
                 <input
                   type="date"
                   value={selectedDate}
-                  onChange={e => setSelectedDate(e.target.value)}
                   max={todayStr}
+                  onChange={e => setSelectedDate(e.target.value)}
                   style={{
-                    padding: isMobile ? '8px 12px' : '9px 14px',
-                    fontSize: isMobile ? '13px' : '14px',
-                    fontWeight: '600',
-                    background: '#ffffff',
-                    border: '1.5px solid rgba(30,58,138,0.22)',
-                    borderRadius: '8px',
-                    color: '#1f2937',
-                    cursor: 'pointer',
-                    boxShadow: '0 1px 4px rgba(30,58,138,0.08)',
-                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                    outline: 'none',
                     width: '100%',
-                    fontFamily: "'Lato', system-ui, sans-serif"
+                    padding: '5px 10px',
+                    borderRadius: 8,
+                    border: '1.5px solid #e2e8f0',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: '#1e293b',
+                    background: '#f8fafc',
+                    outline: 'none',
+                    fontFamily: "'Lato', system-ui, sans-serif",
+                    cursor: 'pointer',
+                    transition: 'border-color 0.2s, box-shadow 0.2s',
                   }}
-                  onFocus={(e) => {
-                    e.target.style.border = '1.5px solid #1e3a8a';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(30,58,138,0.12), 0 1px 4px rgba(30,58,138,0.08)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.border = '1.5px solid rgba(30,58,138,0.22)';
-                    e.target.style.boxShadow = '0 1px 4px rgba(30,58,138,0.08)';
-                  }}
+                  onFocus={e => { e.target.style.borderColor = '#6366f1'; e.target.style.boxShadow = '0 0 0 3px #6366f120'; }}
+                  onBlur={e => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
                 />
-              </div>
-
-              {/* Formatted date display */}
-              <div style={{
-                fontSize: isMobile ? '13px' : '14px',
-                fontWeight: '700',
-                color: '#1e3a8a',
-                textAlign: 'center',
-                padding: isMobile ? '6px 14px' : '7px 18px',
-                background: 'rgba(30,58,138,0.06)',
-                borderRadius: '7px',
-                border: '1px solid rgba(30,58,138,0.10)',
-                position: 'relative',
-                zIndex: 1,
-                width: '100%',
-                fontFamily: "'Lato', system-ui, sans-serif",
-                letterSpacing: '0.01em'
-              }}>
-                {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-GB', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
+                <div style={{
+                  background: 'linear-gradient(135deg, #eef2ff 0%, #faf5ff 100%)',
+                  borderRadius: 8,
+                  border: '1.5px solid #e0e7ff',
+                  padding: '6px 12px',
+                  textAlign: 'center',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: '#4338ca',
+                  letterSpacing: '0.01em',
+                  position: 'relative',
+                  zIndex: 1,
+                }}>
+                  {formattedDate}
+                </div>
               </div>
             </div>
           </div>
-          {/* DataTable Card */}
-          <div className="home-card magical-bg animated-bg dashboard-table-section" style={{
-            flex: isMobile ? '0.8' : '1.2',
+
+          {/* ── Row 3: Data table ── */}
+          <div style={{
+            flex: 1,
             minHeight: 0,
-            marginTop: 4,
-            marginBottom: 0,
+            background: '#fff',
+            borderRadius: 20,
+            border: '1.5px solid #f0f0f0',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+            overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'stretch',
-            height: isMobile ? 'auto' : '30vh',
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-            paddingTop: 4,
-            width: '100%',
-            paddingLeft: '0px',
-            paddingRight: '0px'
+            position: 'relative',
           }}>
-            {/* Animated background elements */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl animate-pulse"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 rounded-full blur-2xl animate-pulse delay-1000"></div>
+            {/* Rainbow top strip */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: 4,
+              background: 'linear-gradient(90deg, #6366f1 0%, #a855f7 35%, #ec4899 65%, #f43f5e 100%)',
+              zIndex: 2,
+              pointerEvents: 'none',
+            }} />
+            <div style={{ flex: 1, overflow: 'auto', paddingTop: 8 }}>
+              <DataTable />
             </div>
-            <DataTable />
           </div>
+
         </div>
       </div>
+
       <Footer />
+
+      <style>{`
+        /* ── Scrollbar inside legend ── */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+      `}</style>
     </>
   );
 }

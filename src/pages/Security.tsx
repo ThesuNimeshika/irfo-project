@@ -12,7 +12,8 @@ interface UserRole {
   rowPermissions: Record<number, string[]>;
   createdBy?: string;
 }
-import UserSearchModal from '../components/UserSearchModal';
+import CreateUserSearchModal from '../components/CreateUserSearchModal';
+import type { CreateUserFormData } from '../components/CreateUserSearchModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -378,7 +379,7 @@ const CustomDateInput = forwardRef(({ value, onClick, placeholder }: any, ref: a
 
 const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
   const [isActive, setIsActive] = useState(true);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarImage, setAvatarImage] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -410,29 +411,23 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
 
 
 
-  const handleUserSelect = (user: any) => {
-    setFullName(user.fullName || '');
-    setEmpNo(user.empNo || '');
-    setMobile(user.mobile || '');
-    setEmail(user.email || '');
-    setAddress(user.address || '');
-    setIsActive(user.isActive ?? true);
-    // Handle fund initialization (support both string and array formats)
-    if (user.fund) {
-      setFund(Array.isArray(user.fund) ? user.fund : user.fund.split(',').map((s: string) => s.trim()).filter(Boolean));
-    } else if (user.department) {
-      setFund(Array.isArray(user.department) ? user.department : user.department.split(',').map((s: string) => s.trim()).filter(Boolean));
-    } else {
-      setFund([]);
-    }
-    setOtpMethod(user.otpMethod || '');
-    setUserType(user.userType || '');
-    setDesignation(user.designation || '');
-    setDateOfBirth(user.dateOfBirth ? new Date(user.dateOfBirth) : null);
-    setStartDate(null);
-    setEndDate(null);
+  // Handle loading data into the form
+  const handleCreateUserSubmit = (data: CreateUserFormData) => {
+    setFullName(data.fullName || '');
+    setEmpNo(data.empNo || '');
+    setGender((data.gender as 'male' | 'female' | 'other' | '') || '');
+    setDesignation(data.designation || '');
+    setDateOfBirth(data.dateOfBirth || null);
+    setMobile(data.mobileNumber || '');
+    setEmail(data.emailAddress || '');
+    setAddress(data.address || '');
+
     setIsUpdating(true);
+    setIsActive(true);
+    showToast(`User "${data.fullName}" loaded successfully!`, 'success');
   };
+
+
 
   const clearForm = () => {
     setFullName('');
@@ -585,10 +580,10 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
         </div>
       )}
 
-      <UserSearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
-        onSelect={handleUserSelect}
+      <CreateUserSearchModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onConfirm={handleCreateUserSubmit}
       />
 
       {/* Left Panel */}
@@ -647,7 +642,7 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
           <h4 style={{ fontSize: '11px', fontWeight: 'bold', color: '#94a3b8', margin: '0 0 16px 0', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Actions</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <button onClick={clearForm} style={{ background: 'linear-gradient(135deg, var(--accent, #1e3a8a) 0%, var(--accent-mid, #2563eb) 100%)', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 10px rgba(30, 58, 138, 0.2)' }}>+ Create User</button>
-            <button onClick={() => setIsSearchModalOpen(true)} style={{ background: '#fff', color: 'var(--accent, #1e3a8a)', border: '1px solid var(--accent, #1e3a8a)', padding: '12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>📝 Update User</button>
+            <button onClick={() => setIsCreateModalOpen(true)} style={{ background: '#fff', color: 'var(--accent, #1e3a8a)', border: '1px solid var(--accent, #1e3a8a)', padding: '12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>📝 Update User</button>
             <button onClick={handleDelete} style={{ background: '#fff', color: '#ef4444', border: '1px solid #fca5a5', padding: '12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>🗑️ Delete User</button>
           </div>
         </div>
@@ -662,7 +657,7 @@ const UserCreationModal = ({ isMobile }: { isMobile: boolean }) => {
               <IconWrapper><IcoUser /></IconWrapper>
               <input type="text" placeholder="User Name *" style={inputStyle} className={secInputClass} value={fullName} onChange={e => setFullName(e.target.value)} />
             </div>
-            <button onClick={() => setIsSearchModalOpen(true)} style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '12px 28px', borderRadius: '6px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', width: isMobile ? '100%' : 'auto', justifyContent: 'center' }}>
+            <button onClick={() => setIsCreateModalOpen(true)} style={{ background: 'var(--accent, #1e3a8a)', color: '#fff', border: 'none', padding: '12px 28px', borderRadius: '6px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', width: isMobile ? '100%' : 'auto', justifyContent: 'center' }}>
               📥 Load
             </button>
           </div>

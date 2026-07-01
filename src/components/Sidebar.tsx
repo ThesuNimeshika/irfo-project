@@ -80,7 +80,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
     ?.children?.some(c => location.pathname.toLowerCase().startsWith(c.link.toLowerCase())) ?? false;
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-  const iconSize = isMobile ? 16 : 18;
+  const iconSize = isMobile ? 12 : 14;
 
   return (
     <>
@@ -90,11 +90,9 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
       <style>{`
         /* ── Shell ── */
         .sb-shell {
-          background    : rgba(255,255,255,0.78);
-          backdrop-filter: blur(28px) saturate(180%);
-          -webkit-backdrop-filter: blur(28px) saturate(180%);
-          border-right  : 1px solid rgba(255,255,255,0.92);
-          box-shadow    : 2px 0 24px rgba(30,58,138,0.07), 1px 0 0 rgba(0,0,0,0.04);
+          background    : #ffffff;
+          border-right  : 1.5px solid #f0f0f0;
+          box-shadow    : 0 4px 20px rgba(0,0,0,0.03);
         }
 
         /* ── Pill base ── */
@@ -104,207 +102,150 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           flex-direction: column;
           align-items : center;
           justify-content: center;
-          width       : calc(100% - 20px);
-          margin      : 1px 10px;
-          padding     : 4px 4px 2px;
-          border-radius: 10px;
+          width       : calc(100% - 24px);
+          margin      : 2px 12px;
+          padding     : 6px 4px;
+          border-radius: 12px;
           border      : 1px solid transparent;
           background  : transparent;
           cursor      : pointer;
-          font-family : 'Lato', system-ui, sans-serif;
-          font-weight : 700;
-          color       : #6b7280;
+          font-family : 'Inter', 'Lato', system-ui, sans-serif;
+          font-weight : 600;
+          color       : #64748b;
           text-align  : center;
           box-sizing  : border-box;
-          gap         : 2px;
-          transition  :
-            background   0.18s cubic-bezier(0.4,0,0.2,1),
-            border-color 0.18s cubic-bezier(0.4,0,0.2,1),
-            box-shadow   0.18s cubic-bezier(0.4,0,0.2,1),
-            color        0.18s cubic-bezier(0.4,0,0.2,1),
-            transform    0.18s cubic-bezier(0.4,0,0.2,1);
-        }
-
-        /* Glass shimmer on pill */
-        .sb-pill::before {
-          content      : '';
-          position     : absolute;
-          inset        : 0;
-          border-radius: 10px;
-          background   : linear-gradient(150deg,
-            rgba(255,255,255,0.70) 0%,
-            rgba(255,255,255,0.20) 60%,
-            rgba(255,255,255,0.02) 100%);
-          opacity      : 0;
-          transition   : opacity 0.18s;
-          pointer-events: none;
+          gap         : 4px;
+          transition  : all 0.2s cubic-bezier(0.4,0,0.2,1);
         }
 
         /* ── Hover state ── */
         .sb-pill:hover {
-          background   : rgba(255,255,255,0.82) !important;
-          border-color : rgba(200,213,255,0.60) !important;
-          box-shadow   :
-            0 2px 14px rgba(30,58,138,0.08),
-            0 1px 3px  rgba(0,0,0,0.04),
-            inset 0 1px 0 rgba(255,255,255,0.90) !important;
-          color        : #1e3a8a !important;
+          background   : #f8fafc !important;
+          color        : #6366f1 !important;
           transform    : translateY(-1px);
         }
-        .sb-pill:hover::before { opacity: 1; }
-        .sb-pill:hover .sb-icon-wrap { transform: scale(1.08) translateY(-1px); }
+        .sb-pill:hover .sb-icon-wrap { 
+          transform: scale(1.05); 
+          background: #eef2ff;
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
 
         /* ── Active state ── */
         .sb-pill.is-active {
-          background   : rgba(255,255,255,0.94) !important;
-          border-color : rgba(147,176,255,0.55) !important;
-          box-shadow   :
-            0 3px 18px rgba(30,58,138,0.11),
-            0 1px 5px  rgba(0,0,0,0.06),
-            inset 0 1px 0 rgba(255,255,255,0.95) !important;
-          color        : #1e3a8a !important;
+          background   : #ffffff !important;
+          border-color : #e2e8f0 !important;
+          box-shadow   : 0 4px 12px rgba(0,0,0,0.05) !important;
+          color        : #6366f1 !important;
           transform    : translateY(-1px);
         }
-        .sb-pill.is-active::before { opacity: 1; }
-        .sb-pill.is-active .sb-icon-wrap { transform: scale(1.08) translateY(-1px); }
 
-        /* Active left accent stripe */
+        /* Active accent bar */
         .sb-pill.is-active::after {
           content      : '';
           position     : absolute;
-          left         : 0;
-          top          : 22%;
-          bottom       : 22%;
-          width        : 3px;
-          background   : linear-gradient(180deg, #1d4ed8 0%, #60a5fa 100%);
-          border-radius: 0 3px 3px 0;
+          left         : -4px;
+          top          : 20%;
+          bottom       : 20%;
+          width        : 4px;
+          background   : linear-gradient(180deg, #6366f1 0%, #a855f7 100%);
+          border-radius: 0 4px 4px 0;
+          box-shadow: 2px 0 8px rgba(99, 102, 241, 0.4);
         }
 
-        /* ── Icon wrapper ── */
         .sb-icon-wrap {
           display    : flex;
           align-items: center;
           justify-content: center;
-          width      : 28px;
-          height     : 28px;
-          border-radius: 7px;
-          background : rgba(241,245,255,0.70);
-          border     : 1px solid rgba(200,213,255,0.30);
-          margin-bottom: 2px;
-          transition : transform 0.18s cubic-bezier(0.4,0,0.2,1),
-                       background 0.18s, border-color 0.18s, box-shadow 0.18s;
+          width      : 24px;
+          height     : 24px;
+          border-radius: 6px;
+          background : #f1f5f9;
+          border     : 1px solid #e2e8f0;
+          transition : all 0.2s;
           font-size  : var(--sb-icon-size, 18px);
           line-height: 1;
-          box-shadow : 0 1px 3px rgba(30,58,138,0.06), inset 0 1px 0 rgba(255,255,255,0.90);
-        }
-        .sb-pill:hover   .sb-icon-wrap {
-          background   : rgba(219,229,255,0.70);
-          border-color : rgba(147,176,255,0.50);
-          box-shadow   : 0 2px 8px rgba(30,58,138,0.10), inset 0 1px 0 rgba(255,255,255,0.95);
         }
         .sb-pill.is-active .sb-icon-wrap {
-          background : rgba(219,229,255,0.90);
-          border-color: rgba(99,141,255,0.55);
-          box-shadow : 0 2px 10px rgba(30,58,138,0.14), inset 0 1px 0 rgba(255,255,255,0.95);
+          background : linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+          border-color: #c7d2fe;
+          transform: scale(1.05);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
         }
 
-        /* ── Label ── */
         .sb-label {
-          font-size  : 10.5px;
+          font-size  : 10px;
           font-weight: 700;
           color      : inherit;
           line-height: 1.2;
           max-width  : 96%;
-          white-space: nowrap;
-          overflow   : hidden;
-          text-overflow: ellipsis;
-          letter-spacing: 0.01em;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
 
-        /* ── Report pill (horizontal) ── */
         .sb-report-pill {
           flex-direction : row !important;
           justify-content: space-between !important;
           align-items    : center !important;
-          padding        : 5px 10px 5px 8px !important;
+          padding        : 6px 12px 6px 8px !important;
           gap            : 0 !important;
         }
         .sb-report-left {
           display    : flex;
           align-items: center;
-          gap        : 8px;
+          gap        : 10px;
         }
-        .sb-report-pill .sb-label { font-size: 12px; white-space: nowrap; }
-        .sb-report-pill .sb-icon-wrap { margin-bottom: 0; }
+        .sb-report-pill .sb-label { font-size: 11px; }
 
         .sb-chevron {
-          font-size : 9px;
-          color     : inherit;
-          opacity   : 0.45;
-          transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), opacity 0.18s;
-          flex-shrink: 0;
-          margin-left: 2px;
+          font-size : 8px;
+          transition: transform 0.25s;
+          opacity: 0.6;
         }
-        .sb-pill:hover   .sb-chevron { opacity: 0.85; }
-        .sb-pill.is-active .sb-chevron { opacity: 0.85; }
-        .sb-pill.chevron-open .sb-chevron { transform: rotate(180deg); opacity: 0.85; }
+        .sb-pill.chevron-open .sb-chevron { transform: rotate(180deg); }
 
-        /* ── Dropdown panel ── */
         .sb-dropdown {
-          background    : rgba(255,255,255,0.96);
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          border        : 1px solid rgba(200,213,255,0.60);
-          border-radius : 12px;
-          box-shadow    :
-            0 -4px 24px rgba(30,58,138,0.12),
-            0 -1px 8px  rgba(30,58,138,0.06),
-            inset 0 -1px 0 rgba(255,255,255,0.90);
+          background    : rgba(255,255,255,0.98);
+          backdrop-filter: blur(12px);
+          border        : 1px solid #e2e8f0;
+          border-radius : 14px;
+          box-shadow    : 0 10px 30px rgba(0,0,0,0.12);
           overflow      : hidden;
-          animation     : sbFadeUp 0.18s cubic-bezier(0.4,0,0.2,1);
-          box-sizing    : border-box;
+          animation     : sbFadeIn 0.2s ease-out;
         }
 
-        /* Portal dropdown overrides (position is set inline) */
-        .sb-dropdown-portal {
-          width: auto !important;
-          margin: 0 !important;
-        }
-
-        @keyframes sbFadeUp {
-          from { opacity: 0; transform: translateY(8px) scaleY(0.96); transform-origin: bottom; }
+        @keyframes sbFadeIn {
+          from { opacity: 0; transform: translateY(4px); }
           to   { opacity: 1; transform: none; }
         }
+
         .sb-child-btn {
           display    : block;
           width      : 100%;
-          padding    : 8px 14px 8px 16px;
+          padding    : 10px 16px;
           background : none;
           border     : none;
-          border-bottom: 1px solid rgba(30,58,138,0.05);
-          color      : #6b7280;
-          font-size  : 11.5px;
+          border-bottom: 1px solid #f1f5f9;
+          color      : #64748b;
+          font-size  : 12px;
           font-weight: 600;
-          font-family: 'Lato', system-ui, sans-serif;
           text-align : left;
           cursor     : pointer;
-          transition : background 0.14s, color 0.14s, padding-left 0.14s;
-          box-sizing : border-box;
+          transition : all 0.15s;
         }
         .sb-child-btn:last-child { border-bottom: none; }
         .sb-child-btn:hover {
-          background   : rgba(30,58,138,0.06);
-          color        : #1e3a8a;
+          background   : #f8fafc;
+          color        : #6366f1;
           padding-left : 20px;
         }
 
         /* ── Divider ── */
         .sb-divider {
           width     : calc(100% - 32px);
-          height    : 1px;
-          background: linear-gradient(90deg, transparent, rgba(30,58,138,0.10) 40%, rgba(30,58,138,0.10) 60%, transparent);
+          height    : 1.5px;
+          background: #f1f5f9;
           border    : none;
-          margin    : 2px 16px;
+          margin    : 8px 16px;
           display   : block;
         }
 
@@ -322,14 +263,14 @@ function SidebarNav({ onNavigate }: { onNavigate?: (link: string) => void }) {
           width: sidebarWidth,
           minWidth: sidebarWidth,
           maxWidth: sidebarWidth,
-          height: '100vh',
+          height: 'calc(100vh - 84px)',
           position: 'fixed',
-          top: 0, left: 0,
-          zIndex: 2000,
+          top: 54, left: 0,
+          zIndex: 800,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'stretch',
-          paddingTop: 75,
+          paddingTop: 24,
           paddingBottom: 50,
           overflowY: 'auto',
           overflowX: 'hidden',
